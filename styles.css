@@ -1,49 +1,308 @@
+/* Paleta base con variables (modo claro/oscuro) */
+:root {
+  --bg: #f4f5f7;
+  --bg-card: #ffffff;
+  --bg-header: #1f4f66;
+  --bg-header-soft: #244f66;
+  --text-main: #222;
+  --text-soft: #555;
+  --border-soft: #e0e0e0;
+  --shadow-soft: 0 4px 10px rgba(0,0,0,0.06);
+}
+
+body.dark {
+  --bg: #020617;
+  --bg-card: #020617;
+  --bg-header: #020617;
+  --bg-header-soft: #020617;
+  --text-main: #e5e7eb;
+  --text-soft: #9ca3af;
+  --border-soft: #1f2937;
+  --shadow-soft: 0 18px 35px rgba(0,0,0,0.9);
+}
+
+* {
+  box-sizing: border-box;
+}
+
 body {
-  font-family: Arial, sans-serif;
-  background: #f4f5f7;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   margin: 0;
+  background: var(--bg);
+  color: var(--text-main);
 }
 
-header {
-  background: #1f4f66;
+/* Topbar */
+.topbar {
+  background: linear-gradient(135deg, var(--bg-header), var(--bg-header-soft));
   color: #fff;
-  text-align: center;
-  padding: 1.5rem;
-}
-
-.filtros {
-  padding: 1rem;
-  background: #fff;
+  padding: 0.9rem 1.3rem;
   display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 1rem;
   flex-wrap: wrap;
 }
 
-#contenedor-hormonas {
-  padding: 1.5rem;
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.topbar-title h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.topbar-title p {
+  margin: 0.2rem 0 0;
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+/* Botón hamburguesa */
+.btn-menu {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.7);
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  cursor: pointer;
+}
+
+.btn-menu span {
+  display: block;
+  width: 16px;
+  height: 2px;
+  background: #fff;
+  border-radius: 999px;
+  margin: 2px 0;
+}
+
+/* Menú desplegable */
+.panel-menu {
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-soft);
+  padding: 0.4rem 1.3rem 0.5rem;
+  display: flex;
+  gap: 0.6rem;
+}
+
+.item-menu {
+  border-radius: 999px;
+  border: 1px solid var(--border-soft);
+  background: transparent;
+  padding: 0.25rem 0.9rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+  color: var(--text-soft);
+}
+
+.item-menu.activo {
+  background: #4f46e5;
+  border-color: #4f46e5;
+  color: #f9fafb;
+}
+
+/* Botón modo oscuro */
+.btn-tema {
+  border: 1px solid rgba(255,255,255,0.7);
+  background: transparent;
+  color: #fff;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.btn-tema:hover {
+  background: rgba(15,23,42,0.3);
+}
+
+/* Filtros */
+.filtros {
+  padding: 0.8rem 1.5rem;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-soft);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.filtro-item {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.85rem;
+}
+
+.filtro-item label {
+  margin-bottom: 0.2rem;
+  color: var(--text-soft);
+}
+
+.filtros select,
+.filtros input {
+  padding: 0.35rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-soft);
+  background: var(--bg);
+  color: var(--text-main);
+  font-size: 0.85rem;
+}
+
+.filtro-busqueda {
+  min-width: 220px;
+}
+
+/* Contenedores principales */
+#contenedor-hormonas,
+#contenedor-farmacos {
+  padding: 1.4rem;
+  max-width: 1200px;
+  margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 1rem;
 }
 
-.tarjeta-hormona {
-  background: white;
-  border-radius: 10px;
-  padding: 1rem;
-  border: 1px solid #ddd;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+.mensaje-inicial {
+  grid-column: 1 / -1;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--text-soft);
 }
 
-.badge-sistema {
-  display: inline-block;
-  margin: 0.3rem 0;
-  padding: 0.2rem 0.5rem;
-  background: #e3edf7;
-  border-radius: 5px;
-  color: #1f4f66;
-  font-size: 0.75rem;
+/* Tarjetas generales */
+.tarjeta-hormona,
+.tarjeta-farmaco {
+  background: var(--bg-card);
+  border-radius: 18px;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--border-soft);
+  box-shadow: var(--shadow-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  transition: transform 0.12s ease-out, box-shadow 0.12s ease-out,
+              border-color 0.12s ease-out;
 }
-.mensaje-inicial {
-  font-size: 0.9rem;
-  color: #555;
+
+.tarjeta-hormona:hover,
+.tarjeta-farmaco:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 38px rgba(0,0,0,0.7);
+}
+
+/* Colores por sistema (borde izquierdo) */
+.tarjeta-hormona.sis-digestivo {
+  border-left: 4px solid #22c55e;
+}
+.tarjeta-hormona.sis-respiratorio-cardíaco {
+  border-left: 4px solid #0ea5e9;
+}
+.tarjeta-hormona.sis-cardíaco-circulatorio {
+  border-left: 4px solid #ef4444;
+}
+.tarjeta-hormona.sis-nervioso-neuroendocrino {
+  border-left: 4px solid #8b5cf6;
+}
+.tarjeta-hormona.sis-renal,
+.tarjeta-hormona.sis-renal-metabólico {
+  border-left: 4px solid #0d9488;
+}
+.tarjeta-hormona.sis-reproductivo {
+  border-left: 4px solid #ec4899;
+}
+.tarjeta-hormona.sis-endocrino-metabólico {
+  border-left: 4px solid #f97316;
+}
+.tarjeta-hormona.sis-inmunológico {
+  border-left: 4px solid #eab308;
+}
+.tarjeta-hormona.sis-óseo-piel {
+  border-left: 4px solid #6366f1;
+}
+
+/* Farmacología borde distinto */
+.tarjeta-farmaco {
+  border-left: 4px solid #0ea5e9;
+}
+
+/* Títulos y texto tarjeta */
+.tarjeta-hormona h2,
+.tarjeta-farmaco h2 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.sigla {
+  font-size: 0.85rem;
+  color: var(--text-soft);
+}
+
+.tarjeta-hormona p,
+.tarjeta-farmaco p {
+  margin: 0.1rem 0;
+  font-size: 0.82rem;
+}
+
+.tarjeta-hormona strong,
+.tarjeta-farmaco strong {
+  font-weight: 600;
+}
+
+/* Badge de sistema / grupo */
+.badge-sistema,
+.badge-grupo {
+  display: inline-block;
+  margin: 0.2rem 0 0.4rem;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  background: #e3edf7;
+  color: #1f4f66;
+}
+
+body.dark .badge-sistema,
+body.dark .badge-grupo {
+  background: #1e293b;
+  color: #e5e7eb;
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 1rem 0.7rem 1.4rem;
+  font-size: 0.8rem;
+  color: var(--text-soft);
+}
+
+/* Utilidades */
+.oculto {
+  display: none !important;
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  .topbar {
+    align-items: flex-start;
+  }
+
+  .topbar-title h1 {
+    font-size: 1.25rem;
+  }
+
+  #contenedor-hormonas,
+  #contenedor-farmacos {
+    padding: 0.9rem;
+  }
 }

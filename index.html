@@ -2,18 +2,36 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Mini-App Hormonas Veterinarias</title>
+  <title>Mini-App Veterinaria</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header>
-    <h1>Hormonas en Fisiología Animal</h1>
-    <p>Mini-app de estudio para Medicina Veterinaria</p>
+  <header class="topbar">
+    <div class="topbar-left">
+      <button id="btn-menu" class="btn-menu" aria-label="Abrir menú">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <div class="topbar-title">
+        <h1>Hormonas en Fisiología Animal</h1>
+        <p>Mini-app de estudio para Medicina Veterinaria</p>
+      </div>
+    </div>
+
+    <button id="toggle-tema" class="btn-tema">Modo oscuro</button>
   </header>
 
-  <section class="filtros">
-    <label>
-      Sistema:
+  <!-- Menú desplegable -->
+  <nav id="panel-menu" class="panel-menu oculto">
+    <button class="item-menu activo" data-modulo="hormonas">🧬 Hormonas</button>
+    <button class="item-menu" data-modulo="farmacos">💊 Farmacología</button>
+  </nav>
+
+  <!-- FILTROS HORMONAS -->
+  <section id="filtros-hormonas" class="filtros">
+    <div class="filtro-item">
+      <label for="filtro-sistema">Sistema:</label>
       <select id="filtro-sistema">
         <option value="todos">Todos</option>
         <option value="Digestivo">Digestivo</option>
@@ -27,22 +45,78 @@
         <option value="Inmunológico">Inmunológico</option>
         <option value="Óseo/Piel">Óseo/Piel</option>
       </select>
-    </label>
+    </div>
 
-    <label>
-      Buscar:
+    <div class="filtro-item">
+      <label for="filtro-especie">Especie:</label>
+      <select id="filtro-especie">
+        <option value="todas">Todas</option>
+        <option value="multiespecie">Multiespecie</option>
+        <option value="perro">Perro</option>
+        <option value="gato">Gato</option>
+        <option value="bovino">Bovino</option>
+        <option value="equino">Equino</option>
+        <option value="ovino">Ovino</option>
+        <option value="caprino">Caprino</option>
+        <option value="porcino">Porcino</option>
+        <option value="aves">Aves</option>
+      </select>
+    </div>
+
+    <div class="filtro-item filtro-busqueda">
+      <label for="buscador">Buscar:</label>
       <input 
         type="text" 
         id="buscador" 
-        placeholder="Ej: T4, GH, progesterona..."
+        placeholder="Ej: T4, GH, cortisol, reproducción..."
       />
-    </label>
+    </div>
   </section>
 
+  <!-- FILTROS FARMACOLOGÍA -->
+  <section id="filtros-farmacos" class="filtros oculto">
+    <div class="filtro-item">
+      <label for="filtro-grupo-farmaco">Grupo:</label>
+      <select id="filtro-grupo-farmaco">
+        <option value="todos">Todos</option>
+        <option value="antibiotico">Antibiótico</option>
+        <option value="antiparasitario">Antiparasitario</option>
+        <option value="aine">AINE</option>
+        <option value="anestesico">Anestésico / sedante</option>
+      </select>
+    </div>
+
+    <div class="filtro-item">
+      <label for="filtro-especie-farmaco">Especie:</label>
+      <select id="filtro-especie-farmaco">
+        <option value="todas">Todas</option>
+        <option value="perro">Perro</option>
+        <option value="gato">Gato</option>
+        <option value="bovino">Bovino</option>
+        <option value="equino">Equino</option>
+        <option value="ovino">Ovino</option>
+        <option value="caprino">Caprino</option>
+        <option value="porcino">Porcino</option>
+        <option value="aves">Aves</option>
+      </select>
+    </div>
+
+    <div class="filtro-item filtro-busqueda">
+      <label for="buscador-farmaco">Buscar:</label>
+      <input 
+        type="text" 
+        id="buscador-farmaco" 
+        placeholder="Ej: enrofloxacina, meloxicam, anestesia..."
+      />
+    </div>
+  </section>
+
+  <!-- CONTENEDORES -->
   <main id="contenedor-hormonas"></main>
+  <main id="contenedor-farmacos" class="oculto"></main>
 
   <footer>
-    <small>Mini-app educativa para estudiantes de Veterinaria 🐄🐕🐈</small>
+    <small>Mini-app educativa para veterinaria 🐄🐕🐈 — by Juanito</small>
   </footer>
 
   <script src="app.js"></script>

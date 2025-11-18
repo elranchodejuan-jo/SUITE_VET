@@ -496,40 +496,137 @@ const hormonas = [
 ];
 
 // =========================
-// LÓGICA DE FILTRO Y RENDER
+// BASE DE DATOS DE FÁRMACOS
 // =========================
 
+const farmacos = [
+  {
+    grupo: "Antibiótico fluoroquinolona",
+    grupoClave: "antibiotico",
+    nombre: "Enrofloxacina",
+    nombreComercial: "Baytril®, Enroxil®, genéricos",
+    especies: ["perro", "gato", "bovino", "porcino", "aves"],
+    via: "VO, SC, IM",
+    indicaciones: "Infecciones bacterianas del aparato respiratorio, digestivo, urinario y tejidos blandos.",
+    contraindicaciones: "Cachorros en crecimiento, gestantes en algunas especies, animales con convulsiones.",
+    dosis: "5–10 mg/kg según especie y formulación.",
+    retiro: "Respetar tiempos específicos de cada presentación en bovinos, porcinos y aves.",
+    notas: "No combinar con AINEs que disminuyan el umbral convulsivo; evitar uso indiscriminado por resistencia."
+  },
+  {
+    grupo: "Antiparasitario endectocida",
+    grupoClave: "antiparasitario",
+    nombre: "Ivermectina",
+    nombreComercial: "Ivomec®, Genéricos",
+    especies: ["bovino", "equino", "ovino", "caprino", "porcino", "perro"],
+    via: "SC, IM, VO (según especie).",
+    indicaciones: "Control de parásitos gastrointestinales y ectoparásitos.",
+    contraindicaciones: "Raças de perro sensibles a ivermectina (Collie y relacionadas); cuidado en animales debilitados.",
+    dosis: "0,2–0,4 mg/kg según especie y vía.",
+    retiro: "Tiempos de retiro prolongados en carne y leche según etiqueta.",
+    notas: "No usar en gatos con formulaciones para grandes animales; riesgo de toxicidad neurológica."
+  },
+  {
+    grupo: "Antiinflamatorio no esteroideo (AINE)",
+    grupoClave: "aine",
+    nombre: "Meloxicam",
+    nombreComercial: "Metacam®, Meloxivet®, otros",
+    especies: ["perro", "gato", "bovino"],
+    via: "SC, IV, VO (según fórmula).",
+    indicaciones: "Dolor e inflamación músculo-esquelética, posoperatorio.",
+    contraindicaciones: "Insuficiencia renal/hepática, deshidratación, úlcera gástrica, uso conjunto con otros AINEs o corticoides.",
+    dosis: "Perro: 0,2 mg/kg inicial, luego 0,1 mg/kg; gato: dosis única; bovino: según etiqueta.",
+    retiro: "Obligatorio en bovinos (carne/leche) de acuerdo a producto.",
+    notas: "Controlar función renal en tratamientos prolongados."
+  },
+  {
+    grupo: "Anestésico disociativo",
+    grupoClave: "anestesico",
+    nombre: "Ketamina",
+    nombreComercial: "Ketalar®, Imalgene®, etc.",
+    especies: ["perro", "gato", "equino", "bovino"],
+    via: "IV, IM.",
+    indicaciones: "Inducción anestésica, procedimientos cortos, combinado con otros sedantes.",
+    contraindicaciones: "Pacientes con hipertensión, enfermedad cardiaca grave, aumento de presión intracraneal.",
+    dosis: "Depende de protocolo combinado (xilazina, midazolam, etc.).",
+    retiro: "En animales de consumo, seguir recomendaciones específicas de cada país.",
+    notas: "Produce anestesia disociativa; conservar reflejos; no utilizar sola en procedimientos dolorosos."
+  }
+];
+
+
+// =========================
+// LÓGICA DE FILTRO Y RENDER
+// =========================
+// Añadimos un campo especies por defecto en hormonas si no existe
+hormonas.forEach((h) => {
+  if (!h.especies) {
+    h.especies = ["multiespecie"];
+  }
+});
+
+// ========= DOM =========
 const filtroSistema = document.getElementById("filtro-sistema");
+const filtroEspecie = document.getElementById("filtro-especie");
 const buscador = document.getElementById("buscador");
-const contenedor = document.getElementById("contenedor-hormonas");
 
-// Renderiza la lista de hormonas o mensajes
+const filtroGrupoFarmaco = document.getElementById("filtro-grupo-farmaco");
+const filtroEspecieFarmaco = document.getElementById("filtro-especie-farmaco");
+const buscadorFarmaco = document.getElementById("buscador-farmaco");
+
+const contHormonas = document.getElementById("contenedor-hormonas");
+const contFarmacos = document.getElementById("contenedor-farmacos");
+
+const filtrosHormonasSec = document.getElementById("filtros-hormonas");
+const filtrosFarmacosSec = document.getElementById("filtros-farmacos");
+
+const toggleTema = document.getElementById("toggle-tema");
+const btnMenu = document.getElementById("btn-menu");
+const panelMenu = document.getElementById("panel-menu");
+const itemsMenu = document.querySelectorAll(".item-menu");
+
+let moduloActual = "hormonas";
+
+// Mapea el sistema a una clase CSS para el color
+function claseSistema(sistema) {
+  const s = sistema.toLowerCase();
+  if (s.startsWith("digestivo")) return "sis-digestivo";
+  if (s.startsWith("respiratorio/cardíaco")) return "sis-respiratorio-cardíaco";
+  if (s.startsWith("cardíaco/circulatorio")) return "sis-cardíaco-circulatorio";
+  if (s.startsWith("nervioso/neuroendocrino")) return "sis-nervioso-neuroendocrino";
+  if (s.startsWith("renal/metabólico")) return "sis-renal-metabólico";
+  if (s.startsWith("renal")) return "sis-renal";
+  if (s.startsWith("reproductivo")) return "sis-reproductivo";
+  if (s.startsWith("endocrino/metabólico")) return "sis-endocrino-metabólico";
+  if (s.startsWith("inmunológico")) return "sis-inmunológico";
+  if (s.startsWith("óseo/piel")) return "sis-óseo-piel";
+  return "";
+}
+
+// --------- RENDER HORMONAS ---------
 function renderHormonas(lista, filtrosAplicados) {
-  contenedor.innerHTML = "";
+  contHormonas.innerHTML = "";
 
-  // Si no se ha aplicado ningún filtro ni búsqueda
   if (!filtrosAplicados) {
-    contenedor.innerHTML = `
+    contHormonas.innerHTML = `
       <p class="mensaje-inicial">
-        Usa el filtro de <strong>sistema</strong> o escribe algo en <strong>Buscar</strong> 
+        Usa el filtro de <strong>sistema</strong>, el filtro de 
+        <strong>especie</strong> o escribe algo en <strong>Buscar</strong> 
         para ver las hormonas.
       </p>
     `;
     return;
   }
 
-  // Si se aplicaron filtros pero no hay resultados
   if (lista.length === 0) {
-    contenedor.innerHTML = `
-      <p>No se encontraron hormonas con esos criterios.</p>
-    `;
+    contHormonas.innerHTML = `<p>No se encontraron hormonas con esos criterios.</p>`;
     return;
   }
 
-  // Si hay resultados
   lista.forEach((h) => {
     const card = document.createElement("article");
-    card.className = "tarjeta-hormona";
+    const claseSis = claseSistema(h.sistema);
+    card.className = `tarjeta-hormona ${claseSis}`;
 
     card.innerHTML = `
       <h2>${h.nombre}</h2>
@@ -543,37 +640,184 @@ function renderHormonas(lista, filtrosAplicados) {
       <p><strong>Afecciones farmacológicas:</strong> ${h.farmaco}</p>
     `;
 
-    contenedor.appendChild(card);
+    contHormonas.appendChild(card);
   });
 }
 
-// Aplica filtros de sistema + texto
-function aplicarFiltros() {
+function aplicarFiltrosHormonas() {
   const sistemaSeleccionado = filtroSistema.value;
+  const especieSeleccionada = filtroEspecie.value;
   const texto = buscador.value.toLowerCase().trim();
 
   const filtrosAplicados =
-    sistemaSeleccionado !== "todos" || texto !== "";
+    sistemaSeleccionado !== "todos" ||
+    especieSeleccionada !== "todas" ||
+    texto !== "";
 
   const filtradas = hormonas.filter((h) => {
     const coincideSistema =
       sistemaSeleccionado === "todos" || h.sistema === sistemaSeleccionado;
 
+    const coincideEspecie =
+      especieSeleccionada === "todas" ||
+      (h.especies &&
+        h.especies.map((e) => e.toLowerCase()).includes(especieSeleccionada));
+
     const textoEnCampos =
       texto === "" ||
       h.nombre.toLowerCase().includes(texto) ||
       h.sigla.toLowerCase().includes(texto) ||
-      h.funcion.toLowerCase().includes(texto);
+      h.sistema.toLowerCase().includes(texto) ||
+      h.funcion.toLowerCase().includes(texto) ||
+      h.patologia.toLowerCase().includes(texto) ||
+      h.variaciones.toLowerCase().includes(texto) ||
+      h.farmaco.toLowerCase().includes(texto);
 
-    return coincideSistema && textoEnCampos;
+    return coincideSistema && coincideEspecie && textoEnCampos;
   });
 
   renderHormonas(filtradas, filtrosAplicados);
 }
 
-// Eventos
-filtroSistema.addEventListener("change", aplicarFiltros);
-buscador.addEventListener("input", aplicarFiltros);
+// --------- RENDER FÁRMACOS ---------
+function renderFarmacos(lista, filtrosAplicados) {
+  contFarmacos.innerHTML = "";
 
-// Estado inicial: sin filtros aplicados, solo el mensaje
-renderHormonas([], false);
+  if (!filtrosAplicados) {
+    contFarmacos.innerHTML = `
+      <p class="mensaje-inicial">
+        Usa el filtro de <strong>grupo</strong>, el de 
+        <strong>especie</strong> o el <strong>buscador</strong>
+        para ver los fármacos.
+      </p>
+    `;
+    return;
+  }
+
+  if (lista.length === 0) {
+    contFarmacos.innerHTML = `<p>No se encontraron fármacos con esos criterios.</p>`;
+    return;
+  }
+
+  lista.forEach((f) => {
+    const card = document.createElement("article");
+    card.className = "tarjeta-farmaco";
+
+    card.innerHTML = `
+      <h2>${f.nombre}</h2>
+      <div class="sigla">Nombre comercial: <strong>${f.nombreComercial}</strong></div>
+      <span class="badge-grupo">${f.grupo}</span>
+      <p><strong>Vías:</strong> ${f.via}</p>
+      <p><strong>Especies:</strong> ${f.especies.join(", ")}</p>
+      <p><strong>Indicaciones:</strong> ${f.indicaciones}</p>
+      <p><strong>Contraindicaciones:</strong> ${f.contraindicaciones}</p>
+      <p><strong>Dosis general:</strong> ${f.dosis}</p>
+      <p><strong>Período de retiro:</strong> ${f.retiro}</p>
+      <p><strong>Notas / advertencias:</strong> ${f.notas}</p>
+    `;
+
+    contFarmacos.appendChild(card);
+  });
+}
+
+function aplicarFiltrosFarmacos() {
+  const grupoSel = filtroGrupoFarmaco.value;
+  const especieSel = filtroEspecieFarmaco.value;
+  const texto = buscadorFarmaco.value.toLowerCase().trim();
+
+  const filtrosAplicados =
+    grupoSel !== "todos" ||
+    especieSel !== "todas" ||
+    texto !== "";
+
+  const filtradas = farmacos.filter((f) => {
+    const coincideGrupo =
+      grupoSel === "todos" || f.grupoClave === grupoSel;
+
+    const coincideEspecie =
+      especieSel === "todas" ||
+      f.especies.map((e) => e.toLowerCase()).includes(especieSel);
+
+    const textoEnCampos =
+      texto === "" ||
+      f.nombre.toLowerCase().includes(texto) ||
+      f.nombreComercial.toLowerCase().includes(texto) ||
+      f.grupo.toLowerCase().includes(texto) ||
+      f.indicaciones.toLowerCase().includes(texto) ||
+      f.contraindicaciones.toLowerCase().includes(texto);
+
+    return coincideGrupo && coincideEspecie && textoEnCampos;
+  });
+
+  renderFarmacos(filtradas, filtrosAplicados);
+}
+
+// --------- CAMBIO DE MÓDULO ---------
+function cambiarModulo(modulo) {
+  moduloActual = modulo;
+
+  if (modulo === "hormonas") {
+    filtrosHormonasSec.classList.remove("oculto");
+    contHormonas.classList.remove("oculto");
+    filtrosFarmacosSec.classList.add("oculto");
+    contFarmacos.classList.add("oculto");
+  } else {
+    filtrosHormonasSec.classList.add("oculto");
+    contHormonas.classList.add("oculto");
+    filtrosFarmacosSec.classList.remove("oculto");
+    contFarmacos.classList.remove("oculto");
+  }
+
+  itemsMenu.forEach((btn) => {
+    btn.classList.toggle("activo", btn.dataset.modulo === modulo);
+  });
+
+  panelMenu.classList.add("oculto");
+
+  if (modulo === "hormonas") {
+    renderHormonas([], false);
+  } else {
+    renderFarmacos([], false);
+  }
+}
+
+// --------- TEMA OSCURO ---------
+function cargarTema() {
+  const tema = localStorage.getItem("tema-hormonas-vet");
+  if (tema === "dark") {
+    document.body.classList.add("dark");
+    toggleTema.textContent = "Modo claro";
+  } else {
+    document.body.classList.remove("dark");
+    toggleTema.textContent = "Modo oscuro";
+  }
+}
+
+toggleTema.addEventListener("click", () => {
+  const esDark = document.body.classList.toggle("dark");
+  localStorage.setItem("tema-hormonas-vet", esDark ? "dark" : "light");
+  toggleTema.textContent = esDark ? "Modo claro" : "Modo oscuro";
+});
+
+// --------- EVENTOS ---------
+filtroSistema.addEventListener("change", aplicarFiltrosHormonas);
+filtroEspecie.addEventListener("change", aplicarFiltrosHormonas);
+buscador.addEventListener("input", aplicarFiltrosHormonas);
+
+filtroGrupoFarmaco.addEventListener("change", aplicarFiltrosFarmacos);
+filtroEspecieFarmaco.addEventListener("change", aplicarFiltrosFarmacos);
+buscadorFarmaco.addEventListener("input", aplicarFiltrosFarmacos);
+
+btnMenu.addEventListener("click", () => {
+  panelMenu.classList.toggle("oculto");
+});
+
+itemsMenu.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    cambiarModulo(btn.dataset.modulo);
+  });
+});
+
+// --------- ESTADO INICIAL ---------
+cargarTema();
+cambiarModulo("hormonas");
