@@ -315,3 +315,155 @@ footer {
     padding: 0.9rem;
   }
 }
+
+/* ===================== */
+/* CALCULADORA FÁRMACOS  */
+/* ===================== */
+
+.calc-farmaco {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0.8rem 1.4rem 0.4rem;
+  color: var(--text-main);
+}
+
+.calc-farmaco h2 {
+  font-size: 1rem;
+  margin: 0 0 0.6rem;
+}
+
+.calc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.6rem 0.8rem;
+  align-items: flex-end;
+}
+
+.calc-item {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.85rem;
+}
+
+.calc-item label {
+  margin-bottom: 0.2rem;
+  color: var(--text-soft);
+}
+
+.calc-item select,
+.calc-item input {
+  padding: 0.35rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-soft);
+  background: var(--bg);
+  color: var(--text-main);
+  font-size: 0.85rem;
+}
+
+.calc-item-boton {
+  align-items: flex-start;
+}
+
+.btn-primario {
+  padding: 0.4rem 1.1rem;
+  border-radius: 999px;
+  border: none;
+  font-size: 0.85rem;
+  cursor: pointer;
+  background: #4f46e5;
+  color: #f9fafb;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.btn-primario:hover {
+  background: #4338ca;
+}
+
+.calc-resultado {
+  margin-top: 0.7rem;
+  padding: 0.7rem 0.9rem;
+  border-radius: 12px;
+  border: 1px dashed var(--border-soft);
+  font-size: 0.85rem;
+  background: rgba(148, 163, 184, 0.06);
+}
+
+.calc-resultado p {
+  margin: 0.1rem 0;
+}
+
+/* Mobile tweaks */
+@media (max-width: 640px) {
+  .calc-farmaco {
+    padding: 0.6rem 0.9rem 0.2rem;
+  }
+}
+
+.card-acciones {
+  margin-top: 0.6rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-desde-card {
+  font-size: 0.8rem;
+  padding: 0.3rem 0.9rem;
+}
+
+/* Tarjeta FARMACOLÓGICA (usa el mismo diseño que HORMONAS) */
+.card-farmaco {
+  background: var(--card-bg);
+  padding: 1.2rem;
+  border-radius: 16px;
+  color: var(--text-color);
+  box-shadow: var(--shadow);
+  border-left: 5px solid var(--borde-farmaco, #888);
+  transition: transform 0.2s ease, border-color 0.3s ease;
+}
+
+.card-farmaco:hover {
+  transform: translateY(-4px);
+}
+
+.card-farmaco h3 {
+  margin-top: 0;
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+/* Chip del grupo farmacológico */
+.chip-farmaco {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  background: var(--chip-bg);
+  color: white;
+  margin-bottom: 10px;
+}
+
+/* Botón dentro de la tarjeta */
+.btn-desde-card {
+  margin-top: 1rem;
+  padding: 0.4rem 1rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  background-color: var(--accent-color);
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.btn-desde-card:hover {
+  opacity: 0.8;
+}
+
+/* Grid igual que hormonas */
+.cards-grid {
+  display: grid;
+  gap: 1.4rem;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  margin-top: 2rem;
+}
+

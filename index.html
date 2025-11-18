@@ -14,7 +14,7 @@
         <span></span>
       </button>
       <div class="topbar-title">
-        <h1>Hormonas en Fisiología Animal</h1>
+        <h1>CATTLE</h1>
         <p>Mini-app de estudio para Medicina Veterinaria</p>
       </div>
     </div>
@@ -68,21 +68,26 @@
       <input 
         type="text" 
         id="buscador" 
-        placeholder="Ej: T4, GH, cortisol, reproducción..."
+        placeholder="Ej: CCK, GH, cortisol, reproducción..."
       />
     </div>
   </section>
 
-  <!-- FILTROS FARMACOLOGÍA -->
+    <!-- FILTROS FARMACOLOGÍA -->
   <section id="filtros-farmacos" class="filtros oculto">
     <div class="filtro-item">
       <label for="filtro-grupo-farmaco">Grupo:</label>
       <select id="filtro-grupo-farmaco">
         <option value="todos">Todos</option>
-        <option value="antibiotico">Antibiótico</option>
-        <option value="antiparasitario">Antiparasitario</option>
-        <option value="aine">AINE</option>
-        <option value="anestesico">Anestésico / sedante</option>
+        <option value="antimicrobiano">Antimicrobianos</option>
+        <option value="antiparasitario">Antiparasitarios</option>
+        <option value="aine">AINEs</option>
+        <option value="anestesico">Anestésicos / sedantes</option>
+        <option value="hormona">Hormonas sintéticas</option>
+        <option value="cardio">Cardiológicos</option>
+        <option value="neuro">Neurológicos</option>
+        <option value="gastrico">Protectores gástricos</option>
+        <option value="otros">Otros de interés clínico</option>
       </select>
     </div>
 
@@ -111,12 +116,57 @@
     </div>
   </section>
 
+
   <!-- CONTENEDORES -->
-  <main id="contenedor-hormonas"></main>
-  <main id="contenedor-farmacos" class="oculto"></main>
+  <main id="contenedor-hormonas" class="cards-grid"></main>
+
+    <!-- CALCULADORA FARMACOLÓGICA -->
+  <section id="calc-farmaco" class="calc-farmaco oculto">
+    <h2>Calculadora de dosis</h2>
+    <div class="calc-grid">
+      <div class="calc-item">
+        <label for="calc-farmaco-select">Fármaco:</label>
+        <select id="calc-farmaco-select">
+          <option value="">Selecciona un fármaco…</option>
+        </select>
+      </div>
+
+      <div class="calc-item">
+        <label for="calc-especie">Especie:</label>
+        <select id="calc-especie">
+          <option value="">Primero elige un fármaco…</option>
+        </select>
+      </div>
+
+      <div class="calc-item">
+        <label for="calc-via">Vía:</label>
+        <select id="calc-via">
+          <option value="">Primero elige especie…</option>
+        </select>
+      </div>
+
+      <div class="calc-item">
+        <label for="calc-peso">Peso del animal (kg):</label>
+        <input type="number" id="calc-peso" min="0" step="0.1" placeholder="Ej: 25" />
+      </div>
+
+      <div class="calc-item calc-item-boton">
+        <button id="btn-calcular" class="btn-primario">
+          Calcular dosis
+        </button>
+      </div>
+    </div>
+
+    <div id="calc-resultado" class="calc-resultado">
+      <p>Selecciona un fármaco, especie, vía y peso para calcular la dosis.</p>
+    </div>
+  </section>
+
+
+  <main id="contenedor-farmacos" class="cards-grid oculto"></main>
 
   <footer>
-    <small>Mini-app educativa para veterinaria 🐄🐕🐈 — by Juanito</small>
+    <small>Mini-app educativa para veterinaria 🐄🐕🐈 — by elranchodejuan_jo</small>
   </footer>
 
   <script src="app.js"></script>
