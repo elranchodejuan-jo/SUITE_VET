@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mini-App Veterinaria</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <h1>Mini-App Veterinaria</h1>
+  </header>
+
+  <!-- NAV PRINCIPAL -->
+  <nav class="nav">
+    <!-- BOTÓN HAMBURGUESA A LA IZQUIERDA -->
+    <button
+      class="nav-icon-btn"
+      id="menu-toggle"
+      aria-label="Abrir menú de proyectos"
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <button class="nav-btn" data-view="home">Inicio</button>
+    <button class="nav-btn" data-view="farmacologia">Farmacología</button>
+    <button class="nav-btn" data-view="fisiologia">Fisiología</button>
+  </nav>
+
+  <!-- MENÚ DE PROYECTOS (CARTILLA, CATTLE, PROTOCOLOS) -->
+  <div class="menu-panel" id="menu-panel">
+    <p class="menu-title">Proyectos</p>
+    <button class="menu-item disabled">Cartilla Digital</button>
+    <button class="menu-item disabled">CATTLE</button>
+    <button class="menu-item disabled">Protocolos y registros</button>
+    <p class="menu-note">En desarrollo, pronto más info…</p>
+  </div>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main>
+    <!-- INICIO -->
+    <section id="view-home" class="view view-active">
+      <h2>Inicio</h2>
+      <p class="view-intro">
+        Bienvenido a la Mini-App Veterinaria.
+        Aquí integraremos módulos de Farmacología y Fisiología (hormonas),
+        conectados con tus proyectos Cartilla Digital, CATTLE y
+        Protocolos/Registros.
+      </p>
+    </section>
+
+    <!-- FARMACOLOGÍA (placeholder por ahora) -->
+    <section id="view-farmacologia" class="view">
+      <h2>Farmacología</h2>
+      <p class="view-intro">
+        Aquí irá tu vademécum interactivo de fármacos veterinarios:
+        grupos, dosis, especies, vías de administración y notas clínicas.
+      </p>
+    </section>
+
+    <!-- FISIOLOGÍA = HORMONAS -->
+    <section id="view-fisiologia" class="view">
+      <h2>Fisiología · Hormonas</h2>
+      <p class="view-intro">
+        Fichas de estudio de hormonas veterinarias, organizadas por sistema,
+        con origen, funciones, patología, variaciones por especie y notas farmacológicas.
+      </p>
+
+      <!-- BUSCADOR Y FILTROS -->
+      <div class="hormonas-toolbar">
+        <input
+          type="text"
+          id="searchHormona"
+          placeholder="Buscar por nombre o siglas (ej. progesterona, LH, T4)..."
+        />
+
+        <div class="hormonas-filtros">
+          <button class="pill-btn pill-active" data-sistema="todos">Todos</button>
+          <button class="pill-btn" data-sistema="digestivo">Digestivo</button>
+          <button class="pill-btn" data-sistema="reproductivo">Reproductivo</button>
+          <button class="pill-btn" data-sistema="endocrino-metabolico">Endocrino/Metabólico</button>
+          <button class="pill-btn" data-sistema="cardiaco-circulatorio">Cardíaco/Circulatorio</button>
+          <button class="pill-btn" data-sistema="respiratorio-cardiaco">Respiratorio/Cardíaco</button>
+          <button class="pill-btn" data-sistema="renal">Renal</button>
+          <button class="pill-btn" data-sistema="renal-metabolico">Renal/Metabólico</button>
+          <button class="pill-btn" data-sistema="inmunologico">Inmunológico</button>
+          <button class="pill-btn" data-sistema="nervioso-neuroendocrino">Nervioso/Neuroendocrino</button>
+          <button class="pill-btn" data-sistema="oseo-piel">Óseo/Piel</button>
+        </div>
+      </div>
+
+      <!-- LISTA DE TARJETAS DE HORMONAS -->
+      <div id="hormonasList" class="cards-grid">
+        <!-- Se llena desde app.js -->
+      </div>
+    </section>
+  </main>
+</body>
+</html>

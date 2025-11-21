@@ -1,0 +1,348 @@
+/* ========== RESET BÁSICO ========== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+body {
+  background: #020617; /* azul muy oscuro */
+  color: #f9fafb;
+  min-height: 100vh;
+}
+
+/* ========== TOPBAR ========== */
+
+.topbar {
+  padding: 1rem;
+  border-bottom: 1px solid #111827;
+  text-align: center;
+}
+
+.topbar h1 {
+  font-size: 1.6rem;
+  letter-spacing: 0.03em;
+}
+
+/* ========== NAV PRINCIPAL ========== */
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid #111827;
+  overflow-x: auto;
+}
+
+.nav-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  background: #111827;
+  color: #e5e7eb;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.nav-btn.nav-active {
+  background: #3b82f6;
+}
+
+/* ========== BOTÓN HAMBURGUESA (3 rayas → X) ========== */
+
+.nav-icon-btn {
+  position: relative;
+  width: 40px;
+  height: 32px;
+  border-radius: 999px;
+  border: 1px solid #1f2933;
+  background: #020617;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.nav-icon-btn span {
+  position: absolute;
+  width: 18px;
+  height: 2px;
+  border-radius: 999px;
+  background: #e5e7eb;
+  transition: transform 0.18s ease, opacity 0.18s ease, top 0.18s ease;
+}
+
+.nav-icon-btn span:nth-child(1) {
+  top: 10px;
+}
+
+.nav-icon-btn span:nth-child(2) {
+  top: 15px;
+}
+
+.nav-icon-btn span:nth-child(3) {
+  top: 20px;
+}
+
+/* Animación al abrir */
+
+.nav-icon-btn.is-open span:nth-child(1) {
+  top: 15px;
+  transform: rotate(45deg);
+}
+
+.nav-icon-btn.is-open span:nth-child(2) {
+  opacity: 0;
+}
+
+.nav-icon-btn.is-open span:nth-child(3) {
+  top: 15px;
+  transform: rotate(-45deg);
+}
+
+/* ========== MENÚ DE PROYECTOS (3 rayitas) ========== */
+
+.menu-panel {
+  position: absolute;
+  top: 4.1rem;
+  right: 1rem;
+  width: 240px;
+  padding: 0.75rem 0.9rem;
+  border-radius: 0.9rem;
+  border: 1px solid #111827;
+  background: #020617f0;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.6);
+  display: none;
+  z-index: 20;
+}
+
+.menu-panel.menu-panel-open {
+  display: block;
+}
+
+.menu-title {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #9ca3af;
+  margin-bottom: 0.4rem;
+}
+
+.menu-item {
+  width: 100%;
+  text-align: left;
+  padding: 0.4rem 0.5rem;
+  border-radius: 0.6rem;
+  border: none;
+  margin-top: 0.15rem;
+  font-size: 0.85rem;
+  background: transparent;
+  color: #e5e7eb;
+}
+
+.menu-item.disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.menu-item:hover:not(.disabled) {
+  background: #020617;
+}
+
+.menu-note {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+/* ========== CONTENIDO PRINCIPAL ========== */
+
+main {
+  padding: 1rem;
+}
+
+.view {
+  display: none;
+}
+
+.view-active {
+  display: block;
+}
+
+.view h2 {
+  font-size: 1.3rem;
+  margin-bottom: 0.4rem;
+}
+
+.view-intro {
+  color: #d1d5db;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin-bottom: 0.5rem;
+}
+
+/* ========== GRID DE TARJETAS ========== */
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 0.9rem;
+}
+
+/* ========== TOOLBAR HORMONAS (BUSCADORES) ========== */
+
+.hormonas-toolbar {
+  margin: 0.9rem 0 0.7rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.hormonas-toolbar input {
+  width: 100%;
+  padding: 0.55rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid #1f2933;
+  background: #020617;
+  color: #f5f5f5;
+  outline: none;
+  font-size: 0.85rem;
+}
+
+.hormonas-toolbar input::placeholder {
+  color: #9ca3af;
+}
+
+.hormonas-filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.pill-btn {
+  padding: 0.25rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid #1f2933;
+  background: #020617;
+  color: #e5e7eb;
+  font-size: 0.75rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.pill-btn.pill-active {
+  background: #3b82f6;
+  border-color: #3b82f6;
+}
+
+/* ========== TARJETAS DE HORMONAS ========== */
+
+.card-hormona {
+  background: #020617;
+  border-radius: 1rem;
+  border: 1px solid #111827;
+  padding: 0.9rem 1rem;
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.35);
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  position: relative;
+}
+
+/* Borde lateral de color según sistema */
+.card-hormona::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 1rem;
+  border-left-width: 4px;
+  border-left-style: solid;
+  border-color: transparent;
+  pointer-events: none;
+}
+
+/* COLORES POR SISTEMA (coinciden con sistemaKey del JS) */
+.card-sistema-digestivo::before {
+  border-color: #f97316; /* naranja */
+}
+.card-sistema-reproductivo::before {
+  border-color: #ec4899; /* rosado */
+}
+.card-sistema-endocrino-metabolico::before {
+  border-color: #a855f7; /* violeta */
+}
+.card-sistema-cardiaco-circulatorio::before {
+  border-color: #ef4444; /* rojo */
+}
+.card-sistema-respiratorio-cardiaco::before {
+  border-color: #38bdf8; /* celeste */
+}
+.card-sistema-renal::before {
+  border-color: #10b981; /* verde */
+}
+.card-sistema-renal-metabolico::before {
+  border-color: #84cc16; /* verde lima */
+}
+.card-sistema-inmunologico::before {
+  border-color: #22c55e; /* verde brillante */
+}
+.card-sistema-nervioso-neuroendocrino::before {
+  border-color: #6366f1; /* azul violeta */
+}
+.card-sistema-oseo-piel::before {
+  border-color: #eab308; /* amarillo */
+}
+
+/* Encabezado tarjeta */
+.card-hormona-header {
+  margin-bottom: 0.3rem;
+}
+
+.card-hormona-nombre {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.card-hormona-sigla {
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+
+/* Badge sistema */
+.badge-sistema {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-top: 0.2rem;
+  background: #020617;
+  border: 1px solid #1f2937;
+  color: #e5e7eb;
+}
+
+/* Texto de la tarjeta */
+.card-hormona p {
+  font-size: 0.8rem;
+  color: #e5e7eb;
+  line-height: 1.4;
+}
+
+.card-hormona p span {
+  font-weight: 600;
+}
+
+/* Footer: variaciones + afecciones */
+.card-hormona-footer {
+  margin-top: 0.3rem;
+  padding-top: 0.3rem;
+  border-top: 1px dashed #1f2937;
+}
