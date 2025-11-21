@@ -1,0 +1,110 @@
+[
+  {
+    "grupo": "Antimicrobiano – Fluoroquinolonas",
+    "nombre": "Enrofloxacina",
+    "nombreComercial": "Baytril®, Enroxil®, genéricos",
+    "especies": [
+      "perro",
+      "gato",
+      "bovino",
+      "porcino",
+      "aves"
+    ],
+    "via": "VO, SC, IM",
+    "indicaciones": "Infecciones bacterianas del aparato respiratorio, digestivo, urinario y tejidos blandos.",
+    "contraindicaciones": "Cachorros en crecimiento, gestantes en algunas especies, animales con convulsiones.",
+    "dosis": "5–10 mg/kg según especie y formulación.",
+    "retiro": "Respetar tiempos específicos de cada presentación en bovinos, porcinos y aves.",
+    "notas": "Evitar uso indiscriminado por resistencia bacteriana.",
+    "dosisEspecies": {
+      "perro": {
+        "vias": [
+          "VO",
+          "SC"
+        ],
+        "mgKg": 5,
+        "concMgMl": 50,
+        "frecuencia": "cada 24 h",
+        "dias": "5–7 días"
+      },
+      "gato": {
+        "vias": [
+          "VO"
+        ],
+        "mgKg": 5,
+        "concMgMl": 25,
+        "frecuencia": "cada 24 h",
+        "dias": "5–7 días"
+      },
+      "bovino": {
+        "vias": [
+          "SC",
+          "IM"
+        ],
+        "mgKg": 2.5,
+        "concMgMl": 100,
+        "frecuencia": "cada 24 h",
+        "dias": "3–5 días"
+      },
+      "porcino": {
+        "vias": [
+          "IM"
+        ],
+        "mgKg": 2.5,
+        "concMgMl": 100,
+        "frecuencia": "cada 24 h",
+        "dias": "3–5 días"
+      },
+      "aves": {
+        "vias": [
+          "VO"
+        ],
+        "mgKg": 10,
+        "concMgMl": 100,
+        "frecuencia": "en agua de bebida, según consumo",
+        "dias": "3–5 días"
+      }
+    }
+  },
+  {
+    "grupo": "AINE",
+    "nombre": "Meloxicam",
+    "nombreComercial": "Metacam®",
+    "especies": [
+      "perro",
+      "gato",
+      "bovino",
+      "equino"
+    ],
+    "vias": [
+      "IM",
+      "IV",
+      "Oral"
+    ],
+    "indicaciones": "Dolor e inflamación",
+    "contraindicaciones": "Úlcera GI, insuficiencia renal",
+    "dosis": "0.2 mg/kg (carga) → 0.1 mg/kg (mant.)",
+    "retiro": "Según especie",
+    "notas": "COX‑2 preferente",
+    "dosisEspecies": {
+      "perro": {
+        "vias": [
+          "Oral"
+        ],
+        "mgKg": 0.1,
+        "concMgMl": 1.5,
+        "frecuencia": "cada 24 h",
+        "dias": "3–5"
+      },
+      "gato": {
+        "vias": [
+          "Oral"
+        ],
+        "mgKg": 0.05,
+        "concMgMl": 0.5,
+        "frecuencia": "cada 24 h",
+        "dias": "máx 3"
+      }
+    }
+  }
+]
