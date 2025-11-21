@@ -2,13 +2,12 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>CATTLE · Mini-App Veterinaria (Dark)</title>
+  <title>CATTLE · Mini‑App Veterinaria (Dark)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <!-- CSS externo -->
   <link rel="stylesheet" href="styles.css" />
+  <script src="app.js" defer></script>
 </head>
 <body>
-  <!-- TOPBAR -->
   <header class="topbar">
     <div class="topbar-left">
       <button id="btn-menu" class="btn-menu" aria-label="Abrir menú">☰</button>
@@ -20,32 +19,24 @@
     <button id="toggle-tema" class="btn-tema" disabled>Tema fijo</button>
   </header>
 
-  <!-- CHIPS (opcional) -->
-  <nav id="panel-menu" class="panel-menu oculto" style="padding:8px 24px;">
-    <button class="item-menu activo" data-modulo="hormonas">🧬 Hormonas</button>
-    <button class="item-menu" data-modulo="farmacos">💊 Farmacología</button>
-  </nav>
-
-  <!-- HOME -->
   <section id="home-grid" class="home-grid">
-    <button class="glass-card" style="--card-borde:#22c55e" data-mod="fisiologia">
-      <span class="icon">🫀</span><span class="title">Fisiología</span>
+    <button class="glass-card" style="--card-borde:#22c55e" data-mod="hormonas">
+      <span class="icon">🫀</span><span class="title">Fisiología (Hormonas)</span>
     </button>
-    <button class="glass-card" style="--card-borde:#0ea5e9" data-mod="farmacologia">
+    <button class="glass-card" style="--card-borde:#0ea5e9" data-mod="farmacos">
       <span class="icon">💉</span><span class="title">Farmacología</span>
     </button>
-    <button class="glass-card" style="--card-borde:#f97316" data-mod="toxicologia">
-      <span class="icon">☠️</span><span class="title">Toxicología</span>
+    <button class="glass-card" style="--card-borde:#f97316" disabled>
+      <span class="icon">☠️</span><span class="title">Toxicología (próx.)</span>
     </button>
-    <button class="glass-card" style="--card-borde:#a78bfa" data-mod="anatomia">
-      <span class="icon">🦴</span><span class="title">Anatomía</span>
+    <button class="glass-card" style="--card-borde:#a78bfa" disabled>
+      <span class="icon">🦴</span><span class="title">Anatomía (próx.)</span>
     </button>
-    <button class="glass-card" style="--card-borde:#ef4444" data-mod="patologia">
-      <span class="icon">🦠</span><span class="title">Patología</span>
+    <button class="glass-card" style="--card-borde:#ef4444" disabled>
+      <span class="icon">🦠</span><span class="title">Patología (próx.)</span>
     </button>
   </section>
 
-  <!-- FILTROS HORMONAS -->
   <section id="filtros-hormonas" class="filtros oculto">
     <div class="filtro-item">
       <label for="filtro-sistema">Sistema:</label>
@@ -84,10 +75,8 @@
     </div>
   </section>
 
-  <!-- LISTA HORMONAS -->
   <main id="contenedor-hormonas" class="cards-grid oculto"></main>
 
-  <!-- FILTROS FARMA -->
   <section id="filtros-farmacos" class="filtros oculto">
     <div class="filtro-item">
       <label for="filtro-grupo-farmaco">Grupo:</label>
@@ -124,10 +113,8 @@
     </div>
   </section>
 
-  <!-- LISTA FARMA -->
   <main id="contenedor-farmacos" class="cards-grid oculto"></main>
 
-  <!-- CALCULADORA -->
   <section id="calc-farmaco" class="calc-farmaco oculto">
     <h2>Calculadora de dosis</h2>
     <div class="calc-grid">
@@ -165,30 +152,5 @@
   <footer>
     <small>Mini-app educativa para veterinaria 🐄🐕🐈 — by elranchodejuan_jo</small>
   </footer>
-
-  <!-- SHEET -->
-  <div id="sheet" class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title" hidden>
-    <div class="sheet__backdrop" data-close></div>
-    <div class="sheet__panel" role="document">
-      <div class="sheet__header">
-        <h3 id="sheet-title">Opciones</h3>
-        <button class="sheet__close" data-close aria-label="Cerrar">✕</button>
-      </div>
-      <div id="sheet-content" class="sheet__content"></div>
-    </div>
-  </div>
-
-  <!-- SIDE MENU -->
-  <aside id="side-menu" class="side-menu">
-    <header>Menú</header>
-    <div class="link">MINI APP <span class="badge">(este sitio)</span></div>
-    <div class="link">CATTLE <span class="badge">Próximamente</span></div>
-    <div class="link">Cartilla Digital <span class="badge">Próximamente</span></div>
-    <div class="link">PROTOCOLO <span class="badge">Próximamente</span></div>
-  </aside>
-
-  <!-- JS al final (sin defer) -->
-  <script src="app.js"></script>
-  <noscript>Activa JavaScript para usar la mini-app.</noscript>
 </body>
 </html>
