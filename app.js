@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  console.log("Mini-App Veterinaria v2.0 lista 🐾");
+  console.log("Mini-App Veterinaria v2.1 lista 🐾");
 
   const buttons = document.querySelectorAll(".nav-btn[data-view]");
   const views = document.querySelectorAll(".view");
@@ -75,6 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // ---------- BASE DE DATOS DE HORMONAS ----------
+  // (igual que tu versión anterior)
 
   const hormonas = [
     // DIGESTIVO
@@ -349,7 +350,7 @@ document.addEventListener("DOMContentLoaded", () => {
       sistema: "Nervioso/Neuroendocrino",
       sistemaKey: "nervioso-neuroendocrino",
       origenLiberacion:
-        "Producción: neuronas del SNC y células entero cromafines. Liberación: sinapsis y mucosa intestinal.",
+        "Producción: neuronas del SNC y células enterocromafines. Liberación: sinapsis y mucosa intestinal.",
       funcionPrincipal:
         "Regula estado de ánimo, apetito y motilidad intestinal.",
       funcionSecundaria:
@@ -395,56 +396,6 @@ document.addEventListener("DOMContentLoaded", () => {
       afeccionesFarmaco:
         "Desmopresina es análogo terapéutico; diuréticos la contrarrestan."
     },
-    {
-      nombre: "CRH",
-      sigla: "CRH",
-      sistema: "Nervioso/Neuroendocrino",
-      sistemaKey: "nervioso-neuroendocrino",
-      origenLiberacion:
-        "Producción: hipotálamo. Liberación: sistema porta hipofisario.",
-      funcionPrincipal: "Estimula secreción de ACTH.",
-      funcionSecundaria:
-        "Participa en respuesta al estrés crónico.",
-      patologia:
-        "↑: activación excesiva del eje adrenal. ↓: hipoadrenocorticismo secundario.",
-      especieVariacion:
-        "Sensibilidad del eje HHA varía entre especies.",
-      afeccionesFarmaco:
-        "Trilostano y otros fármacos que reducen cortisol modifican retroalimentación."
-    },
-    {
-      nombre: "TRH",
-      sigla: "TRH",
-      sistema: "Nervioso/Neuroendocrino",
-      sistemaKey: "nervioso-neuroendocrino",
-      origenLiberacion:
-        "Producción: hipotálamo. Liberación: sistema porta hipofisario.",
-      funcionPrincipal:
-        "Estimula secreción de TSH (y prolactina en algunas especies).",
-      funcionSecundaria:
-        "Útil en pruebas de estimulación endocrina.",
-      patologia:
-        "↓: hipotiroidismo central. ↑ sostenida: hiperplasia tiroidea.",
-      especieVariacion: "En equinos se usa en diagnóstico de PPID.",
-      afeccionesFarmaco:
-        "Fármacos tiroideos modifican su retroalimentación."
-    },
-    {
-      nombre: "GnRH",
-      sigla: "GnRH",
-      sistema: "Nervioso/Neuroendocrino",
-      sistemaKey: "nervioso-neuroendocrino",
-      origenLiberacion:
-        "Producción: hipotálamo. Liberación: sistema porta hipofisario.",
-      funcionPrincipal: "Estimula secreción de FSH y LH.",
-      funcionSecundaria: "Sincroniza ciclos reproductivos.",
-      patologia:
-        "↓: anestro, infertilidad. ↑ continua: desensibilización hipófisis.",
-      especieVariacion:
-        "Clave en protocolos de inseminación y sincronización en rumiantes.",
-      afeccionesFarmaco:
-        "Análogos (buserelina, deslorelina) inducen ovulación o suprimen eje gonadal."
-    },
 
     // RENAL
     {
@@ -459,7 +410,8 @@ document.addEventListener("DOMContentLoaded", () => {
       patologia: "↓: anemia por ERC. ↑ exógena: policitemia.",
       especieVariacion:
         "Perros y gatos con ERC tienen déficit relativo de EPO.",
-      afeccionesFarmaco: "EPO recombinante puede inducir anticuerpos."
+      afeccionesFarmaco:
+        "EPO recombinante puede inducir anticuerpos."
     },
 
     // RENAL / METABÓLICO
@@ -482,7 +434,7 @@ document.addEventListener("DOMContentLoaded", () => {
         "Vitamina D, calcimiméticos y quelantes de fósforo la modulan."
     },
 
-    // REPRODUCTIVO
+    // REPRODUCTIVO (algunas clave)
     {
       nombre: "Progesterona",
       sigla: "P4",
@@ -493,11 +445,11 @@ document.addEventListener("DOMContentLoaded", () => {
       funcionPrincipal: "Mantiene gestación y fase lútea.",
       funcionSecundaria: "Modula conducta y tono uterino.",
       patologia:
-        "↓: abortos, falla gestación. ↑: piometra, quistes luteínicos.",
+        "↓: abortos, falla de implantación. ↑ crónico: riesgo de piometra y quistes.",
       especieVariacion:
-        "Diestro prolongado en perra con altos niveles de P4.",
+        "En perra hay diestro prolongado con niveles altos de P4.",
       afeccionesFarmaco:
-        "Progestágenos sintéticos alteran ciclo y aumentan riesgo uterino."
+        "Progestágenos sintéticos se usan en sincronización de celo y control reproductivo."
     },
     {
       nombre: "Estradiol",
@@ -533,93 +485,6 @@ document.addEventListener("DOMContentLoaded", () => {
         "Castración elimina su producción; criptorquidia la altera.",
       afeccionesFarmaco:
         "Esteroides anabólicos exógenos suprimen eje gonadal."
-    },
-    {
-      nombre: "Hormona Luteinizante",
-      sigla: "LH",
-      sistema: "Reproductivo",
-      sistemaKey: "reproductivo",
-      origenLiberacion:
-        "Producción: adenohipófisis. Liberación: sangre.",
-      funcionPrincipal:
-        "Induce ovulación y producción de testosterona.",
-      funcionSecundaria:
-        "Mantenimiento del cuerpo lúteo en algunas especies.",
-      patologia:
-        "↓: falla ovulatoria. ↑: desensibilización gonadal si es continua.",
-      especieVariacion:
-        "Curva de LH difiere entre perra, vaca, yegua, etc.",
-      afeccionesFarmaco: "Análogos de GnRH alteran su secreción."
-    },
-    {
-      nombre: "Hormona Foliculoestimulante",
-      sigla: "FSH",
-      sistema: "Reproductivo",
-      sistemaKey: "reproductivo",
-      origenLiberacion:
-        "Producción: adenohipófisis. Liberación: sangre.",
-      funcionPrincipal:
-        "Desarrollo folicular y espermatogénesis.",
-      funcionSecundaria:
-        "Estimula producción de estrógenos por células foliculares.",
-      patologia:
-        "↓: infertilidad. ↑: rara en tumores hipofisarios.",
-      especieVariacion:
-        "Usada en programas de superovulación bovina.",
-      afeccionesFarmaco:
-        "GnRH, progestágenos y eCG modifican su perfil."
-    },
-    {
-      nombre: "Prolactina",
-      sigla: "PRL",
-      sistema: "Reproductivo",
-      sistemaKey: "reproductivo",
-      origenLiberacion:
-        "Producción: adenohipófisis. Liberación: sangre.",
-      funcionPrincipal: "Estimula producción de leche.",
-      funcionSecundaria: "Contribuye a conducta maternal.",
-      patologia:
-        "↑: pseudogestación, galactorrea. ↓: agalactia.",
-      especieVariacion:
-        "En perras aumenta en diestro y gestación.",
-      afeccionesFarmaco:
-        "Cabergolina y bromocriptina (agonistas dopaminérgicos) reducen PRL."
-    },
-    {
-      nombre: "Relajina",
-      sigla: "-",
-      sistema: "Reproductivo",
-      sistemaKey: "reproductivo",
-      origenLiberacion:
-        "Producción: placenta y ovario. Liberación: sangre al final de gestación.",
-      funcionPrincipal:
-        "Relaja ligamentos pélvicos y cuello uterino.",
-      funcionSecundaria:
-        "Facilita paso fetal por canal del parto.",
-      patologia:
-        "↓: partos distócicos. ↑ excesiva: debilidad ligamentosa.",
-      especieVariacion:
-        "Patrones de secreción varían entre especies.",
-      afeccionesFarmaco:
-        "Uso terapéutico limitado; interactúa con prostaglandinas y estrógenos."
-    },
-    {
-      nombre: "Prostaglandina F2 alfa",
-      sigla: "PGF2α",
-      sistema: "Reproductivo",
-      sistemaKey: "reproductivo",
-      origenLiberacion:
-        "Producción: endometrio uterino. Liberación: sangre local y sistémica.",
-      funcionPrincipal:
-        "Provoca luteólisis (regresión del cuerpo lúteo).",
-      funcionSecundaria:
-        "Estimula contracciones uterinas.",
-      patologia:
-        "↓: cuerpos lúteos persistentes. ↑: abortos si se aplica en gestación.",
-      especieVariacion:
-        "Muy usada en bovinos, ovinos, caprinos para sincronización de celo.",
-      afeccionesFarmaco:
-        "PGF2α sintética (cloprostenol, dinoprost) es fármaco clave; sobredosis causa cólicos."
     },
 
     // ENDOCRINO / METABÓLICO
@@ -675,24 +540,6 @@ document.addEventListener("DOMContentLoaded", () => {
         "Glucocorticoides sintéticos imitan su acción; retiro brusco es peligroso."
     },
     {
-      nombre: "Hormona del Crecimiento",
-      sigla: "GH",
-      sistema: "Endocrino/Metabólico",
-      sistemaKey: "endocrino-metabolico",
-      origenLiberacion:
-        "Producción: adenohipófisis. Liberación: sangre.",
-      funcionPrincipal:
-        "Estimula crecimiento tisular y anabolismo.",
-      funcionSecundaria:
-        "Participa en metabolismo de lípidos y carbohidratos.",
-      patologia:
-        "↑: acromegalia, gigantismo. ↓: enanismo hipofisario.",
-      especieVariacion:
-        "GH bovina usada para producción láctea es altamente regulada.",
-      afeccionesFarmaco:
-        "Análogos de somatostatina la inhiben; dopaminérgicos la modulan."
-    },
-    {
       nombre: "Tiroxina",
       sigla: "T4",
       sistema: "Endocrino/Metabólico",
@@ -704,59 +551,9 @@ document.addEventListener("DOMContentLoaded", () => {
         "Influye en crecimiento y termorregulación.",
       patologia: "↓: hipotiroidismo. ↑: hipertiroidismo.",
       especieVariacion:
-        "Perros: hipotiroidismo; gatos: hipertiroidismo, sobre todo geriátricos.",
+        "Perros: hipotiroidismo; gatos: hipertiroidismo geriátrico.",
       afeccionesFarmaco:
         "Levotiroxina, metimazol y yodo radiactivo modifican su nivel."
-    },
-    {
-      nombre: "Triyodotironina",
-      sigla: "T3",
-      sistema: "Endocrino/Metabólico",
-      sistemaKey: "endocrino-metabolico",
-      origenLiberacion:
-        "Producción: tiroides y conversión periférica desde T4. Liberación: sangre.",
-      funcionPrincipal: "Forma activa de hormonas tiroideas.",
-      funcionSecundaria:
-        "Importante para desarrollo neuromuscular.",
-      patologia: "Alteraciones similares a T4.",
-      especieVariacion:
-        "Fracción T3 depende de nutrición y enfermedad sistémica.",
-      afeccionesFarmaco:
-        "Glucocorticoides y anticonvulsivantes alteran su conversión."
-    },
-    {
-      nombre: "Calcitonina",
-      sigla: "-",
-      sistema: "Endocrino/Metabólico",
-      sistemaKey: "endocrino-metabolico",
-      origenLiberacion:
-        "Producción: células C tiroideas. Liberación: sangre.",
-      funcionPrincipal: "Disminuye calcio sanguíneo.",
-      funcionSecundaria: "Contrarregula acción de PTH.",
-      patologia:
-        "↓: menor freno a hipercalcemia. ↑: hipocalcemia leve.",
-      especieVariacion:
-        "Papel relativo menor en algunas especies.",
-      afeccionesFarmaco:
-        "Calcitonina sintética se usa en ciertos casos de hipercalcemia."
-    },
-    {
-      nombre: "Calcitriol (Vitamina D3 activa)",
-      sigla: "-",
-      sistema: "Endocrino/Metabólico",
-      sistemaKey: "endocrino-metabolico",
-      origenLiberacion:
-        "Producción: riñón (a partir de vitamina D activada en hígado). Liberación: sangre.",
-      funcionPrincipal:
-        "Aumenta absorción intestinal de calcio y fósforo.",
-      funcionSecundaria:
-        "Importante en regulación de PTH y homeostasis mineral.",
-      patologia:
-        "↓: raquitismo, osteomalacia. ↑: hipercalcemia, mineralización de tejidos.",
-      especieVariacion:
-        "Conversión depende de función hepática y renal, con variaciones entre especies.",
-      afeccionesFarmaco:
-        "Suplementos de vitamina D y análogos se usan en hipocalcemia; exceso genera toxicidad."
     },
 
     // INMUNOLÓGICO
@@ -827,6 +624,300 @@ document.addEventListener("DOMContentLoaded", () => {
       especieVariacion: "Niveles alterados en PPID equino.",
       afeccionesFarmaco:
         "Fármacos que actúan sobre hipófisis pueden modificarla."
+    }
+  ];
+
+  // ---------- BASE DE DATOS DE VITAMINAS ----------
+
+  const vitaminas = [
+    {
+      nombre: "Vitamina A",
+      sigla: "A",
+      tipo: "Liposoluble",
+      tipoKey: "liposoluble",
+      otrosNombres: "Retinol, β-carotenos",
+      funcion:
+        "Visión (rodopsina), mantenimiento de epitelios, reproducción y crecimiento óseo.",
+      hipovitaminosis:
+        "Ceguera nocturna, xeroftalmia, queratinización de epitelios, retraso del crecimiento, infertilidad.",
+      hipervitaminosis:
+        "Malformaciones óseas, hepatopatías, anorexia, pérdida de peso, teratogénesis en terneros y corderos.",
+      variacionEspecies:
+        "Muy relevante en bovinos y aves en sistemas intensivos; en carnívoros se asocia a dietas caseras desequilibradas.",
+      afeccionesFarmaco:
+        "Déficit aumenta infecciones respiratorias/digestivas; sobredosis potencia hepatotoxicidad de otros fármacos."
+    },
+    {
+      nombre: "Vitamina D2",
+      sigla: "D2",
+      tipo: "Liposoluble",
+      tipoKey: "liposoluble",
+      otrosNombres: "Ergocalciferol",
+      funcion:
+        "Regula metabolismo calcio-fósforo, aumenta absorción intestinal y mineralización ósea.",
+      hipovitaminosis:
+        "Raquitismo en jóvenes, osteomalacia en adultos, debilidad muscular, fracturas patológicas.",
+      hipervitaminosis:
+        "Hipercalcemia, calcificación metastásica de tejidos blandos, vómitos, poliuria/polidipsia.",
+      variacionEspecies:
+        "Rumiantes y equinos aprovechan bien D2 de forrajes; en aves y porcinos su potencia es menor que D3.",
+      afeccionesFarmaco:
+        "Se suplementa con calcio; glucocorticoides crónicos y anticonvulsivantes pueden reducir su eficacia."
+    },
+    {
+      nombre: "Vitamina D3",
+      sigla: "D3",
+      tipo: "Liposoluble",
+      tipoKey: "liposoluble",
+      otrosNombres: "Colecalciferol",
+      funcion:
+        "Principal forma activa en aves y monogástricos; regula Ca y P, y calidad de hueso y cáscara.",
+      hipovitaminosis:
+        "Raquitismo, huesos blandos, mala calidad de cáscara, hipocalcemia posparto.",
+      hipervitaminosis:
+        "Hipercalcemia grave, calcificación renal y vascular, fallo renal (incluida intoxicación por rodenticidas con D3).",
+      variacionEspecies:
+        "Clave en pollos y ponedoras; en vacas lecheras preparto contribuye a prevenir hipocalcemia si está en niveles adecuados.",
+      afeccionesFarmaco:
+        "Se usa junto con calcio en hipocalcemia; riesgo de hipercalcemia aumenta con diuréticos tiazídicos."
+    },
+    {
+      nombre: "Vitamina K1",
+      sigla: "K1",
+      tipo: "Liposoluble",
+      tipoKey: "liposoluble",
+      otrosNombres: "Filoquinona",
+      funcion:
+        "Cofactor en la carboxilación de factores de coagulación II, VII, IX, X y proteínas C/S.",
+      hipovitaminosis:
+        "Coagulación deficiente, hemorragias, tiempos de protrombina prolongados.",
+      hipervitaminosis:
+        "Toxicidad muy baja en dosis terapéuticas.",
+      variacionEspecies:
+        "Crítica en perros y gatos intoxicados con rodenticidas; importante en aves intensivas.",
+      afeccionesFarmaco:
+        "Antídoto específico frente a warfarina y otros cumarínicos; antibióticos que alteran flora reducen su disponibilidad."
+    },
+    {
+      nombre: "Vitamina K2",
+      sigla: "K2",
+      tipo: "Liposoluble",
+      tipoKey: "liposoluble",
+      otrosNombres: "Menaquinonas",
+      funcion:
+        "Participa en coagulación y metabolismo óseo y vascular (osteocalcina y proteínas de matriz).",
+      hipovitaminosis:
+        "Rara por síntesis intestinal; cuando aparece se manifiesta como hemorragias generalizadas.",
+      hipervitaminosis:
+        "Toxicidad muy baja; el exceso se excreta por bilis.",
+      variacionEspecies:
+        "Muy relevante en rumiantes con alteración de flora ruminal (acidosis, antibióticos prolongados).",
+      afeccionesFarmaco:
+        "Antibióticos de amplio espectro y enteropatías disminuyen su síntesis y potencian riesgo hemorrágico."
+    },
+    {
+      nombre: "Vitamina K3",
+      sigla: "K3",
+      tipo: "Liposoluble",
+      tipoKey: "liposoluble",
+      otrosNombres: "Menadiona",
+      funcion:
+        "Forma sintética estable usada en premezclas; se transforma en formas activas de vitamina K.",
+      hipovitaminosis:
+        "Si la premezcla es insuficiente: hemorragias, anemia, mayor mortalidad en pollos.",
+      hipervitaminosis:
+        "Anemia hemolítica, metahemoglobinemia, ictericia y daño hepato-renal, sobre todo en perros, caballos y neonatos.",
+      variacionEspecies:
+        "Uso habitual en aves y porcinos; no recomendada en perros y gatos como suplemento rutinario.",
+      afeccionesFarmaco:
+        "No se utiliza como antídoto de elección en intoxicaciones por warfarina."
+    },
+    {
+      nombre: "Vitamina E",
+      sigla: "E",
+      tipo: "Liposoluble",
+      tipoKey: "liposoluble",
+      otrosNombres: "Tocoferoles",
+      funcion:
+        "Antioxidante lipídico; protege membranas celulares, músculo y sistema inmune.",
+      hipovitaminosis:
+        "Distrofia muscular nutricional, encefalomalacia en pollos, retención de placenta en bovinos.",
+      hipervitaminosis:
+        "Rara; dosis muy altas pueden interferir levemente con la coagulación.",
+      variacionEspecies:
+        "Muy importante en rumiantes y ovinos en pastos pobres en vitamina E/selenio; también en pollos de engorde.",
+      afeccionesFarmaco:
+        "Actúa en sinergia con selenio; su déficit aumenta sensibilidad a miopatías y estrés oxidativo inducido por fármacos."
+    },
+    {
+      nombre: "Vitamina B1",
+      sigla: "B1",
+      tipo: "Hidrosoluble",
+      tipoKey: "hidrosoluble",
+      otrosNombres: "Tiamina",
+      funcion:
+        "Cofactor en metabolismo de carbohidratos (piruvato → acetil-CoA) y función neurológica.",
+      hipovitaminosis:
+        "Polioencefalomalacia en rumiantes, anorexia, ataxia, convulsiones, debilidad.",
+      hipervitaminosis:
+        "Toxicidad muy rara; exceso se elimina por orina.",
+      variacionEspecies:
+        "Crítica en rumiantes con dietas altas en concentrado o plantas con tiaminasas.",
+      afeccionesFarmaco:
+        "Se usa como coadyuvante en polioencefalomalacia y cuadros neurológicos carenciales."
+    },
+    {
+      nombre: "Vitamina B2",
+      sigla: "B2",
+      tipo: "Hidrosoluble",
+      tipoKey: "hidrosoluble",
+      otrosNombres: "Riboflavina",
+      funcion:
+        "Componente de coenzimas FAD y FMN en reacciones REDOX mitocondriales.",
+      hipovitaminosis:
+        "Estomatitis, dermatitis, retraso en crecimiento, lesiones cutáneas en aves y porcinos.",
+      hipervitaminosis:
+        "No suele haber toxicidad; exceso urinario.",
+      variacionEspecies:
+        "Importante en aves y porcinos intensivos.",
+      afeccionesFarmaco:
+        "Deficiencia puede modificar metabolismo de fármacos dependientes de sistemas oxidativos."
+    },
+    {
+      nombre: "Vitamina B3",
+      sigla: "B3",
+      tipo: "Hidrosoluble",
+      tipoKey: "hidrosoluble",
+      otrosNombres: "Niacina, ácido nicotínico, nicotinamida",
+      funcion:
+        "Parte de NAD⁺/NADP⁺ en metabolismo energético de carbohidratos, lípidos y proteínas.",
+      hipovitaminosis:
+        "Síndrome tipo pelagra en cerdos y aves (dermatitis, diarrea, pérdida de peso).",
+      hipervitaminosis:
+        "Vasodilatación (rubor), hipotensión y posible daño hepático en dosis altas.",
+      variacionEspecies:
+        "Relevante en porcinos y aves; rumiantes la sintetizan parcialmente en rumen.",
+      afeccionesFarmaco:
+        "Usada ocasionalmente como modulador lipídico; a dosis altas requiere control hepático."
+    },
+    {
+      nombre: "Vitamina B5",
+      sigla: "B5",
+      tipo: "Hidrosoluble",
+      tipoKey: "hidrosoluble",
+      otrosNombres: "Ácido pantoténico",
+      funcion:
+        "Componente de coenzima A; clave en metabolismo de lípidos y carbohidratos.",
+      hipovitaminosis:
+        "Dermatitis, alopecia, retraso en crecimiento, alteraciones neurológicas en pollos.",
+      hipervitaminosis:
+        "No se describen intoxicaciones significativas.",
+      variacionEspecies:
+        "Aves son las más sensibles al déficit.",
+      afeccionesFarmaco:
+        "Deficiencia podría alterar metabolismo de fármacos lipofílicos."
+    },
+    {
+      nombre: "Vitamina B6",
+      sigla: "B6",
+      tipo: "Hidrosoluble",
+      tipoKey: "hidrosoluble",
+      otrosNombres: "Piridoxina, piridoxamina, piridoxal",
+      funcion:
+        "Metabolismo de aminoácidos y neurotransmisores; participa en síntesis de hemoglobina.",
+      hipovitaminosis:
+        "Convulsiones, anemia microcítica, dermatitis, retraso en crecimiento.",
+      hipervitaminosis:
+        "Neurotoxicidad periférica en dosis muy altas.",
+      variacionEspecies:
+        "Relevante en dietas basadas en subproductos vegetales o tratamientos prolongados con ciertos fármacos.",
+      afeccionesFarmaco:
+        "Se usa como suplemento neurometabólico y coadyuvante en anemias."
+    },
+    {
+      nombre: "Vitamina B7",
+      sigla: "B7",
+      tipo: "Hidrosoluble",
+      tipoKey: "hidrosoluble",
+      otrosNombres: "Biotina, vitamina H",
+      funcion:
+        "Cofactor en carboxilasas del metabolismo de lípidos y carbohidratos.",
+      hipovitaminosis:
+        "Dermatitis seca, alopecia, pezuñas frágiles en bovinos y equinos.",
+      hipervitaminosis:
+        "No se reporta toxicidad relevante.",
+      variacionEspecies:
+        "Muy usada en vacas lecheras y caballos para mejorar pezuña/casco.",
+      afeccionesFarmaco:
+        "Componente típico de suplementos para piel y anexos."
+    },
+    {
+      nombre: "Vitamina B8",
+      sigla: "B8",
+      tipo: "Hidrosoluble",
+      tipoKey: "hidrosoluble",
+      otrosNombres: "Inositol",
+      funcion:
+        "Relacionado con señalización celular (fosfatidilinositol) y metabolismo de lípidos hepáticos.",
+      hipovitaminosis:
+        "Trastornos de crecimiento, hígado graso en aves.",
+      hipervitaminosis:
+        "Rara vez tóxica.",
+      variacionEspecies:
+        "Importante en aves de engorde con dietas altas en energía.",
+      afeccionesFarmaco:
+        "Se incluye en premezclas; coadyuvante en hígado graso nutricional."
+    },
+    {
+      nombre: "Vitamina B9",
+      sigla: "B9",
+      tipo: "Hidrosoluble",
+      tipoKey: "hidrosoluble",
+      otrosNombres: "Ácido fólico, folacina",
+      funcion:
+        "Síntesis de nucleótidos y división celular; clave en hematopoyesis y gestación.",
+      hipovitaminosis:
+        "Anemia megaloblástica, infertilidad, retraso en crecimiento.",
+      hipervitaminosis:
+        "Rara; exceso puede enmascarar déficit de B12.",
+      variacionEspecies:
+        "Importante en hembras gestantes y jóvenes en crecimiento rápido.",
+      afeccionesFarmaco:
+        "Interactúa con antagonistas del folato (sulfonamidas, trimetoprim)."
+    },
+    {
+      nombre: "Vitamina B12",
+      sigla: "B12",
+      tipo: "Hidrosoluble",
+      tipoKey: "hidrosoluble",
+      otrosNombres: "Cobalamina",
+      funcion:
+        "Síntesis de ADN y metabolismo de ácidos grasos; muy ligada al cobalto en rumiantes.",
+      hipovitaminosis:
+        "Anemia megaloblástica, retraso en crecimiento, neuropatías; en rumiantes, déficit por falta de cobalto.",
+      hipervitaminosis:
+        "Muy rara; exceso se elimina fácilmente.",
+      variacionEspecies:
+        "Crítica en rumiantes de suelos pobres en cobalto; también en animales con malabsorción intestinal.",
+      afeccionesFarmaco:
+        "Se combina con hierro y folato en tratamientos de anemia."
+    },
+    {
+      nombre: "Vitamina C",
+      sigla: "C",
+      tipo: "Hidrosoluble",
+      tipoKey: "hidrosoluble",
+      otrosNombres: "Ácido ascórbico",
+      funcion:
+        "Antioxidante; cofactor para síntesis de colágeno y favorece absorción de hierro.",
+      hipovitaminosis:
+        "Escorbuto en cobayos, primates y algunas aves ornamentales: hemorragias, dolor articular, mala cicatrización.",
+      hipervitaminosis:
+        "Rara; puede causar diarrea y favorecer cálculos renales de oxalato en dosis muy altas.",
+      variacionEspecies:
+        "La mayoría de animales domésticos la sintetizan en hígado; cobayos y primates requieren aporte dietético.",
+      afeccionesFarmaco:
+        "Se usa como antioxidante y coadyuvante inmunitario; puede acidificar ligeramente la orina."
     }
   ];
 
@@ -902,6 +993,62 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Render inicial de hormonas
   renderHormonas();
+
+  // ---------- LÓGICA DE VITAMINAS (BUSCADOR) ----------
+
+  const vitaminasListEl = document.querySelector("#vitaminasList");
+  const searchVitaminaEl = document.querySelector("#searchVitamina");
+
+  function crearTarjetaVitamina(v) {
+    const tipoClass = v.tipoKey ? `card-tipo-${v.tipoKey}` : "";
+    return `
+      <article class="card-vitamina ${tipoClass}">
+        <div class="card-hormona-header">
+          <div class="card-hormona-nombre">${v.nombre}</div>
+          <div class="card-hormona-sigla">Sigla: ${v.sigla || "—"}</div>
+          <span class="badge-sistema">${v.tipo}</span>
+        </div>
+
+        <p><span>Otros nombres:</span> ${v.otrosNombres}</p>
+        <p><span>Función fisiológica:</span> ${v.funcion}</p>
+        <p><span>Hipovitaminosis:</span> ${v.hipovitaminosis}</p>
+        <p><span>Hipervitaminosis:</span> ${v.hipervitaminosis}</p>
+
+        <div class="card-hormona-footer">
+          <p><span>Variación por especie:</span> ${v.variacionEspecies}</p>
+          <p><span>Relevancia farmacológica:</span> ${v.afeccionesFarmaco}</p>
+        </div>
+      </article>
+    `;
+  }
+
+  function renderVitaminas() {
+    if (!vitaminasListEl) return;
+
+    const texto = (searchVitaminaEl?.value || "").trim().toLowerCase();
+
+    const filtradas = vitaminas.filter((v) => {
+      const base = `${v.nombre} ${v.sigla} ${v.otrosNombres} ${v.tipo}`.toLowerCase();
+      return !texto || base.includes(texto);
+    });
+
+    if (filtradas.length === 0) {
+      vitaminasListEl.innerHTML =
+        "<p>No se encontraron vitaminas para ese criterio de búsqueda.</p>";
+      return;
+    }
+
+    vitaminasListEl.innerHTML = filtradas.map(crearTarjetaVitamina).join("");
+  }
+
+  if (searchVitaminaEl) {
+    searchVitaminaEl.addEventListener("input", () => {
+      renderVitaminas();
+    });
+  }
+
+  // Render inicial de vitaminas
+  renderVitaminas();
 
   // -------- SUBPESTAÑAS FISIOLOGÍA (HORMONAS / VITAMINAS) --------
   const fisioTabs = document.querySelectorAll(".fisio-tab");

@@ -145,12 +145,26 @@
         </div>
       </div>
 
-      <!-- PANE VITAMINAS (por ahora solo texto) -->
+      <!-- PANE VITAMINAS -->
       <div id="fisio-vitaminas" class="fisio-pane">
         <p class="view-intro">
-          Aquí pronto podrás estudiar vitaminas (A, D, E, K, complejo B, etc.)
-          con el mismo formato de tarjetas clínicas que las hormonas.
+          Fichas de estudio de vitaminas (A, D, E, K, complejo B, C), con funciones,
+          hipovitaminosis, hipervitaminosis, variación por especie y notas farmacológicas.
         </p>
+
+        <!-- BUSCADOR DE VITAMINAS -->
+        <div class="hormonas-toolbar vitaminas-toolbar">
+          <input
+            type="text"
+            id="searchVitamina"
+            placeholder="Buscar vitamina (A, B1, K2, D2, tiamina, cobalamina...)"
+          />
+        </div>
+
+        <!-- LISTA DE TARJETAS DE VITAMINAS -->
+        <div id="vitaminasList" class="cards-grid">
+          <!-- Se llena desde app.js -->
+        </div>
       </div>
     </section>
   </main>
