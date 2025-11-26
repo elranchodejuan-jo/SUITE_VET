@@ -13,6 +13,13 @@ body {
   min-height: 100vh;
 }
 
+/* Paleta Apple-like global */
+:root {
+  --apple-blue: #007aff;
+  --apple-blue-hover: #0060d1;
+  --apple-blue-shadow: rgba(0, 122, 255, 0.45);
+}
+
 /* ========== TOPBAR ========== */
 
 .topbar {
@@ -278,6 +285,7 @@ main {
   gap: 0.4rem;
 }
 
+/* Tabs de hormonas / vitaminas con estilo Apple en activo */
 .fisio-tab {
   padding: 0.3rem 0.9rem;
   border-radius: 999px;
@@ -286,11 +294,24 @@ main {
   color: #e5e7eb;
   font-size: 0.8rem;
   cursor: pointer;
+  transition:
+    background 0.18s ease,
+    color 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    transform 0.1s ease;
+}
+
+.fisio-tab:hover {
+  border-color: #475569;
 }
 
 .fisio-tab-active {
-  background: #3b82f6;
-  border-color: #3b82f6;
+  background: var(--apple-blue);
+  border-color: var(--apple-blue);
+  color: #f9fafb;
+  box-shadow: 0 10px 25px var(--apple-blue-shadow);
+  transform: translateY(-1px);
 }
 
 /* Panes de fisiología (hormonas / vitaminas) */
@@ -475,6 +496,44 @@ main {
   position: relative;
 }
 
+/* Borde lateral estético igual al de hormonas */
+.card-vitamina::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 1rem;
+  border-left-width: 4px;
+  border-left-style: solid;
+  border-color: transparent;
+  pointer-events: none;
+}
+
+/* Conservamos diferenciación por tipo */
+.card-tipo-liposoluble::before {
+  border-color: #f59e0b; /* naranja dorado elegante */
+}
+
+.card-tipo-hidrosoluble::before {
+  border-color: #3b82f6; /* azul vitamina */
+}
+
+.card-vitamina h3 {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.card-vitamina p {
+  font-size: 0.8rem;
+  color: #e5e7eb;
+  line-height: 1.4;
+}
+
+.card-vitamina p strong,
+.card-vitamina p span {
+  font-weight: 600;
+}
+
+
 /* Borde lateral según tipo (lipo/hidro) */
 .card-vitamina::before {
   content: "";
@@ -599,7 +658,6 @@ main {
   font-size: 0.8rem;
 }
 
-
 /* ========== TARJETA MICROBIOLOGÍA EN INICIO ========== */
 
 .home-card-micro::before {
@@ -628,6 +686,7 @@ main {
   gap: 0.4rem;
 }
 
+/* Tabs de agares / caldos / pruebas con Apple blue en activo */
 .micro-tab {
   padding: 0.3rem 0.9rem;
   border-radius: 999px;
@@ -636,11 +695,24 @@ main {
   color: #e5e7eb;
   font-size: 0.8rem;
   cursor: pointer;
+  transition:
+    background 0.18s ease,
+    color 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    transform 0.1s ease;
+}
+
+.micro-tab:hover {
+  border-color: #475569;
 }
 
 .micro-tab-active {
-  background: #22d3ee;
-  border-color: #22d3ee;
+  background: var(--apple-blue);
+  border-color: var(--apple-blue);
+  color: #f9fafb;
+  box-shadow: 0 10px 25px var(--apple-blue-shadow);
+  transform: translateY(-1px);
 }
 
 /* panes micro (por si en el futuro hay más módulos además de agares) */
@@ -656,7 +728,7 @@ main {
 /* ========== TOOLBAR MICRO (BUSCADOR + FILTROS) ========== */
 
 .micro-toolbar {
-  margin: 0.9rem 0 0.7rem;
+  margin: 0.9rem 0 1.2rem;
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
@@ -741,15 +813,19 @@ main {
 .micro-calc-block input:focus,
 .micro-calc-block select:focus {
   outline: none;
-  border-color: z#22d3ee;
+  border-color: #22d3ee;
 }
 
 .micro-calc-actions {
   display: flex;
   align-items: flex-end;
   justify-content: flex-start;
+  flex-direction: row;
+  gap: 0.4rem;
+  flex-wrap: wrap;
 }
 
+/* Botones de calcular medio (general) con azul Apple */
 #btnCalcularMedio,
 #btnCalcularCaldo,
 #btnCalcularPrueba {
@@ -757,17 +833,25 @@ main {
   border-radius: 999px;
   border: none;
   cursor: pointer;
-  background: #dc8f09;
-  color: #020617;
+  background: var(--apple-blue);
+  color: #f9fafb;
   font-size: 0.85rem;
   font-weight: 600;
+  transition:
+    background 0.18s ease,
+    box-shadow 0.18s ease,
+    transform 0.1s ease;
 }
 
 #btnCalcularMedio:hover,
-#btnCalcularCaldo:hover {
-  background: #e29c0f;
+#btnCalcularCaldo:hover,
+#btnCalcularPrueba:hover {
+  background: var(--apple-blue-hover);
+  box-shadow:
+    0 0 0 1px rgba(15, 23, 42, 0.9),
+    0 12px 30px var(--apple-blue-shadow);
+  transform: translateY(-1px);
 }
-
 
 .micro-calc-result {
   margin-top: 0.7rem;
@@ -894,35 +978,57 @@ main {
 
 /* Botones inferiores: ficha técnica / calcular medio */
 .agar-footer-buttons {
-  margin-top: 0.5rem;
+  margin-top: 1.3rem;
   display: flex;
-  justify-content: space-between;
-  gap: 0.4rem;
+  gap: 0.75rem;
 }
 
-.btn-ficha,
-.btn-calcular-agar {
+/* Estilo base de los botones inferiores de las tarjetas */
+.agar-footer-buttons button {
   flex: 1;
-  padding: 0.4rem 0.7rem;
+  padding: 0.55rem 1rem;
   border-radius: 999px;
-  border: 1px solid #1f2937;
+  border: 1px solid #0f172a;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.1s ease;
+  white-space: nowrap;
+}
+
+/* Botones de FICHA (agares + pruebas) */
+.btn-ficha,
+.btn-ficha-prueba {
   background: #020617;
   color: #e5e7eb;
-  font-size: 0.8rem;
-  cursor: pointer;
 }
 
-.btn-ficha:hover {
-  border-color: #22d3ee;
+.btn-ficha:hover,
+.btn-ficha-prueba:hover {
+  background: #111827;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45);
+  transform: translateY(-1px);
 }
 
-.btn-calcular-agar {
-  background: rgba(34, 211, 238, 0.16);
-  border-color: rgba(34, 211, 238, 0.4);
+/* Botones de CALCULAR (agares + pruebas) con azul Apple */
+.btn-calcular-agar,
+.btn-calcular-prueba {
+  background: var(--apple-blue);
+  color: #f9fafb;
+  border-color: transparent;
+  font-weight: 600;
 }
 
-.btn-calcular-agar:hover {
-  background: rgba(34, 211, 238, 0.3);
+.btn-calcular-agar:hover,
+.btn-calcular-prueba:hover {
+  background: var(--apple-blue-hover);
+  box-shadow:
+    0 0 0 1px rgba(15, 23, 42, 0.9),
+    0 14px 30px var(--apple-blue-shadow);
+  transform: translateY(-1px);
 }
 
 /* Detalles técnicos (ocultos por defecto) */
@@ -955,13 +1061,6 @@ main {
   color: #9ca3af;
 }
 
-/* Botones de la calculadora: ajustar para 2 botones */
-.micro-calc-actions {
-  flex-direction: row;
-  gap: 0.4rem;
-  flex-wrap: wrap;
-}
-
 /* Botón "Imprimir preparación" */
 
 #btnImprimirPreparacion,
@@ -982,10 +1081,14 @@ main {
   cursor: default;
 }
 
+
 #btnImprimirPreparacion:not(:disabled):hover,
-#btnImprimirCaldo:not(:disabled):hover {
-  border-color: rgb(196, 133, 6);
-  background: rgba(34, 211, 238, 0.15);
+#btnImprimirCaldo:not(:disabled):hover,
+#btnImprimirPrueba:not(:disabled):hover {
+  border-color: var(--apple-blue);
+  background: rgba(0, 122, 255, 0.15);
+  box-shadow: 0 0 0 1px var(--apple-blue),
+              0 8px 20px rgba(0, 122, 255, 0.4);
 }
 
 
@@ -1060,57 +1163,4 @@ main {
 }
 
 /* ========== MICROBIOLOGÍA: BOTONES DE FICHAS Y CÁLCULO ========== */
-
-.agar-footer-buttons {
-  margin-top: 1.3rem;
-  display: flex;
-  gap: 0.75rem;
-}
-
-/* Estilo base de los botones inferiores de las tarjetas */
-.agar-footer-buttons button {
-  flex: 1;
-  padding: 0.55rem 1rem;
-  border-radius: 999px;
-  border: 1px solid #0f172a;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition:
-    background 0.2s ease,
-    color 0.2s ease,
-    box-shadow 0.2s ease,
-    transform 0.1s ease;
-  white-space: nowrap;
-}
-
-/* Botones de FICHA (agares + pruebas) */
-.btn-ficha,
-.btn-ficha-prueba {
-  background: #020617;
-  color: #e5e7eb;
-}
-
-.btn-ficha:hover,
-.btn-ficha-prueba:hover {
-  background: #111827;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45);
-  transform: translateY(-1px);
-}
-
-/* Botones de CALCULAR (agares + pruebas) */
-.btn-calcular-agar,
-.btn-calcular-prueba {
-  background: #06b6d4;
-  color: #0f172a;
-  border-color: #06b6d4;
-  font-weight: 600;
-}
-
-.btn-calcular-agar:hover,
-.btn-calcular-prueba:hover {
-  background: #22d3ee;
-  box-shadow:
-    0 0 0 1px rgba(34, 211, 238, 0.35),
-    0 14px 30px rgba(0, 0, 0, 0.6);
-  transform: translateY(-1px);
-}
+/* (ya integrados arriba en .agar-footer-buttons y .btn-calcular-*) */
