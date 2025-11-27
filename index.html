@@ -39,9 +39,8 @@
   <!-- MENÚ DE PROYECTOS (CARTILLA, CATTLE, PROTOCOLOS) -->
   <div class="menu-panel" id="menu-panel">
     <p class="menu-title">Proyectos</p>
-    <button class="menu-item disabled">Cartilla Digital</button>
+    <button class="menu-item disabled">CD</button>
     <button class="menu-item disabled">CATTLE</button>
-    <button class="menu-item disabled">Protocolos y registros</button>
     <p class="menu-note">En desarrollo, pronto más info…</p>
   </div>
 
@@ -52,7 +51,7 @@
       <h2>Inicio</h2>
       <p class="view-intro">
         Bienvenido a SUITE VET.
-        Elige el módulo con el que quieres estudiar:
+        Elige el módulo con el que quieres estudiar o practicar:
       </p>
 
       <div class="home-modulos">
@@ -287,10 +286,7 @@
       <div id="micro-pruebas" class="micro-pane">
         <h3>Pruebas bioquímicas (TSI, Citrato, LIA, etc.)</h3>
         <p class="view-intro">
-          Fichas de pruebas como TSI, Citrato Simmons y LIA:
-          principio, lectura de colores y utilidad en el laboratorio.
-          Además puedes calcular cuántos gramos de medio necesitas según el
-          volumen que vayas a preparar.
+          Fichas de pruebas.
         </p>
 
         <!-- BUSCADOR + FILTRO POR CATEGORÍA -->
@@ -311,25 +307,39 @@
           />
         </div>
 
-        <!-- CALCULADORA DE MEDIO PARA PRUEBAS (VOLUMEN EN ML) -->
+        <!-- CALCULADORA DE MEDIO PARA PRUEBAS (TUBOS DE 10 mL) -->
         <section id="microCalcPrueba" class="micro-calc">
-          <h3>Calculadora de medio para pruebas (volumen en mL)</h3>
+          <h3>Calculadora de medio para pruebas (tubos de 10 mL)</h3>
           <div class="micro-calc-grid">
+            <!-- Elegir la prueba / medio -->
             <div class="micro-calc-block">
               <label for="calcPruebaMedio">Prueba / medio</label>
               <select id="calcPruebaMedio"></select>
             </div>
 
+            <!-- Número de tubos -->
             <div class="micro-calc-block">
-              <label for="volPruebaTotal">Volumen total (mL)</label>
+              <label for="numTubos">Número de tubos (10 mL c/u)</label>
               <input
                 type="number"
-                id="volPruebaTotal"
+                id="numTubos"
                 min="1"
-                value="200"
+                value="10"
               />
             </div>
 
+            <!-- Volumen total, solo lectura (tubos × 10 mL) -->
+            <div class="micro-calc-block">
+              <label for="volPruebaTotal">Volumen total (mL)</label>
+              <input
+                type="text"
+                id="volPruebaTotal"
+                value=""
+                disabled
+              />
+            </div>
+
+            <!-- Botones de acción -->
             <div class="micro-calc-block micro-calc-actions">
               <button id="btnCalcularPrueba" type="button">
                 Calcular medio
@@ -354,6 +364,7 @@
           <!-- Se llena desde micro.js -->
         </div>
       </div>
+
 
 
       <!-- ÁREA OCULTA PARA IMPRESIÓN (PDF/ETIQUETA) -->

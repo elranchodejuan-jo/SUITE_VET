@@ -3,6 +3,52 @@
 // AGARES (medios sólidos para placas)
 const mediosAgar = [
   {
+  id: 'soya-casein-digest-agar',
+  nombre: 'Soya Casein Digest Agar (Tryptone Soya Agar / CASO Agar)',
+  marca: 'TM Media',
+  estado: 'solido', // agar
+  tipos: ['nutritivo', 'no selectivo', 'uso general'],
+  gramosPorLitro: 40.0,
+  phFinal: '7.3 ± 0.2 (25 °C)',
+  presentacion: 'Frasco 500 g',
+  objetivo:
+    'Medio nutritivo general y base para ensayos de potencia de antibióticos y cultivo de microorganismos, con o sin adición de sangre.',
+  composicion: [
+    { componente: 'Casein enzymatic hydrolysate', gL: 15.0 },
+    { componente: 'Soyatone (soya peptone)', gL: 5.0 },
+    { componente: 'Sodium chloride', gL: 5.0 },
+    { componente: 'Agar', gL: 15.0 }
+  ],
+  almacenamiento:
+    'Polvo deshidratado higroscópico. Conservar entre 10–25 °C, bien cerrado y protegido de la luz.',
+  certificaciones: 'ISO 9001:2015 · ISO 11133:2014 · ISO 13485:2016 · CE · IVD · GMP.',
+  observaciones:
+    'Disolver 40 g/L en agua destilada, hervir hasta disolver, autoclavar a 121 °C por 15 min. Enfriar a 45–50 °C antes de verter; opcional añadir 5 % de sangre desfibrinada.'
+},
+
+{
+  id: 'chromagar-orientation',
+  nombre: 'CHROMagar Orientation',
+  marca: 'CHROMagar',
+  estado: 'solido', // agar
+  tipos: ['cromogenico', 'diferencial', 'ligeramente selectivo'],
+  gramosPorLitro: 33.0,
+  phFinal: '7.0 ± 0.2 (25 °C)',
+  presentacion: 'Frasco 500 g (rinde ≈5 L a 33 g/L)',
+  objetivo:
+    'Aislamiento y diferenciación cromogénica de bacterias uropatógenas (E. coli, Klebsiella, Enterobacter, Proteus, Enterococcus y otros Gram negativos) en muestras urinarias y clínicas.',
+  composicion: [
+    { componente: 'Agar', gL: 15.0 },
+    { componente: 'Peptona y extracto de levadura', gL: 17.0 },
+    { componente: 'Mezcla cromogénica', gL: 1.0 }
+  ],
+  almacenamiento:
+    'Conservar entre 15–30 °C, en envase bien cerrado y protegido de la luz. Producto higroscópico.',
+  certificaciones: 'CE · IVD.',
+  observaciones:
+    'Suspender 33 g/L en agua purificada, calentar hasta ebullición con agitación hasta fusión completa. Autoclavar a 121 °C por 15 min. Enfriar a 45–50 °C y verter en placas estériles.'
+},
+  {
     id: 'chromogenic-vibrio',
     nombre: 'Chromogenic Vibrio Agar',
     marca: 'TM Media',
@@ -500,7 +546,104 @@ const mediosAgar = [
 
 // CALDOS (medios líquidos)
 const mediosCaldo = [
-  
+  {
+  id: 'mueller-hinton-broth',
+  nombre: 'Mueller Hinton Broth',
+  marca: 'TM Media',
+  estado: 'liquido', // caldo
+  tipos: ['nutritivo', 'no selectivo', 'pruebas de sensibilidad'],
+  gramosPorLitro: 21.0,
+  phFinal: '7.3 ± 0.2 (25 °C)',
+  presentacion: 'Frasco 500 g',
+  objetivo:
+    'Caldo estándar para pruebas de susceptibilidad antimicrobiana por métodos de dilución (MIC) y para ensayos con sulfonamidas.',
+  composicion: [
+    { componente: 'Beef infusion (a partir de 300 mL)', gL: 2.0 },
+    { componente: 'Casein acid hydrolysate', gL: 17.5 },
+    { componente: 'Starch', gL: 1.5 }
+  ],
+  almacenamiento:
+    'Polvo deshidratado higroscópico. Conservar entre 10–25 °C, bien cerrado y protegido de la luz.',
+  certificaciones: 'ISO 9001:2015 · ISO 11133:2014 · ISO 13485:2016 · CE · IVD · GMP.',
+  observaciones:
+    'Disolver 21 g/L en agua destilada, calentar suavemente hasta disolver. Distribuir en tubos y autoclavar a 121 °C por 15 min. Enfriar a temperatura ambiente antes de inocular.'
+},
+
+{
+  id: 'lb-broth-miller',
+  nombre: 'Luria Bertani Broth Miller (LB Broth Miller)',
+  marca: 'TM Media',
+  estado: 'liquido', // caldo
+  tipos: ['nutritivo', 'enriquecido', 'no selectivo'],
+  gramosPorLitro: 25.0,
+  phFinal: '7.5 ± 0.2 (25 °C)',
+  presentacion: 'Frasco 500 g',
+  objetivo:
+    'Cultivo y mantenimiento de cepas de Escherichia coli, especialmente recombinantes, y de otras bacterias no exigentes en estudios genéticos y de biología molecular.',
+  composicion: [
+    { componente: 'Casein enzymic hydrolysate', gL: 10.0 },
+    { componente: 'Yeast extract', gL: 5.0 },
+    { componente: 'Sodium chloride', gL: 10.0 }
+  ],
+  almacenamiento:
+    'Polvo deshidratado higroscópico. Conservar entre 10–25 °C, bien cerrado y protegido de la luz.',
+  certificaciones: 'ISO 9001:2015 · ISO 11133:2014 · ISO 13485:2016 · CE · IVD · GMP.',
+  observaciones:
+    'Disolver 25 g/L en agua destilada, calentar suavemente hasta disolver. Autoclavar a 121 °C por 15 min. Enfriar a temperatura ambiente antes de usar.'
+},
+
+{
+  id: 'tryptic-soy-broth',
+  nombre: 'Tryptic Soy Broth (TSB)',
+  marca: 'Scharlau',
+  estado: 'liquido', // caldo
+  tipos: ['nutritivo', 'enriquecido', 'no selectivo'],
+  gramosPorLitro: 30.0,
+  phFinal: '7.3 ± 0.2 (25 °C)',
+  presentacion: 'Frasco 500 g',
+  objetivo:
+    'Medio líquido altamente nutritivo de uso general para cultivo de una amplia gama de bacterias aerobias y facultativas, de acuerdo con métodos armonizados farmacopeicos.',
+  composicion: [
+    { componente: 'Casein peptone', gL: 17.0 },
+    { componente: 'Soy peptone', gL: 3.0 },
+    { componente: 'Sodium chloride', gL: 5.0 },
+    { componente: 'Dipotassium phosphate', gL: 2.5 },
+    { componente: 'D(+)-Glucose (dextrose) monohydrate', gL: 2.5 }
+  ],
+  almacenamiento:
+    'Conservar bien cerrado, en lugar fresco y seco, protegido de la luz. Producto muy higroscópico.',
+  certificaciones: 'Eur. Pharm. · ISO 9001:2015.',
+  observaciones:
+    'Disolver 30 g/L en agua destilada, calentar hasta completa disolución. Distribuir en recipientes adecuados y autoclavar a 121 °C por 15 min. Enfriar antes de inocular.'
+},
+
+{
+  id: 'fluorocult-lmx-broth',
+  nombre: 'Fluorocult LMX Broth modificado (según Manafi y Ossmer)',
+  marca: 'Merck Millipore',
+  estado: 'liquido', // caldo
+  tipos: ['selectivo', 'diferencial', 'fluorogenico'],
+  gramosPorLitro: 17.0,
+  phFinal: '6.8 ± 0.2 (25 °C)',
+  presentacion: 'Frasco 500 g',
+  objetivo:
+    'Detección y recuento de coliformes y Escherichia coli en agua, alimentos y productos lácteos mediante cambios de color y fluorescencia (MUG y X-Gal).',
+  composicion: [
+    { componente: 'Tryptose', gL: 5.0 },
+    { componente: 'Sodium chloride', gL: 5.0 },
+    { componente: 'Sorbitol', gL: 1.0 },
+    { componente: 'L-Tryptophan', gL: 1.0 },
+    { componente: 'Dipotassium phosphate', gL: 2.7 },
+    { componente: 'Potassium dihydrogen phosphate', gL: 2.7 },
+    { componente: '4-methylumbelliferyl-β-D-glucuronide (MUG)', gL: 0.05 },
+    { componente: '5-bromo-4-chloro-3-indolyl-β-D-galactoside (X-Gal)', gL: 0.2 }
+  ],
+  almacenamiento:
+    'Conservar seco y bien cerrado, protegido de la luz. No usar si el medio está apelmazado o decolorado.',
+  certificaciones: 'CE · IVD.',
+  observaciones:
+    'Disolver 17 g/L en agua desmineralizada, calentar suavemente hasta disolver. Distribuir en tubos y autoclavar a 121 °C por 15 min. Enfriar a temperatura ambiente y leer fluorescencia bajo UV (≈366 nm) tras la incubación.'
+},
   {
     id: 'caldo-nutriente',
     nombre: 'Nutrient Broth',
@@ -524,6 +667,7 @@ const mediosCaldo = [
     observaciones:
       'Reconstituir 13,0 g en 1 L de agua destilada y esterilizar a 121 °C durante 15 minutos. Puede suplementarse con sangre o suero para cultivos más exigentes.'
   },
+  
   {
     id: 'caldo-bhi',
     nombre: 'Brain Heart Infusion Broth (BHI)',
@@ -656,6 +800,7 @@ const mediosCaldo = [
     observaciones:
       'Caldo estándar para mantener o multiplicar bacterias poco exigentes.'
   }
+    
 ];
 
 // PRUEBAS BIOQUÍMICAS (TSI, Citrato, LIA)
@@ -1602,36 +1747,95 @@ document.addEventListener('DOMContentLoaded', () => {
     btnImprimirPrueba.disabled = true;
     btnImprimirPrueba.addEventListener('click', imprimirPrueba);
   }
+    // ===== Eventos globales =====
 
-  // Clicks en tarjetas
+  // Búsqueda / filtros
+  if (inputBuscarAgar) inputBuscarAgar.addEventListener('input', renderMediosAgar);
+  if (selectTipoAgar) selectTipoAgar.addEventListener('change', renderMediosAgar);
+
+  if (inputBuscarCaldo) inputBuscarCaldo.addEventListener('input', renderMediosCaldo);
+  if (selectTipoCaldo) selectTipoCaldo.addEventListener('change', renderMediosCaldo);
+
+  if (inputBuscarPrueba) inputBuscarPrueba.addEventListener('input', renderPruebas);
+  if (selectTipoPrueba) selectTipoPrueba.addEventListener('change', renderPruebas);
+
+  // Calculadoras
+  if (btnCalcularAgar) btnCalcularAgar.addEventListener('click', calcularAgar);
+  if (btnImprimirAgar) {
+    btnImprimirAgar.disabled = true;
+    btnImprimirAgar.addEventListener('click', imprimirAgar);
+  }
+
+  if (btnCalcularCaldo) btnCalcularCaldo.addEventListener('click', calcularCaldo);
+  if (btnImprimirCaldo) {
+    btnImprimirCaldo.disabled = true;
+    btnImprimirCaldo.addEventListener('click', imprimirCaldo);
+  }
+
+  if (btnCalcularPrueba) btnCalcularPrueba.addEventListener('click', calcularPrueba);
+  if (btnImprimirPrueba) {
+    btnImprimirPrueba.disabled = true;
+    btnImprimirPrueba.addEventListener('click', imprimirPrueba);
+  }
+
+  // ---------- Clicks en tarjetas (agares / caldos / pruebas) ----------
   document.addEventListener('click', (event) => {
     const target = event.target;
 
-    // Ficha técnica (agar/caldo)
+    // Helper: cerrar TODAS las fichas técnicas y resetear texto de botones
+    const cerrarTodasLasFichas = () => {
+      // Detalles activos
+      document
+        .querySelectorAll('.card-agar-detalles.activo')
+        .forEach((el) => el.classList.remove('activo'));
+
+      // Botones "Ficha técnica"
+      document
+        .querySelectorAll('.btn-ficha, .btn-ficha-prueba')
+        .forEach((btn) => {
+          btn.textContent = 'Ficha técnica';
+        });
+    };
+
+    // ----- Ficha técnica (agar / caldo) -----
     if (target.classList.contains('btn-ficha')) {
       const id = target.getAttribute('data-id');
       const detalles = document.getElementById(`detalles-${id}`);
       if (!detalles) return;
 
-      detalles.classList.toggle('activo');
-      target.textContent = detalles.classList.contains('activo')
-        ? 'Ocultar ficha'
-        : 'Ficha técnica';
+      const yaActivo = detalles.classList.contains('activo');
+
+      // Primero cierro todas
+      cerrarTodasLasFichas();
+
+      // Si esta NO estaba activa, la abro
+      if (!yaActivo) {
+        detalles.classList.add('activo');
+        target.textContent = 'Ocultar ficha';
+      }
+
+      return; // ya manejamos este click
     }
 
-    // Ficha de prueba bioquímica
+    // ----- Ficha de prueba bioquímica -----
     if (target.classList.contains('btn-ficha-prueba')) {
       const id = target.getAttribute('data-id');
       const detalles = document.getElementById(`detalles-prueba-${id}`);
       if (!detalles) return;
 
-      detalles.classList.toggle('activo');
-      target.textContent = detalles.classList.contains('activo')
-        ? 'Ocultar ficha'
-        : 'Ficha técnica';
+      const yaActivo = detalles.classList.contains('activo');
+
+      cerrarTodasLasFichas();
+
+      if (!yaActivo) {
+        detalles.classList.add('activo');
+        target.textContent = 'Ocultar ficha';
+      }
+
+      return;
     }
 
-    // Calcular medio desde tarjeta (agar o caldo)
+    // ----- Calcular medio desde tarjeta (agar o caldo) -----
     if (target.classList.contains('btn-calcular-agar')) {
       const id = target.getAttribute('data-id');
       let medio = mediosAgar.find((m) => m.id === id);
@@ -1658,7 +1862,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    // Calcular medio desde tarjeta de prueba
+    // ----- Calcular medio desde tarjeta de prueba -----
     if (target.classList.contains('btn-calcular-prueba')) {
       const id = target.getAttribute('data-id');
       const prueba = pruebasBioquimicas.find((p) => p.id === id);

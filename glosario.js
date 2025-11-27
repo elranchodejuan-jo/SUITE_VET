@@ -101,8 +101,30 @@ document.addEventListener("DOMContentLoaded", () => {
       `;
     });
 
-    panelGlosario.innerHTML = cards.join("");
+        panelGlosario.innerHTML = cards.join("");
+
+    // Después de renderizar, activamos comportamiento tipo acordeón:
+    activarAccordionDetalles();
   }
+    // Hace que solo un <details> del glosario pueda estar abierto a la vez
+  function activarAccordionDetalles() {
+    const detallesList = panelGlosario.querySelectorAll("details");
+    if (!detallesList.length) return;
+
+    detallesList.forEach((det) => {
+      det.addEventListener("toggle", () => {
+        // Solo actuamos cuando se ABRE
+        if (!det.open) return;
+
+        detallesList.forEach((otro) => {
+          if (otro !== det && otro.open) {
+            otro.open = false;
+          }
+        });
+      });
+    });
+  }
+
 
   // ----------- FUNCIÓN PRINCIPAL -----------
   async function cargarGlosario() {

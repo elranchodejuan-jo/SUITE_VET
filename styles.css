@@ -1164,3 +1164,13 @@ main {
 
 /* ========== MICROBIOLOGÍA: BOTONES DE FICHAS Y CÁLCULO ========== */
 /* (ya integrados arriba en .agar-footer-buttons y .btn-calcular-*) */
+
+.card-agar-detalles {
+  display: none;
+  margin: 0; /* Asegúrate de que no haya margen extra */
+  padding: 0; /* Elimina cualquier relleno que deje espacio */
+}
+
+.card-agar-detalles.activo {
+  display: block; /* Solo cuando está activa se muestra */
+}
