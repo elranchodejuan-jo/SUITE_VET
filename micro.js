@@ -760,32 +760,8 @@ document.addEventListener("DOMContentLoaded", () => {
     window.print();
   }
 
-  // --------------------------------------------------------------------------
-  // IMPRESIÓN DE NORMAS (botones de Normas Generales)
-  // --------------------------------------------------------------------------
-  function imprimirNormas(tipo) {
-    if (!contPrint) return;
-    let titulo = "";
-    if (tipo === "agares") titulo = "Guía rápida para medios sólidos (Agares)";
-    if (tipo === "caldos") titulo = "Guía rápida para medios líquidos (Caldos)";
-    if (tipo === "pruebas") titulo = "Guía rápida para pruebas bioquímicas";
-
-    contPrint.innerHTML = `
-      <div class="print-card">
-        <h2>${titulo}</h2>
-        <p>Resumen visual para tener a mano en la mesa de trabajo.</p>
-        <ul>
-          <li>Hidratación correcta del medio.</li>
-          <li>Uso del autoclave según normas del laboratorio.</li>
-          <li>Servicio y manejo de placas o tubos sin contaminación.</li>
-          <li>Rotulado con fecha, hora y nombre del responsable.</li>
-        </ul>
-        <p><strong>Notas:</strong> __________________________</p>
-      </div>
-    `;
-    window.print();
-  }
-    // ========================================================================
+  
+  // ========================================================================
   // CEREBRO DE NAVEGACIÓN INTERNA (MICROBIOLOGÍA)
   // ========================================================================
   if (window.SuiteVet) {
@@ -885,8 +861,10 @@ document.addEventListener("DOMContentLoaded", () => {
   if (btnCalcularAgar) btnCalcularAgar.addEventListener("click", calcularAgar);
   if (btnImprimirAgar) {
     btnImprimirAgar.disabled = true;
-    btnImprimirAgar.addEventListener("click", imprimirAgar);
-  }
+    
+    if (btnImprimirAgar && typeof imprimirAgar === "function") {
+  btnImprimirAgar.addEventListener("click", imprimirAgar);
+}
 
   if (btnCalcularCaldo) btnCalcularCaldo.addEventListener("click", calcularCaldo);
   if (btnImprimirCaldo) {
@@ -918,6 +896,7 @@ document.addEventListener("DOMContentLoaded", () => {
   renderMediosAgar();
   renderMediosCaldo();
   renderPruebas();
+}
 });
 
 document.addEventListener("DOMContentLoaded", () => {
