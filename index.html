@@ -11,11 +11,14 @@
   <script src="glosario.js" defer></script>
   <!-- JS de Microbiología -->
   <script src="micro.js" defer></script>
-  <!-- Futuro: módulos específicos -->
   <!-- Módulo de antibióticos / discos -->
   <script src="antibio.js" defer></script>
   <!-- Módulo de microorganismos -->
   <script src="microorganismo.js" defer></script>
+  <!-- Módulo de guias -->
+  <script src="guias.js" defer></script>
+
+
 </head>
 <body>
   <!-- TOPBAR -->
@@ -121,75 +124,97 @@
 
       <!-- NORMAS GENERALES DE LABORATORIO (SIEMPRE ARRIBA) -->
       <section id="micro-normas" class="normas-box">
-        <h3>Normas Generales de Laboratorio</h3>
-        <p class="normas-intro">
-          Revisa estas normas antes de trabajar con agares, caldos, pruebas, antibióticos
-          o microorganismos. Se aplican en todas las secciones del módulo.
-        </p>
+  <div class="normas-header">
+    <button id="btn-toggle-normas" class="micro-tab normas-toggle">
+      NORMAS GENERALES DE LABORATORIO
+    </button>
 
-        <div class="normas-grid">
-          <!-- 1. Autoclave -->
-          <article class="norma-item">
-            <h4>🌡️ Autoclave (El "monstruo" del lab)</h4>
-            <ul>
-              <li>Verifica nivel de agua y que la válvula esté cerrada.</li>
-              <li>Configura 121&nbsp;°C / 15 psi según el protocolo.</li>
-              <li><strong>Pro-tip SUITE VET:</strong> nunca abras si el manómetro no está en <strong>0</strong>.</li>
-            </ul>
-            <button class="btn-apple" data-video="assets/videos/autoclave.mp4">
-              Video: uso del autoclave
-            </button>
-          </article>
+    <p class="normas-intro">
+      Revisa estas normas antes de trabajar con agares, caldos, pruebas, antibióticos
+      o microorganismos. Se aplican en todas las secciones del módulo.
+    </p>
+  </div>
 
-          <!-- 2. Pesaje y disolución -->
-          <article class="norma-item">
-            <h4>⚖️ Pesaje y disolución (evitar grumos)</h4>
-            <ul>
-              <li>Hidrata el agar espolvoreando mientras agitas, no vacíes todo de golpe.</li>
-              <li>Distingue entre “disolver en frío” y “llevar a ebullición”.</li>
-            </ul>
-            <button class="btn-apple" data-video="assets/videos/disolucion_agar.mp4">
-              Video: disolución del medio
-            </button>
-          </article>
+  <!-- TODO EL CONTENIDO VA DENTRO DE normas-content -->
+  <div class="normas-content">
+    <div class="normas-grid">
+      <!-- 1. Autoclave -->
+      <article class="norma-item">
+        <h4>🌡️ Autoclave (El "monstruo" del lab)</h4>
+        <ul>
+          <li>Verifica nivel de agua y que la válvula esté cerrada.</li>
+          <li>Configura 121&nbsp;°C / 15 psi según el protocolo.</li>
+          <li>
+            <strong>Pro-tip SUITE VET:</strong>
+            nunca abras si el manómetro no está en <strong>0</strong>.
+          </li>
+        </ul>
+        <button class="btn btn-apple"
+        data-video="assets/videos/autoclave.mp4">
+        Video: uso del autoclave
+      </button>
+      </article>
 
-          <!-- 3. Plaqueo -->
-          <article class="norma-item">
-            <h4>🦠 Plaqueo (servir las placas)</h4>
-            <ul>
-              <li>Sirve siempre cerca del mechero (zona estéril).</li>
-              <li>Evita burbujas pasando brevemente la llama bajo la placa.</li>
-            </ul>
-            <button class="btn-apple" data-video="assets/videos/plaqueo.mp4">
-              Video: servir placas
-            </button>
-          </article>
+      <!-- 2. Pesaje y disolución -->
+      <article class="norma-item">
+        <h4>⚖️ Pesaje y disolución (evitar grumos)</h4>
+        <ul>
+          <li>Hidrata el agar espolvoreando mientras agitas, no vacíes todo de golpe.</li>
+          <li>Distingue entre “disolver en frío” y “llevar a ebullición”.</li>
+        </ul>
+        <button class="btn btn-apple" data-video="assets/videos/disolucion_agar.mp4">
+          Video: disolución del medio
+        </button>
+      </article>
 
-          <!-- 4. Bioseguridad y desechos -->
-          <article class="norma-item">
-            <h4>⚠️ Bioseguridad y desechos</h4>
-            <ul>
-              <li>Residuos biológicos → bolsa roja / contenedor infectante.</li>
-              <li>Si se rompe una placa contaminada: cubrir con desinfectante, esperar y limpiar con EPP completo.</li>
-            </ul>
-            <button class="btn-apple" data-img="assets/img/bioseguridad_residuos.png">
-              Ver esquema de desechos
-            </button>
-          </article>
-        </div>
+      <!-- 3. Plaqueo -->
+      <article class="norma-item">
+        <h4>🦠 Plaqueo (servir las placas)</h4>
+        <ul>
+          <li>Sirve siempre cerca del mechero (zona estéril).</li>
+          <li>Evita burbujas pasando brevemente la llama bajo la placa.</li>
+        </ul>
+        <button class="btn btn-apple" data-video="assets/videos/plaqueo.mp4">
+          Video: servir placas
+        </button>
+      </article>
 
-        <div class="normas-actions">
-          <button id="btn-print-agares" class="btn-apple-light">
-            Imprimir Guía de Agares (Medios Sólidos)
-          </button>
-          <button id="btn-print-caldos" class="btn-apple-light">
-            Imprimir Guía de Caldos (Medios Líquidos)
-          </button>
-          <button id="btn-print-pruebas" class="btn-apple-light">
-            Imprimir Guía de Pruebas Bioquímicas
-          </button>
-        </div>
-      </section>
+      <!-- 4. Bioseguridad -->
+      <article class="norma-item">
+        <h4>⚠️ Bioseguridad y desechos</h4>
+        <ul>
+          <li>Residuos biológicos → bolsa roja / contenedor infectante.</li>
+          <li>
+            Si se rompe una placa contaminada: cubrir con desinfectante, esperar y
+            limpiar con EPP completo.
+          </li>
+        </ul>
+        <button class="btn btn-apple" data-img="assets/img/bioseguridad_residuos.png">
+          Ver esquema de desechos
+        </button>
+      </article>
+    </div>
+
+    <div class="normas-actions">
+      <button id="btn-print-agares" class="btn btn-apple-light">
+        Imprimir Guía de Agares (Medios Sólidos)
+      </button>
+      <button id="btn-print-caldos" class="btn btn-apple-light">
+       Imprimir Guía de Caldos (Medios Líquidos)
+      </button>
+      <button id="btn-print-pruebas" class="btn btn-apple-light">
+        Imprimir Guía de Pruebas Bioquímicas
+      </button>
+      <button id="btn-print-siembras" class="btn btn-apple-light">
+        Imprimir Guía de Tipos de siembra
+      </button>
+      <button id="btn-print-antibiogramas" class="btn btn-apple-light">
+        Imprimir Guía de Preparacion de Antibiogramas.
+      </button>
+    </div>
+  </div>
+</section>
+
 
       <!-- SUBNAV MICRO: MÓDULOS -->
       <div class="micro-subnav">

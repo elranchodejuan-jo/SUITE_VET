@@ -613,39 +613,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function imprimirAgar() {
-    if (!contResultadoAgar || !contPrint) return;
-    const idMedio = contResultadoAgar.dataset.medioId;
-    const medio = mediosAgar.find((m) => m.id === idMedio);
-    if (!medio) return;
-
-    const volTotal = parseFloat(contResultadoAgar.dataset.volTotal || "0");
-    const gramos = parseFloat(contResultadoAgar.dataset.gramos || "0");
-    const numPlacas = parseInt(contResultadoAgar.dataset.numPlacas || "0", 10);
-
-    contPrint.innerHTML = `
-      <div class="print-card">
-        <h2>Preparación de medio: ${medio.nombre}</h2>
-        <div class="print-resumen">
-          <p><strong>Objetivo:</strong> ${medio.objetivo}</p>
-          <p><strong>Reproduce:</strong> ${
-            medio.bacteriasObjetivo ? medio.bacteriasObjetivo.join(", ") : "—"
-          }</p>
-        </div>
-        <div class="print-detalle">
-          <p><strong>Volumen total:</strong> ${formatearML(volTotal)}</p>
-          <p><strong>Placas:</strong> ${numPlacas}</p>
-          <p><strong>Polvo deshidratado:</strong> ${formatearGramos(gramos)}</p>
-          <p><strong>pH final teórico:</strong> ${medio.phFinal}</p>
-        </div>
-        <div class="print-notas">
-          <p><strong>Observaciones:</strong> ${medio.observaciones || "—"}</p>
-          <p><strong>Notas de laboratorio:</strong> __________________________</p>
-        </div>
-      </div>
-    `;
-    window.print();
-  }
+  
 
   // --------------------------------------------------------------------------
   // CALCULADORA: CALDOS (volumen total en mL)
@@ -950,4 +918,15 @@ document.addEventListener("DOMContentLoaded", () => {
   renderMediosAgar();
   renderMediosCaldo();
   renderPruebas();
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const normasBox = document.getElementById("micro-normas");
+  const normasToggle = document.getElementById("btn-toggle-normas");
+
+  if (normasBox && normasToggle) {
+    normasToggle.addEventListener("click", () => {
+      normasBox.classList.toggle("normas-open");
+    });
+  }
 });

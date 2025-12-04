@@ -934,6 +934,150 @@ main {
   border-left-color: #6366f1; /* azul-violeta lisina/aminos */
 }
 
+/* ========== MICROBIOLOGÍA: NORMAS GENERALES (BLOQUE FIJO) ========== */
+
+.normas-box {
+  margin: 0.9rem 0 1.1rem;
+  padding: 1rem 1.2rem;
+  border-radius: 1.3rem;
+  background: #020617;
+  border: 1px solid #111827;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55);
+}
+
+.normas-box h3 {
+  font-size: 1rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #e5e7eb;
+  margin-bottom: 0.35rem;
+}
+
+.normas-intro {
+  font-size: 0.85rem;
+  color: #d1d5db;
+  margin-bottom: 0.7rem;
+}
+
+/* Grid de normas (4 columnas fluidas) */
+.normas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 0.8rem;
+}
+
+/* Cada norma como mini-tarjeta */
+.norma-item {
+  padding: 0.75rem 0.85rem;
+  border-radius: 0.9rem;
+  background: #020617;
+  border: 1px solid #1f2937;
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.65);
+  font-size: 0.86rem;
+}
+
+.norma-item h4 {
+  font-size: 0.9rem;
+  margin-bottom: 0.3rem;
+}
+
+.norma-item ul {
+  list-style: disc;
+  margin-left: 1.1rem;
+  margin-bottom: 0.45rem;
+}
+
+.norma-item li {
+  margin-bottom: 0.15rem;
+}
+
+/* Botón de video / esquema dentro de la norma */
+.norma-item .btn-apple {
+  margin-top: 0.15rem;
+  font-size: 0.8rem;
+  padding-inline: 0.8rem;
+}
+
+/* Bloque de botones de impresión */
+.normas-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.2rem;
+  border-top: 1px dashed #1f2937;
+  padding-top: 0.55rem;
+}
+
+/* Botones de impresión ocupan espacio elegante */
+.normas-actions .btn-apple-light {
+  flex: 1 1 200px;
+  justify-content: center;
+}
+/* ========== MICROBIOLOGÍA: NORMAS GENERALES (TOGGLE) ========== */
+
+.normas-box {
+  margin: 0.9rem 0 1.1rem;
+  padding: 1rem 1.2rem;
+  border-radius: 1.4rem;
+  background: #020617;
+  border: 1px solid #111827;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55);
+}
+
+.normas-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin-bottom: 0.3rem;
+}
+
+/* Botón píldora estilo SUITE VET reutilizando micro-tab */
+.normas-toggle {
+  align-self: flex-start;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  padding: 0.4rem 1.4rem;
+}
+
+/* Flechita animada */
+.normas-toggle::after {
+  content: "▾";
+  margin-left: 0.45rem;
+  font-size: 0.7rem;
+  opacity: 0.85;
+  transition: transform 0.18s ease;
+}
+
+.normas-intro {
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+
+/* Contenido plegable */
+.normas-content {
+  margin-top: 0.55rem;
+  display: none;
+}
+
+/* Cuando está abierta */
+.normas-box.normas-open .normas-content {
+  display: block;
+}
+
+.normas-box.normas-open .normas-toggle {
+  background: var(--apple-blue);
+  border-color: var(--apple-blue);
+  color: #f9fafb;
+  box-shadow: 0 10px 25px var(--apple-blue-shadow);
+}
+
+.normas-box.normas-open .normas-toggle::after {
+  transform: rotate(180deg) translateY(1px);
+}
+
+
 /* Si luego creas más categorías, les agregas aquí su color:
    .card-prueba.prueba-oxidasa { border-left-color: ...; } */
 
@@ -995,6 +1139,39 @@ main {
   width: 100%;
   font-size: 0.85rem;
 }
+
+.normas-actions {
+  max-width: 1000px;   /* controla el ancho total del bloque */
+  margin-inline: auto; /* centra el bloque */
+}
+
+.normas-actions .btn-apple-light {
+  flex: 1 1 300px;     /* anchura pareja */
+  text-align: center;
+}
+
+/* ICONOS POR TIPO DE GUÍA */
+
+#btn-print-agares::before {
+  content: "📘 ";
+}
+
+#btn-print-caldos::before {
+  content: "💧 ";
+}
+
+#btn-print-pruebas::before {
+  content: "🧪 ";
+}
+
+#btn-print-siembras::before {
+  content: "🧫 ";
+}
+
+#btn-print-antibiogramas::before {
+  content: "💊 ";
+}
+
 
 /* Flechita de acordeón */
 .norma-card summary::after {
@@ -1208,3 +1385,13 @@ main {
   color: #7dd3fc;
   text-decoration: none;
 }
+
+.normas-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.2rem;
+  border-top: 1px dashed #1f2937;
+  padding-top: 0.55rem;
+}
+
