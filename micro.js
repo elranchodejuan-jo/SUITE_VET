@@ -235,125 +235,277 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // CEREBRO GLOBAL DE NAVEGACIÓN DE MICROBIOLOGÍA
-  if (window.SuiteVet) {
-    const showView =
-      window.SuiteVet.showView ||
-      function () {};
+if (window.SuiteVet) {
+  const showView = window.SuiteVet.showView || function () {};
+  window.SuiteVet.microNav = window.SuiteVet.microNav || {};
 
-    window.SuiteVet.microNav = window.SuiteVet.microNav || {};
-
-    // Permite ir desde otros módulos a Microorganismos con un texto de búsqueda
-    window.SuiteVet.microNav.irMicroorganismosPorTexto = function (texto) {
-      // 1) Cambiar a la vista "Microbiología"
+  Object.assign(window.SuiteVet.microNav, {
+    // 0) Desde cualquier módulo → Microorganismos, usando texto libre
+    irMicroorganismosPorTexto(texto) {
       showView("microbiologia");
-
-      // 2) Activar la pestaña "Microorganismos"
       activarSubmoduloMicro("microorganismos");
 
-      // 3) Rellenar buscador del atlas y disparar filtrado
       const inputSearch = document.getElementById("searchMicroorg");
       if (inputSearch) {
         inputSearch.value = texto || "";
         const ev = new Event("input", { bubbles: true });
         inputSearch.dispatchEvent(ev);
       }
-    };
-  }
+    },
+
+    // 1) Microorganismo → Agares (se usa en microorganismo.js)
+    irAgaresPorMicroorganismo(micro) {
+      const texto = micro?.nombreCientifico
+        ? micro.nombreCientifico.split(" ")[0] // "Escherichia", "Salmonella", etc.
+        : "";
+
+      showView("microbiologia");
+      activarSubmoduloMicro("agares");
+
+      if (inputBuscarAgar) inputBuscarAgar.value = texto;
+      if (selectTipoAgar) selectTipoAgar.value = "";
+      renderMediosAgar();
+    },
+
+    // 2) Microorganismo → Pruebas bioquímicas
+    irPruebasPorMicroorganismo(micro) {
+      const texto = micro?.nombreCientifico
+        ? micro.nombreCientifico.split(" ")[0]
+        : "";
+
+      showView("microbiologia");
+      activarSubmoduloMicro("pruebas");
+
+      if (inputBuscarPrueba) inputBuscarPrueba.value = texto;
+      if (selectTipoPrueba) selectTipoPrueba.value = "";
+      renderPruebas();
+    },
+
+    // 3) Microorganismo → Antibióticos / discos
+    irAntibiosPorMicroorganismo(micro) {
+      const texto = micro?.nombreCientifico
+        ? micro.nombreCientifico.split(" ")[0]
+        : "";
+
+      showView("microbiologia");
+      activarSubmoduloMicro("antibioticos");
+
+      const inputSearch = document.getElementById("searchAntibio");
+      const selectFamilia = document.getElementById("filtroFamiliaAntibio");
+      const selectAccion = document.getElementById("filtroAccionAntibio");
+
+      if (inputSearch) inputSearch.value = texto;
+      if (selectFamilia) selectFamilia.value = "";
+      if (selectAccion) selectAccion.value = "";
+
+      // Forzar a que antibio.js filtre usando su propio listener
+      if (inputSearch) {
+        const ev = new Event("input", { bubbles: true });
+        inputSearch.dispatchEvent(ev);
+      }
+    },
+
+    // 4) Antibióticos → Microorganismos (usando IDs desde antibio.js)
+    irMicroorganismosPorIds(ids) {
+      const listaIds = Array.isArray(ids)
+        ? ids
+        : String(ids || "")
+            .split(",")
+            .map((s) => s.trim())
+            .filter(Boolean);
+
+      // Usamos el primer id para sacar el género
+      let texto = "";
+      try {
+        if (typeof microorganismos !== "undefined") {
+          const match = microorganismos.find((m) =>
+            listaIds.includes(m.id)
+          );
+          if (match?.nombreCientifico) {
+            texto = match.nombreCientifico.split(" ")[0];
+          }
+        }
+      } catch (e) {
+        // si algo falla, solo cae al texto vacío
+      }
+
+      // Si no se encontró nada, igual abrimos el atlas
+      showView("microbiologia");
+      activarSubmoduloMicro("microorganismos");
+
+      const inputSearch = document.getElementById("searchMicroorg");
+      if (inputSearch) {
+        inputSearch.value = texto || "";
+        const ev = new Event("input", { bubbles: true });
+        inputSearch.dispatchEvent(ev);
+      }
+    },
+
+    // 5) Antibióticos → Agares para antibiograma (IDs desde antibio.js)
+    irAgaresPorIds(ids) {
+      const listaIds = Array.isArray(ids)
+        ? ids
+        : String(ids || "")
+            .split(",")
+            .map((s) => s.trim())
+            .filter(Boolean);
+
+      showView("microbiologia");
+      activarSubmoduloMicro("agares");
+
+      let texto = "";
+      try {
+        if (typeof mediosAgar !== "undefined") {
+          const match = mediosAgar.find((m) =>
+            listaIds.includes(m.id)
+          );
+          if (match?.nombre) {
+            // poner solo el nombre "bonito" antes del paréntesis
+            texto = match.nombre.split("(")[0].trim();
+          }
+        }
+      } catch (e) {}
+
+      if (inputBuscarAgar) {
+        inputBuscarAgar.value = texto || "";
+        if (selectTipoAgar) selectTipoAgar.value = "";
+        renderMediosAgar();
+      }
+    }
+  });
+}
+
 
   // --------------------------------------------------------------------------
-  // RENDER: AGARES
+  // RENDER: TARJETAS DE AGARES
   // --------------------------------------------------------------------------
   function renderMediosAgar() {
-  if (!contAgares) return;
-  const texto = normalizar(inputBuscarAgar ? inputBuscarAgar.value : "");
-  const tipo = selectTipoAgar ? selectTipoAgar.value : "";
+    if (!contAgares) return;
 
-  const filtrados = mediosAgar.filter((medio) => {
-    if (tipo && !medio.tipos.includes(tipo)) return false;
-    if (!texto) return true;
-    const campo = normalizar(
-      [
-        medio.nombre,
-        medio.objetivo,
-        medio.bacteriasObjetivo ? medio.bacteriasObjetivo.join(", ") : "",
-        medio.observaciones || ""
-      ].join(" ")
-    );
-    return campo.includes(texto);
-  });
+    const texto = normalizar(inputBuscarAgar ? inputBuscarAgar.value : "");
+    const tipo = selectTipoAgar ? selectTipoAgar.value : "";
 
-  contAgares.innerHTML = "";
-  if (!filtrados.length) {
-    const p = document.createElement("p");
-    p.className = "cards-empty";
-    p.textContent = "No se encontraron agares con esos criterios.";
-    contAgares.appendChild(p);
-    return;
-  }
 
-  filtrados.forEach((medio) => {
+    const filtrados = mediosAgar.filter((medio) => {
+      if (tipo && !medio.tipos?.includes(tipo)) return false;
+      if (!texto) return true;
+
+      const campo = normalizar(
+        [
+          medio.nombre,
+          medio.objetivo,
+          medio.tipos?.join(" ") || "",
+          medio.observaciones || ""
+        ].join(" ")
+      );
+      return campo.includes(texto);
+    });
+
+    contAgares.innerHTML = "";
+    if (!filtrados.length) {
+      const p = document.createElement("p");
+      p.className = "cards-empty";
+      p.textContent = "No se encontraron medios con esos criterios.";
+      contAgares.appendChild(p);
+      return;
+    }
+
+    filtrados.forEach((medio) => {
       const card = document.createElement("article");
 
-      // Línea de color según tipo de agar
-      const tipos = medio.tipos || [];
-      let tipoClass = "";
-
-      if (tipos.includes("selectivo")) {
-        tipoClass = "agar-selectivo";
-      } else if (tipos.includes("diferencial")) {
-        tipoClass = "agar-diferencial";
-      } else if (tipos.includes("nutritivo")) {
-        tipoClass = "agar-nutritivo";
-      } else if (tipos.includes("enriquecido")) {
-        tipoClass = "agar-enriquecido";
-      } else if (tipos.includes("basico") || tipos.includes("básico")) {
-        tipoClass = "agar-basico";
-      } else if (tipos.includes("transporte")) {
-        tipoClass = "agar-transporte";
-      }
+      const tipoPrincipal = medio.tipos?.[0] || "";
+      const tipoClass = tipoPrincipal ? `agar-${tipoPrincipal}` : "";
 
       card.className = `card card-agar ${tipoClass}`.trim();
 
+      // HEADER
+      const header = document.createElement("header");
+      header.className = "card-header";
 
-    const header = document.createElement("header");
-    header.className = "card-header";
+      const h3 = document.createElement("h3");
+      h3.className = "card-title";
+      h3.textContent = medio.nombre;
 
-    const h3 = document.createElement("h3");
-    h3.className = "card-title";
-    h3.textContent = medio.nombre;
+      const pill = document.createElement("span");
+      pill.className = "pill pill-tipo";
+      pill.textContent = medio.tipos?.join(" / ") || "Medio";
 
-    const tipoSpan = document.createElement("span");
-    tipoSpan.className = "pill pill-tipo";
-    tipoSpan.textContent = medio.tipos.join(" / ");
+      header.appendChild(h3);
+      header.appendChild(pill);
 
-    header.appendChild(h3);
-    header.appendChild(tipoSpan);
+      // CUERPO PRINCIPAL (resumen)
+      const body = document.createElement("div");
+      body.className = "card-body";
 
-    const body = document.createElement("div");
-    body.className = "card-body";
+      const pObj = document.createElement("p");
+      pObj.innerHTML = `<strong>Objetivo:</strong> ${medio.objetivo}`;
 
-    const pObj = document.createElement("p");
-    pObj.innerHTML = `<strong>Objetivo:</strong> ${medio.objetivo}`;
+      // convertir bacterias a enlaces si es posible
+      let bacteriasHTML = "—";
+      if (medio.bacteriasObjetivo && medio.bacteriasObjetivo.length) {
+        bacteriasHTML = medio.bacteriasObjetivo
+        .map((b) => {
+          // Quitamos <em> y dejamos texto limpio
+          const nombre = b.replace(/<[^>]*>/g, "").trim();
+          const id = normalizar(nombre).replace(/\s+/g, "-");
+          return `<span class="bacteria-link" data-bacteria="${id}">${b}</span>`;
+        })
+        .join(", ");
+      }
 
-    const pPH = document.createElement("p");
-    pPH.innerHTML = `<strong>pH final:</strong> ${medio.phFinal}`;
+const pBact = document.createElement("p");
+pBact.innerHTML = `<strong>Reproduce / favorece:</strong> ${bacteriasHTML}`;
 
-    // --- NUEVO: bacterias como links internos ---
-    const pBact = document.createElement("p");
-    pBact.innerHTML = `<strong>Reproduce / favorece:</strong> `;
 
-    if (medio.bacteriasObjetivo && medio.bacteriasObjetivo.length) {
-      const spanLista = document.createElement("span");
+      const pObs = document.createElement("p");
+      pObs.className = "card-notas";
+      pObs.innerHTML = `<strong>Notas de laboratorio:</strong> ${
+        medio.observaciones || "—"
+      }`;
+
+      // Añadimos el contenido principal al body
+      body.appendChild(pObj);
+      body.appendChild(pBact);
+      body.appendChild(pObs);
+
+      // --- Activar los links hacia Microorganismos ---
+      // (los <span class="bacteria-link"> se crearon en bacteriasHTML)
+      const bacteriasLinks = body.querySelectorAll(".bacteria-link");
+
+      bacteriasLinks.forEach((span) => {
+        span.style.cursor = "pointer"; // por si no lo manejas en CSS
+
+        span.addEventListener("click", () => {
+          const texto = span.textContent.trim(); // nombre limpio, sin <em>
+
+          if (
+            window.SuiteVet &&
+            window.SuiteVet.microNav &&
+            typeof window.SuiteVet.microNav.irMicroorganismosPorTexto ===
+              "function"
+          ) {
+            window.SuiteVet.microNav.irMicroorganismosPorTexto(texto);
+          }
+
 
       medio.bacteriasObjetivo.forEach((nombre, index) => {
         const btnLink = document.createElement("button");
         btnLink.type = "button";
         btnLink.className = "link-interno-micro";
-        btnLink.textContent = nombre;
+
+        // Texto PLANO para buscar (sin etiquetas HTML)
+        const textoPlano = nombre.replace(/<[^>]+>/g, "").trim();
+
+        // Mostrar bonito en pantalla (respeta <em>, etc.)
+        btnLink.innerHTML = nombre;
 
         btnLink.addEventListener("click", () => {
-          if (window.SuiteVet && window.SuiteVet.microNav) {
-            window.SuiteVet.microNav.irMicroorganismosPorTexto(nombre);
+          if (
+            window.SuiteVet &&
+            window.SuiteVet.microNav &&
+            typeof window.SuiteVet.microNav.irMicroorganismosPorTexto === "function"
+          ) {
+            window.SuiteVet.microNav.irMicroorganismosPorTexto(textoPlano);
           }
         });
 
@@ -367,43 +519,77 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
 
-      pBact.appendChild(spanLista);
-    } else {
-      const spanVacio = document.createElement("span");
-      spanVacio.textContent = "—";
-      pBact.appendChild(spanVacio);
-    }
-    // --- FIN NUEVO ---
+        });
+        
+      });
 
-    const pObs = document.createElement("p");
-    pObs.className = "card-notas";
-    pObs.innerHTML = `<strong>Notas de laboratorio:</strong> ${
-      medio.observaciones || "—"
-    }`;
+      // BLOQUE OCULTO: FICHA TÉCNICA
+      const ficha = document.createElement("div");
+      ficha.className = "card-agar-detalles";
+      ficha.innerHTML = `
+        <p><strong>Estado:</strong> ${
+          medio.estado === "solido" ? "Sólido (agar)" : medio.estado
+        }</p>
+        <p><strong>Tipo(s):</strong> ${medio.tipos?.join(" / ") || "—"}</p>
+        <p><strong>Gramos por litro:</strong> ${medio.gramosPorLitro} g/L</p>
+        <p><strong>pH final teórico:</strong> ${medio.phFinal}</p>
+      `;
+      body.appendChild(ficha);
 
-    body.appendChild(pObj);
-    body.appendChild(pPH);
-    body.appendChild(pBact);
-    body.appendChild(pObs);
+      // FOOTER CON BOTONES APPLE-STYLE
+      const footer = document.createElement("div");
+      footer.className = "agar-footer-buttons";
 
-    card.appendChild(header);
-    card.appendChild(body);
-    contAgares.appendChild(card);
-  });
-}
+      const btnFicha = document.createElement("button");
+      btnFicha.type = "button";
+      btnFicha.className = "btn-ficha";
+      btnFicha.textContent = "Ficha técnica";
+      btnFicha.addEventListener("click", () => {
+        const activa = ficha.classList.toggle("activo");
+        btnFicha.textContent = activa ? "Ocultar ficha" : "Ficha técnica";
+      });
+
+      const btnCalcular = document.createElement("button");
+      btnCalcular.type = "button";
+      btnCalcular.className = "btn-calcular-agar";
+      btnCalcular.textContent = "Calcular medio";
+      btnCalcular.addEventListener("click", () => {
+        // Preselecciona el medio en la calculadora y recalcula
+        if (selectCalcAgar) {
+          selectCalcAgar.value = medio.id;
+          calcularAgar();
+        }
+        // Scroll suave a la calculadora de agar
+        const seccionCalc = document.getElementById("microCalc");
+        if (seccionCalc) {
+          seccionCalc.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      });
+
+      footer.appendChild(btnFicha);
+      footer.appendChild(btnCalcular);
+
+      card.appendChild(header);
+      card.appendChild(body);
+      card.appendChild(footer);
+      contAgares.appendChild(card);
+    });
+  }
 
 
-  // --------------------------------------------------------------------------
-  // RENDER: CALDOS
+    // --------------------------------------------------------------------------
+  // RENDER: CALDOS (versión glow-up)
   // --------------------------------------------------------------------------
   function renderMediosCaldo() {
     if (!contCaldos) return;
+
     const texto = normalizar(inputBuscarCaldo ? inputBuscarCaldo.value : "");
     const tipo = selectTipoCaldo ? selectTipoCaldo.value : "";
 
     const filtrados = mediosCaldo.filter((medio) => {
       if (tipo && !medio.tipos.includes(tipo)) return false;
       if (!texto) return true;
+
       const campo = normalizar(
         [
           medio.nombre,
@@ -443,7 +629,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       card.className = `card card-caldo ${tipoClass}`.trim();
 
-
+      // HEADER
       const header = document.createElement("header");
       header.className = "card-header";
 
@@ -458,41 +644,101 @@ document.addEventListener("DOMContentLoaded", () => {
       header.appendChild(h3);
       header.appendChild(tipoSpan);
 
+      // BODY
       const body = document.createElement("div");
       body.className = "card-body";
 
       const pObj = document.createElement("p");
       pObj.innerHTML = `<strong>Objetivo:</strong> ${medio.objetivo}`;
 
-      const pPH = document.createElement("p");
-      pPH.innerHTML = `<strong>pH final:</strong> ${medio.phFinal}`;
+      // pH resumido en ficha técnica (no aquí) para que el texto respire más
+
+      // Reproduce / favorece con links clicables
+      let bacteriasHTML = "—";
+      if (medio.bacteriasObjetivo && medio.bacteriasObjetivo.length) {
+        bacteriasHTML = medio.bacteriasObjetivo
+          .map((b) => {
+            const nombre = b.replace(/<[^>]*>/g, "").trim();
+            const id = normalizar(nombre).replace(/\s+/g, "-");
+            return `<span class="bacteria-link" data-bacteria="${id}">${b}</span>`;
+          })
+          .join(", ");
+      }
 
       const pBact = document.createElement("p");
-      pBact.innerHTML = `<strong>Favorece:</strong> ${
-        medio.bacteriasObjetivo ? medio.bacteriasObjetivo.join(", ") : "—"
-      }`;
+      pBact.innerHTML = `<strong>Reproduce / favorece:</strong> ${bacteriasHTML}`;
 
       const pObs = document.createElement("p");
       pObs.className = "card-notas";
-      pObs.innerHTML = `<strong>Notas de laboratorio:</strong> ${medio.observaciones || "—"}`;
+      pObs.innerHTML = `<strong>Notas de laboratorio:</strong> ${
+        medio.observaciones || "—"
+      }`;
 
       body.appendChild(pObj);
-      body.appendChild(pPH);
       body.appendChild(pBact);
       body.appendChild(pObs);
 
+      // FICHA TÉCNICA OCULTA
+      const ficha = document.createElement("div");
+      ficha.className = "card-agar-detalles";
+      ficha.innerHTML = `
+        <p><strong>Estado:</strong> ${
+          medio.estado === "liquido" ? "Líquido (caldo)" : medio.estado
+        }</p>
+        <p><strong>Tipo(s):</strong> ${medio.tipos.join(" / ")}</p>
+        <p><strong>Gramos por litro:</strong> ${medio.gramosPorLitro} g/L</p>
+        <p><strong>pH final teórico:</strong> ${medio.phFinal}</p>
+      `;
+      body.appendChild(ficha);
+
+      // FOOTER CON BOTONES “APPLE STYLE”
+      const footer = document.createElement("div");
+      footer.className = "agar-footer-buttons";
+
+      const btnFicha = document.createElement("button");
+      btnFicha.type = "button";
+      btnFicha.className = "btn-ficha";
+      btnFicha.textContent = "Ficha técnica";
+      btnFicha.addEventListener("click", () => {
+        const activa = ficha.classList.toggle("activo");
+        btnFicha.textContent = activa ? "Ocultar ficha" : "Ficha técnica";
+      });
+
+      const btnCalcular = document.createElement("button");
+      btnCalcular.type = "button";
+      btnCalcular.className = "btn-calcular-agar";
+      btnCalcular.textContent = "Calcular medio";
+      btnCalcular.addEventListener("click", () => {
+        if (selectCalcCaldo) {
+          selectCalcCaldo.value = medio.id;
+          calcularCaldo();
+        }
+        const seccionCalc = document.getElementById("microCaldosCalc");
+        if (seccionCalc) {
+          seccionCalc.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      });
+
+      footer.appendChild(btnFicha);
+      footer.appendChild(btnCalcular);
+
       card.appendChild(header);
       card.appendChild(body);
+      card.appendChild(footer);
       contCaldos.appendChild(card);
     });
   }
 
-  // --------------------------------------------------------------------------
+
+    // --------------------------------------------------------------------------
   // RENDER: PRUEBAS BIOQUÍMICAS
   // --------------------------------------------------------------------------
   function renderPruebas() {
     if (!contPruebas) return;
-    const texto = normalizar(inputBuscarPrueba ? inputBuscarPrueba.value : "");
+
+    const texto = inputBuscarPrueba
+      ? normalizar(inputBuscarPrueba.value)
+      : "";
     const tipo = selectTipoPrueba ? selectTipoPrueba.value : "";
 
     const filtrados = pruebasBioquimicas.filter((pr) => {
@@ -528,7 +774,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       card.className = `card card-prueba ${tipoClass}`.trim();
 
-
+      // ----- HEADER -----
       const header = document.createElement("header");
       header.className = "card-header";
 
@@ -543,32 +789,95 @@ document.addEventListener("DOMContentLoaded", () => {
       header.appendChild(h3);
       header.appendChild(cat);
 
+      // ----- CUERPO RESUMEN -----
       const body = document.createElement("div");
       body.className = "card-body";
 
       const pObj = document.createElement("p");
       pObj.innerHTML = `<strong>Objetivo:</strong> ${pr.objetivo}`;
 
-      const pInc = document.createElement("p");
-      pInc.innerHTML = `<strong>Incubación:</strong> ${pr.incubacion}`;
+      const pMedio = document.createElement("p");
+      pMedio.innerHTML = `<strong>Medio / base:</strong> ${
+        pr.medioBase || "—"
+      }`;
 
       const pInt = document.createElement("p");
-      pInt.innerHTML = `<strong>Interpretación:</strong> ${pr.interpretacion}`;
+      pInt.innerHTML = `<strong>Interpretación:</strong> ${
+        pr.interpretacion || "—"
+      }`;
 
       const pObs = document.createElement("p");
       pObs.className = "card-notas";
-      pObs.innerHTML = `<strong>Notas de laboratorio:</strong> ${pr.observaciones || "—"}`;
+      pObs.innerHTML = `<strong>Notas de laboratorio:</strong> ${
+        pr.observaciones || "—"
+      }`;
 
       body.appendChild(pObj);
-      body.appendChild(pInc);
+      body.appendChild(pMedio);
       body.appendChild(pInt);
       body.appendChild(pObs);
 
+      // ----- FICHA TÉCNICA (PLEGABLE) -----
+      const detalles = document.createElement("div");
+      detalles.className = "card-detalles";
+      detalles.hidden = true;
+
+      detalles.innerHTML = `
+        <p><strong>Tipo de inóculo:</strong> ${pr.tipoInoculo || "—"}</p>
+        <p><strong>Incubación:</strong> ${pr.incubacion || "—"}</p>
+      `;
+
+      // ----- FOOTER CON BOTONES -----
+      const footer = document.createElement("footer");
+      footer.className = "card-footer agar-footer-buttons";
+
+      const btnFicha = document.createElement("button");
+      btnFicha.type = "button";
+      btnFicha.className = "btn btn-apple-light";
+      btnFicha.textContent = "Ficha técnica";
+
+      btnFicha.addEventListener("click", () => {
+        const estabaVisible = !detalles.hidden;
+        detalles.hidden = estabaVisible;
+        btnFicha.textContent = estabaVisible
+          ? "Ficha técnica"
+          : "Ocultar ficha";
+      });
+
+      const btnCalc = document.createElement("button");
+      btnCalc.type = "button";
+      btnCalc.className = "btn btn-apple";
+      btnCalc.textContent = "Calcular medio";
+
+      btnCalc.addEventListener("click", () => {
+        if (selectCalcPrueba) {
+          selectCalcPrueba.value = pr.id;
+          // Usamos la misma calculadora de pruebas
+          calcularPrueba();
+
+          const seccionCalc = document.getElementById("microCalcPrueba");
+          if (seccionCalc) {
+            seccionCalc.scrollIntoView({
+              behavior: "smooth",
+              block: "start"
+            });
+          }
+        }
+      });
+
+      footer.appendChild(btnFicha);
+      footer.appendChild(btnCalc);
+
+      // ----- ENSAMBLAR TARJETA -----
       card.appendChild(header);
       card.appendChild(body);
+      card.appendChild(detalles);
+      card.appendChild(footer);
+
       contPruebas.appendChild(card);
     });
   }
+
 
   // --------------------------------------------------------------------------
   // CALCULADORA: AGARES (placas)
@@ -611,6 +920,42 @@ document.addEventListener("DOMContentLoaded", () => {
       contResultadoAgar.dataset.gramos = gramos;
       contResultadoAgar.dataset.numPlacas = numPlacas;
     }
+  }
+  function imprimirAgar() {
+    if (!contResultadoAgar || !contPrint) return;
+
+    const idMedio = contResultadoAgar.dataset.medioId;
+    const medio = mediosAgar.find((m) => m.id === idMedio);
+    if (!medio) return;
+
+    const volTotal = parseFloat(contResultadoAgar.dataset.volTotal || "0");
+    const gramos = parseFloat(contResultadoAgar.dataset.gramos || "0");
+    const numPlacas = parseInt(contResultadoAgar.dataset.numPlacas || "0", 10);
+    const volPlaca = numPlacas ? volTotal / numPlacas : 0;
+
+    contPrint.innerHTML = `
+      <div class="print-card">
+        <h2>Preparación de agar: ${medio.nombre}</h2>
+        <div class="print-resumen">
+          <p><strong>Objetivo:</strong> ${medio.objetivo}</p>
+          <p><strong>Reproduce / favorece:</strong> ${
+            medio.bacteriasObjetivo ? medio.bacteriasObjetivo.join(", ") : "—"
+          }</p>
+        </div>
+        <div class="print-detalle">
+          <p><strong>Número de placas:</strong> ${numPlacas} (≈ ${formatearML(volPlaca)} c/u)</p>
+          <p><strong>Volumen total:</strong> ${formatearML(volTotal)}</p>
+          <p><strong>Polvo deshidratado:</strong> ${formatearGramos(gramos)}</p>
+          <p><strong>pH final teórico:</strong> ${medio.phFinal}</p>
+        </div>
+        <div class="print-notas">
+          <p><strong>Observaciones de la casa comercial:</strong> ${medio.observaciones || "—"}</p>
+          <p><strong>Notas del laboratorio (observaciones propias):</strong></p>
+          <div class="print-notas-box"></div>
+        </div>
+      </div>
+    `;
+    window.print();
   }
 
   

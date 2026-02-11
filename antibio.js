@@ -277,37 +277,101 @@ function renderAntibioticos(contenedor, filtros) {
     body.appendChild(pNotas);
 
     // Footer: botones de conexión
-    const footer = document.createElement("div");
-    footer.className = "card-footer card-footer-actions";
+const footer = document.createElement("div");
+footer.className = "card-footer card-footer-actions";
 
-    const btnMicro = document.createElement("button");
-    btnMicro.type = "button";
-    btnMicro.className = "btn btn-apple-secondary";
-    btnMicro.textContent = "Ver microorganismos";
-    btnMicro.dataset.microorganismosIds = (d.microorganismosIds || []).join(",");
+const btnMicro = document.createElement("button");
+btnMicro.type = "button";
+btnMicro.className = "btn btn-apple-secondary";
+btnMicro.textContent = "Ver microorganismos";
+// guardamos los ids para el cerebro
+btnMicro.dataset.microorganismosIds = (d.microorganismosIds || []).join(",");
 
-    const btnAgares = document.createElement("button");
-    btnAgares.type = "button";
-    btnAgares.className = "btn btn-apple-secondary";
-    btnAgares.textContent = "Ver agares para antibiograma";
-    btnAgares.dataset.agaresIds = (d.agaresRecomendadosIds || []).join(",");
+const btnAgares = document.createElement("button");
+btnAgares.type = "button";
+btnAgares.className = "btn btn-apple-secondary";
+btnAgares.textContent = "Ver agares para antibiograma";
+btnAgares.dataset.agaresIds = (d.agaresRecomendadosIds || []).join(",");
 
-    const btnHalos = document.createElement("button");
-    btnHalos.type = "button";
-    btnHalos.className = "btn btn-apple";
-    btnHalos.textContent = "Pasaporte del antibiótico";
-    // Ahora sí: imprimir pasaporte real
-    btnHalos.addEventListener("click", () => {
-      imprimirPasaporteAntibiotico(d);
-    });
+const btnHalos = document.createElement("button");
+btnHalos.type = "button";
+btnHalos.className = "btn btn-apple";
+btnHalos.textContent = "Pasaporte del antibiótico";
+btnHalos.addEventListener("click", () => {
+  imprimirPasaporteAntibiotico(d);
+});
 
+// --- Acciones de salto WOW ---
 
+btnMicro.addEventListener("click", () => {
+  const idsStr = btnMicro.dataset.microorganismosIds || "";
+  const ids = idsStr
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
 
+  if (window.SuiteVet && window.SuiteVet.microNav) {
+    // preferimos ir por ids (usa el array del disco)
+    if (
+      typeof window.SuiteVet.microNav.irMicroorganismosPorIds === "function" &&
+      ids.length
+    ) {
+      window.SuiteVet.microNav.irMicroorganismosPorIds(ids);
+      return;
+    }
 
+    // plan B: usar el primer microorganismo de ejemplo
+    if (
+      typeof window.SuiteVet.microNav.irMicroorganismosPorTexto === "function" &&
+      d.microorganismosEjemplo &&
+      d.microorganismosEjemplo.length
+    ) {
+      const textoPlano = d.microorganismosEjemplo[0]
+        .replace(/<[^>]+>/g, "")
+        .trim()
+        .split(" ")[0]; // género
+      window.SuiteVet.microNav.irMicroorganismosPorTexto(textoPlano);
+      return;
+    }
+  }
 
-    footer.appendChild(btnMicro);
-    footer.appendChild(btnAgares);
-    footer.appendChild(btnHalos);
+  // plan C: mínimo, abrir Microbiología → Microorganismos
+  if (window.SuiteVet && typeof window.SuiteVet.showView === "function") {
+    window.SuiteVet.showView("microbiologia");
+    const tab = document.querySelector('.micro-tab[data-micro="microorganismos"]');
+    if (tab) tab.click();
+  }
+});
+
+btnAgares.addEventListener("click", () => {
+  const idsStr = btnAgares.dataset.agaresIds || "";
+  const ids = idsStr
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+  if (window.SuiteVet && window.SuiteVet.microNav) {
+    if (
+      typeof window.SuiteVet.microNav.irAgaresPorIds === "function" &&
+      ids.length
+    ) {
+      window.SuiteVet.microNav.irAgaresPorIds(ids);
+      return;
+    }
+  }
+
+  // Fallback: abrir Microbiología → Agares, sin filtro
+  if (window.SuiteVet && typeof window.SuiteVet.showView === "function") {
+    window.SuiteVet.showView("microbiologia");
+    const tab = document.querySelector('.micro-tab[data-micro="agares"]');
+    if (tab) tab.click();
+  }
+});
+
+footer.appendChild(btnMicro);
+footer.appendChild(btnAgares);
+footer.appendChild(btnHalos);
+
 
     // Ensamblar tarjeta
     card.appendChild(header);

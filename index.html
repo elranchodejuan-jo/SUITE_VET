@@ -18,6 +18,8 @@
   <!-- Módulo de guias -->
    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="guias.js" defer></script>
+  <!-- Módulo de farmacologia -->
+  <script src="farma.js" defer></script>
 
 
 </head>
@@ -107,11 +109,23 @@
 
     <!-- FARMACOLOGÍA (placeholder por ahora) -->
     <section id="view-farmacologia" class="view">
-      <h2>Farmacología</h2>
+      <h2>Farmacología y Terapéutica</h2>
       <p class="view-intro">
-        Aquí irá tu vademécum interactivo de fármacos veterinarios:
-        grupos, dosis, especies, vías de administración y notas clínicas.
+        Vademécum inteligente. Selecciona un fármaco, ingresa el peso del animal
+        y obtén la dosis exacta y, lo más importante, los <strong>tiempos de retiro</strong>
+        para evitar residuos en leche y carne.
       </p>
+
+      <div class="hormonas-toolbar">
+        <input
+          type="text"
+          id="searchFarma"
+          placeholder="Buscar fármaco (ej. Oxitetraciclina, Ivermectina, AINE)..."
+        />
+      </div>
+
+      <div id="farmaCards" class="cards-grid">
+        </div>
     </section>
 
     <!-- MICROBIOLOGÍA: NORMAS + MODULOS -->
@@ -696,5 +710,78 @@
       </div>
     </section>
   </main>
+
+  
+  <button id="btn-ver-receta" class="fab-receta" title="Ver recetario actual">
+    📝 <span id="badge-receta">0</span>
+  </button>
+
+  <div id="modal-receta" class="modal-overlay">
+    <div class="hoja-receta-container">
+      
+      <div class="receta-controls no-print">
+        <h3>Borrador de Receta</h3>
+        <div class="receta-actions">
+          <button id="btn-cerrar-receta" class="btn btn-ghost">Seguir editando</button>
+          <button id="btn-limpiar-receta" class="btn btn-apple-secondary" style="border-color:#ef4444; color:#ef4444;">Borrar todo</button>
+          <button id="btn-imprimir-receta" class="btn btn-apple">🖨️ Imprimir / Guardar PDF</button>
+        </div>
+      </div>
+
+      <div class="hoja-papel horizontal" id="area-impresion-receta">
+        
+        <aside class="receta-sidebar">
+          <div class="brand-area">
+            <h1>SUITE VET</h1>
+            <p>Medicina Veterinaria & Zootecnia</p>
+            <p style="font-size:0.7rem; color:#666; margin-top:5px;">Dr. [Nombre del Usuario]</p>
+            <p style="font-size:0.7rem; color:#666;">Cédula Prof: XXXXXXXX</p>
+          </div>
+          
+          <div class="datos-cliente-form">
+            <label>Fecha:</label>
+            <input type="date" id="receta-fecha" value="${new Date().toISOString().split('T')[0]}">
+            
+            <label>Propietario:</label>
+            <input type="text" id="receta-propietario" placeholder="Nombre del dueño">
+            
+            <label>Paciente / ID:</label>
+            <input type="text" id="receta-paciente" placeholder="Ej. Vaca 408 / Firulais">
+            
+            <label>Especie / Peso:</label>
+            <input type="text" id="receta-peso" placeholder="Ej. Bovino, 450 kg">
+          </div>
+
+          <div class="qr-area">
+             <div class="qr-placeholder">QR Validación</div>
+          </div>
+        </aside>
+
+        <main class="receta-main">
+          <div class="receta-header-main">
+            <h2>RECETARIO MÉDICO</h2>
+            <span class="folio">Folio: #0001</span>
+          </div>
+          
+          <div class="rp-body">
+            <h3>Rp/</h3>
+            <ul id="lista-items-receta" class="lista-medicamentos">
+              </ul>
+          </div>
+
+          <div class="receta-footer">
+            <div class="notas-adicionales">
+              <label>Indicaciones generales / Próxima cita:</label>
+              <textarea placeholder="Ej. Mantener en reposo. Retiro en leche: 4 días."></textarea>
+            </div>
+            <div class="firma-area">
+              <div class="linea-firma"></div>
+              <p>Firma y Sello</p>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

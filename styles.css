@@ -1431,4 +1431,282 @@ main {
   padding-top: 0.55rem;
 }
 
+/* ===========================
+   LINKS DE BACTERIAS
+=========================== */
+.bacteria-link {
+  color: #38bdf8;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.bacteria-link:hover {
+  color: #7dd3fc;
+  text-decoration: underline;
+}
 
+/* Colores adicionales para Farmacología */
+.card-antibio-antiparasitario {
+  border-left-color: #ef4444; /* Rojo */
+}
+.card-antibio-antiinflamatorio {
+  border-left-color: #eab308; /* Amarillo */
+}
+.farma-resultado {
+    animation: fadeIn 0.3s ease-in-out;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ========== FAB RECETARIO (Botón Flotante) ========== */
+.fab-receta {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: var(--apple-blue);
+  color: white;
+  border: none;
+  font-size: 1.5rem;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+  cursor: pointer;
+  z-index: 1000;
+  transition: transform 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.fab-receta:hover { transform: scale(1.1); }
+.fab-receta.bump { transform: scale(1.3); }
+
+#badge-receta {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #ef4444;
+  color: white;
+  font-size: 0.8rem;
+  font-weight: bold;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #020617;
+}
+
+/* ========== MODAL RECETA ========== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(5px);
+  z-index: 2000;
+  display: none; /* Oculto por defecto */
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+.modal-overlay.active { display: flex; }
+
+.hoja-receta-container {
+  width: 100%;
+  max-width: 1000px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 90vh; /* Para que quepa en pantalla */
+}
+
+.receta-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+}
+
+.receta-actions {
+  display: flex;
+  gap: 10px;
+}
+
+/* ========== HOJA DE PAPEL (VISTA PREVIA) ========== */
+.hoja-papel {
+  background: white;
+  color: black;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 250px 1fr; /* Sidebar izquierda + Contenido */
+  overflow: hidden;
+  box-shadow: 0 0 50px rgba(0,0,0,0.5);
+}
+
+/* Sidebar Azul (Izquierda) */
+.receta-sidebar {
+  background: #1e3a8a; /* Azul médico */
+  color: white;
+  padding: 30px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.brand-area h1 { font-size: 1.8rem; line-height: 1; }
+.brand-area p { opacity: 0.9; }
+
+.datos-cliente-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.datos-cliente-form label { font-size: 0.7rem; text-transform: uppercase; opacity: 0.7; }
+.datos-cliente-form input {
+  background: rgba(255,255,255,0.1);
+  border: none;
+  border-bottom: 1px solid rgba(255,255,255,0.3);
+  color: white;
+  padding: 5px;
+  font-family: inherit;
+}
+.datos-cliente-form input::placeholder { color: rgba(255,255,255,0.4); }
+
+.qr-placeholder {
+  width: 80px;
+  height: 80px;
+  background: white;
+  color: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+  font-weight: bold;
+}
+
+/* Main Content (Derecha) */
+.receta-main {
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+}
+
+.receta-header-main {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+.rp-body { flex: 1; overflow-y: auto; }
+.rp-body h3 { font-size: 2rem; font-family: serif; color: #1e3a8a; margin-bottom: 10px; }
+
+.lista-medicamentos { list-style: none; padding: 0; }
+.receta-item {
+  border-bottom: 1px dashed #ccc;
+  padding: 10px 0;
+  position: relative;
+}
+.item-main { font-size: 1.1rem; }
+.item-detalles { color: #444; margin-top: 4px; }
+.item-retiro-warning { 
+  font-size: 0.75rem; 
+  background: #fee2e2; 
+  color: #b91c1c; 
+  display: inline-block; 
+  padding: 2px 6px; 
+  border-radius: 4px; 
+  margin-top: 4px; 
+  font-weight: bold;
+}
+.item-nota-input {
+  display: block;
+  width: 100%;
+  margin-top: 5px;
+  border: none;
+  font-style: italic;
+  color: #2563eb;
+  background: #f8fafc;
+  padding: 5px;
+}
+
+.btn-borrar-item {
+  position: absolute;
+  top: 10px;
+  right: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  opacity: 0.5;
+}
+.btn-borrar-item:hover { opacity: 1; }
+
+.receta-footer {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+.notas-adicionales textarea {
+  width: 300px;
+  height: 60px;
+  border: 1px solid #ddd;
+  padding: 5px;
+  font-family: inherit;
+  resize: none;
+}
+.firma-area {
+  text-align: center;
+  width: 200px;
+}
+.linea-firma { border-bottom: 1px solid black; height: 1px; margin-bottom: 5px; }
+
+/* ========== MODO IMPRESIÓN (PDF) ========== */
+@media print {
+  /* Ocultar todo lo que no sea la hoja de receta */
+  body > *:not(#modal-receta) { display: none !important; }
+  .modal-overlay { 
+    position: absolute; 
+    background: white; 
+    padding: 0; 
+    display: block !important; 
+  }
+  .receta-controls, .fab-receta, .no-print { display: none !important; }
+  
+  .hoja-receta-container { height: auto; max-width: none; }
+  .hoja-papel {
+    box-shadow: none;
+    width: 100vw;
+    height: 100vh;
+    grid-template-columns: 200px 1fr; /* Ajustar sidebar para papel */
+  }
+  
+  /* Forzar colores de fondo (importante para la sidebar azul) */
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  
+  /* Configurar hoja horizontal */
+  @page {
+    size: landscape;
+    margin: 0;
+  }
+  
+  .datos-cliente-form input {
+    border: none;
+    background: transparent;
+    padding: 0;
+    font-weight: bold;
+  }
+  .item-nota-input {
+    border: none;
+    background: transparent;
+    padding: 0;
+  }
+}
