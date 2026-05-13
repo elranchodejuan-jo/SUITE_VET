@@ -1,0 +1,8 @@
+/* =============================================================================
+   SUITE VET 2.0 — modules/patologia/patologia.css
+   ============================================================================= */
+
+.pato-card { border-left: 4px solid var(--sv-pato-color); }
+
+.pato-badge-sistema  { background: rgba(249,115,22,0.12); color: #fb923c; border: 1px solid rgba(249,115,22,0.25); border-radius: 999px; padding: 0.15rem 0.5rem; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+.pato-badge-tipo     { background: rgba(139,92,246,0.12); color: #c084fc; border: 1px solid rgba(139,92,246,0.25); border-radius: 999px; padding: 0.15rem 0.5rem; font-size: 0.7rem; font-weight: 600; }

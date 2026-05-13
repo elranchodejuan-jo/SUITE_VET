@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SUITE VET</title>
+
+  <!-- ── SHARED: Sistema de diseño ── -->
+  <link rel="stylesheet" href="shared/tokens.css" />
+  <link rel="stylesheet" href="shared/components.css" />
+  <link rel="stylesheet" href="shared/layout.css" />
+
+  <!-- ── MÓDULOS CSS ── -->
+  <link rel="stylesheet" href="modules/fisio/fisio.css" />
+  <link rel="stylesheet" href="modules/farma/farma.css" />
+  <link rel="stylesheet" href="modules/micro/micro.css" />
+  <link rel="stylesheet" href="modules/patologia/patologia.css" />
+
+  <!-- ── RECETARIO CSS ── -->
+  <link rel="stylesheet" href="shared/recetario.css" />
+
+  <!-- QR para guías/receta -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <!-- ── SHARED: Router (carga primero, aplica tema antes del render) ── -->
+  <script src="shared/router.js"></script>
+</head>
+<body>
+
+  <!-- ════════════════════════════════════════
+       TOPBAR
+  ════════════════════════════════════════ -->
+  <header class="sv-topbar">
+    <!-- Hamburguesa -->
+    <button class="sv-menu-toggle sv-topbar-actions" id="sv-menu-toggle" aria-label="Menú proyectos">
+      <span></span><span></span><span></span>
+    </button>
+
+    <!-- Brand -->
+    <span class="sv-topbar-brand">SUITE VET</span>
+
+    <!-- Buscador global -->
+    <div class="sv-search-wrap">
+      <span class="sv-search-icon">🔍</span>
+      <input
+        type="text"
+        id="sv-search-global"
+        class="sv-search-global"
+        placeholder="Buscar en todos los módulos…"
+        autocomplete="off"
+      />
+      <div id="sv-search-results" class="sv-search-results"></div>
+    </div>
+
+    <!-- Toggle de tema -->
+    <div class="sv-topbar-actions">
+      <button id="sv-theme-toggle" title="Cambiar tema">☀️</button>
+    </div>
+  </header>
+
+  <!-- Menú lateral proyectos -->
+  <div class="sv-menu-panel" id="sv-menu-panel">
+    <p class="sv-menu-title">Proyectos</p>
+    <button class="sv-menu-item sv-disabled">CD — Cartilla Digital</button>
+    <button class="sv-menu-item sv-disabled">CATTLE — Bovinos</button>
+    <p class="sv-menu-note">En desarrollo, pronto más info…</p>
+  </div>
+
+  <!-- ════════════════════════════════════════
+       NAV PRINCIPAL
+  ════════════════════════════════════════ -->
+  <nav class="sv-nav">
+    <button class="sv-nav-btn sv-nav-active" data-view="home">Inicio</button>
+    <button class="sv-nav-btn" data-view="fisiologia">Fisiología</button>
+    <button class="sv-nav-btn" data-view="farmacologia">Farmacología</button>
+    <button class="sv-nav-btn" data-view="microbiologia">Microbiología</button>
+    <button class="sv-nav-btn" data-view="patologia">Patología</button>
+  </nav>
+
+  <!-- ════════════════════════════════════════
+       CONTENIDO PRINCIPAL
+  ════════════════════════════════════════ -->
+  <main class="sv-main">
+
+    <!-- ── INICIO ── -->
+    <section id="view-home" class="sv-view sv-view-active">
+      <h2>Bienvenido a SUITE VET</h2>
+      <p class="sv-view-intro">
+        Plataforma de estudio y consulta para medicina veterinaria y zootecnia.
+        Elige el módulo con el que quieres trabajar:
+      </p>
+
+      <div class="sv-home-grid">
+        <button class="sv-home-card sv-home-card-fisio" data-go-view="fisiologia" type="button">
+          <div class="sv-home-card-icon">💗</div>
+          <div class="sv-home-card-title">Fisiología</div>
+          <div class="sv-home-card-text">Hormonas, vitaminas y glosario clínico por sistema.</div>
+        </button>
+
+        <button class="sv-home-card sv-home-card-farma" data-go-view="farmacologia" type="button">
+          <div class="sv-home-card-icon">💉</div>
+          <div class="sv-home-card-title">Farmacología</div>
+          <div class="sv-home-card-text">Vademécum, dosis por especie y tiempos de retiro.</div>
+        </button>
+
+        <button class="sv-home-card sv-home-card-micro" data-go-view="microbiologia" type="button">
+          <div class="sv-home-card-icon">🧫</div>
+          <div class="sv-home-card-title">Microbiología</div>
+          <div class="sv-home-card-text">Agares, pruebas bioquímicas, antibiogramas y atlas bacteriano.</div>
+        </button>
+
+        <button class="sv-home-card sv-home-card-pato" data-go-view="patologia" type="button">
+          <div class="sv-home-card-icon">🔬</div>
+          <div class="sv-home-card-title">Patología</div>
+          <div class="sv-home-card-text">Lesiones, hallazgos y diagnóstico diferencial.</div>
+          <span class="sv-coming-tag">Nuevo módulo</span>
+        </button>
+
+        <button class="sv-home-card sv-home-card-coming sv-disabled" type="button" disabled>
+          <div class="sv-home-card-icon">🐄</div>
+          <div class="sv-home-card-title">CATTLE</div>
+          <div class="sv-home-card-text">Manejo bovino, retiros y protocolos.</div>
+          <span class="sv-coming-tag">Próximamente</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ── FISIOLOGÍA ── -->
+    <section id="view-fisiologia" class="sv-view">
+      <!-- Contenido inyectado por modules/fisio/fisio.js -->
+      <div id="fisio-root"></div>
+    </section>
+
+    <!-- ── FARMACOLOGÍA ── -->
+    <section id="view-farmacologia" class="sv-view">
+      <!-- Contenido inyectado por modules/farma/farma.js -->
+      <div id="farma-root"></div>
+    </section>
+
+    <!-- ── MICROBIOLOGÍA ── -->
+    <section id="view-microbiologia" class="sv-view">
+      <!-- Contenido inyectado por modules/micro/micro.js -->
+      <div id="micro-root"></div>
+    </section>
+
+    <!-- ── PATOLOGÍA ── -->
+    <section id="view-patologia" class="sv-view">
+      <!-- Contenido inyectado por modules/patologia/patologia.js -->
+      <div id="patologia-root"></div>
+    </section>
+
+  </main>
+
+  <!-- ════════════════════════════════════════
+       FAB — RECETARIO
+  ════════════════════════════════════════ -->
+  <button id="sv-fab-receta" class="sv-fab" title="Ver recetario">
+    📝 Receta
+    <span id="sv-fab-badge" class="sv-fab-badge" data-count="0">0</span>
+  </button>
+
+  <!-- ════════════════════════════════════════
+       MODAL RECETARIO
+  ════════════════════════════════════════ -->
+  <div id="sv-modal-receta" class="sv-modal-overlay">
+    <div class="sv-receta-container">
+
+      <!-- Controles (no se imprimen) -->
+      <div class="sv-receta-controls no-print">
+        <h3>📋 Borrador de Receta</h3>
+        <div class="sv-receta-actions">
+          <button id="sv-receta-cerrar"   class="sv-btn sv-btn-ghost">Seguir editando</button>
+          <button id="sv-receta-limpiar"  class="sv-btn sv-btn-danger">Borrar todo</button>
+          <button id="sv-receta-imprimir" class="sv-btn sv-btn-primary">🖨️ Imprimir / PDF</button>
+        </div>
+      </div>
+
+      <!-- Hoja de papel (se imprime) -->
+      <div class="sv-hoja-papel" id="sv-area-impresion-receta">
+
+        <!-- Sidebar azul -->
+        <aside class="sv-receta-sidebar">
+          <div class="sv-brand-area">
+            <h1>SUITE VET</h1>
+            <p>Medicina Veterinaria &amp; Zootecnia</p>
+            <p class="sv-receta-meta">Dr. [Nombre del Usuario]</p>
+            <p class="sv-receta-meta">Cédula Prof: XXXXXXXX</p>
+          </div>
+
+          <div class="sv-datos-form">
+            <label>Fecha:</label>
+            <input type="date" id="sv-receta-fecha" class="sv-receta-input" />
+
+            <label>Propietario:</label>
+            <input type="text" id="sv-receta-propietario" class="sv-receta-input" placeholder="Nombre del dueño" />
+
+            <label>Paciente / ID:</label>
+            <input type="text" id="sv-receta-paciente" class="sv-receta-input" placeholder="Ej. Vaca 408 / Firulais" />
+
+            <label>Especie / Peso:</label>
+            <input type="text" id="sv-receta-peso" class="sv-receta-input" placeholder="Ej. Bovino, 450 kg" />
+          </div>
+
+          <div class="sv-qr-area">
+            <div id="sv-receta-qr" class="sv-qr-box"></div>
+          </div>
+        </aside>
+
+        <!-- Cuerpo de la receta -->
+        <main class="sv-receta-main">
+          <div class="sv-receta-header-main">
+            <h2>RECETARIO MÉDICO VETERINARIO</h2>
+            <span class="sv-receta-folio">Folio: #0001</span>
+          </div>
+
+          <div class="sv-rp-body">
+            <h3>Rp/</h3>
+            <ul id="sv-lista-receta" class="sv-lista-receta"></ul>
+          </div>
+
+          <div class="sv-receta-footer">
+            <div class="sv-notas-adicionales">
+              <label>Indicaciones generales / Próxima cita:</label>
+              <textarea class="sv-receta-textarea" placeholder="Ej. Mantener en reposo. Retiro en leche: 4 días."></textarea>
+            </div>
+            <div class="sv-firma-area">
+              <div class="sv-linea-firma"></div>
+              <p>Firma y Sello</p>
+            </div>
+          </div>
+        </main>
+
+      </div><!-- /hoja-papel -->
+    </div><!-- /receta-container -->
+  </div><!-- /modal -->
+
+  <!-- Área invisible de impresión auxiliar -->
+  <div id="sv-print-area" style="display:none"></div>
+
+  <!-- Toast de notificación -->
+  <!-- Se crea dinámicamente por recetario.js -->
+
+  <!-- ════════════════════════════════════════
+       SCRIPTS — MÓDULOS
+  ════════════════════════════════════════ -->
+  <!-- Shared -->
+  <script src="shared/recetario.js" defer></script>
+
+  <!-- Fisiología -->
+  <script src="modules/fisio/data.js"  defer></script>
+  <script src="modules/fisio/fisio.js" defer></script>
+
+  <!-- Farmacología -->
+  <script src="modules/farma/data.js"  defer></script>
+  <script src="modules/farma/farma.js" defer></script>
+
+  <!-- Microbiología -->
+  <script src="modules/micro/data.js"       defer></script>
+  <script src="modules/micro/antibio.js"    defer></script>
+  <script src="modules/micro/microorg.js"   defer></script>
+  <script src="modules/micro/micro.js"      defer></script>
+
+  <!-- Patología -->
+  <script src="modules/patologia/data.js"      defer></script>
+  <script src="modules/patologia/patologia.js" defer></script>
+
+</body>
+</html>
