@@ -1,7 +1,7 @@
 // =============================================================================
 // SUITE VET 2.0 — modules/farma/farma.js
-// Lógica del módulo de Farmacología.
-// Datos en: modules/farma/data.js (window.FARMA_DATA)
+// Versión con sistema de categorías visuales integrado.
+// Requiere: shared/categorias.js cargado previamente.
 // =============================================================================
 
 (function () {
@@ -12,19 +12,20 @@
     if (!root) return;
 
     const farmacos = (window.FARMA_DATA || {}).farmacos || [];
+    const Cat = window.SuiteVet?.Categorias;
+
+    if (!Cat) {
+      console.warn("[Farma] shared/categorias.js no está cargado. El módulo funcionará sin colores.");
+    }
 
     // -------------------------------------------------------------------------
     // 1. INYECTAR HTML
     // -------------------------------------------------------------------------
-    // Grupos únicos para los filtros
-    const grupos = [...new Set(farmacos.map((f) => f.grupo))];
-    const opcionesGrupo = grupos.map((g) => `<option value="${g}">${g}</option>`).join("");
-
     root.innerHTML = `
       <h2>Farmacología</h2>
       <p class="sv-view-intro">
         Vademécum veterinario con calculadora de dosis por especie y peso.
-        Calcula la dosis y agrégala directamente al recetario.
+        Cada fármaco está clasificado visualmente por su categoría farmacológica.
       </p>
 
       <div class="sv-toolbar">
@@ -36,40 +37,82 @@
           style="max-width:360px;"
           autocomplete="off"
         />
-        <select id="farma-filtro-grupo" class="sv-select" style="max-width:200px;">
-          <option value="">Todos los grupos</option>
-          ${opcionesGrupo}
-        </select>
       </div>
+
+      <!-- CHIPS DE FILTRO POR CATEGORÍA -->
+      <div class="cat-chip-grid" id="farma-chips"></div>
 
       <div class="sv-grid" id="farma-lista"></div>
     `;
 
     // -------------------------------------------------------------------------
-    // 2. FILTROS — BUG FIX: ahora sí están conectados
+    // 2. RENDERIZAR CHIPS DE FILTRO POR CATEGORÍA
     // -------------------------------------------------------------------------
-    const searchInput  = root.querySelector("#farma-search");
-    const filtroGrupo  = root.querySelector("#farma-filtro-grupo");
-    const lista        = root.querySelector("#farma-lista");
+    const chipsContainer = root.querySelector("#farma-chips");
+    let categoriaActiva = "todas";
 
-    function getQuery()  { return (searchInput?.value  || "").trim().toLowerCase(); }
-    function getGrupo()  { return (filtroGrupo?.value  || ""); }
+    if (Cat && chipsContainer) {
+      // Detectar qué categorías hay en los datos actuales
+      const categoriasUsadas = new Set(
+        farmacos.map(f => f.categoria || f.grupoKey).filter(Boolean)
+      );
 
-    searchInput?.addEventListener("input",  renderFarmacos);
-    filtroGrupo?.addEventListener("change", renderFarmacos);
+      // Chip "Todas"
+      chipsContainer.innerHTML = `
+        <button class="cat-chip is-active" data-cat="todas">
+          <span>Todas</span>
+          <span style="opacity:0.6">${farmacos.length}</span>
+        </button>
+      `;
+
+      // Un chip por cada categoría usada, agrupado por familia
+      Cat.familias().forEach(fam => {
+        const cats = Cat.listByFamilia(fam.id).filter(c => categoriasUsadas.has(c.id));
+        if (cats.length === 0) return;
+
+        cats.forEach(c => {
+          const count = farmacos.filter(f => (f.categoria || f.grupoKey) === c.id).length;
+          const chip = document.createElement("button");
+          chip.className = "cat-chip";
+          chip.setAttribute("data-categoria", c.id);
+          chip.dataset.cat = c.id;
+          chip.innerHTML = `
+            <span>${c.icon}</span>
+            <span>${c.label}</span>
+            <span style="opacity:0.6">${count}</span>
+          `;
+          chipsContainer.appendChild(chip);
+        });
+      });
+
+      // Listener
+      chipsContainer.addEventListener("click", (e) => {
+        const chip = e.target.closest(".cat-chip");
+        if (!chip) return;
+        chipsContainer.querySelectorAll(".cat-chip").forEach(c => c.classList.remove("is-active"));
+        chip.classList.add("is-active");
+        categoriaActiva = chip.dataset.cat;
+        renderFarmacos();
+      });
+    }
 
     // -------------------------------------------------------------------------
     // 3. RENDER DE TARJETAS
     // -------------------------------------------------------------------------
-    function renderFarmacos() {
-      const q     = getQuery();
-      const grupo = getGrupo();
+    const searchInput = root.querySelector("#farma-search");
+    const lista       = root.querySelector("#farma-lista");
 
-      const filtrados = farmacos.filter((f) => {
+    searchInput?.addEventListener("input", renderFarmacos);
+
+    function renderFarmacos() {
+      const q = (searchInput?.value || "").trim().toLowerCase();
+
+      const filtrados = farmacos.filter(f => {
         const blob = `${f.principio} ${f.grupo} ${f.comerciales.join(" ")} ${f.mecanismo}`.toLowerCase();
-        const pasaQ     = !q     || blob.includes(q);
-        const pasaGrupo = !grupo || f.grupo === grupo;
-        return pasaQ && pasaGrupo;
+        const pasaQ   = !q || blob.includes(q);
+        const catId   = f.categoria || f.grupoKey;
+        const pasaCat = categoriaActiva === "todas" || catId === categoriaActiva;
+        return pasaQ && pasaCat;
       });
 
       lista.innerHTML = "";
@@ -83,37 +126,62 @@
         return;
       }
 
-      filtrados.forEach((f) => {
-        lista.appendChild(crearTarjeta(f));
-      });
+      filtrados.forEach(f => lista.appendChild(crearTarjeta(f)));
     }
 
     // -------------------------------------------------------------------------
-    // 4. CREAR TARJETA CON CALCULADORA
+    // 4. CREAR TARJETA CON IDENTIDAD DE CATEGORÍA
     // -------------------------------------------------------------------------
     function crearTarjeta(f) {
-      const art = document.createElement("article");
-      art.className = "sv-card farma-card sv-fade-in";
+      const art   = document.createElement("article");
+      const catId = f.categoria || f.grupoKey || "default";
+      const cat   = Cat ? Cat.get(catId) : { label: f.grupo, icon: "💊", riesgoBase: 0 };
 
-      // Opciones de especie
+      // Aplicar identidad visual de categoría
+      art.className = "cat-card sv-card sv-fade-in";
+      art.setAttribute("data-categoria", catId);
+
+      // Opciones de especie para calculadora
       const opcionesEsp = f.especies
         .map((e, i) => `<option value="${i}">${e.nombre}</option>`)
         .join("");
 
+      // Detectar alertas automáticas
+      const alertas = [];
+      const contraTxt = (f.contraindicaciones || "").toLowerCase();
+      if (contraTxt.includes("mdr1") || contraTxt.includes("collie"))          alertas.push("mdr1");
+      if (contraTxt.includes("gestación") || contraTxt.includes("gestacion")) alertas.push("gestacion");
+      if (contraTxt.includes("renal"))                                          alertas.push("nefrotoxico");
+      if (contraTxt.includes("hepático") || contraTxt.includes("hepato"))     alertas.push("hepatotoxico");
+
+      // Calcular riesgo: base de categoría + ajustes
+      const riesgo = f.riesgo || cat.riesgoBase || 1;
+
       art.innerHTML = `
         <div class="sv-card-header">
-          <span class="sv-card-title">${f.principio}</span>
-          <span class="farma-badge-grupo">${f.grupo}</span>
+          <div style="display:flex; align-items:center; gap:0.6rem;">
+            ${Cat ? Cat.iconCircle(catId) : ''}
+            <div>
+              <div class="sv-card-title">${f.principio}</div>
+              <div class="sv-card-subtitle">${f.grupo}</div>
+            </div>
+          </div>
+          ${Cat ? Cat.badge(catId) : ''}
         </div>
 
         <div class="sv-card-body">
           <p><strong>Concentración:</strong> ${f.concentracion} ${f.unidad}</p>
           <p><strong>Mecanismo:</strong> ${f.mecanismo}</p>
-          <p><strong>Contraindicaciones:</strong> <span style="color:var(--sv-danger)">${f.contraindicaciones}</span></p>
-          <div class="farma-comerciales">
-            ${f.comerciales.map((c) => `<span class="farma-comercial-tag">${c}</span>`).join("")}
+
+          <div style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap; margin-top:0.4rem;">
+            ${Cat ? Cat.riesgoBadge(riesgo) : ''}
+            ${f.comerciales.map(c =>
+              `<span class="farma-comercial-tag">${c}</span>`
+            ).join("")}
           </div>
         </div>
+
+        ${alertas.length > 0 && Cat ? Cat.alerta(alertas) : ''}
 
         <div class="farma-calc-area">
           <div class="farma-calc-row">
@@ -133,33 +201,28 @@
         </div>
       `;
 
-      // Lógica de la calculadora
+      // Lógica de calculadora (igual que antes)
       const selEsp    = art.querySelector("._esp");
       const inputPeso = art.querySelector("._peso");
       const divRes    = art.querySelector("._resultado");
       const btnReceta = art.querySelector("._btn-receta");
 
-      let _dosisActual  = null;
-      let _especieActual = null;
-      let _retiroActual  = null;
+      let _dosisActual = null, _especieActual = null, _retiroActual = null;
 
       function calcular() {
         const peso = parseFloat(inputPeso.value);
         const espIdx = parseInt(selEsp.value, 10);
-
         if (!peso || peso <= 0) {
           divRes.classList.remove("visible");
           btnReceta.style.display = "none";
           return;
         }
-
         const esp = f.especies[espIdx];
-        const dosisTotal = peso * esp.dosisMgKg;
-        const ml = dosisTotal / f.concentracion;
+        const ml  = (peso * esp.dosisMgKg) / f.concentracion;
 
         _dosisActual   = `${ml.toFixed(2)} mL`;
         _especieActual = esp.nombre;
-        _retiroActual  = esp.retiroCarne > 0 || esp.retiroLeche > 0
+        _retiroActual  = (esp.retiroCarne > 0 || esp.retiroLeche > 0)
           ? `🥩 Carne: ${esp.retiroCarne} días | 🥛 Leche: ${esp.retiroLeche} días`
           : "";
 
@@ -167,13 +230,12 @@
         divRes.innerHTML = `
           <div class="farma-dosis-valor">${_dosisActual}</div>
           <div style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
-            <span class="sv-badge sv-badge-blue">${esp.via}</span>
+            <span class="cat-badge cat-badge-solid" data-categoria="${catId}">${esp.via}</span>
             <span class="sv-badge sv-badge-gray">${esp.nombre}</span>
           </div>
           ${_retiroActual ? `<div class="farma-retiro-box">⏱ ${_retiroActual}</div>` : ""}
           <p class="farma-nota-especie">"${esp.nota}"</p>
         `;
-
         btnReceta.style.display = "block";
       }
 
@@ -182,15 +244,9 @@
 
       btnReceta.addEventListener("click", () => {
         if (!_dosisActual) return;
-        if (window.Recetario?.agregarItem) {
-          window.Recetario.agregarItem(
-            f,
-            _dosisActual,
-            f.especies[parseInt(selEsp.value, 10)].via,
-            _especieActual,
-            _retiroActual
-          );
-        }
+        window.Recetario?.agregarItem(
+          f, _dosisActual, f.especies[parseInt(selEsp.value, 10)].via, _especieActual, _retiroActual
+        );
       });
 
       return art;
@@ -202,16 +258,14 @@
     renderFarmacos();
 
     // -------------------------------------------------------------------------
-    // 6. REGISTRO EN BUSCADOR GLOBAL
+    // 6. BUSCADOR GLOBAL
     // -------------------------------------------------------------------------
     if (window.SuiteVet?.registerSearch) {
       window.SuiteVet.registerSearch("farma", (q) =>
         farmacos
-          .filter((f) =>
-            `${f.principio} ${f.grupo} ${f.comerciales.join(" ")}`.toLowerCase().includes(q)
-          )
-          .map((f) => ({
-            title:    f.principio,
+          .filter(f => `${f.principio} ${f.grupo} ${f.comerciales.join(" ")}`.toLowerCase().includes(q))
+          .map(f => ({
+            title: f.principio,
             subtitle: f.grupo,
             moduleId: "farma",
             action: () => {

@@ -1,0 +1,445 @@
+/* =============================================================================
+   SUITE VET 2.0 — shared/categorias.css
+   Sistema visual de categorías farmacológicas.
+   
+   Cada categoría tiene 4 tokens:
+     --cat-{id}-primary   → color base (badges, bordes, iconos)
+     --cat-{id}-soft      → fondo suave (tarjetas, hover)
+     --cat-{id}-glow      → resplandor para sombras y focus
+     --cat-{id}-contrast  → texto sobre fondos suaves
+   
+   Para agregar una categoría nueva:
+     1. Define los 4 tokens en :root y [data-theme="light"]
+     2. Agrega el bloque [data-categoria="nombre"]
+     3. Registra en shared/categorias.js
+   ============================================================================= */
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   MODO OSCURO (por defecto)
+───────────────────────────────────────────────────────────────────────────── */
+:root,
+[data-theme="dark"] {
+
+  /* ── ANTIMICROBIANOS ─────────────────────────────────────────────────────── */
+  --cat-bactericida-primary:   #ef4444;
+  --cat-bactericida-soft:      rgba(239, 68, 68, 0.12);
+  --cat-bactericida-glow:      rgba(239, 68, 68, 0.35);
+  --cat-bactericida-contrast:  #fca5a5;
+
+  --cat-bacteriostatico-primary:   #fb923c;
+  --cat-bacteriostatico-soft:      rgba(251, 146, 60, 0.12);
+  --cat-bacteriostatico-glow:      rgba(251, 146, 60, 0.30);
+  --cat-bacteriostatico-contrast:  #fdba74;
+
+  --cat-antifungico-primary:   #b45309;
+  --cat-antifungico-soft:      rgba(180, 83, 9, 0.18);
+  --cat-antifungico-glow:      rgba(180, 83, 9, 0.30);
+  --cat-antifungico-contrast:  #fcd34d;
+
+  --cat-antiseptico-primary:   #10b981;
+  --cat-antiseptico-soft:      rgba(16, 185, 129, 0.12);
+  --cat-antiseptico-glow:      rgba(16, 185, 129, 0.30);
+  --cat-antiseptico-contrast:  #6ee7b7;
+
+  /* ── ANTIPARASITARIOS ────────────────────────────────────────────────────── */
+  --cat-antiparasitario-interno-primary:   #84cc16;
+  --cat-antiparasitario-interno-soft:      rgba(132, 204, 22, 0.12);
+  --cat-antiparasitario-interno-glow:      rgba(132, 204, 22, 0.30);
+  --cat-antiparasitario-interno-contrast:  #bef264;
+
+  --cat-antiparasitario-externo-primary:   #eab308;
+  --cat-antiparasitario-externo-soft:      rgba(234, 179, 8, 0.12);
+  --cat-antiparasitario-externo-glow:      rgba(234, 179, 8, 0.30);
+  --cat-antiparasitario-externo-contrast:  #fde047;
+
+  /* ── INFLAMACIÓN / DOLOR ─────────────────────────────────────────────────── */
+  --cat-aine-primary:   #a3e635;
+  --cat-aine-soft:      rgba(163, 230, 53, 0.12);
+  --cat-aine-glow:      rgba(163, 230, 53, 0.30);
+  --cat-aine-contrast:  #d9f99d;
+
+  --cat-corticoide-primary:   #ec4899;
+  --cat-corticoide-soft:      rgba(236, 72, 153, 0.12);
+  --cat-corticoide-glow:      rgba(236, 72, 153, 0.35);
+  --cat-corticoide-contrast:  #f9a8d4;
+
+  --cat-analgesico-primary:   #f97316;
+  --cat-analgesico-soft:      rgba(249, 115, 22, 0.12);
+  --cat-analgesico-glow:      rgba(249, 115, 22, 0.30);
+  --cat-analgesico-contrast:  #fdba74;
+
+  /* ── SISTEMA NERVIOSO ────────────────────────────────────────────────────── */
+  --cat-anestesico-primary:   #6366f1;
+  --cat-anestesico-soft:      rgba(99, 102, 241, 0.15);
+  --cat-anestesico-glow:      rgba(99, 102, 241, 0.35);
+  --cat-anestesico-contrast:  #a5b4fc;
+
+  --cat-sedante-primary:   #a78bfa;
+  --cat-sedante-soft:      rgba(167, 139, 250, 0.12);
+  --cat-sedante-glow:      rgba(167, 139, 250, 0.30);
+  --cat-sedante-contrast:  #c4b5fd;
+
+  /* ── CARDIORRESPIRATORIO ─────────────────────────────────────────────────── */
+  --cat-broncodilatador-primary:   #0ea5e9;
+  --cat-broncodilatador-soft:      rgba(14, 165, 233, 0.12);
+  --cat-broncodilatador-glow:      rgba(14, 165, 233, 0.30);
+  --cat-broncodilatador-contrast:  #7dd3fc;
+
+  --cat-cardiovascular-primary:   #e11d48;
+  --cat-cardiovascular-soft:      rgba(225, 29, 72, 0.12);
+  --cat-cardiovascular-glow:      rgba(225, 29, 72, 0.35);
+  --cat-cardiovascular-contrast:  #fda4af;
+
+  /* ── INMUNIDAD ───────────────────────────────────────────────────────────── */
+  --cat-vacuna-primary:   #14b8a6;
+  --cat-vacuna-soft:      rgba(20, 184, 166, 0.12);
+  --cat-vacuna-glow:      rgba(20, 184, 166, 0.30);
+  --cat-vacuna-contrast:  #5eead4;
+
+  --cat-inmunomodulador-primary:   #0d9488;
+  --cat-inmunomodulador-soft:      rgba(13, 148, 136, 0.15);
+  --cat-inmunomodulador-glow:      rgba(13, 148, 136, 0.30);
+  --cat-inmunomodulador-contrast:  #2dd4bf;
+
+  --cat-antihistaminico-primary:   #c084fc;
+  --cat-antihistaminico-soft:      rgba(192, 132, 252, 0.12);
+  --cat-antihistaminico-glow:      rgba(192, 132, 252, 0.30);
+  --cat-antihistaminico-contrast:  #d8b4fe;
+
+  /* ── METABOLISMO / SOPORTE ───────────────────────────────────────────────── */
+  --cat-hormona-primary:   #f43f5e;
+  --cat-hormona-soft:      rgba(244, 63, 94, 0.12);
+  --cat-hormona-glow:      rgba(244, 63, 94, 0.30);
+  --cat-hormona-contrast:  #fda4af;
+
+  --cat-vitamina-primary:   #facc15;
+  --cat-vitamina-soft:      rgba(250, 204, 21, 0.15);
+  --cat-vitamina-glow:      rgba(250, 204, 21, 0.30);
+  --cat-vitamina-contrast:  #fef08a;
+
+  --cat-fluidoterapia-primary:   #06b6d4;
+  --cat-fluidoterapia-soft:      rgba(6, 182, 212, 0.12);
+  --cat-fluidoterapia-glow:      rgba(6, 182, 212, 0.30);
+  --cat-fluidoterapia-contrast:  #67e8f9;
+
+  /* ── DEFAULT / SIN CATEGORÍA ─────────────────────────────────────────────── */
+  --cat-default-primary:   #6b7280;
+  --cat-default-soft:      rgba(107, 114, 128, 0.12);
+  --cat-default-glow:      rgba(107, 114, 128, 0.25);
+  --cat-default-contrast:  #d1d5db;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   MODO CLARO — ajustes de contraste
+───────────────────────────────────────────────────────────────────────────── */
+[data-theme="light"] {
+  /* Solo cambian los soft (más opacos) y contrast (más oscuros) */
+  --cat-bactericida-soft:      rgba(220, 38, 38, 0.08);
+  --cat-bactericida-contrast:  #991b1b;
+
+  --cat-bacteriostatico-soft:      rgba(234, 88, 12, 0.08);
+  --cat-bacteriostatico-contrast:  #9a3412;
+
+  --cat-antifungico-primary:   #92400e;
+  --cat-antifungico-soft:      rgba(146, 64, 14, 0.10);
+  --cat-antifungico-contrast:  #7c2d12;
+
+  --cat-antiseptico-soft:      rgba(5, 150, 105, 0.08);
+  --cat-antiseptico-contrast:  #065f46;
+
+  --cat-antiparasitario-interno-primary:   #65a30d;
+  --cat-antiparasitario-interno-soft:      rgba(101, 163, 13, 0.10);
+  --cat-antiparasitario-interno-contrast:  #365314;
+
+  --cat-antiparasitario-externo-primary:   #ca8a04;
+  --cat-antiparasitario-externo-soft:      rgba(202, 138, 4, 0.10);
+  --cat-antiparasitario-externo-contrast:  #713f12;
+
+  --cat-aine-primary:   #65a30d;
+  --cat-aine-soft:      rgba(101, 163, 13, 0.10);
+  --cat-aine-contrast:  #3f6212;
+
+  --cat-corticoide-soft:      rgba(219, 39, 119, 0.08);
+  --cat-corticoide-contrast:  #9d174d;
+
+  --cat-analgesico-soft:      rgba(234, 88, 12, 0.08);
+  --cat-analgesico-contrast:  #9a3412;
+
+  --cat-anestesico-primary:   #4338ca;
+  --cat-anestesico-soft:      rgba(67, 56, 202, 0.08);
+  --cat-anestesico-contrast:  #312e81;
+
+  --cat-sedante-primary:   #7c3aed;
+  --cat-sedante-soft:      rgba(124, 58, 237, 0.08);
+  --cat-sedante-contrast:  #4c1d95;
+
+  --cat-broncodilatador-soft:      rgba(2, 132, 199, 0.08);
+  --cat-broncodilatador-contrast:  #075985;
+
+  --cat-cardiovascular-primary:   #be123c;
+  --cat-cardiovascular-soft:      rgba(190, 18, 60, 0.08);
+  --cat-cardiovascular-contrast:  #831843;
+
+  --cat-vacuna-soft:      rgba(13, 148, 136, 0.08);
+  --cat-vacuna-contrast:  #115e59;
+
+  --cat-inmunomodulador-soft:      rgba(15, 118, 110, 0.10);
+  --cat-inmunomodulador-contrast:  #134e4a;
+
+  --cat-antihistaminico-primary:   #9333ea;
+  --cat-antihistaminico-soft:      rgba(147, 51, 234, 0.08);
+  --cat-antihistaminico-contrast:  #581c87;
+
+  --cat-hormona-primary:   #e11d48;
+  --cat-hormona-soft:      rgba(225, 29, 72, 0.08);
+  --cat-hormona-contrast:  #9f1239;
+
+  --cat-vitamina-primary:   #ca8a04;
+  --cat-vitamina-soft:      rgba(202, 138, 4, 0.12);
+  --cat-vitamina-contrast:  #713f12;
+
+  --cat-fluidoterapia-soft:      rgba(8, 145, 178, 0.08);
+  --cat-fluidoterapia-contrast:  #155e75;
+
+  --cat-default-primary:   #4b5563;
+  --cat-default-soft:      rgba(75, 85, 99, 0.08);
+  --cat-default-contrast:  #1f2937;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   APLICACIÓN AUTOMÁTICA POR ATRIBUTO data-categoria
+   
+   Cualquier elemento con data-categoria="xxx" expone 4 variables locales:
+     --cat-primary, --cat-soft, --cat-glow, --cat-contrast
+   
+   Esto permite que toda la tarjeta, badges y bordes hereden colores sin
+   necesidad de clases específicas.
+───────────────────────────────────────────────────────────────────────────── */
+[data-categoria="bactericida"]            { --cat-primary: var(--cat-bactericida-primary);            --cat-soft: var(--cat-bactericida-soft);            --cat-glow: var(--cat-bactericida-glow);            --cat-contrast: var(--cat-bactericida-contrast); }
+[data-categoria="bacteriostatico"]        { --cat-primary: var(--cat-bacteriostatico-primary);        --cat-soft: var(--cat-bacteriostatico-soft);        --cat-glow: var(--cat-bacteriostatico-glow);        --cat-contrast: var(--cat-bacteriostatico-contrast); }
+[data-categoria="antifungico"]            { --cat-primary: var(--cat-antifungico-primary);            --cat-soft: var(--cat-antifungico-soft);            --cat-glow: var(--cat-antifungico-glow);            --cat-contrast: var(--cat-antifungico-contrast); }
+[data-categoria="antiseptico"]            { --cat-primary: var(--cat-antiseptico-primary);            --cat-soft: var(--cat-antiseptico-soft);            --cat-glow: var(--cat-antiseptico-glow);            --cat-contrast: var(--cat-antiseptico-contrast); }
+[data-categoria="antiparasitario-interno"]{ --cat-primary: var(--cat-antiparasitario-interno-primary);--cat-soft: var(--cat-antiparasitario-interno-soft);--cat-glow: var(--cat-antiparasitario-interno-glow);--cat-contrast: var(--cat-antiparasitario-interno-contrast); }
+[data-categoria="antiparasitario-externo"]{ --cat-primary: var(--cat-antiparasitario-externo-primary);--cat-soft: var(--cat-antiparasitario-externo-soft);--cat-glow: var(--cat-antiparasitario-externo-glow);--cat-contrast: var(--cat-antiparasitario-externo-contrast); }
+[data-categoria="aine"]                   { --cat-primary: var(--cat-aine-primary);                   --cat-soft: var(--cat-aine-soft);                   --cat-glow: var(--cat-aine-glow);                   --cat-contrast: var(--cat-aine-contrast); }
+[data-categoria="corticoide"]             { --cat-primary: var(--cat-corticoide-primary);             --cat-soft: var(--cat-corticoide-soft);             --cat-glow: var(--cat-corticoide-glow);             --cat-contrast: var(--cat-corticoide-contrast); }
+[data-categoria="analgesico"]             { --cat-primary: var(--cat-analgesico-primary);             --cat-soft: var(--cat-analgesico-soft);             --cat-glow: var(--cat-analgesico-glow);             --cat-contrast: var(--cat-analgesico-contrast); }
+[data-categoria="anestesico"]             { --cat-primary: var(--cat-anestesico-primary);             --cat-soft: var(--cat-anestesico-soft);             --cat-glow: var(--cat-anestesico-glow);             --cat-contrast: var(--cat-anestesico-contrast); }
+[data-categoria="sedante"]                { --cat-primary: var(--cat-sedante-primary);                --cat-soft: var(--cat-sedante-soft);                --cat-glow: var(--cat-sedante-glow);                --cat-contrast: var(--cat-sedante-contrast); }
+[data-categoria="broncodilatador"]        { --cat-primary: var(--cat-broncodilatador-primary);        --cat-soft: var(--cat-broncodilatador-soft);        --cat-glow: var(--cat-broncodilatador-glow);        --cat-contrast: var(--cat-broncodilatador-contrast); }
+[data-categoria="cardiovascular"]         { --cat-primary: var(--cat-cardiovascular-primary);         --cat-soft: var(--cat-cardiovascular-soft);         --cat-glow: var(--cat-cardiovascular-glow);         --cat-contrast: var(--cat-cardiovascular-contrast); }
+[data-categoria="vacuna"]                 { --cat-primary: var(--cat-vacuna-primary);                 --cat-soft: var(--cat-vacuna-soft);                 --cat-glow: var(--cat-vacuna-glow);                 --cat-contrast: var(--cat-vacuna-contrast); }
+[data-categoria="inmunomodulador"]        { --cat-primary: var(--cat-inmunomodulador-primary);        --cat-soft: var(--cat-inmunomodulador-soft);        --cat-glow: var(--cat-inmunomodulador-glow);        --cat-contrast: var(--cat-inmunomodulador-contrast); }
+[data-categoria="antihistaminico"]        { --cat-primary: var(--cat-antihistaminico-primary);        --cat-soft: var(--cat-antihistaminico-soft);        --cat-glow: var(--cat-antihistaminico-glow);        --cat-contrast: var(--cat-antihistaminico-contrast); }
+[data-categoria="hormona"]                { --cat-primary: var(--cat-hormona-primary);                --cat-soft: var(--cat-hormona-soft);                --cat-glow: var(--cat-hormona-glow);                --cat-contrast: var(--cat-hormona-contrast); }
+[data-categoria="vitamina"]               { --cat-primary: var(--cat-vitamina-primary);               --cat-soft: var(--cat-vitamina-soft);               --cat-glow: var(--cat-vitamina-glow);               --cat-contrast: var(--cat-vitamina-contrast); }
+[data-categoria="fluidoterapia"]          { --cat-primary: var(--cat-fluidoterapia-primary);          --cat-soft: var(--cat-fluidoterapia-soft);          --cat-glow: var(--cat-fluidoterapia-glow);          --cat-contrast: var(--cat-fluidoterapia-contrast); }
+
+/* fallback */
+[data-categoria=""],
+:not([data-categoria]) { --cat-primary: var(--cat-default-primary); --cat-soft: var(--cat-default-soft); --cat-glow: var(--cat-default-glow); --cat-contrast: var(--cat-default-contrast); }
+
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   COMPONENTES VISUALES REUTILIZABLES
+   Aprovechan --cat-primary, --cat-soft, --cat-glow, --cat-contrast
+   ═════════════════════════════════════════════════════════════════════════════ */
+
+/* ── TARJETA CON IDENTIDAD DE CATEGORÍA ─────────────────────────────────────── */
+.cat-card {
+  background: var(--sv-bg-surface);
+  border: 1px solid var(--sv-border);
+  border-left: 4px solid var(--cat-primary);
+  border-radius: 1rem;
+  padding: 1rem 1.1rem;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.cat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px var(--cat-glow);
+  border-color: var(--cat-primary);
+}
+
+/* Halo decorativo sutil en esquina superior derecha */
+.cat-card::before {
+  content: "";
+  position: absolute;
+  top: -50px;
+  right: -50px;
+  width: 120px;
+  height: 120px;
+  background: var(--cat-soft);
+  border-radius: 50%;
+  filter: blur(20px);
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* ── BADGE DE CATEGORÍA ─────────────────────────────────────────────────────── */
+.cat-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  background: var(--cat-soft);
+  color: var(--cat-contrast);
+  border: 1px solid var(--cat-primary);
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  font-family: var(--sv-font-body);
+}
+
+.cat-badge-icon {
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+/* Variante sólida (más impactante) */
+.cat-badge-solid {
+  background: var(--cat-primary);
+  color: #fff;
+  border-color: var(--cat-primary);
+}
+
+/* ── CHIP / PILL DE FILTRO ──────────────────────────────────────────────────── */
+.cat-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  background: transparent;
+  border: 1px solid var(--sv-border);
+  color: var(--sv-text-secondary);
+  font-size: 0.8rem;
+  font-family: var(--sv-font-body);
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.cat-chip:hover {
+  border-color: var(--cat-primary);
+  color: var(--cat-contrast);
+  background: var(--cat-soft);
+}
+
+.cat-chip.is-active {
+  background: var(--cat-primary);
+  border-color: var(--cat-primary);
+  color: #fff;
+  box-shadow: 0 4px 14px var(--cat-glow);
+}
+
+/* ── ICONO CIRCULAR ─────────────────────────────────────────────────────────── */
+.cat-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--cat-soft);
+  border: 1px solid var(--cat-primary);
+  font-size: 1.05rem;
+  flex-shrink: 0;
+}
+
+.cat-icon-lg {
+  width: 48px;
+  height: 48px;
+  font-size: 1.4rem;
+}
+
+/* ── INDICADOR DE RIESGO ────────────────────────────────────────────────────── */
+.riesgo-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  font-family: var(--sv-font-mono);
+}
+
+.riesgo-1 { background: rgba(34, 197, 94, 0.12);  color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.25); }
+.riesgo-2 { background: rgba(250, 204, 21, 0.12); color: #facc15; border: 1px solid rgba(250, 204, 21, 0.25); }
+.riesgo-3 { background: rgba(249, 115, 22, 0.15); color: #fb923c; border: 1px solid rgba(249, 115, 22, 0.30); }
+.riesgo-4 { background: rgba(239, 68, 68, 0.15);  color: #f87171; border: 1px solid rgba(239, 68, 68, 0.30); }
+.riesgo-5 { background: rgba(220, 38, 38, 0.25);  color: #fca5a5; border: 1px solid rgba(220, 38, 38, 0.45); animation: pulse-riesgo 2s infinite; }
+
+@keyframes pulse-riesgo {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
+  50%      { box-shadow: 0 0 0 6px rgba(220, 38, 38, 0); }
+}
+
+/* ── ALERTAS INTELIGENTES ───────────────────────────────────────────────────── */
+.cat-alert {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+  padding: 0.6rem 0.85rem;
+  border-radius: 0.6rem;
+  background: var(--cat-soft);
+  border: 1px solid var(--cat-primary);
+  font-size: 0.82rem;
+  color: var(--cat-contrast);
+  margin-top: 0.5rem;
+}
+
+.cat-alert-icon { font-size: 1.1rem; line-height: 1; }
+
+/* ── BARRA SUPERIOR DECORATIVA ──────────────────────────────────────────────── */
+.cat-stripe {
+  height: 3px;
+  background: var(--cat-primary);
+  border-radius: 999px;
+}
+
+/* ── TOOLTIP ─────────────────────────────────────────────────────────────────── */
+.cat-tooltip-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+.cat-tooltip-wrap[data-tooltip]:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--sv-bg-overlay);
+  color: var(--sv-text-primary);
+  border: 1px solid var(--cat-primary);
+  padding: 0.4rem 0.7rem;
+  border-radius: 0.5rem;
+  font-size: 0.78rem;
+  white-space: nowrap;
+  z-index: 100;
+  box-shadow: 0 8px 24px var(--cat-glow);
+  pointer-events: none;
+}
+
+/* ── GLOW EFFECT (modo estudio) ─────────────────────────────────────────────── */
+.cat-glow {
+  box-shadow: 0 0 0 2px var(--cat-primary), 0 0 24px var(--cat-glow);
+  border-color: var(--cat-primary) !important;
+}
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   GRID DE CHIPS PARA EL HEADER DE FARMACOLOGÍA
+   ═════════════════════════════════════════════════════════════════════════════ */
+.cat-chip-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  padding: 0.75rem 0;
+  margin-bottom: 0.75rem;
+}
