@@ -212,6 +212,19 @@
       riesgoBase: 1
     },
 
+    // ── GASTROINTESTINAL ─────────────────────────────────────────────────────
+    "gastrointestinal": {
+      id: "gastrointestinal",
+      label: "Gastrointestinal",
+      labelLargo: "Fármaco gastrointestinal",
+      familia: "gastrointestinal",
+      icon: "🫄",
+      tag: "GI",
+      vibe: "digestivo",
+      descripcion: "Antiemético, procinético, protector gástrico, antiácido o regulador del tránsito intestinal.",
+      riesgoBase: 1
+    },
+
     // ── METABOLISMO / SOPORTE ────────────────────────────────────────────────
     "hormona": {
       id: "hormona",
@@ -259,7 +272,8 @@
     "respiratorio": { label: "Respiratorio", orden: 5 },
     "cardiovascular": { label: "Cardiovascular", orden: 6 },
     "inmunologico": { label: "Inmunidad", orden: 7 },
-    "metabolico": { label: "Metabolismo y soporte", orden: 8 }
+    "gastrointestinal": { label: "Gastrointestinal", orden: 9 },
+    "metabolico": { label: "Metabolismo y soporte", orden: 10 }
   };
 
   // ---------------------------------------------------------------------------

@@ -122,6 +122,13 @@
   --cat-fluidoterapia-glow:      rgba(6, 182, 212, 0.30);
   --cat-fluidoterapia-contrast:  #67e8f9;
 
+
+  /* ── GASTROINTESTINAL ───────────────────────────────────────────────────── */
+  --cat-gastrointestinal-primary:   #0891b2;
+  --cat-gastrointestinal-soft:      rgba(8, 145, 178, 0.12);
+  --cat-gastrointestinal-glow:      rgba(8, 145, 178, 0.30);
+  --cat-gastrointestinal-contrast:  #67e8f9;
+
   /* ── DEFAULT / SIN CATEGORÍA ─────────────────────────────────────────────── */
   --cat-default-primary:   #6b7280;
   --cat-default-soft:      rgba(107, 114, 128, 0.12);
@@ -201,6 +208,9 @@
   --cat-fluidoterapia-soft:      rgba(8, 145, 178, 0.08);
   --cat-fluidoterapia-contrast:  #155e75;
 
+  --cat-gastrointestinal-soft:      rgba(8, 145, 178, 0.08);
+  --cat-gastrointestinal-contrast:  #155e75;
+
   --cat-default-primary:   #4b5563;
   --cat-default-soft:      rgba(75, 85, 99, 0.08);
   --cat-default-contrast:  #1f2937;
@@ -234,6 +244,8 @@
 [data-categoria="hormona"]                { --cat-primary: var(--cat-hormona-primary);                --cat-soft: var(--cat-hormona-soft);                --cat-glow: var(--cat-hormona-glow);                --cat-contrast: var(--cat-hormona-contrast); }
 [data-categoria="vitamina"]               { --cat-primary: var(--cat-vitamina-primary);               --cat-soft: var(--cat-vitamina-soft);               --cat-glow: var(--cat-vitamina-glow);               --cat-contrast: var(--cat-vitamina-contrast); }
 [data-categoria="fluidoterapia"]          { --cat-primary: var(--cat-fluidoterapia-primary);          --cat-soft: var(--cat-fluidoterapia-soft);          --cat-glow: var(--cat-fluidoterapia-glow);          --cat-contrast: var(--cat-fluidoterapia-contrast); }
+
+[data-categoria="gastrointestinal"]       { --cat-primary: var(--cat-gastrointestinal-primary);       --cat-soft: var(--cat-gastrointestinal-soft);       --cat-glow: var(--cat-gastrointestinal-glow);       --cat-contrast: var(--cat-gastrointestinal-contrast); }
 
 /* fallback */
 [data-categoria=""],

@@ -104,3 +104,60 @@
   border-radius: 999px;
   padding: 0.1rem 0.5rem;
 }
+
+/* ── PRESENTACIÓN DISPONIBLE ────────────────────────────────────────────────── */
+/* Wrapper input + unidad en la misma fila */
+.farma-conc-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.farma-conc-wrap .sv-input {
+  flex: 1;
+  min-width: 0;
+}
+
+.farma-conc-unit {
+  font-size: 0.78rem;
+  color: var(--sv-text-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+  padding-right: 0.2rem;
+}
+
+/* Info de dosis por especie seleccionada */
+.farma-dosis-esp-info {
+  font-size: 0.88rem;
+  color: var(--sv-text-muted);
+  padding: 0.5rem 0.2rem;
+  min-height: 2.4rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* ── PASOS DEL CÁLCULO ──────────────────────────────────────────────────────── */
+.farma-calc-pasos {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  font-size: 0.78rem;
+  color: var(--sv-text-muted);
+  margin-top: 0.2rem;
+  padding: 0.4rem 0.6rem;
+  background: var(--sv-bg-elevated);
+  border-radius: 0.5rem;
+  font-family: var(--sv-font-mono);
+}
+
+.farma-calc-paso-igual {
+  color: var(--sv-text-disabled);
+  font-weight: 500;
+}
+
+.farma-calc-pasos strong {
+  color: var(--sv-text-primary);
+  font-weight: 600;
+}

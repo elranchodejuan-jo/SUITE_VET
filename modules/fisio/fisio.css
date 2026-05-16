@@ -1,49 +1,116 @@
 /* =============================================================================
-   SUITE VET — modules/fisio/fisio.css
-   Solo estilos ESPECÍFICOS del módulo de Fisiología.
-   Los componentes genéricos vienen de shared/components.css
+   SUITE VET 2.0 — modules/fisio/fisio.css
+   Sistema de colores por sistema fisiológico y tipo de vitamina.
    ============================================================================= */
 
-/* Tarjeta de hormona */
-.fisio-card-hormona {
-  border-left: 4px solid var(--sv-fisio-color);
+/* ─────────────────────────────────────────────────────────────────────────────
+   TARJETAS DE FISIOLOGÍA
+   El borde lateral y glow de hover se pasan como CSS custom properties
+   desde fisio.js: --card-color y --card-glow
+───────────────────────────────────────────────────────────────────────────── */
+.fisio-card-hormona,
+.fisio-card-vitamina {
+  border-left: 4px solid var(--card-color, var(--sv-fisio-color)) !important;
 }
 
-.fisio-card-vitamina {
-  border-left: 4px solid #a78bfa;
+/*
+  BUG FIX #2: override de hover — usa el glow del sistema en lugar del genérico.
+  La especificidad (.sv-card.fisio-card-hormona:hover) supera a (.sv-card:hover)
+  de components.css, restaurando el color correcto por sistema.
+*/
+.sv-card.fisio-card-hormona:hover,
+.sv-card.fisio-card-vitamina:hover {
+  box-shadow: 0 12px 32px var(--card-glow, rgba(0,0,0,0.3));
+  border-color: var(--card-color, var(--sv-fisio-color));
 }
 
 .fisio-card-glosario {
   border-left: 4px solid var(--sv-info);
 }
 
-/* Badge de sistema */
+/* ─────────────────────────────────────────────────────────────────────────────
+   BADGE DE SISTEMA
+───────────────────────────────────────────────────────────────────────────── */
 .fisio-badge-sistema {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
   font-size: 0.7rem;
-  padding: 0.15rem 0.55rem;
+  padding: 0.2rem 0.6rem;
   border-radius: 999px;
-  background: rgba(244, 63, 94, 0.12);
-  color: #f87171;
-  border: 1px solid rgba(244, 63, 94, 0.2);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   white-space: nowrap;
+  /*
+    BUG FIX #3: border transparente base para evitar layout-shift.
+    El inline style del JS sobreescribe color y fondo; este border
+    reserva el espacio desde el inicio.
+  */
+  border: 1px solid transparent;
 }
 
-/* Texto de campo dentro de tarjeta */
+/* ─────────────────────────────────────────────────────────────────────────────
+   PILLS DE FILTRO DE SISTEMA
+───────────────────────────────────────────────────────────────────────────── */
+.fisio-pill-sistema {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid var(--sv-border);
+  background: var(--sv-bg-elevated);
+  color: var(--sv-text-secondary);
+  white-space: nowrap;
+  font-family: var(--sv-font-body);
+  transition: all 0.18s ease;
+}
+
+.fisio-pill-sistema:hover {
+  border-color: var(--fisio-pill-color, var(--sv-accent));
+  color: var(--fisio-pill-color, var(--sv-accent));
+  background: var(--fisio-pill-bg, var(--sv-bg-elevated));
+}
+
+.fisio-pill-sistema.sv-pill-active {
+  background: var(--fisio-pill-color, var(--sv-accent));
+  border-color: var(--fisio-pill-color, var(--sv-accent));
+  color: #fff;
+  box-shadow: 0 4px 14px var(--fisio-pill-glow, rgba(59,130,246,0.3));
+}
+
+/* Punto de color */
+.fisio-pill-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--fisio-pill-color, var(--sv-accent));
+  flex-shrink: 0;
+}
+
+.fisio-pill-sistema.sv-pill-active .fisio-pill-dot {
+  background: rgba(255, 255, 255, 0.85);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   CAMPOS DE TARJETA
+───────────────────────────────────────────────────────────────────────────── */
 .fisio-campo {
   font-size: 0.83rem;
   color: var(--sv-text-secondary);
-  line-height: 1.5;
+  line-height: 1.55;
 }
+
 .fisio-campo strong {
   color: var(--sv-text-primary);
   font-weight: 600;
   margin-right: 0.25rem;
 }
 
-/* Sección footer de tarjeta (especie + farmaco) */
 .fisio-card-footer {
   border-top: 1px solid var(--sv-border-subtle);
   padding-top: 0.5rem;
@@ -51,4 +118,53 @@
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   BADGES DE TIPO DE VITAMINA
+───────────────────────────────────────────────────────────────────────────── */
+.fisio-badge-vitamina {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.7rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-weight: 600;
+  white-space: nowrap;
+  border: 1px solid transparent; /* BUG FIX #3 aplicado aquí también */
+}
+
+/* Liposoluble — ámbar/amarillo */
+.fisio-badge-liposoluble {
+  background: rgba(250, 204, 21, 0.15);
+  color: #f59e0b;
+  border-color: rgba(250, 204, 21, 0.3);
+}
+
+/* Hidrosoluble — cian */
+.fisio-badge-hidrosoluble {
+  background: rgba(6, 182, 212, 0.12);
+  color: #22d3ee;
+  border-color: rgba(6, 182, 212, 0.25);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   MODO CLARO
+───────────────────────────────────────────────────────────────────────────── */
+[data-theme="light"] .fisio-badge-liposoluble {
+  background: rgba(202, 138, 4, 0.10);
+  color: #92400e;
+  border-color: rgba(202, 138, 4, 0.25);
+}
+
+[data-theme="light"] .fisio-badge-hidrosoluble {
+  background: rgba(8, 145, 178, 0.08);
+  color: #075985;
+  border-color: rgba(8, 145, 178, 0.2);
+}
+
+[data-theme="light"] .fisio-badge-sistema {
+  /* El inline style del JS maneja color/bg; aquí solo ajustamos opacidad */
+  opacity: 0.92;
 }
