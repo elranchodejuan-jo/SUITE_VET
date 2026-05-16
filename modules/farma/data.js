@@ -682,6 +682,25 @@ window.FARMA_DATA = {
       contraindicaciones: "Falla renal preexistente. No combinar con furosemida (sinergismo nefrotóxico).",
       comerciales: ["Gentocin", "Gentavet"]
     },
+    {
+      id: "kanamicina",
+      principio: "Kanamicina",
+     grupo: "Aminoglucósido",
+      categoria: "bactericida",
+      riesgo: 4,
+      concentracion: 100,
+      unidad: "mg/mL",
+      mecanismo: "Bactericida concentración-dependiente. Inhibe síntesis proteica bacteriana uniéndose a la subunidad 30S ribosomal.",
+      especies: [
+      { nombre: "Canino",             dosisMgKg: 10, via: "IM / IV",      retiroCarne: 0,  retiroLeche: 0, nota: "10–15 mg/kg c/12 h. Infecciones Gram negativas." },
+      { nombre: "Felino",             dosisMgKg: 8,  via: "IM / IV",      retiroCarne: 0,  retiroLeche: 0, note: "Mayor precaución por nefrotoxicidad." },
+      { nombre: "Bovino",             dosisMgKg: 10, via: "IM",           retiroCarne: 30, retiroLeche: 3, nota: "Infecciones respiratorias y septicemias." },
+      { nombre: "Porcino",            dosisMgKg: 10, via: "IM",           retiroCarne: 21, retiroLeche: 0, nota: "Enteritis bacterianas y procesos sistémicos." },
+      { nombre: "Aves",               dosisMgKg: 20, via: "IM / Oral",    retiroCarne: 7,  retiroLeche: 0, nota: "Uso frecuente en colibacilosis y salmonelosis." }
+    ],
+    contraindicaciones: "Nefropatías, deshidratación o uso simultáneo con otros aminoglucósidos o fármacos nefrotóxicos. Precaución en animales geriátricos.",
+    comerciales: ["Kanasol", "Kanavet", "Kanimicina Vet"]
+},
 
     // =========================================================================
     // ═══ ANTIBIÓTICOS — BACTERIOSTÁTICOS ═══
@@ -1030,6 +1049,27 @@ window.FARMA_DATA = {
       contraindicaciones: "Razas MDR1/ABCB1 a dosis antiparasitarias. Cachorros < 6 semanas.",
       comerciales: ["Ivomec", "Bovimec", "Heartgard"]
     },
+
+    {
+    id: "doramectina-1",
+    principio: "Doramectina 1%",
+    grupo: "Lactona Macrocíclica",
+    categoria: "antiparasitario-interno",
+    riesgo: 3,
+    concentracion: 10,
+    unidad: "mg/mL",
+    mecanismo: "Apertura de canales de Cl⁻ glutamato-dependientes en parásitos. Produce parálisis neuromuscular y muerte del parásito.",
+    especies: [
+      { nombre: "Bovino",                    dosisMgKg: 0.2, via: "SC / IM", retiroCarne: 35, retiroLeche: 0,  nota: "Nematodos gastrointestinales, pulmonares, piojos y ácaros." },
+      { nombre: "Porcino",                   dosisMgKg: 0.3, via: "IM",      retiroCarne: 24, retiroLeche: 0,  nota: "Control de sarna y nematodos internos." },
+      { nombre: "Ovino",                     dosisMgKg: 0.2, via: "SC",      retiroCarne: 35, retiroLeche: 0,  nota: "Uso extra-label en algunos países." },
+      { nombre: "Caprino",                   dosisMgKg: 0.2, via: "SC",      retiroCarne: 35, retiroLeche: 0,  nota: "Uso extra-label. Ajustar según criterio veterinario." },
+      { nombre: "Canino",                    dosisMgKg: 0.2, via: "SC",      retiroCarne: 0,  retiroLeche: 0,  nota: "⚠️ Precaución en razas MDR1 (Collie, Border Collie, Pastor Australiano)." }
+    ],
+    contraindicaciones: "No usar en razas sensibles al gen MDR1 sin supervisión veterinaria. Evitar en animales debilitados o hipersensibles a lactonas macrocíclicas.",
+    comerciales: ["Dectomax", "Doramec", "Doravet"]
+    },
+    
     {
       id: "prazicuantel",
       principio: "Prazicuantel",
