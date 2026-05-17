@@ -1,0 +1,447 @@
+/* =============================================================================
+   SUITE VET - Liquid Lab Glass
+   Global visual layer for premium veterinary/laboratory UI.
+   ============================================================================= */
+
+:root,
+[data-theme="dark"] {
+  --sv-liquid-bg: rgba(10, 22, 40, 0.72);
+  --sv-liquid-bg-soft: rgba(15, 30, 52, 0.54);
+  --sv-liquid-bg-strong: rgba(7, 16, 31, 0.88);
+  --sv-liquid-edge: rgba(148, 221, 255, 0.18);
+  --sv-liquid-edge-strong: rgba(148, 221, 255, 0.34);
+  --sv-liquid-highlight: rgba(255, 255, 255, 0.13);
+  --sv-liquid-shadow: 0 18px 52px rgba(0, 0, 0, 0.46), 0 0 32px rgba(34, 211, 238, 0.08);
+  --sv-liquid-shadow-soft: 0 10px 28px rgba(0, 0, 0, 0.28);
+  --sv-liquid-inner: inset 0 1px 0 rgba(255, 255, 255, 0.10);
+  --sv-liquid-blur: blur(22px) saturate(150%);
+  --sv-liquid-radius: 18px;
+}
+
+[data-theme="light"] {
+  --sv-liquid-bg: rgba(255, 255, 255, 0.72);
+  --sv-liquid-bg-soft: rgba(248, 250, 252, 0.62);
+  --sv-liquid-bg-strong: rgba(255, 255, 255, 0.9);
+  --sv-liquid-edge: rgba(37, 99, 235, 0.18);
+  --sv-liquid-edge-strong: rgba(37, 99, 235, 0.32);
+  --sv-liquid-highlight: rgba(255, 255, 255, 0.72);
+  --sv-liquid-shadow: 0 18px 45px rgba(15, 23, 42, 0.14), 0 0 28px rgba(37, 99, 235, 0.08);
+  --sv-liquid-shadow-soft: 0 10px 28px rgba(15, 23, 42, 0.10);
+  --sv-liquid-inner: inset 0 1px 0 rgba(255, 255, 255, 0.82);
+}
+
+@media screen {
+  html {
+    background: var(--sv-bg-base);
+  }
+
+  body {
+    background:
+      radial-gradient(circle at 10% -8%, rgba(34, 211, 238, 0.16), transparent 34rem),
+      radial-gradient(circle at 92% 4%, rgba(163, 230, 53, 0.10), transparent 30rem),
+      radial-gradient(circle at 45% 110%, rgba(244, 63, 94, 0.10), transparent 34rem),
+      linear-gradient(180deg, rgba(2, 6, 23, 0.98), var(--sv-bg-base));
+  }
+
+  [data-theme="light"] body {
+    background:
+      radial-gradient(circle at 10% -8%, rgba(34, 211, 238, 0.18), transparent 34rem),
+      radial-gradient(circle at 92% 4%, rgba(37, 99, 235, 0.10), transparent 30rem),
+      linear-gradient(180deg, #eef6ff, var(--sv-bg-base));
+  }
+
+  body::before {
+    background:
+      linear-gradient(120deg, rgba(255, 255, 255, 0.035), transparent 28%, rgba(255, 255, 255, 0.025) 55%, transparent 78%),
+      radial-gradient(circle at 52% 0%, rgba(255, 255, 255, 0.035), transparent 26rem);
+    content: "";
+    inset: 0;
+    pointer-events: none;
+    position: fixed;
+    z-index: -1;
+  }
+
+  .sv-topbar,
+  .sv-nav,
+  .sv-menu-panel,
+  .sv-search-results,
+  .sv-modal,
+  .sv-panel,
+  .sv-card-metric,
+  .sv-dashboard-hero,
+  .sv-dashboard-side,
+  .sv-dashboard-action,
+  .sv-dashboard-module,
+  .sv-alert,
+  .sv-table-wrap,
+  .sv-segmented,
+  .sv-card,
+  .sv-home-card,
+  .sv-input,
+  .sv-select,
+  .sv-textarea,
+  .sv-search-global,
+  .sv-pill,
+  .sv-chip,
+  .sv-tab,
+  .sv-coming-tag,
+  .sv-fab,
+  #sv-theme-toggle,
+  .sv-menu-toggle,
+  .cat-chip,
+  .sv-receta-chip,
+  .farma-calc-area,
+  .farma-resultado,
+  .farma-calc-pasos,
+  .farma-comercial-tag,
+  .micro-hero,
+  .micro-tab,
+  .micro-card,
+  .micro-context,
+  .micro-panel,
+  .micro-detail,
+  .micro-modal,
+  .micro-link-chip,
+  .micro-quick,
+  .micro-calc-note,
+  .micro-calc-result-panel,
+  .pato-badge-sistema,
+  .pato-badge-tipo {
+    backdrop-filter: var(--sv-liquid-blur);
+    -webkit-backdrop-filter: var(--sv-liquid-blur);
+    background: var(--sv-liquid-bg);
+    border-color: var(--sv-liquid-edge);
+    box-shadow: var(--sv-liquid-shadow-soft), var(--sv-liquid-inner);
+  }
+
+  .sv-topbar {
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.07), transparent),
+      var(--sv-liquid-bg-strong);
+    border-bottom-color: var(--sv-liquid-edge);
+  }
+
+  .sv-nav {
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.055), transparent),
+      rgba(8, 17, 33, 0.72);
+    border-bottom-color: var(--sv-liquid-edge);
+  }
+
+  [data-theme="light"] .sv-nav {
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.9), transparent),
+      rgba(255, 255, 255, 0.7);
+  }
+
+  .sv-card,
+  .sv-home-card,
+  .sv-panel,
+  .sv-card-metric,
+  .sv-dashboard-module,
+  .micro-card {
+    background:
+      linear-gradient(145deg, rgba(255, 255, 255, 0.065), transparent 34%),
+      var(--sv-liquid-bg);
+    border-radius: var(--sv-liquid-radius);
+    overflow: hidden;
+  }
+
+  .sv-card::after,
+  .sv-home-card::after,
+  .sv-panel::after,
+  .sv-card-metric::after,
+  .sv-dashboard-module::after,
+  .micro-card::after,
+  .micro-modal::after,
+  .sv-modal::after {
+    background: linear-gradient(135deg, var(--sv-liquid-highlight), transparent 30%, transparent 70%, rgba(255, 255, 255, 0.045));
+    border-radius: inherit;
+    content: "";
+    inset: 0;
+    pointer-events: none;
+    position: absolute;
+  }
+
+  .sv-card,
+  .sv-home-card,
+  .sv-panel,
+  .sv-card-metric,
+  .sv-dashboard-module,
+  .micro-card,
+  .micro-modal,
+  .sv-modal {
+    position: relative;
+  }
+
+  .sv-card:hover,
+  .sv-home-card:hover,
+  .sv-card-interactive:hover,
+  .sv-dashboard-module:hover,
+  .micro-card:hover {
+    border-color: var(--sv-liquid-edge-strong);
+    box-shadow: var(--sv-liquid-shadow), var(--sv-liquid-inner);
+    transform: translateY(-3px);
+  }
+
+  .sv-home-card::before {
+    z-index: 1;
+  }
+
+  .sv-home-card > *,
+  .sv-card > *,
+  .sv-panel > *,
+  .sv-card-metric > *,
+  .sv-dashboard-module > *,
+  .micro-card > *,
+  .sv-modal > *,
+  .micro-modal > * {
+    position: relative;
+    z-index: 2;
+  }
+
+  .sv-btn,
+  .sv-nav-btn,
+  .sv-tab,
+  .sv-pill,
+  .sv-chip,
+  .sv-segment,
+  .micro-tab,
+  .micro-link-chip,
+  .cat-chip,
+  .sv-receta-chip {
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    border-color: var(--sv-liquid-edge);
+  }
+
+  .sv-btn-primary,
+  .sv-nav-active,
+  .sv-tab-active,
+  .sv-pill.sv-pill-active,
+  .sv-chip-active,
+  .sv-chip.is-active,
+  .sv-segment.is-active,
+  .sv-segment-active,
+  .micro-tab.is-active,
+  .cat-chip.is-active,
+  .sv-receta-chip.is-active {
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.18), transparent 42%),
+      linear-gradient(135deg, var(--sv-accent), var(--sv-accent-hover));
+    box-shadow: 0 12px 26px var(--sv-accent-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  }
+
+  .sv-btn-secondary,
+  .sv-btn-ghost,
+  .sv-nav-btn,
+  .sv-tab,
+  .sv-pill,
+  .sv-chip,
+  .sv-segment,
+  .micro-tab,
+  .micro-link-chip,
+  .cat-chip,
+  .sv-receta-chip {
+    background:
+      linear-gradient(145deg, rgba(255, 255, 255, 0.06), transparent 50%),
+      var(--sv-liquid-bg-soft);
+  }
+
+  .sv-btn:hover:not(:disabled),
+  .sv-nav-btn:hover,
+  .sv-tab:hover,
+  .sv-pill:hover,
+  button.sv-chip:hover,
+  .sv-segment:hover,
+  .micro-tab:hover,
+  .micro-link-chip:hover,
+  .cat-chip:hover,
+  .sv-receta-chip:hover {
+    border-color: var(--sv-liquid-edge-strong);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18), 0 0 20px var(--sv-accent-shadow);
+  }
+
+  .sv-input,
+  .sv-select,
+  .sv-textarea,
+  .sv-search-global {
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.065), transparent),
+      var(--sv-liquid-bg-strong);
+    color: var(--sv-text-primary);
+  }
+
+  .sv-input:focus,
+  .sv-select:focus,
+  .sv-textarea:focus,
+  .sv-search-global:focus {
+    border-color: var(--sv-liquid-edge-strong);
+    box-shadow: 0 0 0 3px var(--sv-accent-shadow), var(--sv-liquid-inner);
+  }
+
+  .sv-search-results,
+  .sv-menu-panel,
+  .sv-panel,
+  .sv-modal,
+  .micro-modal {
+    background:
+      linear-gradient(145deg, rgba(255, 255, 255, 0.075), transparent 34%),
+      var(--sv-liquid-bg-strong);
+    border-color: var(--sv-liquid-edge-strong);
+    box-shadow: var(--sv-liquid-shadow), var(--sv-liquid-inner);
+  }
+
+  .sv-modal-overlay,
+  .micro-modal-overlay {
+    background: rgba(1, 6, 15, 0.58);
+    backdrop-filter: blur(18px) saturate(130%);
+    -webkit-backdrop-filter: blur(18px) saturate(130%);
+  }
+
+  .sv-search-item:hover,
+  .sv-menu-item:hover:not(.sv-disabled) {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .sv-badge,
+  .sv-chip,
+  .farma-badge-grupo,
+  .fisio-badge-sistema,
+  .fisio-badge-vitamina,
+  .micro-type-badge,
+  .micro-tag,
+  .pato-badge-sistema,
+  .pato-badge-tipo,
+  .sv-fab-badge {
+    backdrop-filter: blur(12px) saturate(140%);
+    -webkit-backdrop-filter: blur(12px) saturate(140%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  }
+
+  .farma-calc-area,
+  .farma-resultado,
+  .farma-calc-pasos,
+  .sv-panel,
+  .sv-card-metric,
+  .sv-dashboard-action,
+  .sv-alert,
+  .sv-table-wrap,
+  .micro-panel,
+  .micro-detail,
+  .micro-quick,
+  .micro-calc-note,
+  .micro-calc-result-panel {
+    background:
+      linear-gradient(145deg, rgba(255, 255, 255, 0.055), transparent 42%),
+      rgba(10, 22, 40, 0.55);
+  }
+
+  [data-theme="light"] .farma-calc-area,
+  [data-theme="light"] .farma-resultado,
+  [data-theme="light"] .farma-calc-pasos,
+  [data-theme="light"] .sv-panel,
+  [data-theme="light"] .sv-card-metric,
+  [data-theme="light"] .sv-dashboard-action,
+  [data-theme="light"] .sv-alert,
+  [data-theme="light"] .sv-table-wrap,
+  [data-theme="light"] .micro-panel,
+  [data-theme="light"] .micro-detail,
+  [data-theme="light"] .micro-quick,
+  [data-theme="light"] .micro-calc-note,
+  [data-theme="light"] .micro-calc-result-panel {
+    background:
+      linear-gradient(145deg, rgba(255, 255, 255, 0.75), transparent 42%),
+      rgba(255, 255, 255, 0.68);
+  }
+
+  .micro-hero {
+    background:
+      radial-gradient(circle at 12% 0%, rgba(34, 211, 238, 0.18), transparent 22rem),
+      linear-gradient(135deg, rgba(255, 255, 255, 0.06), transparent 46%),
+      var(--sv-liquid-bg);
+  }
+
+  .sv-fab {
+    border: 1px solid rgba(255, 255, 255, 0.22);
+  }
+
+  #sv-theme-toggle,
+  .sv-menu-toggle {
+    color: var(--sv-text-primary);
+  }
+
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .sv-topbar,
+    .sv-nav,
+    .sv-menu-panel,
+    .sv-search-results,
+    .sv-modal,
+    .sv-panel,
+    .sv-card-metric,
+    .sv-dashboard-hero,
+    .sv-dashboard-side,
+    .sv-dashboard-action,
+    .sv-dashboard-module,
+    .sv-alert,
+    .sv-table-wrap,
+    .sv-segmented,
+    .sv-card,
+    .sv-home-card,
+    .sv-input,
+    .sv-select,
+    .sv-textarea,
+    .sv-search-global,
+    .sv-pill,
+    .sv-chip,
+    .sv-tab,
+    .sv-coming-tag,
+    .sv-fab,
+    #sv-theme-toggle,
+    .sv-menu-toggle,
+    .cat-chip,
+    .sv-receta-chip,
+    .farma-calc-area,
+    .farma-resultado,
+    .farma-calc-pasos,
+    .farma-comercial-tag,
+    .micro-hero,
+    .micro-tab,
+    .micro-card,
+    .micro-context,
+    .micro-panel,
+    .micro-detail,
+    .micro-modal,
+    .micro-link-chip,
+    .micro-quick,
+    .micro-calc-note,
+    .micro-calc-result-panel {
+      background: var(--sv-bg-surface);
+    }
+  }
+}
+
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+  :root,
+  [data-theme="dark"],
+  [data-theme="light"] {
+    --sv-liquid-bg: var(--sv-bg-surface);
+    --sv-liquid-bg-soft: var(--sv-bg-elevated);
+    --sv-liquid-bg-strong: var(--sv-bg-surface);
+    --sv-liquid-blur: none;
+  }
+
+  body::before {
+    display: none;
+  }
+}
+
+@media print {
+  body {
+    background: #fff !important;
+  }
+
+  body::before {
+    display: none !important;
+  }
+}

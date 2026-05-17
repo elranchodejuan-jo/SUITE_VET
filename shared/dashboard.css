@@ -1,0 +1,182 @@
+/* =============================================================================
+   SUITE VET - Dashboard principal
+   Portada operativa del sistema. No modifica estilos de impresion.
+   ============================================================================= */
+
+@media screen {
+  .sv-dashboard {
+    display: grid;
+    gap: var(--sv-space-5);
+  }
+
+  .sv-dashboard-hero {
+    align-items: stretch;
+    display: grid;
+    gap: var(--sv-space-5);
+    grid-template-columns: minmax(0, 1fr) minmax(260px, 360px);
+    padding: var(--sv-space-6);
+  }
+
+  .sv-dashboard-hero-main {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sv-space-4);
+    justify-content: center;
+    min-width: 0;
+  }
+
+  .sv-dashboard-hero h1 {
+    font-size: 2.15rem;
+    line-height: 1.05;
+    max-width: 720px;
+  }
+
+  .sv-dashboard-actions {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sv-space-2);
+  }
+
+  .sv-dashboard-hero-panel {
+    display: grid;
+    gap: var(--sv-space-3);
+    min-width: 0;
+  }
+
+  .sv-dashboard-health {
+    align-content: start;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sv-space-2);
+  }
+
+  .sv-dashboard-strip {
+    display: grid;
+    gap: var(--sv-space-3);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .sv-dashboard-layout {
+    align-items: start;
+    display: grid;
+    gap: var(--sv-space-5);
+    grid-template-columns: minmax(0, 1fr) minmax(270px, 340px);
+  }
+
+  .sv-dashboard-main {
+    min-width: 0;
+  }
+
+  .sv-dashboard-modules {
+    display: grid;
+    gap: var(--sv-space-3);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .sv-dashboard-module {
+    min-height: 190px;
+  }
+
+  .sv-dashboard-module-icon {
+    align-items: center;
+    border: 1px solid var(--sv-border);
+    border-radius: var(--sv-radius-pill);
+    color: var(--sv-text-primary);
+    display: inline-flex;
+    font-family: var(--sv-font-mono);
+    font-size: 0.76rem;
+    font-weight: 800;
+    height: 34px;
+    justify-content: center;
+    letter-spacing: 0.04em;
+    width: 34px;
+  }
+
+  .sv-dashboard-module-top {
+    align-items: flex-start;
+    display: flex;
+    gap: var(--sv-space-3);
+    justify-content: space-between;
+  }
+
+  .sv-dashboard-module-top strong {
+    color: var(--sv-text-primary);
+    font-size: 1.45rem;
+    line-height: 1;
+  }
+
+  .sv-dashboard-module-foot {
+    border-top: 1px solid var(--sv-border-subtle);
+    color: var(--sv-text-muted);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    margin-top: auto;
+    padding-top: var(--sv-space-2);
+    text-transform: uppercase;
+  }
+
+  .sv-dashboard-side {
+    position: sticky;
+    top: 128px;
+  }
+
+  .sv-dashboard-action {
+    background: var(--sv-bg-elevated);
+    border: 1px solid var(--sv-border);
+    border-radius: var(--sv-radius-md);
+    color: var(--sv-text-secondary);
+    cursor: pointer;
+    display: grid;
+    font-family: var(--sv-font-body);
+    gap: 0.15rem;
+    min-height: 78px;
+    padding: var(--sv-space-3);
+    text-align: left;
+  }
+
+  .sv-dashboard-action strong {
+    color: var(--sv-text-primary);
+    font-size: 0.9rem;
+  }
+
+  .sv-dashboard-action span {
+    color: var(--sv-text-muted);
+    font-size: 0.8rem;
+    line-height: 1.45;
+  }
+
+  .sv-dashboard-action:hover {
+    border-color: var(--sv-accent);
+    box-shadow: var(--sv-shadow-accent);
+    transform: translateY(-1px);
+  }
+
+  .sv-home-card-fisio .sv-dashboard-module-icon {
+    border-color: color-mix(in srgb, var(--sv-fisio-color) 42%, transparent);
+    color: var(--sv-fisio-color);
+  }
+
+  .sv-home-card-farma .sv-dashboard-module-icon {
+    border-color: color-mix(in srgb, var(--sv-farma-color) 42%, transparent);
+    color: var(--sv-farma-color);
+  }
+
+  .sv-home-card-micro .sv-dashboard-module-icon {
+    border-color: color-mix(in srgb, var(--sv-micro-color) 42%, transparent);
+    color: var(--sv-micro-color);
+  }
+
+  .sv-home-card-pato .sv-dashboard-module-icon {
+    border-color: color-mix(in srgb, var(--sv-pato-color) 42%, transparent);
+    color: var(--sv-pato-color);
+  }
+
+  @supports not (color: color-mix(in srgb, white, black)) {
+    .sv-home-card-fisio .sv-dashboard-module-icon { border-color: rgba(244, 63, 94, 0.42); }
+    .sv-home-card-farma .sv-dashboard-module-icon { border-color: rgba(163, 230, 53, 0.42); }
+    .sv-home-card-micro .sv-dashboard-module-icon { border-color: rgba(34, 211, 238, 0.42); }
+    .sv-home-card-pato .sv-dashboard-module-icon { border-color: rgba(249, 115, 22, 0.42); }
+  }
+}

@@ -8,10 +8,6 @@
 }
 
 .micro-hero {
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-  align-items: flex-end;
   border: 1px solid rgba(34, 211, 238, 0.18);
   border-radius: 1rem;
   padding: 1rem;
@@ -28,33 +24,6 @@
   font-weight: 800;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-}
-
-.micro-stats {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(76px, 1fr));
-  gap: 0.55rem;
-  min-width: min(520px, 100%);
-}
-
-.micro-stat {
-  border: 1px solid var(--sv-border);
-  border-radius: 0.75rem;
-  background: rgba(2, 6, 23, 0.28);
-  padding: 0.6rem 0.7rem;
-  text-align: center;
-}
-
-.micro-stat strong {
-  color: var(--sv-text-primary);
-  display: block;
-  font-size: 1.2rem;
-  line-height: 1;
-}
-
-.micro-stat span {
-  color: var(--sv-text-muted);
-  font-size: 0.68rem;
 }
 
 .micro-subnav {
@@ -78,6 +47,26 @@
   gap: 0.35rem;
   padding: 0.42rem 0.9rem;
   transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease, color 0.18s ease;
+}
+
+.micro-tab strong {
+  font: inherit;
+  font-weight: 500;
+}
+
+.micro-tab b {
+  align-items: center;
+  background: rgba(34, 211, 238, 0.12);
+  border: 1px solid rgba(34, 211, 238, 0.28);
+  border-radius: 999px;
+  color: var(--sv-text-primary);
+  display: inline-flex;
+  font-size: 0.72rem;
+  font-weight: 800;
+  justify-content: center;
+  line-height: 1;
+  min-width: 1.45rem;
+  padding: 0.22rem 0.38rem;
 }
 
 .micro-tab:hover,
@@ -526,7 +515,7 @@
 .micro-calc-form {
   display: grid;
   gap: 0.75rem;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   padding: 1rem 1.1rem 0;
 }
 
@@ -540,6 +529,19 @@
   font-size: 0.72rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+}
+
+.micro-calc-note {
+  align-items: center;
+  background: rgba(34, 211, 238, 0.07);
+  border: 1px solid rgba(34, 211, 238, 0.18);
+  border-radius: 12px;
+  color: var(--sv-text-muted);
+  display: flex;
+  font-size: 0.82rem;
+  grid-column: 1 / -1;
+  line-height: 1.45;
+  padding: 0.8rem 0.9rem;
 }
 
 .micro-calc-result-panel {
@@ -566,13 +568,7 @@
 
 @media (max-width: 880px) {
   .micro-hero {
-    align-items: stretch;
-    flex-direction: column;
-  }
-
-  .micro-stats {
-    grid-template-columns: repeat(3, 1fr);
-    min-width: 0;
+    padding: 0.95rem;
   }
 
   .micro-toolbar {
@@ -596,10 +592,6 @@
     grid-template-columns: 1fr;
   }
 
-  .micro-stats {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
   .micro-card-actions {
     grid-template-columns: 1fr;
   }
@@ -610,6 +602,12 @@
 }
 
 @media print {
+  html,
+  body,
+  body.micro-printing {
+    background: #fff !important;
+  }
+
   body.micro-printing * {
     visibility: hidden !important;
   }
@@ -620,8 +618,10 @@
   }
 
   body.micro-printing #micro-print-area {
+    background: #fff !important;
     display: block !important;
     inset: 0;
+    min-height: 100vh;
     position: absolute;
     width: 100%;
   }
@@ -699,6 +699,47 @@
     font-weight: 700;
     margin-top: 4mm;
     padding: 8px 10px;
+  }
+
+  .micro-print-muted {
+    color: #64748b;
+    font-size: 11px;
+    margin-top: 8px;
+  }
+
+  .micro-print-list {
+    margin: 4mm 0 0;
+    padding-left: 18px;
+  }
+
+  .micro-print-list li {
+    color: #0f172a;
+    font-size: 12px;
+    margin: 2mm 0;
+  }
+
+  .micro-print-image-grid {
+    display: grid;
+    gap: 8mm;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .micro-print-placeholder {
+    align-items: center;
+    border: 1px dashed #94a3b8;
+    color: #475569;
+    display: flex;
+    flex-direction: column;
+    gap: 3mm;
+    justify-content: center;
+    min-height: 55mm;
+    text-align: center;
+  }
+
+  .micro-print-placeholder strong {
+    color: #0f172a;
+    font-size: 13px;
+    text-transform: uppercase;
   }
 
   .micro-print-notes div {

@@ -12,6 +12,31 @@
   --sv-font-heading: "Times New Roman", Times, serif;
   --sv-font-body:    system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --sv-font-mono:    "Fira Code", "Cascadia Code", Consolas, monospace;
+
+  /* Suite Vet UI scale */
+  --sv-space-1: 0.25rem;
+  --sv-space-2: 0.5rem;
+  --sv-space-3: 0.75rem;
+  --sv-space-4: 1rem;
+  --sv-space-5: 1.25rem;
+  --sv-space-6: 1.5rem;
+  --sv-space-8: 2rem;
+
+  --sv-radius-xs: 0.4rem;
+  --sv-radius-sm: 0.6rem;
+  --sv-radius-md: 0.85rem;
+  --sv-radius-lg: 1.1rem;
+  --sv-radius-xl: 1.35rem;
+  --sv-radius-pill: 999px;
+
+  --sv-control-height-sm: 34px;
+  --sv-control-height-md: 42px;
+  --sv-control-height-lg: 50px;
+
+  --sv-duration-fast: 120ms;
+  --sv-duration-base: 180ms;
+  --sv-duration-slow: 260ms;
+  --sv-ease-standard: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 /* ──────────────────────────────────────────────
