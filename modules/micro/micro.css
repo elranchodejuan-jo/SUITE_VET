@@ -1,52 +1,726 @@
 /* =============================================================================
-   SUITE VET 2.0 — modules/micro/micro.css
-   Estilos específicos de Microbiología.
+   SUITE VET / FITBET 2.2 — Microbiologia premium
    ============================================================================= */
 
-/* Tarjetas por tipo */
-.micro-card-agar     { border-left: 4px solid var(--sv-micro-color); }
-.micro-card-caldo    { border-left: 4px solid #818cf8; }
-.micro-card-prueba   { border-left: 4px solid #f59e0b; }
-.micro-card-antibio  { border-left: 4px solid var(--sv-farma-color); }
-.micro-card-microorg { border-left: 4px solid #f43f5e; }
-
-/* Badge Gram */
-.micro-gram-pos { background: rgba(251,146,60,0.12); color: #fb923c; border: 1px solid rgba(251,146,60,0.25); }
-.micro-gram-neg { background: rgba(239,68,68,0.12);  color: #f87171; border: 1px solid rgba(239,68,68,0.25); }
-
-/* Calculadora de medios */
-.micro-calc {
-  background: var(--sv-bg-elevated);
-  border: 1px solid var(--sv-border-subtle);
-  border-radius: 0.6rem;
-  padding: 0.75rem;
-  margin-top: 0.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+.micro-shell {
+  display: grid;
+  gap: 1rem;
 }
 
-.micro-calc-row {
+.micro-hero {
   display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-end;
+  border: 1px solid rgba(34, 211, 238, 0.18);
+  border-radius: 1rem;
+  padding: 1rem;
+  background:
+    linear-gradient(135deg, rgba(34, 211, 238, 0.12), rgba(59, 130, 246, 0.04)),
+    var(--sv-bg-surface);
+  box-shadow: 0 14px 40px rgba(8, 145, 178, 0.12);
 }
-.micro-calc-row > div {
-  flex: 1;
-  min-width: 100px;
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-}
-.micro-calc-label {
+
+.micro-kicker {
+  color: var(--sv-micro-color);
+  display: inline-block;
   font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.micro-stats {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(76px, 1fr));
+  gap: 0.55rem;
+  min-width: min(520px, 100%);
+}
+
+.micro-stat {
+  border: 1px solid var(--sv-border);
+  border-radius: 0.75rem;
+  background: rgba(2, 6, 23, 0.28);
+  padding: 0.6rem 0.7rem;
+  text-align: center;
+}
+
+.micro-stat strong {
+  color: var(--sv-text-primary);
+  display: block;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.micro-stat span {
+  color: var(--sv-text-muted);
+  font-size: 0.68rem;
+}
+
+.micro-subnav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  border-bottom: 1px solid var(--sv-border);
+  padding-bottom: 0.8rem;
+}
+
+.micro-tab {
+  align-items: center;
+  background: var(--sv-bg-surface);
+  border: 1px solid var(--sv-border);
+  border-radius: 999px;
+  color: var(--sv-text-secondary);
+  cursor: pointer;
+  display: inline-flex;
+  font-family: var(--sv-font-body);
+  font-size: 0.83rem;
+  gap: 0.35rem;
+  padding: 0.42rem 0.9rem;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease, color 0.18s ease;
+}
+
+.micro-tab:hover,
+.micro-tab.is-active {
+  border-color: rgba(34, 211, 238, 0.75);
+  box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.13);
+  color: var(--sv-text-primary);
+  transform: translateY(-1px);
+}
+
+.micro-tab.is-active {
+  background: linear-gradient(135deg, rgba(34, 211, 238, 0.22), rgba(59, 130, 246, 0.14));
+}
+
+.micro-toolbar {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) minmax(180px, 240px) minmax(180px, 240px);
+  gap: 0.6rem;
+}
+
+.micro-context {
+  align-items: center;
+  border: 1px solid var(--sv-border);
+  border-radius: 0.85rem;
+  background: var(--sv-bg-surface);
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  padding: 0.65rem 0.85rem;
+}
+
+.micro-context div {
+  align-items: center;
+  display: flex;
+  gap: 0.45rem;
+  min-width: max-content;
+}
+
+.micro-context strong {
+  color: var(--sv-text-primary);
+}
+
+.micro-context small,
+.micro-context p {
+  color: var(--sv-text-muted);
+  font-size: 0.78rem;
+}
+
+.micro-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+}
+
+.micro-card {
+  background:
+    radial-gradient(circle at 20% 0%, rgba(34, 211, 238, 0.12), transparent 34%),
+    var(--sv-bg-surface);
+  border: 1px solid var(--sv-border);
+  border-radius: 1rem;
+  box-shadow: var(--sv-shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  overflow: hidden;
+  padding: 0.85rem;
+  position: relative;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+.micro-card:hover {
+  border-color: rgba(34, 211, 238, 0.38);
+  box-shadow: 0 16px 42px rgba(0, 0, 0, 0.34), 0 0 28px rgba(34, 211, 238, 0.08);
+  transform: translateY(-2px);
+}
+
+.micro-card-focus {
+  animation: micro-focus 1.2s ease;
+}
+
+.micro-card-agar { border-left: 4px solid #22d3ee; }
+.micro-card-caldo { border-left: 4px solid #818cf8; }
+.micro-card-prueba { border-left: 4px solid #f59e0b; }
+.micro-card-antibiotico { border-left: 4px solid #a3e635; }
+.micro-card-microorganismo { border-left: 4px solid #f43f5e; }
+
+.micro-card-visual {
+  align-items: center;
+  aspect-ratio: 16 / 7;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.32) 0 2px, transparent 3px),
+    radial-gradient(circle at 60% 55%, rgba(255, 255, 255, 0.22) 0 1px, transparent 2px),
+    linear-gradient(135deg, rgba(34, 211, 238, 0.22), rgba(15, 23, 42, 0.18));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.8rem;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.micro-card-visual span {
+  filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.35));
+  font-size: 2.2rem;
+  z-index: 2;
+}
+
+.micro-card-visual i {
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 50%;
+  height: 42px;
+  position: absolute;
+  width: 42px;
+}
+
+.micro-card-visual i:nth-child(2) { left: 12%; top: 18%; }
+.micro-card-visual i:nth-child(3) { right: 18%; top: 26%; transform: scale(0.72); }
+.micro-card-visual i:nth-child(4) { bottom: -10px; left: 48%; transform: scale(1.4); }
+
+.micro-card-visual[data-kind="caldo"] { background: linear-gradient(135deg, rgba(129, 140, 248, 0.24), rgba(14, 165, 233, 0.08)); }
+.micro-card-visual[data-kind="prueba"] { background: linear-gradient(135deg, rgba(245, 158, 11, 0.26), rgba(34, 211, 238, 0.07)); }
+.micro-card-visual[data-kind="antibiotico"] { background: linear-gradient(135deg, rgba(163, 230, 53, 0.22), rgba(59, 130, 246, 0.08)); }
+.micro-card-visual[data-kind="microorganismo"] { background: linear-gradient(135deg, rgba(244, 63, 94, 0.24), rgba(34, 211, 238, 0.08)); }
+
+.micro-card-head {
+  align-items: flex-start;
+  display: flex;
+  gap: 0.75rem;
+  justify-content: space-between;
+}
+
+.micro-card-head h3 {
+  color: var(--sv-text-primary);
+  font-family: var(--sv-font-heading);
+  font-size: 1.02rem;
+  line-height: 1.25;
+}
+
+.micro-card-head p {
+  color: var(--sv-text-muted);
+  font-size: 0.78rem;
+  margin-top: 0.08rem;
+}
+
+.micro-type-badge {
+  border: 1px solid rgba(34, 211, 238, 0.35);
+  border-radius: 999px;
+  color: var(--sv-micro-color);
+  flex-shrink: 0;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  padding: 0.18rem 0.5rem;
+}
+
+.micro-type-badge.is-pos {
+  border-color: rgba(251, 146, 60, 0.34);
+  color: #fb923c;
+}
+
+.micro-type-badge.is-neg {
+  border-color: rgba(248, 113, 113, 0.34);
+  color: #f87171;
+}
+
+.micro-tag-row,
+.micro-link-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.micro-tag,
+.micro-link-chip {
+  align-items: center;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 999px;
+  display: inline-flex;
+  font-size: 0.7rem;
+  min-height: 26px;
+  padding: 0.18rem 0.55rem;
+}
+
+.micro-tag {
+  background: rgba(148, 163, 184, 0.1);
   color: var(--sv-text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
 }
-.micro-calc-result {
-  font-size: 0.88rem;
-  color: var(--sv-success);
-  font-weight: 600;
-  padding: 0.35rem 0;
+
+.micro-link-chip {
+  background: rgba(34, 211, 238, 0.08);
+  color: var(--sv-text-secondary);
+  cursor: pointer;
+  font-family: var(--sv-font-body);
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, color 0.18s ease, transform 0.18s ease;
+}
+
+.micro-link-chip:hover {
+  border-color: rgba(34, 211, 238, 0.58);
+  box-shadow: 0 0 18px rgba(34, 211, 238, 0.16);
+  color: var(--sv-text-primary);
+  transform: translateY(-1px);
+}
+
+.micro-link-chip.is-danger {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.24);
+}
+
+.micro-quick-grid {
+  display: grid;
+  gap: 0.45rem;
+  grid-template-columns: 1fr 1fr;
+}
+
+.micro-quick {
+  background: var(--sv-bg-elevated);
+  border: 1px solid var(--sv-border-subtle);
+  border-radius: 0.7rem;
+  padding: 0.55rem 0.6rem;
+}
+
+.micro-quick span {
+  color: var(--sv-text-muted);
+  display: block;
+  font-size: 0.66rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.micro-quick strong {
+  color: var(--sv-text-primary);
+  display: block;
+  font-size: 0.85rem;
+  line-height: 1.25;
+  margin-top: 0.18rem;
+}
+
+.micro-use {
+  border-left: 2px solid rgba(34, 211, 238, 0.45);
+  padding-left: 0.7rem;
+}
+
+.micro-use span {
+  color: var(--sv-micro-color);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.micro-use p {
+  color: var(--sv-text-secondary);
+  font-size: 0.84rem;
+  line-height: 1.5;
+}
+
+.micro-card-actions {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: 1fr 1fr;
+  margin-top: auto;
+}
+
+.micro-modal-overlay {
+  align-items: center;
+  background: rgba(0, 0, 0, 0.82);
+  backdrop-filter: blur(8px);
+  display: none;
+  inset: 0;
+  justify-content: center;
+  padding: 1rem;
+  position: fixed;
+  z-index: 2200;
+}
+
+.micro-modal-overlay.is-open {
+  display: flex;
+}
+
+.micro-modal {
+  background:
+    radial-gradient(circle at top left, rgba(34, 211, 238, 0.13), transparent 34%),
+    var(--sv-bg-surface);
+  border: 1px solid var(--sv-border);
+  border-radius: 1rem;
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.55);
+  max-height: 90vh;
+  max-width: 980px;
+  overflow-y: auto;
+  width: min(980px, 100%);
+}
+
+.micro-modal-calc {
+  max-width: 720px;
+}
+
+.micro-modal-head {
+  align-items: flex-start;
+  border-bottom: 1px solid var(--sv-border);
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  padding: 1rem 1.1rem;
+}
+
+.micro-modal-head h3 {
+  color: var(--sv-text-primary);
+  font-family: var(--sv-font-heading);
+  font-size: 1.25rem;
+}
+
+.micro-modal-head p {
+  color: var(--sv-text-muted);
+  font-size: 0.84rem;
+}
+
+.micro-icon-btn {
+  align-items: center;
+  background: transparent;
+  border: 1px solid var(--sv-border);
+  border-radius: 999px;
+  color: var(--sv-text-secondary);
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 1.25rem;
+  height: 34px;
+  justify-content: center;
+  width: 34px;
+}
+
+.micro-icon-btn:hover {
+  border-color: var(--sv-danger);
+  color: var(--sv-danger);
+}
+
+.micro-modal-body {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem 1.1rem;
+}
+
+.micro-modal-actions {
+  border-top: 1px solid var(--sv-border);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  justify-content: flex-end;
+  padding: 0.85rem 1.1rem 1rem;
+}
+
+.micro-detail-grid {
+  display: grid;
+  gap: 0.65rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.micro-detail,
+.micro-panel,
+.micro-relation-center {
+  background: rgba(15, 23, 42, 0.44);
+  border: 1px solid var(--sv-border);
+  border-radius: 0.8rem;
+  padding: 0.75rem;
+}
+
+[data-theme="light"] .micro-detail,
+[data-theme="light"] .micro-panel,
+[data-theme="light"] .micro-relation-center {
+  background: #f8fafc;
+}
+
+.micro-detail.is-wide {
+  grid-column: 1 / -1;
+}
+
+.micro-detail span,
+.micro-panel h4,
+.micro-relation-center h4,
+.micro-relation-center h5 {
+  color: var(--sv-micro-color);
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.3rem;
+  text-transform: uppercase;
+}
+
+.micro-detail p,
+.micro-panel li,
+.micro-panel p {
+  color: var(--sv-text-secondary);
+  font-size: 0.84rem;
+  line-height: 1.55;
+}
+
+.micro-panel ol,
+.micro-panel ul {
+  margin-left: 1rem;
+}
+
+.micro-relation-center {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.micro-relation-center section {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.micro-alert {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.34);
+  border-radius: 0.65rem;
+  color: #fecaca;
+  font-size: 0.83rem;
+  font-weight: 700;
+  margin-bottom: 0.65rem;
+  padding: 0.55rem 0.7rem;
+}
+
+[data-theme="light"] .micro-alert {
+  color: #b91c1c;
+}
+
+.micro-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.micro-table th,
+.micro-table td {
+  border-bottom: 1px solid var(--sv-border);
+  color: var(--sv-text-secondary);
+  font-size: 0.82rem;
+  padding: 0.42rem 0.35rem;
+  text-align: left;
+}
+
+.micro-table th {
+  color: var(--sv-text-primary);
+}
+
+.micro-calc-form {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  padding: 1rem 1.1rem 0;
+}
+
+.micro-calc-form label {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.micro-calc-form label span {
+  color: var(--sv-text-muted);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.micro-calc-result-panel {
+  display: grid;
+  gap: 0.55rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  padding: 1rem 1.1rem;
+}
+
+.micro-calc-result-panel .micro-alert {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+
+.micro-print-area {
+  display: none;
+}
+
+@keyframes micro-focus {
+  0% { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.0); }
+  35% { box-shadow: 0 0 0 6px rgba(34, 211, 238, 0.24), 0 0 42px rgba(34, 211, 238, 0.22); }
+  100% { box-shadow: var(--sv-shadow-sm); }
+}
+
+@media (max-width: 880px) {
+  .micro-hero {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .micro-stats {
+    grid-template-columns: repeat(3, 1fr);
+    min-width: 0;
+  }
+
+  .micro-toolbar {
+    grid-template-columns: 1fr;
+  }
+
+  .micro-context {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .micro-detail-grid,
+  .micro-calc-form,
+  .micro-calc-result-panel {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .micro-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .micro-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .micro-card-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .micro-modal-overlay {
+    padding: 0.5rem;
+  }
+}
+
+@media print {
+  body.micro-printing * {
+    visibility: hidden !important;
+  }
+
+  body.micro-printing #micro-print-area,
+  body.micro-printing #micro-print-area * {
+    visibility: visible !important;
+  }
+
+  body.micro-printing #micro-print-area {
+    display: block !important;
+    inset: 0;
+    position: absolute;
+    width: 100%;
+  }
+
+  .micro-print-doc {
+    background: #fff;
+    color: #0f172a;
+    font-family: Arial, sans-serif;
+    padding: 18mm;
+  }
+
+  .micro-print-header {
+    align-items: flex-start;
+    border-bottom: 3px solid #0f766e;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12mm;
+    padding-bottom: 6mm;
+  }
+
+  .micro-print-header h1 {
+    color: #0f766e;
+    font-family: "Times New Roman", serif;
+    font-size: 26px;
+    margin: 0;
+  }
+
+  .micro-print-header p,
+  .micro-print-header small,
+  .micro-print-header span {
+    color: #475569;
+    display: block;
+  }
+
+  .micro-print-header strong {
+    color: #0f172a;
+    display: block;
+    font-size: 13px;
+    text-transform: uppercase;
+  }
+
+  .micro-print-section {
+    break-inside: avoid;
+    margin-bottom: 8mm;
+  }
+
+  .micro-print-section h2 {
+    border-bottom: 1px solid #cbd5e1;
+    color: #0f172a;
+    font-size: 16px;
+    margin-bottom: 4mm;
+    padding-bottom: 2mm;
+  }
+
+  .micro-print-section table,
+  .micro-print-section .micro-table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  .micro-print-section th,
+  .micro-print-section td,
+  .micro-print-section .micro-table th,
+  .micro-print-section .micro-table td {
+    border: 1px solid #cbd5e1;
+    color: #0f172a;
+    font-size: 12px;
+    padding: 6px 8px;
+  }
+
+  .micro-print-alert {
+    background: #fee2e2;
+    border: 1px solid #ef4444;
+    color: #991b1b;
+    font-weight: 700;
+    margin-top: 4mm;
+    padding: 8px 10px;
+  }
+
+  .micro-print-notes div {
+    align-items: center;
+    display: flex;
+    gap: 10px;
+    margin: 7mm 0;
+  }
+
+  .micro-print-notes span {
+    color: #475569;
+    min-width: 150px;
+  }
+
+  .micro-print-notes i {
+    border-bottom: 1px solid #0f172a;
+    flex: 1;
+    height: 1px;
+  }
+
+  @page {
+    margin: 0;
+    size: A4 portrait;
+  }
 }

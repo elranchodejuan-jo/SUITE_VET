@@ -350,6 +350,7 @@
   gap: 0.4rem;
   transition: transform 0.2s ease, background 0.2s ease;
 }
+.sv-fab-hidden { display: none !important; }
 .sv-fab:hover  { background: var(--sv-accent-hover); transform: translateY(-2px); }
 .sv-fab.sv-pulse { animation: sv-pulse 0.3s ease; }
 

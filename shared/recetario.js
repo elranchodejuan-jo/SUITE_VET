@@ -1,99 +1,144 @@
 // =============================================================================
 // SUITE VET — shared/recetario.js
-// Módulo del recetario médico veterinario.
-// BUG FIXES:
-//  1. Ahora se inicializa correctamente desde DOMContentLoaded.
-//  2. La fecha se establece dinámicamente (no en HTML estático).
-//  3. Los items se persisten en localStorage.
-//  4. renderLista() refleja cambios en tiempo real.
-//  5. Impresión solo muestra la hoja de receta.
+// Recetario medico veterinario: borrador, guardado local y folios numerados.
 // =============================================================================
 
 const Recetario = {
   items: [],
+  recetasGuardadas: [],
+  recetaActivaId: null,
+  folioActual: 1,
 
-  // ---------------------------------------------------------------------------
+  STORAGE_RECETA: "suitevet_receta",
+  STORAGE_RECETAS: "suitevet_recetas_guardadas",
+  STORAGE_DOCTOR: "suitevet_doctor_nombre",
+  STORAGE_DRAFT_FIELDS: "suitevet_receta_draft_fields",
+
   init() {
     this._cacheDOM();
     this._bindEvents();
     this._cargarLocalStorage();
-    this._renderBadge();
+    this._renderTodo();
+    this._actualizarVisibilidad(window.SuiteVet?.currentView || "home");
   },
 
-  // ---------------------------------------------------------------------------
   _cacheDOM() {
-    this.btnVer     = document.getElementById("sv-fab-receta");
-    this.badge      = document.getElementById("sv-fab-badge");
-    this.modal      = document.getElementById("sv-modal-receta");
-    this.btnCerrar  = document.getElementById("sv-receta-cerrar");
+    this.btnVer = document.getElementById("sv-fab-receta");
+    this.badge = document.getElementById("sv-fab-badge");
+    this.modal = document.getElementById("sv-modal-receta");
+    this.titulo = document.getElementById("sv-receta-titulo");
+    this.btnCerrar = document.getElementById("sv-receta-cerrar");
     this.btnLimpiar = document.getElementById("sv-receta-limpiar");
-    this.btnImprimir= document.getElementById("sv-receta-imprimir");
-    this.lista      = document.getElementById("sv-lista-receta");
+    this.btnGuardar = document.getElementById("sv-receta-guardar");
+    this.btnImprimir = document.getElementById("sv-receta-imprimir");
+    this.lista = document.getElementById("sv-lista-receta");
+    this.listaGuardadas = document.getElementById("sv-recetas-lista");
+    this.totalGuardadas = document.getElementById("sv-recetas-total");
+    this.folio = document.getElementById("sv-receta-folio");
+    this.numeroLateral = document.getElementById("sv-receta-numero");
+    this.inputDoctor = document.getElementById("sv-receta-doctor");
     this.inputFecha = document.getElementById("sv-receta-fecha");
-
-    // Fecha de hoy por defecto
-    if (this.inputFecha) {
-      this.inputFecha.value = new Date().toISOString().split("T")[0];
-    }
+    this.inputPropietario = document.getElementById("sv-receta-propietario");
+    this.inputPaciente = document.getElementById("sv-receta-paciente");
+    this.inputPeso = document.getElementById("sv-receta-peso");
+    this.inputIndicaciones = document.getElementById("sv-receta-indicaciones");
   },
 
-  // ---------------------------------------------------------------------------
   _bindEvents() {
-    this.btnVer?.addEventListener("click",     () => this.abrir());
-    this.btnCerrar?.addEventListener("click",  () => this.cerrar());
-    this.btnImprimir?.addEventListener("click",() => this._imprimir());
+    this.btnVer?.addEventListener("click", () => this.abrir());
+    this.btnCerrar?.addEventListener("click", () => this.cerrar());
+    this.btnGuardar?.addEventListener("click", () => this.guardarReceta());
+    this.btnImprimir?.addEventListener("click", () => this._imprimir());
 
     this.btnLimpiar?.addEventListener("click", () => {
-      if (confirm("¿Borrar toda la receta actual?")) {
-        this.items = [];
-        this._guardar();
-        this._renderBadge();
-        this._renderLista();
+      if (confirm("¿Borrar la receta actual y empezar una nueva?")) {
+        this.nuevaReceta();
       }
     });
 
-    // Cerrar modal al clickear fuera del contenido
+    this.inputDoctor?.addEventListener("input", () => {
+      localStorage.setItem(this.STORAGE_DOCTOR, this.inputDoctor.value.trim());
+      this._guardarDraftFields();
+    });
+
+    [
+      this.inputFecha,
+      this.inputPropietario,
+      this.inputPaciente,
+      this.inputPeso,
+      this.inputIndicaciones
+    ].forEach((input) => {
+      input?.addEventListener("input", () => this._guardarDraftFields());
+      input?.addEventListener("change", () => this._guardarDraftFields());
+    });
+
     this.modal?.addEventListener("click", (e) => {
       if (e.target === this.modal) this.cerrar();
     });
+
+    document.addEventListener("suitevet:viewchange", (e) => {
+      this._actualizarVisibilidad(e.detail?.view || "");
+    });
   },
 
-  // ---------------------------------------------------------------------------
   _cargarLocalStorage() {
     try {
-      const guardado = localStorage.getItem("suitevet_receta");
-      if (guardado) this.items = JSON.parse(guardado);
+      const guardado = JSON.parse(localStorage.getItem(this.STORAGE_RECETA) || "[]");
+      this.items = Array.isArray(guardado) ? guardado : (guardado.items || []);
     } catch {
       this.items = [];
     }
+
+    try {
+      const recetas = JSON.parse(localStorage.getItem(this.STORAGE_RECETAS) || "[]");
+      this.recetasGuardadas = Array.isArray(recetas) ? recetas : [];
+    } catch {
+      this.recetasGuardadas = [];
+    }
+
+    this.folioActual = this._siguienteNumero();
+
+    const doctor = localStorage.getItem(this.STORAGE_DOCTOR) || "";
+    if (this.inputDoctor) this.inputDoctor.value = doctor;
+
+    try {
+      const draftFields = JSON.parse(localStorage.getItem(this.STORAGE_DRAFT_FIELDS) || "{}");
+      this._setFormData(draftFields, { keepDoctor: true });
+    } catch {
+      this._setFormData({}, { keepDoctor: true });
+    }
   },
 
-  // ---------------------------------------------------------------------------
   _guardar() {
-    localStorage.setItem("suitevet_receta", JSON.stringify(this.items));
+    localStorage.setItem(this.STORAGE_RECETA, JSON.stringify(this.items));
   },
 
-  // ---------------------------------------------------------------------------
-  // API PÚBLICA: llamado desde farma.js
+  _guardarRecetas() {
+    localStorage.setItem(this.STORAGE_RECETAS, JSON.stringify(this.recetasGuardadas));
+  },
+
+  _guardarDraftFields() {
+    if (this.recetaActivaId) return;
+    localStorage.setItem(this.STORAGE_DRAFT_FIELDS, JSON.stringify(this._getFormData()));
+  },
+
   agregarItem(farmaco, dosisCalculada, via, especie, retiroInfo) {
     const item = {
-      id:           Date.now(),
-      nombre:       farmaco.principio,
-      comercial:    farmaco.comerciales?.[0] || "",
-      concentracion:`${farmaco.concentracion} ${farmaco.unidad}`,
-      dosis:        dosisCalculada,
+      id: Date.now() + Math.floor(Math.random() * 1000),
+      nombre: farmaco.principio,
+      comercial: farmaco.comerciales?.[0] || "",
+      concentracion: `${farmaco.concentracion} ${farmaco.unidad}`,
+      dosis: dosisCalculada,
       via,
       especie,
-      retiro:       retiroInfo,
-      instrucciones:""
+      retiro: retiroInfo,
+      instrucciones: ""
     };
 
     this.items.push(item);
     this._guardar();
     this._renderBadge();
     this._animarBadge();
-
-    // Toast de confirmación (no usar alert)
     this._toast(`✅ ${item.nombre} agregado a la receta`);
   },
 
@@ -104,17 +149,136 @@ const Recetario = {
     this._renderLista();
   },
 
-  // ---------------------------------------------------------------------------
+  guardarReceta() {
+    if (this.items.length === 0) {
+      this._toast("Agrega al menos un medicamento antes de guardar.");
+      return;
+    }
+
+    const datos = this._getFormData();
+    const items = this._clone(this.items);
+
+    if (this.recetaActivaId) {
+      const receta = this.recetasGuardadas.find((r) => r.id === this.recetaActivaId);
+      if (!receta) return;
+      receta.datos = datos;
+      receta.items = items;
+      receta.actualizadaEn = new Date().toISOString();
+      this._guardarRecetas();
+      this._renderRecetasGuardadas();
+      this._toast(`Receta ${this._formatNumero(receta.numero)} actualizada.`);
+      return;
+    }
+
+    const numero = this._siguienteNumero();
+    const receta = {
+      id: String(Date.now()),
+      numero,
+      creadaEn: new Date().toISOString(),
+      actualizadaEn: new Date().toISOString(),
+      datos,
+      items
+    };
+
+    this.recetasGuardadas.push(receta);
+    this._guardarRecetas();
+    this._toast(`Receta ${this._formatNumero(numero)} guardada.`);
+    this.nuevaReceta({ silent: true });
+  },
+
+  nuevaReceta(opts = {}) {
+    this.recetaActivaId = null;
+    this.items = [];
+    this.folioActual = this._siguienteNumero();
+    this._setFormData({}, { keepDoctor: true });
+    this._guardar();
+    localStorage.removeItem(this.STORAGE_DRAFT_FIELDS);
+    this._renderTodo();
+    if (!opts.silent) this._toast("Nuevo recetario listo.");
+  },
+
+  abrirRecetaGuardada(id) {
+    const receta = this.recetasGuardadas.find((r) => r.id === id);
+    if (!receta) return;
+
+    this.recetaActivaId = receta.id;
+    this.folioActual = receta.numero;
+    this.items = this._clone(receta.items || []);
+    this._setFormData(receta.datos || {}, { keepDoctor: false });
+    this._guardar();
+    this._renderTodo();
+  },
+
   abrir() {
-    this._renderLista();
+    this._renderTodo();
     this.modal?.classList.add("sv-modal-active");
   },
 
   cerrar() {
+    this._guardarDraftFields();
     this.modal?.classList.remove("sv-modal-active");
   },
 
-  // ---------------------------------------------------------------------------
+  _actualizarNota(id, valor) {
+    const item = this.items.find((i) => i.id === id);
+    if (!item) return;
+    item.instrucciones = valor;
+    this._guardar();
+  },
+
+  _getFormData() {
+    const doctor = this.inputDoctor?.value.trim() || "";
+    localStorage.setItem(this.STORAGE_DOCTOR, doctor);
+
+    return {
+      doctor,
+      fecha: this.inputFecha?.value || this._today(),
+      propietario: this.inputPropietario?.value.trim() || "",
+      paciente: this.inputPaciente?.value.trim() || "",
+      peso: this.inputPeso?.value.trim() || "",
+      indicaciones: this.inputIndicaciones?.value.trim() || ""
+    };
+  },
+
+  _setFormData(data = {}, opts = {}) {
+    if (!opts.keepDoctor && this.inputDoctor) {
+      this.inputDoctor.value = data.doctor || localStorage.getItem(this.STORAGE_DOCTOR) || "";
+      localStorage.setItem(this.STORAGE_DOCTOR, this.inputDoctor.value.trim());
+    }
+
+    if (this.inputFecha) this.inputFecha.value = data.fecha || this._today();
+    if (this.inputPropietario) this.inputPropietario.value = data.propietario || "";
+    if (this.inputPaciente) this.inputPaciente.value = data.paciente || "";
+    if (this.inputPeso) this.inputPeso.value = data.peso || "";
+    if (this.inputIndicaciones) this.inputIndicaciones.value = data.indicaciones || "";
+  },
+
+  _renderTodo() {
+    this._renderBadge();
+    this._renderFolio();
+    this._renderTitulo();
+    this._renderLista();
+    this._renderRecetasGuardadas();
+  },
+
+  _renderTitulo() {
+    const numero = this._formatNumero(this.folioActual);
+    if (this.titulo) {
+      this.titulo.textContent = this.recetaActivaId
+        ? `📋 Receta ${numero}`
+        : `📋 Borrador de Receta ${numero}`;
+    }
+    if (this.btnGuardar) {
+      this.btnGuardar.textContent = this.recetaActivaId ? "Guardar cambios" : "Guardar receta";
+    }
+  },
+
+  _renderFolio() {
+    const numero = this._formatNumero(this.folioActual);
+    if (this.folio) this.folio.textContent = `Folio: ${numero}`;
+    if (this.numeroLateral) this.numeroLateral.textContent = numero;
+  },
+
   _renderBadge() {
     const count = this.items.length;
     if (this.badge) {
@@ -123,12 +287,35 @@ const Recetario = {
     }
   },
 
-  _animarBadge() {
-    this.btnVer?.classList.add("sv-pulse");
-    setTimeout(() => this.btnVer?.classList.remove("sv-pulse"), 350);
+  _renderRecetasGuardadas() {
+    if (this.totalGuardadas) this.totalGuardadas.textContent = this.recetasGuardadas.length;
+    if (!this.listaGuardadas) return;
+
+    this.listaGuardadas.innerHTML = "";
+
+    if (this.recetasGuardadas.length === 0) {
+      const empty = document.createElement("span");
+      empty.className = "sv-recetas-vacio";
+      empty.textContent = "Todavía no hay recetas guardadas.";
+      this.listaGuardadas.appendChild(empty);
+      return;
+    }
+
+    [...this.recetasGuardadas]
+      .sort((a, b) => a.numero - b.numero)
+      .forEach((receta) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "sv-receta-chip";
+        if (receta.id === this.recetaActivaId) btn.classList.add("is-active");
+
+        const nombre = receta.datos?.paciente || receta.datos?.propietario || "Sin paciente";
+        btn.textContent = `${this._formatNumero(receta.numero)} · ${nombre}`;
+        btn.addEventListener("click", () => this.abrirRecetaGuardada(receta.id));
+        this.listaGuardadas.appendChild(btn);
+      });
   },
 
-  // ---------------------------------------------------------------------------
   _renderLista() {
     if (!this.lista) return;
 
@@ -147,56 +334,79 @@ const Recetario = {
       li.className = "sv-receta-item sv-fade-in";
       li.innerHTML = `
         <div class="sv-receta-item-header">
-          <strong>${item.nombre}</strong>
-          ${item.comercial ? `<span class="sv-receta-comercial">(${item.comercial})</span>` : ""}
+          <strong>${this._escape(item.nombre)}</strong>
+          ${item.comercial ? `<span class="sv-receta-comercial">(${this._escape(item.comercial)})</span>` : ""}
           <button class="sv-btn sv-btn-sm sv-btn-danger sv-receta-del no-print"
-                  onclick="window.Recetario.eliminarItem(${item.id})"
+                  type="button"
                   title="Eliminar">✕</button>
         </div>
         <div class="sv-receta-item-body">
-          <span>${item.concentracion}</span> ·
-          Administrar <strong>${item.dosis}</strong> vía <strong>${item.via}</strong>
-          <span class="sv-receta-especie">(${item.especie})</span>
+          <span>${this._escape(item.concentracion)}</span> ·
+          Administrar <strong>${this._escape(item.dosis)}</strong> vía <strong>${this._escape(item.via)}</strong>
+          <span class="sv-receta-especie">(${this._escape(item.especie)})</span>
         </div>
-        ${item.retiro ? `<div class="sv-receta-retiro">${item.retiro}</div>` : ""}
+        ${item.retiro ? `<div class="sv-receta-retiro">${this._escape(item.retiro)}</div>` : ""}
         <input
           type="text"
           class="sv-receta-nota sv-input"
           placeholder="Frecuencia y duración (Ej. Cada 24 h por 3 días)…"
-          value="${item.instrucciones || ""}"
-          oninput="window.Recetario._actualizarNota(${item.id}, this.value)"
+          value="${this._escape(item.instrucciones || "")}"
         />
       `;
+
+      li.querySelector(".sv-receta-del")?.addEventListener("click", () => this.eliminarItem(item.id));
+      li.querySelector(".sv-receta-nota")?.addEventListener("input", (e) => {
+        this._actualizarNota(item.id, e.target.value);
+      });
+
       this.lista.appendChild(li);
     });
   },
 
-  _actualizarNota(id, valor) {
-    const item = this.items.find((i) => i.id === id);
-    if (item) {
-      item.instrucciones = valor;
-      this._guardar();
-    }
+  _actualizarVisibilidad(viewName) {
+    const visible = viewName === "farmacologia";
+    this.btnVer?.classList.toggle("sv-fab-hidden", !visible);
+    if (!visible) this.cerrar();
   },
 
-  // ---------------------------------------------------------------------------
+  _animarBadge() {
+    this.btnVer?.classList.add("sv-pulse");
+    setTimeout(() => this.btnVer?.classList.remove("sv-pulse"), 350);
+  },
+
   _imprimir() {
-    // Guardar datos del formulario antes de imprimir
-    const propietario = document.getElementById("sv-receta-propietario")?.value || "";
-    const paciente    = document.getElementById("sv-receta-paciente")?.value || "";
-    const peso        = document.getElementById("sv-receta-peso")?.value || "";
-    const fecha       = document.getElementById("sv-receta-fecha")?.value || "";
-
-    // Crear área de impresión temporal
-    const printArea = document.getElementById("sv-print-area");
-    if (printArea) {
-      printArea.innerHTML = document.getElementById("sv-area-impresion-receta")?.innerHTML || "";
-    }
-
+    this._guardarDraftFields();
     window.print();
   },
 
-  // ---------------------------------------------------------------------------
+  _siguienteNumero() {
+    const usados = this.recetasGuardadas.map((r) => Number(r.numero) || 0);
+    return Math.max(0, ...usados) + 1;
+  },
+
+  _formatNumero(numero) {
+    return `#${String(numero || 1).padStart(4, "0")}`;
+  },
+
+  _today() {
+    const now = new Date();
+    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+    return now.toISOString().slice(0, 10);
+  },
+
+  _clone(value) {
+    return JSON.parse(JSON.stringify(value));
+  },
+
+  _escape(value) {
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  },
+
   _toast(mensaje) {
     const existing = document.getElementById("sv-toast");
     if (existing) existing.remove();
@@ -210,8 +420,7 @@ const Recetario = {
   }
 };
 
-// Inicializar cuando el DOM esté listo
 document.addEventListener("DOMContentLoaded", () => {
-  Recetario.init();
   window.Recetario = Recetario;
+  Recetario.init();
 });

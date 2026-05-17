@@ -693,7 +693,7 @@ window.FARMA_DATA = {
       mecanismo: "Bactericida concentración-dependiente. Inhibe síntesis proteica bacteriana uniéndose a la subunidad 30S ribosomal.",
       especies: [
       { nombre: "Canino",             dosisMgKg: 10, via: "IM / IV",      retiroCarne: 0,  retiroLeche: 0, nota: "10–15 mg/kg c/12 h. Infecciones Gram negativas." },
-      { nombre: "Felino",             dosisMgKg: 8,  via: "IM / IV",      retiroCarne: 0,  retiroLeche: 0, note: "Mayor precaución por nefrotoxicidad." },
+      { nombre: "Felino",             dosisMgKg: 8,  via: "IM / IV",      retiroCarne: 0,  retiroLeche: 0, nota: "Mayor precaución por nefrotoxicidad." },
       { nombre: "Bovino",             dosisMgKg: 10, via: "IM",           retiroCarne: 30, retiroLeche: 3, nota: "Infecciones respiratorias y septicemias." },
       { nombre: "Porcino",            dosisMgKg: 10, via: "IM",           retiroCarne: 21, retiroLeche: 0, nota: "Enteritis bacterianas y procesos sistémicos." },
       { nombre: "Aves",               dosisMgKg: 20, via: "IM / Oral",    retiroCarne: 7,  retiroLeche: 0, nota: "Uso frecuente en colibacilosis y salmonelosis." }

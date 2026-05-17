@@ -38,6 +38,60 @@
   flex-wrap: wrap;
 }
 
+.sv-recetas-guardadas {
+  border: 1px solid var(--sv-border);
+  border-radius: 0.75rem;
+  background: var(--sv-bg-surface);
+  padding: 0.65rem 0.75rem;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.sv-recetas-guardadas-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--sv-text-secondary);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.sv-recetas-guardadas-head strong {
+  color: var(--sv-text-primary);
+  font-size: 0.8rem;
+}
+
+.sv-recetas-lista {
+  display: flex;
+  gap: 0.45rem;
+  overflow-x: auto;
+  padding-bottom: 0.1rem;
+}
+
+.sv-receta-chip {
+  border: 1px solid var(--sv-border);
+  border-radius: 999px;
+  background: var(--sv-bg-elevated);
+  color: var(--sv-text-secondary);
+  cursor: pointer;
+  font-size: 0.78rem;
+  padding: 0.32rem 0.7rem;
+  white-space: nowrap;
+}
+
+.sv-receta-chip:hover,
+.sv-receta-chip.is-active {
+  border-color: var(--sv-accent);
+  color: #fff;
+  background: var(--sv-accent);
+}
+
+.sv-recetas-vacio {
+  color: var(--sv-text-muted);
+  font-size: 0.8rem;
+}
+
 /* ──────────────────────────────────────────────
    HOJA DE PAPEL
 ────────────────────────────────────────────── */
@@ -76,6 +130,44 @@
 }
 .sv-brand-area p { font-size: 0.8rem; opacity: 0.85; margin-top: 0.2rem; color: #fff; }
 .sv-receta-meta  { font-size: 0.7rem; opacity: 0.7; color: #fff; }
+
+.sv-dr-label {
+  display: block;
+  margin-top: 0.75rem;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.7;
+  color: #fff;
+}
+
+.sv-receta-doctor-input {
+  margin-top: 0.1rem;
+  font-weight: 700;
+}
+
+.sv-receta-numero-lateral {
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 0.65rem;
+  padding: 0.65rem 0.75rem;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.sv-receta-numero-lateral span {
+  display: block;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.sv-receta-numero-lateral strong {
+  color: #fff;
+  display: block;
+  font-size: 1.45rem;
+  line-height: 1.1;
+  margin-top: 0.2rem;
+}
 
 /* Formulario de datos del paciente */
 .sv-datos-form {
@@ -261,6 +353,48 @@
 .sv-firma-area { text-align: center; width: 180px; }
 .sv-linea-firma { border-bottom: 1px solid #0f172a; margin-bottom: 0.3rem; }
 .sv-firma-area p { font-size: 0.72rem; color: #64748b; }
+
+@media (max-width: 760px) {
+  .sv-receta-container {
+    max-height: 94vh;
+  }
+
+  .sv-receta-controls {
+    align-items: stretch;
+  }
+
+  .sv-receta-actions {
+    width: 100%;
+  }
+
+  .sv-receta-actions .sv-btn {
+    flex: 1 1 140px;
+  }
+
+  .sv-hoja-papel {
+    grid-template-columns: 1fr;
+    overflow-y: auto;
+  }
+
+  .sv-receta-sidebar,
+  .sv-receta-main {
+    overflow: visible;
+  }
+
+  .sv-receta-main {
+    padding: 1.15rem;
+  }
+
+  .sv-receta-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .sv-receta-textarea,
+  .sv-firma-area {
+    width: 100%;
+  }
+}
 
 /* ──────────────────────────────────────────────
    TOAST DE NOTIFICACIÓN

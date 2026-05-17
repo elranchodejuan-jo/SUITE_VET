@@ -134,7 +134,7 @@
   <!-- ════════════════════════════════════════
        FAB — RECETARIO
   ════════════════════════════════════════ -->
-  <button id="sv-fab-receta" class="sv-fab" title="Ver recetario">
+  <button id="sv-fab-receta" class="sv-fab sv-fab-hidden" title="Ver recetario">
     📝 Receta
     <span id="sv-fab-badge" class="sv-fab-badge" data-count="0">0</span>
   </button>
@@ -145,20 +145,33 @@
   <div id="sv-modal-receta" class="sv-modal-overlay">
     <div class="sv-receta-container">
       <div class="sv-receta-controls no-print">
-        <h3>📋 Borrador de Receta</h3>
+        <h3 id="sv-receta-titulo">📋 Borrador de Receta</h3>
         <div class="sv-receta-actions">
           <button id="sv-receta-cerrar"   class="sv-btn sv-btn-ghost">Seguir editando</button>
           <button id="sv-receta-limpiar"  class="sv-btn sv-btn-danger">Borrar todo</button>
+          <button id="sv-receta-guardar"  class="sv-btn sv-btn-secondary">Guardar receta</button>
           <button id="sv-receta-imprimir" class="sv-btn sv-btn-primary">🖨️ Imprimir / PDF</button>
         </div>
+      </div>
+      <div class="sv-recetas-guardadas no-print">
+        <div class="sv-recetas-guardadas-head">
+          <span>Recetas guardadas</span>
+          <strong id="sv-recetas-total">0</strong>
+        </div>
+        <div id="sv-recetas-lista" class="sv-recetas-lista"></div>
       </div>
       <div class="sv-hoja-papel" id="sv-area-impresion-receta">
         <aside class="sv-receta-sidebar">
           <div class="sv-brand-area">
             <h1>SUITE VET</h1>
             <p>Medicina Veterinaria &amp; Zootecnia</p>
-            <p class="sv-receta-meta">Dr. [Nombre del Usuario]</p>
+            <label class="sv-dr-label" for="sv-receta-doctor">Dr.</label>
+            <input type="text" id="sv-receta-doctor" class="sv-receta-input sv-receta-doctor-input" placeholder="Nombre del Dr." />
             <p class="sv-receta-meta">Cédula Prof: XXXXXXXX</p>
+          </div>
+          <div class="sv-receta-numero-lateral">
+            <span>Receta</span>
+            <strong id="sv-receta-numero">#0001</strong>
           </div>
           <div class="sv-datos-form">
             <label>Fecha:</label>
@@ -177,7 +190,7 @@
         <main class="sv-receta-main">
           <div class="sv-receta-header-main">
             <h2>RECETARIO MÉDICO VETERINARIO</h2>
-            <span class="sv-receta-folio">Folio: #0001</span>
+            <span id="sv-receta-folio" class="sv-receta-folio">Folio: #0001</span>
           </div>
           <div class="sv-rp-body">
             <h3>Rp/</h3>
@@ -186,7 +199,7 @@
           <div class="sv-receta-footer">
             <div class="sv-notas-adicionales">
               <label>Indicaciones generales / Próxima cita:</label>
-              <textarea class="sv-receta-textarea" placeholder="Ej. Mantener en reposo. Retiro en leche: 4 días."></textarea>
+              <textarea id="sv-receta-indicaciones" class="sv-receta-textarea" placeholder="Ej. Mantener en reposo. Retiro en leche: 4 días."></textarea>
             </div>
             <div class="sv-firma-area">
               <div class="sv-linea-firma"></div>
