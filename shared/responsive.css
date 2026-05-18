@@ -20,15 +20,14 @@
 @media screen and (min-width: 1500px) {
   .sv-main {
     max-width: 1560px;
-    padding: var(--sv-space-6) var(--sv-space-8) 4rem;
+    padding: 1.5rem 2rem 4rem;
   }
 
   .sv-search-wrap {
     max-width: 560px;
   }
 
-  .sv-home-grid,
-  .sv-dashboard-modules {
+  .sv-home-grid {
     grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 
@@ -46,35 +45,19 @@
     max-width: 1760px;
   }
 
-  .sv-dashboard-hero h1 {
-    font-size: 2.45rem;
-  }
 }
 
 /* Laptop pequena y tablet horizontal */
 @media screen and (max-width: 1180px) {
-  .sv-dashboard-hero,
-  .sv-dashboard-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .sv-dashboard-side {
-    position: static;
-  }
-
-  .sv-dashboard-strip {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
   .sv-topbar {
-    gap: var(--sv-space-3);
+    gap: 0.75rem;
   }
 }
 
 /* Tablet vertical */
 @media screen and (max-width: 900px) {
   .sv-main {
-    padding: var(--sv-space-4) var(--sv-space-3) 3.5rem;
+    padding: 1rem 0.75rem 3.5rem;
   }
 
   .sv-topbar {
@@ -97,11 +80,6 @@
     top: 98px;
   }
 
-  .sv-dashboard-hero {
-    padding: var(--sv-space-5);
-  }
-
-  .sv-dashboard-modules,
   .sv-home-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -123,7 +101,7 @@
 /* Celular */
 @media screen and (max-width: 640px) {
   .sv-topbar {
-    padding: var(--sv-space-3);
+    padding: 0.75rem;
   }
 
   .sv-topbar-brand {
@@ -132,46 +110,21 @@
 
   .sv-nav {
     position: static;
-    padding: var(--sv-space-2) var(--sv-space-3);
+    padding: 0.5rem 0.75rem;
   }
 
   .sv-nav-btn,
   .sv-tab,
   .sv-pill,
-  .sv-chip,
   .micro-tab,
   .micro-link-chip {
     min-height: 38px;
   }
 
   .sv-main {
-    padding: var(--sv-space-3) var(--sv-space-2) 4rem;
+    padding: 0.75rem 0.5rem 4rem;
   }
 
-  .sv-dashboard {
-    gap: var(--sv-space-4);
-  }
-
-  .sv-dashboard-hero {
-    gap: var(--sv-space-4);
-    padding: var(--sv-space-4);
-  }
-
-  .sv-dashboard-hero h1 {
-    font-size: 1.65rem;
-  }
-
-  .sv-dashboard-actions,
-  .sv-dashboard-actions .sv-btn {
-    width: 100%;
-  }
-
-  .sv-dashboard-actions .sv-btn {
-    justify-content: center;
-  }
-
-  .sv-dashboard-strip,
-  .sv-dashboard-modules,
   .sv-home-grid,
   .sv-grid,
   .sv-grid-wide,
@@ -180,39 +133,16 @@
     grid-template-columns: 1fr;
   }
 
-  .sv-dashboard-module {
-    min-height: 170px;
-  }
-
-  .sv-section-head {
-    gap: var(--sv-space-2);
-  }
-
-  .sv-panel-header,
-  .sv-panel-body,
-  .sv-panel-footer {
-    padding: var(--sv-space-3);
-  }
-
   .sv-card,
   .sv-home-card,
   .micro-card {
-    border-radius: var(--sv-radius-md);
-    padding: var(--sv-space-3);
-  }
-
-  .sv-card-metric {
-    min-height: 78px;
-    padding: var(--sv-space-3);
-  }
-
-  .sv-card-metric strong {
-    font-size: 1.45rem;
+    border-radius: 0.85rem;
+    padding: 0.75rem;
   }
 
   .sv-modal,
   .micro-modal {
-    border-radius: var(--sv-radius-md);
+    border-radius: 0.85rem;
     max-height: calc(100vh - 1rem);
     width: calc(100vw - 1rem);
   }
@@ -220,7 +150,7 @@
   .micro-modal-overlay,
   .sv-modal-overlay {
     align-items: flex-start;
-    padding: var(--sv-space-2);
+    padding: 0.5rem;
   }
 
   .sv-fab {
@@ -240,21 +170,10 @@
     font-size: 0.82rem;
   }
 
-  .sv-dashboard-hero h1 {
-    font-size: 1.45rem;
-  }
-
-  .sv-dashboard-module-top {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: var(--sv-space-2);
-  }
-
   .sv-btn,
   .sv-nav-btn,
   .sv-tab,
-  .sv-pill,
-  .sv-chip {
+  .sv-pill {
     white-space: normal;
   }
 }

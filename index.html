@@ -10,7 +10,6 @@
   <link rel="stylesheet" href="shared/components.css" />
   <link rel="stylesheet" href="shared/categorias.css" />
   <link rel="stylesheet" href="shared/layout.css" />
-  <link rel="stylesheet" href="shared/dashboard.css" />
 
   <!-- ── MÓDULOS CSS ── -->
   <link rel="stylesheet" href="modules/fisio/fisio.css" />
@@ -21,8 +20,7 @@
   <!-- ── RECETARIO CSS ── -->
   <link rel="stylesheet" href="shared/recetario.css" />
 
-  <!-- ── SUITE VET LIQUID LAB GLASS ── -->
-  <link rel="stylesheet" href="shared/liquid-glass.css" />
+  <!-- ── RESPONSIVE CSS ── -->
   <link rel="stylesheet" href="shared/responsive.css" />
 
   <!-- QR para guías/receta -->
@@ -78,144 +76,39 @@
 
     <!-- ── INICIO ── -->
     <section id="view-home" class="sv-view sv-view-active">
-      <div class="sv-dashboard">
-        <section class="sv-dashboard-hero sv-panel">
-          <div class="sv-dashboard-hero-main">
-            <span class="sv-kicker">SUITE VET / FITBET 2.2</span>
-            <h1>Centro veterinario inteligente</h1>
-            <p class="sv-lead">
-              Plataforma de estudio, consulta y laboratorio para medicina veterinaria y zootecnia.
-              Accede a modulos clinicos, calculadoras, atlas y herramientas de apoyo desde una sola vista.
-            </p>
-            <div class="sv-dashboard-actions">
-              <button class="sv-btn sv-btn-primary" data-go-view="microbiologia" type="button">Abrir Microbiologia</button>
-              <button class="sv-btn sv-btn-secondary" data-go-view="farmacologia" type="button">Ir a Farmacologia</button>
-              <button class="sv-btn sv-btn-ghost" data-go-view="fisiologia" type="button">Explorar Fisiologia</button>
-            </div>
-          </div>
-          <aside class="sv-dashboard-hero-panel" aria-label="Resumen del sistema">
-            <div class="sv-card-metric">
-              <span>Contenido activo</span>
-              <strong data-dashboard-total>--</strong>
-              <small>registros conectados</small>
-            </div>
-            <div class="sv-dashboard-health">
-              <span class="sv-chip sv-chip-info">Liquid Lab Glass</span>
-              <span class="sv-chip sv-chip-success">Responsive</span>
-              <span class="sv-chip">PDF intacto</span>
-            </div>
-          </aside>
-        </section>
-
-        <section class="sv-dashboard-strip" aria-label="Metricas generales">
-          <article class="sv-card-metric">
-            <span>Farmacologia</span>
-            <strong data-dashboard-count="farma">--</strong>
-            <small>farmacos y dosis</small>
-          </article>
-          <article class="sv-card-metric">
-            <span>Microbiologia</span>
-            <strong data-dashboard-count="micro">--</strong>
-            <small>medios, pruebas y atlas</small>
-          </article>
-          <article class="sv-card-metric">
-            <span>Fisiologia</span>
-            <strong data-dashboard-count="fisio">--</strong>
-            <small>hormonas y vitaminas</small>
-          </article>
-          <article class="sv-card-metric">
-            <span>Patologia</span>
-            <strong data-dashboard-count="pato">--</strong>
-            <small>lesiones y hallazgos</small>
-          </article>
-        </section>
-
-        <section class="sv-dashboard-layout">
-          <div class="sv-dashboard-main">
-            <div class="sv-section-head">
-              <div class="sv-section-title">
-                <span class="sv-kicker">Modulos principales</span>
-                <h2>Elige tu area de trabajo</h2>
-              </div>
-              <span class="sv-chip">Datos actualizados al abrir</span>
-            </div>
-
-            <div class="sv-dashboard-modules">
-              <button class="sv-dashboard-module sv-home-card sv-home-card-fisio" data-go-view="fisiologia" type="button">
-                <span class="sv-dashboard-module-icon">FI</span>
-                <span class="sv-dashboard-module-top">
-                  <span class="sv-home-card-title">Fisiologia</span>
-                  <strong data-dashboard-count="fisio">--</strong>
-                </span>
-                <span class="sv-home-card-text">Hormonas, vitaminas y glosario clinico por sistema.</span>
-                <span class="sv-dashboard-module-foot">Consulta por sistemas</span>
-              </button>
-
-              <button class="sv-dashboard-module sv-home-card sv-home-card-farma" data-go-view="farmacologia" type="button">
-                <span class="sv-dashboard-module-icon">Rx</span>
-                <span class="sv-dashboard-module-top">
-                  <span class="sv-home-card-title">Farmacologia</span>
-                  <strong data-dashboard-count="farma">--</strong>
-                </span>
-                <span class="sv-home-card-text">Vademecum, dosis por especie, calculadora y recetario.</span>
-                <span class="sv-dashboard-module-foot">Modulo clinico activo</span>
-              </button>
-
-              <button class="sv-dashboard-module sv-home-card sv-home-card-micro" data-go-view="microbiologia" type="button">
-                <span class="sv-dashboard-module-icon">MB</span>
-                <span class="sv-dashboard-module-top">
-                  <span class="sv-home-card-title">Microbiologia</span>
-                  <strong data-dashboard-count="micro">--</strong>
-                </span>
-                <span class="sv-home-card-text">Agares, caldos, pruebas, antibioticos y atlas bacteriano.</span>
-                <span class="sv-dashboard-module-foot">Ecosistema conectado</span>
-              </button>
-
-              <button class="sv-dashboard-module sv-home-card sv-home-card-pato" data-go-view="patologia" type="button">
-                <span class="sv-dashboard-module-icon">PT</span>
-                <span class="sv-dashboard-module-top">
-                  <span class="sv-home-card-title">Patologia</span>
-                  <strong data-dashboard-count="pato">--</strong>
-                </span>
-                <span class="sv-home-card-text">Lesiones, hallazgos y diagnostico diferencial.</span>
-                <span class="sv-dashboard-module-foot">Nuevo modulo</span>
-              </button>
-
-              <button class="sv-dashboard-module sv-home-card sv-home-card-coming sv-disabled" type="button" disabled>
-                <span class="sv-dashboard-module-icon">CT</span>
-                <span class="sv-dashboard-module-top">
-                  <span class="sv-home-card-title">CATTLE</span>
-                  <strong>0</strong>
-                </span>
-                <span class="sv-home-card-text">Manejo bovino, retiros y protocolos.</span>
-                <span class="sv-coming-tag">Proximamente</span>
-              </button>
-            </div>
-          </div>
-
-          <aside class="sv-dashboard-side sv-panel">
-            <div class="sv-panel-header">
-              <div>
-                <div class="sv-panel-title">Herramientas activas</div>
-                <div class="sv-panel-subtitle">Accesos rapidos del sistema</div>
-              </div>
-            </div>
-            <div class="sv-panel-body sv-stack">
-              <button class="sv-dashboard-action" data-go-view="farmacologia" type="button">
-                <strong>Recetario clinico</strong>
-                <span>Disponible dentro de Farmacologia.</span>
-              </button>
-              <button class="sv-dashboard-action" data-go-view="microbiologia" type="button">
-                <strong>Calculadoras de laboratorio</strong>
-                <span>Agares y caldos con preparacion imprimible.</span>
-              </button>
-              <button class="sv-dashboard-action" data-go-view="microbiologia" type="button">
-                <strong>Atlas microbiologico</strong>
-                <span>Relaciones entre bacterias, medios y antibioticos.</span>
-              </button>
-            </div>
-          </aside>
-        </section>
+      <h2>Bienvenido a SUITE VET</h2>
+      <p class="sv-view-intro">
+        Plataforma de estudio y consulta para medicina veterinaria y zootecnia.
+        Elige el módulo con el que quieres trabajar:
+      </p>
+      <div class="sv-home-grid">
+        <button class="sv-home-card sv-home-card-fisio" data-go-view="fisiologia" type="button">
+          <div class="sv-home-card-icon">💗</div>
+          <div class="sv-home-card-title">Fisiología</div>
+          <div class="sv-home-card-text">Hormonas, vitaminas y glosario clínico por sistema.</div>
+        </button>
+        <button class="sv-home-card sv-home-card-farma" data-go-view="farmacologia" type="button">
+          <div class="sv-home-card-icon">💉</div>
+          <div class="sv-home-card-title">Farmacología</div>
+          <div class="sv-home-card-text">Vademécum, dosis por especie y tiempos de retiro.</div>
+        </button>
+        <button class="sv-home-card sv-home-card-micro" data-go-view="microbiologia" type="button">
+          <div class="sv-home-card-icon">🧫</div>
+          <div class="sv-home-card-title">Microbiología</div>
+          <div class="sv-home-card-text">Agares, pruebas bioquímicas, antibiogramas y atlas bacteriano.</div>
+        </button>
+        <button class="sv-home-card sv-home-card-pato" data-go-view="patologia" type="button">
+          <div class="sv-home-card-icon">🔬</div>
+          <div class="sv-home-card-title">Patología</div>
+          <div class="sv-home-card-text">Lesiones, hallazgos y diagnóstico diferencial.</div>
+          <span class="sv-coming-tag">Nuevo módulo</span>
+        </button>
+        <button class="sv-home-card sv-home-card-coming sv-disabled" type="button" disabled>
+          <div class="sv-home-card-icon">🐄</div>
+          <div class="sv-home-card-title">CATTLE</div>
+          <div class="sv-home-card-text">Manejo bovino, retiros y protocolos.</div>
+          <span class="sv-coming-tag">Próximamente</span>
+        </button>
       </div>
     </section>
 
@@ -350,9 +243,6 @@
   <!-- Patología -->
   <script src="modules/patologia/data.js"      defer></script>
   <script src="modules/patologia/patologia.js" defer></script>
-
-  <!-- Dashboard -->
-  <script src="shared/dashboard.js" defer></script>
 
 </body>
 </html>
