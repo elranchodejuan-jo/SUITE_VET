@@ -18,6 +18,13 @@
   // Para agregar un sistema: añadir clave con color, bg, glow, icon, label
   // ---------------------------------------------------------------------------
   const SISTEMA_VISUAL = {
+    "homeostasis": {
+      color: "#8b5cf6",
+      bg:    "rgba(139,92,246,0.12)",
+      glow:  "rgba(139,92,246,0.26)",
+      icon:  "HI",
+      label: "Homeostasis"
+    },
     "digestivo": {
       color: "#14b8a6",
       bg:    "rgba(20,184,166,0.12)",
@@ -25,12 +32,47 @@
       icon:  "🍽️",
       label: "Digestivo"
     },
+    "respiratorio": {
+      color: "#0ea5e9",
+      bg:    "rgba(14,165,233,0.12)",
+      glow:  "rgba(14,165,233,0.26)",
+      icon:  "RS",
+      label: "Respiratorio"
+    },
     "respiratorio-cardiaco": {
       color: "#0ea5e9",
       bg:    "rgba(14,165,233,0.12)",
       glow:  "rgba(14,165,233,0.26)",
       icon:  "🫁",
       label: "Resp./Cardíaco"
+    },
+    "cardiovascular-linfatico": {
+      color: "#fb7185",
+      bg:    "rgba(251,113,133,0.12)",
+      glow:  "rgba(251,113,133,0.26)",
+      icon:  "CL",
+      label: "Cardio/Linfático"
+    },
+    "hematologico": {
+      color: "#ef4444",
+      bg:    "rgba(239,68,68,0.12)",
+      glow:  "rgba(239,68,68,0.26)",
+      icon:  "HB",
+      label: "Hematológico"
+    },
+    "hepatico": {
+      color: "#84cc16",
+      bg:    "rgba(132,204,22,0.12)",
+      glow:  "rgba(132,204,22,0.24)",
+      icon:  "HP",
+      label: "Hepático"
+    },
+    "clinico-general": {
+      color: "#94a3b8",
+      bg:    "rgba(148,163,184,0.12)",
+      glow:  "rgba(148,163,184,0.20)",
+      icon:  "CG",
+      label: "Clínico general"
     },
     "cardiaco-circulatorio": {
       color: "#e11d48",
@@ -171,7 +213,10 @@
           Vitaminas
           <span style="opacity:0.55;font-size:0.75em;margin-left:0.2rem">(${vitaminas.length})</span>
         </button>
-        <button class="sv-tab" data-pane="glosario">Glosario</button>
+        <button class="sv-tab" data-pane="glosario">
+          Glosario
+          <span style="opacity:0.55;font-size:0.75em;margin-left:0.2rem">(${glosario.length})</span>
+        </button>
       </div>
 
       <!-- ── PANE HORMONAS ── -->
@@ -213,17 +258,8 @@
           <input type="text" id="fisio-search-glosario" class="sv-input"
             placeholder="Buscar término (ej. disuria, poliuria, prurito)…"
             style="max-width:340px;" autocomplete="off" />
-          <select id="fisio-filtro-glosario-sistema" class="sv-select" style="max-width:200px;">
-            <option value="">Todos los sistemas</option>
-            <option value="Urinario">Urinario</option>
-            <option value="Digestivo">Digestivo</option>
-            <option value="Respiratorio">Respiratorio</option>
-            <option value="Cardiovascular">Cardiovascular</option>
-            <option value="Neurológico">Neurológico</option>
-            <option value="Dermatológico">Dermatológico</option>
-            <option value="Sistémico">Sistémico</option>
-          </select>
         </div>
+        <div id="fisio-filtros-glosario" style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:1rem;"></div>
         <div class="sv-grid" id="fisio-lista-glosario"></div>
       </div>
     `;
@@ -416,11 +452,52 @@
     // -------------------------------------------------------------------------
     // 5. GLOSARIO
     // -------------------------------------------------------------------------
-    const searchGlosario        = root.querySelector("#fisio-search-glosario");
-    const filtroSistemaGlosario = root.querySelector("#fisio-filtro-glosario-sistema");
+    const searchGlosario  = root.querySelector("#fisio-search-glosario");
+    const filtrosGlosario = root.querySelector("#fisio-filtros-glosario");
+    let filtroGlosario    = "todos";
+    const glosarioIndex   = Object.fromEntries(glosario.map(g => [g.id, g]));
 
-    searchGlosario?.addEventListener("input",  renderGlosario);
-    filtroSistemaGlosario?.addEventListener("change", renderGlosario);
+    renderFiltrosGlosario();
+
+    filtrosGlosario?.addEventListener("click", e => {
+      const pill = e.target.closest(".fisio-pill-sistema[data-sistema-glosario]");
+      if (!pill) return;
+      filtroGlosario = pill.dataset.sistemaGlosario;
+      filtrosGlosario.querySelectorAll(".fisio-pill-sistema[data-sistema-glosario]").forEach(p => p.classList.remove("sv-pill-active"));
+      pill.classList.add("sv-pill-active");
+      renderGlosario();
+    });
+
+    searchGlosario?.addEventListener("input", renderGlosario);
+
+    function renderFiltrosGlosario() {
+      if (!filtrosGlosario) return;
+
+      const sistemasEnGlosario = new Set(glosario.map(g => g.sistemaKey).filter(Boolean));
+      const keysOrdenadas = Object.keys(SISTEMA_VISUAL).filter(key => sistemasEnGlosario.has(key));
+      const keysExtra = [...sistemasEnGlosario].filter(key => !keysOrdenadas.includes(key));
+      const keysFinales = [...keysOrdenadas, ...keysExtra];
+
+      const total = glosario.length;
+      const pills = [
+        `<button class="fisio-pill-sistema sv-pill-active" data-sistema-glosario="todos"
+          style="--fisio-pill-color:var(--sv-accent);--fisio-pill-bg:var(--sv-bg-elevated);--fisio-pill-glow:var(--sv-accent-shadow)">
+          Todos <span style="opacity:0.65">${total}</span>
+        </button>`
+      ];
+
+      keysFinales.forEach(key => {
+        const sv = getSistema(key);
+        const count = glosario.filter(g => g.sistemaKey === key).length;
+        pills.push(`
+          <button class="fisio-pill-sistema" data-sistema-glosario="${key}"
+            style="--fisio-pill-color:${sv.color};--fisio-pill-bg:${sv.bg};--fisio-pill-glow:${sv.glow}">
+            <span class="fisio-pill-dot"></span>${sv.label} <span style="opacity:0.65">${count}</span>
+          </button>`);
+      });
+
+      filtrosGlosario.innerHTML = pills.join("");
+    }
 
     function renderGlosario() {
       const lista = root.querySelector("#fisio-lista-glosario");
@@ -428,30 +505,65 @@
 
       if (glosario.length === 0) {
         lista.innerHTML = `<div class="sv-empty"><div class="sv-empty-icon">📖</div>
-          El glosario se agrega en <code>modules/fisio/data.js</code> bajo la clave <code>glosario</code>.</div>`;
+          El glosario se agrega en <code>modules/fisio/data/glosariodata.js</code>.</div>`;
         return;
       }
 
-      const q   = (searchGlosario?.value || "").trim().toLowerCase();
-      const sis = filtroSistemaGlosario?.value || "";
+      const q = (searchGlosario?.value || "").trim().toLowerCase();
 
       const filtrados = glosario.filter(g => {
-        const blob = `${g.termino || ""} ${g.definicion || ""} ${g.sistema || ""}`.toLowerCase();
-        return (!sis || g.sistema === sis) && (!q || blob.includes(q));
+        const pasaSistema = filtroGlosario === "todos" || g.sistemaKey === filtroGlosario;
+        const blob = `${g.termino || ""} ${g.sigla || ""} ${(g.sinonimos || []).join(" ")} ${g.tipo || ""} ${g.definicion || ""} ${g.importanciaClinica || ""} ${g.sistema || ""} ${(g.relacionados || []).join(" ")}`.toLowerCase();
+        return pasaSistema && (!q || blob.includes(q));
       });
 
       lista.innerHTML = filtrados.length === 0
         ? `<div class="sv-empty"><div class="sv-empty-icon">🔍</div>Sin resultados</div>`
-        : filtrados.map(g => `
-          <article class="sv-card fisio-card-glosario sv-fade-in">
-            <div class="sv-card-header">
-              <span class="sv-card-title">${g.termino || ""}</span>
-              <span class="sv-badge sv-badge-cyan">${g.sistema || ""}</span>
-            </div>
-            <div class="sv-card-body">
-              <p class="fisio-campo">${g.definicion || ""}</p>
-            </div>
-          </article>`).join("");
+        : filtrados.map(cardGlosario).join("");
+    }
+
+    function cardGlosario(g) {
+      const sv = getSistema(g.sistemaKey);
+      const badgeBorder = badgeBorderColor(sv.color);
+      const siglaHtml = g.sigla
+        ? `<span class="sv-card-subtitle">Sigla: <strong style="color:${sv.color}">${g.sigla}</strong></span>`
+        : "";
+      const sinonimosHtml = Array.isArray(g.sinonimos) && g.sinonimos.length
+        ? `<span class="sv-card-subtitle">Tambien buscado como: ${g.sinonimos.join(", ")}</span>`
+        : "";
+      const relacionados = Array.isArray(g.relacionados) && g.relacionados.length
+        ? `<div class="fisio-glosario-chips">${g.relacionados.map(r => `<span class="fisio-glosario-chip">${labelRelacionado(r)}</span>`).join("")}</div>`
+        : "";
+
+      return `
+        <article class="sv-card fisio-card-glosario sv-fade-in"
+          style="--card-color:${sv.color}; --card-glow:${sv.glow};">
+          <div class="sv-card-header">
+            <span class="sv-card-title">
+              <span style="margin-right:0.35rem">${sv.icon}</span>${g.termino || ""}
+            </span>
+            <span class="fisio-badge-sistema"
+              style="background:${sv.bg};color:${sv.color};border-color:${badgeBorder};">
+              ${sv.label}
+            </span>
+          </div>
+          ${siglaHtml}
+          ${sinonimosHtml}
+          ${g.tipo ? `<span class="fisio-glosario-tipo">${g.tipo}</span>` : ""}
+          <div class="sv-card-body">
+            <p class="fisio-campo">${g.definicion || ""}</p>
+            <p class="fisio-campo"><strong>Importancia clínica:</strong> ${g.importanciaClinica || "—"}</p>
+          </div>
+          ${relacionados}
+        </article>`;
+    }
+
+    function labelRelacionado(value) {
+      const item = glosarioIndex[value];
+      if (item?.termino) return item.termino;
+      return String(value || "")
+        .replace(/-/g, " ")
+        .replace(/\b\w/g, letter => letter.toUpperCase());
     }
 
     // -------------------------------------------------------------------------
@@ -502,6 +614,32 @@
                 if (searchVitamina) {
                   searchVitamina.value = v.nombre;
                   renderVitaminas();
+                }
+              }
+            });
+          }
+        });
+
+        glosario.forEach(g => {
+          const blob = `${g.termino || ""} ${g.sigla || ""} ${(g.sinonimos || []).join(" ")} ${g.tipo || ""} ${g.sistema || ""} ${g.definicion || ""} ${g.importanciaClinica || ""} ${(g.relacionados || []).join(" ")}`.toLowerCase();
+          if (blob.includes(q)) {
+            const sv = getSistema(g.sistemaKey);
+            results.push({
+              title:    g.termino,
+              subtitle: `${sv.icon} Glosario · ${sv.label}`,
+              moduleId: "fisio",
+              action: () => {
+                window.SuiteVet.showView("fisiologia");
+                tabs.forEach(t  => t.classList.remove("sv-tab-active"));
+                panes.forEach(p => p.classList.remove("sv-pane-active"));
+                root.querySelector('[data-pane="glosario"]')?.classList.add("sv-tab-active");
+                root.querySelector("#fisio-pane-glosario")?.classList.add("sv-pane-active");
+                filtroGlosario = "todos";
+                filtrosGlosario?.querySelectorAll(".fisio-pill-sistema[data-sistema-glosario]").forEach(p => p.classList.remove("sv-pill-active"));
+                filtrosGlosario?.querySelector('[data-sistema-glosario="todos"]')?.classList.add("sv-pill-active");
+                if (searchGlosario) {
+                  searchGlosario.value = g.termino;
+                  renderGlosario();
                 }
               }
             });

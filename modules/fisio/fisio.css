@@ -9,7 +9,8 @@
    desde fisio.js: --card-color y --card-glow
 ───────────────────────────────────────────────────────────────────────────── */
 .fisio-card-hormona,
-.fisio-card-vitamina {
+.fisio-card-vitamina,
+.fisio-card-glosario {
   border-left: 4px solid var(--card-color, var(--sv-fisio-color)) !important;
 }
 
@@ -19,13 +20,52 @@
   de components.css, restaurando el color correcto por sistema.
 */
 .sv-card.fisio-card-hormona:hover,
-.sv-card.fisio-card-vitamina:hover {
+.sv-card.fisio-card-vitamina:hover,
+.sv-card.fisio-card-glosario:hover {
   box-shadow: 0 12px 32px var(--card-glow, rgba(0,0,0,0.3));
   border-color: var(--card-color, var(--sv-fisio-color));
 }
 
 .fisio-card-glosario {
-  border-left: 4px solid var(--sv-info);
+  gap: 0.65rem;
+}
+
+.fisio-glosario-tipo {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  border: 1px solid var(--sv-border-subtle);
+  background: rgba(148, 163, 184, 0.10);
+  color: var(--sv-text-muted);
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.18rem 0.55rem;
+}
+
+.fisio-glosario-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  border-top: 1px solid var(--sv-border-subtle);
+  padding-top: 0.55rem;
+}
+
+.fisio-glosario-chip {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--sv-border-subtle);
+  background: rgba(148, 163, 184, 0.09);
+  color: var(--sv-text-secondary);
+  border-radius: 999px;
+  font-size: 0.72rem;
+  padding: 0.16rem 0.52rem;
+  transition: all 0.18s ease;
+}
+
+.fisio-glosario-chip:hover {
+  color: var(--card-color, var(--sv-info));
+  border-color: var(--card-color, var(--sv-info));
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────

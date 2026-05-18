@@ -639,6 +639,355 @@
     "fuentes": [
       "Manual de microbiolog?a veterinaria / protocolos de agar sangre"
     ]
+  },
+  {
+    "id": "onpg",
+    "tipoEntidad": "prueba",
+    "nombre": "ONPG",
+    "alternativo": "o-nitrofenil-beta-D-galactopiranosido",
+    "subtitulo": "Para: beta-galactosidasa en enterobacterias",
+    "tipos": [
+      "enzimatica",
+      "lactosa",
+      "enterobacterias"
+    ],
+    "fundamento": "Detecta beta-galactosidasa aun cuando la fermentacion de lactosa sea lenta o tardia.",
+    "principioBioquimico": "La enzima rompe ONPG y libera o-nitrofenol de color amarillo.",
+    "reactivos": [
+      "Disco o solucion ONPG",
+      "Suspension bacteriana pura"
+    ],
+    "interpretacionPositiva": "Viraje amarillo.",
+    "interpretacionNegativa": "Sin cambio de color dentro del tiempo indicado.",
+    "utilidadDiagnostica": "Apoya diferenciacion de enterobacterias lactosa tardias, Yersinia y otros bacilos Gram negativos.",
+    "erroresComunes": [
+      "Usar cultivo mixto",
+      "Leer fuera del tiempo del fabricante",
+      "Inoculo demasiado bajo"
+    ],
+    "bacteriasIds": [
+      "escherichia-coli",
+      "klebsiella-pneumoniae",
+      "yersinia-enterocolitica"
+    ],
+    "mediosIds": [
+      "macconkey-agar",
+      "sorbitol-macconkey-agar",
+      "yersinia-cin-agar",
+      "lactose-broth"
+    ],
+    "pruebasComplementariasIds": [
+      "tsi",
+      "indol",
+      "citrato-simmons",
+      "mr-vp"
+    ],
+    "fuentes": [
+      "Manual ASM de pruebas bioquimicas",
+      "Consultar ficha tecnica del kit usado"
+    ]
+  },
+  {
+    "id": "malonato",
+    "tipoEntidad": "prueba",
+    "nombre": "Malonato",
+    "alternativo": "Malonate utilization test",
+    "subtitulo": "Para: uso de malonato como fuente de carbono",
+    "tipos": [
+      "metabolismo",
+      "enterobacterias"
+    ],
+    "fundamento": "Evalua si la bacteria puede utilizar malonato como fuente de carbono.",
+    "principioBioquimico": "El uso de malonato alcaliniza el medio y cambia el indicador.",
+    "reactivos": [
+      "Caldo malonato",
+      "Indicador azul de bromotimol"
+    ],
+    "interpretacionPositiva": "Viraje azul con crecimiento.",
+    "interpretacionNegativa": "Medio verde sin alcalinizacion significativa.",
+    "utilidadDiagnostica": "Complementa esquemas de Enterobacteriaceae, especialmente Klebsiella/Enterobacter frente a Salmonella y E. coli.",
+    "erroresComunes": [
+      "Inoculo excesivo",
+      "Leer antes del tiempo recomendado",
+      "Interpretar turbidez sin cambio de color"
+    ],
+    "bacteriasIds": [
+      "klebsiella-pneumoniae",
+      "salmonella-spp",
+      "escherichia-coli"
+    ],
+    "mediosIds": [
+      "macconkey-agar",
+      "nutrient-agar",
+      "tryptic-soy-broth"
+    ],
+    "pruebasComplementariasIds": [
+      "citrato-simmons",
+      "mr-vp",
+      "tsi"
+    ],
+    "fuentes": [
+      "Manual ASM de pruebas bioquimicas",
+      "Consultar ficha tecnica del fabricante"
+    ]
+  },
+  {
+    "id": "gelatinasa",
+    "tipoEntidad": "prueba",
+    "nombre": "Gelatinasa",
+    "alternativo": "Hidrolisis de gelatina",
+    "subtitulo": "Para: enzimas proteoliticas",
+    "tipos": [
+      "enzimatica",
+      "proteolisis"
+    ],
+    "fundamento": "Detecta capacidad de hidrolizar gelatina por gelatinasa u otras proteasas.",
+    "principioBioquimico": "La gelatina licuada no solidifica al enfriar despues de incubacion.",
+    "reactivos": [
+      "Medio de gelatina nutritiva",
+      "Refrigeracion para lectura"
+    ],
+    "interpretacionPositiva": "Medio permanece liquido despues de enfriar.",
+    "interpretacionNegativa": "Medio solidifica despues de enfriar.",
+    "utilidadDiagnostica": "Apoya identificacion de Pseudomonas, Proteus, Clostridium y otros generos proteoliticos.",
+    "erroresComunes": [
+      "No enfriar antes de interpretar",
+      "Incubacion insuficiente",
+      "Cultivo mixto"
+    ],
+    "bacteriasIds": [
+      "pseudomonas-aeruginosa",
+      "proteus-mirabilis",
+      "clostridium-perfringens",
+      "aeromonas-hydrophila"
+    ],
+    "mediosIds": [
+      "nutrient-agar",
+      "blood-agar",
+      "tryptic-soy-broth"
+    ],
+    "pruebasComplementariasIds": [
+      "oxidasa",
+      "catalasa",
+      "tsi"
+    ],
+    "fuentes": [
+      "Manual ASM de pruebas bioquimicas"
+    ]
+  },
+  {
+    "id": "dnasa",
+    "tipoEntidad": "prueba",
+    "nombre": "DNasa",
+    "alternativo": "Desoxirribonucleasa",
+    "subtitulo": "Para: Staphylococcus y otros productores de DNasa",
+    "tipos": [
+      "enzimatica",
+      "identificacion"
+    ],
+    "fundamento": "Detecta enzimas que hidrolizan ADN en el medio.",
+    "principioBioquimico": "La hidrolisis de ADN genera halo claro o viraje del indicador segun formulacion.",
+    "reactivos": [
+      "Agar DNasa",
+      "HCl o indicador segun medio"
+    ],
+    "interpretacionPositiva": "Halo claro o viraje compatible alrededor del crecimiento.",
+    "interpretacionNegativa": "Sin halo o sin viraje.",
+    "utilidadDiagnostica": "Complementa coagulasa/catalasa en estafilococos y puede apoyar identificacion de otros generos.",
+    "erroresComunes": [
+      "Capa de inoculo demasiado gruesa",
+      "Lectura sin agregar reactivo cuando la formulacion lo requiere",
+      "Incubacion insuficiente"
+    ],
+    "bacteriasIds": [
+      "staphylococcus-spp",
+      "moraxella-bovis"
+    ],
+    "mediosIds": [
+      "blood-agar",
+      "mannitol-salt-agar"
+    ],
+    "pruebasComplementariasIds": [
+      "catalasa",
+      "coagulasa",
+      "hemolisis"
+    ],
+    "fuentes": [
+      "Manual ASM de pruebas bioquimicas",
+      "Consultar ficha tecnica del medio DNasa"
+    ]
+  },
+  {
+    "id": "crecimiento-nacl-65",
+    "tipoEntidad": "prueba",
+    "nombre": "Crecimiento en NaCl 6.5%",
+    "alternativo": "Salt tolerance test",
+    "subtitulo": "Para: Enterococcus spp.",
+    "tipos": [
+      "tolerancia",
+      "identificacion"
+    ],
+    "fundamento": "Evalua tolerancia a alta concentracion de cloruro de sodio.",
+    "principioBioquimico": "Enterococcus suele crecer en caldo con NaCl 6.5%, a diferencia de varios estreptococos.",
+    "reactivos": [
+      "Caldo NaCl 6.5%",
+      "Indicador si el formato comercial lo incluye"
+    ],
+    "interpretacionPositiva": "Turbidez o cambio de indicador con crecimiento.",
+    "interpretacionNegativa": "Sin crecimiento visible.",
+    "utilidadDiagnostica": "Apoya diferenciacion Enterococcus vs Streptococcus en muestras clinicas.",
+    "erroresComunes": [
+      "Usar inoculo viejo",
+      "Interpretar precipitado como crecimiento",
+      "No comparar con control"
+    ],
+    "bacteriasIds": [
+      "enterococcus-spp",
+      "streptococcus-spp"
+    ],
+    "mediosIds": [
+      "blood-agar",
+      "brain-heart-infusion-broth"
+    ],
+    "pruebasComplementariasIds": [
+      "bile-esculin",
+      "catalasa",
+      "gram-tincion"
+    ],
+    "fuentes": [
+      "Manual ASM de pruebas bioquimicas",
+      "CLSI VET vigente para interpretacion clinica cuando aplique"
+    ]
+  },
+  {
+    "id": "hipurato",
+    "tipoEntidad": "prueba",
+    "nombre": "Hipurato",
+    "alternativo": "Hippurate hydrolysis",
+    "subtitulo": "Para: Campylobacter jejuni",
+    "tipos": [
+      "enzimatica",
+      "campylobacter"
+    ],
+    "fundamento": "Detecta hidrolisis de hipurato, util en diferenciacion de Campylobacter jejuni.",
+    "principioBioquimico": "La glicina liberada reacciona con ninhidrina y genera coloracion positiva.",
+    "reactivos": [
+      "Sustrato hipurato",
+      "Ninhidrina"
+    ],
+    "interpretacionPositiva": "Color violeta o purpura intenso segun kit.",
+    "interpretacionNegativa": "Sin viraje significativo o color debil no compatible.",
+    "utilidadDiagnostica": "Diferencia C. jejuni de otras especies termotolerantes cuando se usa en panel validado.",
+    "erroresComunes": [
+      "Inoculo bajo",
+      "Leer color tenue como positivo",
+      "No usar cultivo puro"
+    ],
+    "bacteriasIds": [
+      "campylobacter-jejuni"
+    ],
+    "mediosIds": [
+      "campylobacter-agar-base",
+      "campylobacter-enrichment-broth"
+    ],
+    "pruebasComplementariasIds": [
+      "oxidasa",
+      "catalasa",
+      "gram-tincion"
+    ],
+    "fuentes": [
+      "Manual ASM de pruebas bioquimicas",
+      "Consultar ficha tecnica del kit usado"
+    ]
+  },
+  {
+    "id": "factor-x-v",
+    "tipoEntidad": "prueba",
+    "nombre": "Factores X y V",
+    "alternativo": "Requerimiento de hemina/NAD",
+    "subtitulo": "Para: Pasteurellaceae fastidiosas",
+    "tipos": [
+      "crecimiento",
+      "fastidioso",
+      "respiratorio"
+    ],
+    "fundamento": "Evalua requerimientos de factor X, factor V o ambos para bacterias fastidiosas.",
+    "principioBioquimico": "El crecimiento alrededor de discos o en medio suplementado indica dependencia de factores especificos.",
+    "reactivos": [
+      "Discos factor X",
+      "Discos factor V",
+      "Discos XV o medio enriquecido"
+    ],
+    "interpretacionPositiva": "Crecimiento alrededor del disco o en medio que contiene el factor requerido.",
+    "interpretacionNegativa": "Ausencia de crecimiento sin el factor necesario.",
+    "utilidadDiagnostica": "Apoya identificacion de bacterias respiratorias fastidiosas de cerdos y bovinos.",
+    "erroresComunes": [
+      "Medio base con arrastre de factores",
+      "Inoculo no puro",
+      "Incubacion sin CO2 cuando se requiere"
+    ],
+    "bacteriasIds": [
+      "glaesserella-parasuis",
+      "histophilus-somni",
+      "actinobacillus-pleuropneumoniae"
+    ],
+    "mediosIds": [
+      "chocolate-agar",
+      "blood-agar",
+      "brain-heart-infusion-broth"
+    ],
+    "pruebasComplementariasIds": [
+      "gram-tincion",
+      "oxidasa",
+      "catalasa"
+    ],
+    "fuentes": [
+      "Manual de microbiologia veterinaria",
+      "Consultar protocolo diagnostico del laboratorio"
+    ]
+  },
+  {
+    "id": "fermentacion-manitol",
+    "tipoEntidad": "prueba",
+    "nombre": "Fermentacion de manitol",
+    "alternativo": "Manitol / rojo fenol",
+    "subtitulo": "Para: Staphylococcus y enterobacterias seleccionadas",
+    "tipos": [
+      "fermentacion",
+      "diferencial"
+    ],
+    "fundamento": "Evalua produccion de acido a partir de manitol.",
+    "principioBioquimico": "La acidificacion cambia el indicador de pH hacia amarillo en formulaciones con rojo fenol.",
+    "reactivos": [
+      "Medio con manitol",
+      "Indicador de pH"
+    ],
+    "interpretacionPositiva": "Viraje amarillo o acido segun formulacion.",
+    "interpretacionNegativa": "Sin viraje acido.",
+    "utilidadDiagnostica": "Complementa agar sal manitol y paneles de identificacion.",
+    "erroresComunes": [
+      "Confundir crecimiento con fermentacion",
+      "Lectura tardia",
+      "Medio deshidratado vencido o mal almacenado"
+    ],
+    "bacteriasIds": [
+      "staphylococcus-spp",
+      "yersinia-enterocolitica",
+      "escherichia-coli"
+    ],
+    "mediosIds": [
+      "mannitol-salt-agar",
+      "yersinia-cin-agar",
+      "nutrient-agar"
+    ],
+    "pruebasComplementariasIds": [
+      "catalasa",
+      "coagulasa",
+      "onpg"
+    ],
+    "fuentes": [
+      "Manual ASM de pruebas bioquimicas"
+    ]
   }
 ];
 })();

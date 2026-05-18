@@ -1035,6 +1035,473 @@
       "Manual de microbiolog?a veterinaria",
       "CLSI VET vigente"
     ]
+  },
+  {
+    "id": "escherichia-coli-o157h7",
+    "tipoEntidad": "microorganismo",
+    "nombreCientifico": "Escherichia coli O157:H7",
+    "subtitulo": "Enterobacteriaceae - STEC zoonotica",
+    "gramKey": "gramnegativo",
+    "gramTexto": "Gram negativo",
+    "morfologiaKey": "bacilo",
+    "familia": "Enterobacteriaceae",
+    "reservorio": "Intestino de bovinos y otros animales; alimentos, agua y ambiente contaminado.",
+    "importancia": "Patogeno zoonotico de alto impacto alimentario; vigilancia en heces, carne, leche y ambiente.",
+    "patogenicidad": "Produccion de Shiga-toxina, adhesinas y factores de colonizacion intestinal segun cepa.",
+    "toxinas": [
+      "Shiga-toxina Stx1/Stx2",
+      "LPS"
+    ],
+    "sistemasClave": [
+      "digestivo",
+      "zoonosis",
+      "alimentario"
+    ],
+    "agaresIds": [
+      "sorbitol-macconkey-agar",
+      "macconkey-agar",
+      "emb-agar",
+      "mueller-hinton-agar"
+    ],
+    "caldosIds": [
+      "buffered-peptone-water",
+      "tryptic-soy-broth",
+      "lactose-broth"
+    ],
+    "pruebasIds": [
+      "gram-tincion",
+      "oxidasa",
+      "indol",
+      "onpg",
+      "tsi",
+      "citrato-simmons"
+    ],
+    "antibioticosIds": [
+      "enrofloxacina",
+      "gentamicina",
+      "amikacina",
+      "ceftriaxona",
+      "trimetoprim-sulfa"
+    ],
+    "resistencia": [
+      "ESBL o AmpC pueden presentarse",
+      "Quinolonas y sulfonamidas variables por region"
+    ],
+    "zoonosis": "Si; importancia alta en salud publica y alimentos.",
+    "observacionesClinicas": "No asumir patogenicidad solo por E. coli; requiere tipificacion o prueba de toxina/gen.",
+    "notasLab": "En SMAC suele ser sorbitol negativa o lenta; confirmar con pruebas especificas.",
+    "imagenes": {
+      "placa": "Espacio reservado para imagen en SMAC",
+      "microscopio": "Espacio reservado para tincion Gram"
+    },
+    "fuentes": [
+      "CDC / FDA BAM para STEC",
+      "HiMedia M298 MacConkey Sorbitol Agar Technical Data"
+    ]
+  },
+  {
+    "id": "yersinia-enterocolitica",
+    "tipoEntidad": "microorganismo",
+    "nombreCientifico": "Yersinia enterocolitica",
+    "subtitulo": "Enterobacteriaceae - bacilo Gram negativo zoonotico",
+    "gramKey": "gramnegativo",
+    "gramTexto": "Gram negativo",
+    "morfologiaKey": "bacilo",
+    "familia": "Enterobacteriaceae",
+    "reservorio": "Porcinos, roedores, animales domesticos, agua y alimentos contaminados.",
+    "importancia": "Enteritis, linfadenitis mesenterica y zoonosis alimentaria; relevante en porcinos y alimentos.",
+    "patogenicidad": "Adhesion/invasion intestinal, plasmidos de virulencia y supervivencia a temperaturas bajas.",
+    "toxinas": [
+      "Enterotoxina termoestable en algunas cepas",
+      "LPS"
+    ],
+    "sistemasClave": [
+      "digestivo",
+      "zoonosis",
+      "porcino"
+    ],
+    "agaresIds": [
+      "yersinia-cin-agar",
+      "macconkey-agar",
+      "blood-agar"
+    ],
+    "caldosIds": [
+      "buffered-peptone-water",
+      "tryptic-soy-broth"
+    ],
+    "pruebasIds": [
+      "gram-tincion",
+      "oxidasa",
+      "ureasa",
+      "onpg",
+      "fermentacion-manitol",
+      "tsi"
+    ],
+    "antibioticosIds": [
+      "trimetoprim-sulfa",
+      "ciprofloxacina",
+      "ceftriaxona",
+      "gentamicina"
+    ],
+    "resistencia": [
+      "Beta-lactamasas intrinsecas en algunas cepas",
+      "Sensibilidad variable; antibiograma recomendado"
+    ],
+    "zoonosis": "Si; asociada a alimentos, porcinos y agua contaminada.",
+    "observacionesClinicas": "Interpretar con signos digestivos y epidemiologia de granja/alimento.",
+    "notasLab": "CIN puede mostrar colonias tipo ojo de buey; confirmar con panel bioquimico o metodo validado.",
+    "imagenes": {
+      "placa": "Espacio reservado para imagen en CIN",
+      "microscopio": "Espacio reservado para bacilos Gram negativos"
+    },
+    "fuentes": [
+      "CDC Laboratory Testing for Yersinia",
+      "FDA BAM M35 CIN Agar"
+    ]
+  },
+  {
+    "id": "vibrio-spp",
+    "tipoEntidad": "microorganismo",
+    "nombreCientifico": "Vibrio spp.",
+    "subtitulo": "Vibrionaceae - bacilos curvos Gram negativos",
+    "gramKey": "gramnegativo",
+    "gramTexto": "Gram negativo",
+    "morfologiaKey": "bacilo-curvo",
+    "familia": "Vibrionaceae",
+    "reservorio": "Ambientes acuaticos, peces, mariscos y agua salobre o marina.",
+    "importancia": "Patogenos de peces, mariscos y zoonosis alimentarias segun especie.",
+    "patogenicidad": "Motilidad, adhesinas, toxinas y enzimas extracelulares segun especie.",
+    "toxinas": [
+      "Toxinas variables por especie",
+      "Hemolisinas en algunas especies"
+    ],
+    "sistemasClave": [
+      "acuicultura",
+      "digestivo",
+      "zoonosis"
+    ],
+    "agaresIds": [
+      "tcbs-agar",
+      "blood-agar",
+      "mueller-hinton-agar"
+    ],
+    "caldosIds": [
+      "alkaline-peptone-water",
+      "tryptic-soy-broth"
+    ],
+    "pruebasIds": [
+      "gram-tincion",
+      "oxidasa",
+      "indol",
+      "onpg"
+    ],
+    "antibioticosIds": [
+      "doxiciclina",
+      "ciprofloxacina",
+      "trimetoprim-sulfa"
+    ],
+    "resistencia": [
+      "Variable por especie y ambiente",
+      "Antibiograma recomendado en acuicultura"
+    ],
+    "zoonosis": "Algunas especies son zoonoticas y alimentarias.",
+    "observacionesClinicas": "Diferenciar de Aeromonas y otras bacterias acuaticas con pruebas complementarias.",
+    "notasLab": "TCBS y agua peptonada alcalina son utiles, pero no confirmatorios.",
+    "imagenes": {
+      "placa": "Espacio reservado para TCBS",
+      "microscopio": "Espacio reservado para bacilos curvos Gram negativos"
+    },
+    "fuentes": [
+      "HiMedia M189 TCBS Agar Technical Data",
+      "Manual de microbiologia de alimentos y acuicultura"
+    ]
+  },
+  {
+    "id": "aeromonas-hydrophila",
+    "tipoEntidad": "microorganismo",
+    "nombreCientifico": "Aeromonas hydrophila",
+    "subtitulo": "Aeromonadaceae - bacilo Gram negativo acuatico",
+    "gramKey": "gramnegativo",
+    "gramTexto": "Gram negativo",
+    "morfologiaKey": "bacilo",
+    "familia": "Aeromonadaceae",
+    "reservorio": "Agua dulce, peces, anfibios y ambientes humedos.",
+    "importancia": "Septicemia, lesiones cutaneas y enfermedad en peces; oportunista zoonotico.",
+    "patogenicidad": "Hemolisinas, aerolisina, proteasas, lipasas y biofilm.",
+    "toxinas": [
+      "Aerolisina",
+      "Hemolisinas",
+      "Enterotoxinas en algunas cepas"
+    ],
+    "sistemasClave": [
+      "acuicultura",
+      "cutaneo",
+      "digestivo"
+    ],
+    "agaresIds": [
+      "blood-agar",
+      "macconkey-agar",
+      "tcbs-agar",
+      "mueller-hinton-agar"
+    ],
+    "caldosIds": [
+      "tryptic-soy-broth",
+      "nutrient-broth"
+    ],
+    "pruebasIds": [
+      "gram-tincion",
+      "oxidasa",
+      "catalasa",
+      "indol",
+      "gelatinasa"
+    ],
+    "antibioticosIds": [
+      "enrofloxacina",
+      "ciprofloxacina",
+      "doxiciclina",
+      "trimetoprim-sulfa",
+      "amikacina"
+    ],
+    "resistencia": [
+      "Beta-lactamasas cromosomicas frecuentes",
+      "Perfil variable en acuicultura"
+    ],
+    "zoonosis": "Oportunista; riesgo en heridas expuestas a agua contaminada.",
+    "observacionesClinicas": "En peces, relacionar aislamiento con lesiones, mortalidad y calidad de agua.",
+    "notasLab": "Oxidasa positiva; puede crecer en medios de entericos y confundirse con Vibrio.",
+    "imagenes": {
+      "placa": "Espacio reservado para hemolisis en agar sangre",
+      "microscopio": "Espacio reservado para bacilos Gram negativos"
+    },
+    "fuentes": [
+      "Manual de microbiologia veterinaria",
+      "Manual de bacteriologia en acuicultura"
+    ]
+  },
+  {
+    "id": "mycoplasma-bovis",
+    "tipoEntidad": "microorganismo",
+    "nombreCientifico": "Mycoplasma bovis",
+    "subtitulo": "Mycoplasmataceae - bacteria sin pared celular",
+    "gramKey": "sin-pared",
+    "gramTexto": "Sin pared celular; Gram no confiable",
+    "morfologiaKey": "pleomorfico",
+    "familia": "Mycoplasmataceae",
+    "reservorio": "Bovinos; tracto respiratorio, glandula mamaria, articulaciones y oido.",
+    "importancia": "Mastitis, neumonia, otitis y artritis en bovinos.",
+    "patogenicidad": "Adhesion a mucosas, variacion antigenica, biofilm y persistencia cronica.",
+    "toxinas": [
+      "No produce pared celular ni toxinas clasicas validadas como principal mecanismo"
+    ],
+    "sistemasClave": [
+      "respiratorio",
+      "mamario",
+      "articular",
+      "bovino"
+    ],
+    "agaresIds": [
+      "pplo-agar-base"
+    ],
+    "caldosIds": [
+      "pplo-broth-base"
+    ],
+    "pruebasIds": [
+      "gram-tincion"
+    ],
+    "antibioticosIds": [
+      "doxiciclina",
+      "oxitetraciclina",
+      "tulamicina",
+      "tilmicosina"
+    ],
+    "resistencia": [
+      "Resistencia intrinseca a beta-lactamicos por ausencia de pared celular",
+      "Sensibilidad variable; PCR y cultivo especializado recomendados"
+    ],
+    "zoonosis": "No se considera zoonosis principal.",
+    "observacionesClinicas": "Cultivo lento y exigente; PCR suele ser util en diagnostico confirmatorio.",
+    "notasLab": "No esperar morfologia Gram clasica; requiere medios PPLO y suplementos.",
+    "imagenes": {
+      "placa": "Espacio reservado para colonias tipo huevo frito",
+      "microscopio": "Espacio reservado; Gram convencional no recomendado como confirmatorio"
+    },
+    "fuentes": [
+      "Merck Veterinary Manual / bovine mycoplasmosis",
+      "HiMedia M266/M267 PPLO Agar/Broth Technical Data"
+    ]
+  },
+  {
+    "id": "glaesserella-parasuis",
+    "tipoEntidad": "microorganismo",
+    "nombreCientifico": "Glaesserella parasuis",
+    "subtitulo": "Pasteurellaceae - cocobacilo Gram negativo",
+    "gramKey": "gramnegativo",
+    "gramTexto": "Gram negativo",
+    "morfologiaKey": "cocobacilo",
+    "familia": "Pasteurellaceae",
+    "reservorio": "Tracto respiratorio superior de porcinos.",
+    "importancia": "Enfermedad de Glasser: poliserositis, artritis, meningitis y neumonia en cerdos.",
+    "patogenicidad": "Capsula, adhesinas, invasion sistemica y factores de supervivencia en suero.",
+    "toxinas": [
+      "Factores de virulencia variables por cepa"
+    ],
+    "sistemasClave": [
+      "respiratorio",
+      "porcino",
+      "sistemico"
+    ],
+    "agaresIds": [
+      "chocolate-agar",
+      "blood-agar"
+    ],
+    "caldosIds": [
+      "brain-heart-infusion-broth",
+      "tryptic-soy-broth"
+    ],
+    "pruebasIds": [
+      "gram-tincion",
+      "oxidasa",
+      "catalasa",
+      "factor-x-v"
+    ],
+    "antibioticosIds": [
+      "ceftiofur",
+      "florfenicol",
+      "doxiciclina",
+      "espectinomicina"
+    ],
+    "resistencia": [
+      "Variable por granja y region",
+      "Antibiograma recomendado en brotes"
+    ],
+    "zoonosis": "No es zoonosis principal.",
+    "observacionesClinicas": "Aislar desde sitios esteriles aumenta valor diagnostico.",
+    "notasLab": "Bacteria fastidiosa; puede requerir NAD/factor V y atmosfera enriquecida.",
+    "imagenes": {
+      "placa": "Espacio reservado para chocolate agar",
+      "microscopio": "Espacio reservado para cocobacilos Gram negativos"
+    },
+    "fuentes": [
+      "Manual de microbiologia veterinaria",
+      "Consultar protocolo diagnostico porcino"
+    ]
+  },
+  {
+    "id": "histophilus-somni",
+    "tipoEntidad": "microorganismo",
+    "nombreCientifico": "Histophilus somni",
+    "subtitulo": "Pasteurellaceae - cocobacilo Gram negativo",
+    "gramKey": "gramnegativo",
+    "gramTexto": "Gram negativo",
+    "morfologiaKey": "cocobacilo",
+    "familia": "Pasteurellaceae",
+    "reservorio": "Mucosas respiratorias y reproductivas de bovinos.",
+    "importancia": "Histofilosis, complejo respiratorio bovino, septicemia, meningoencefalitis, artritis y enfermedad reproductiva.",
+    "patogenicidad": "Adhesion endotelial, evasion inmune, trombosis y lesiones sistemicas.",
+    "toxinas": [
+      "LOS/LPS",
+      "Factores de adhesion y evasion inmune"
+    ],
+    "sistemasClave": [
+      "respiratorio",
+      "neurologico",
+      "reproductivo",
+      "bovino"
+    ],
+    "agaresIds": [
+      "chocolate-agar",
+      "blood-agar",
+      "brucella-agar-base"
+    ],
+    "caldosIds": [
+      "brain-heart-infusion-broth",
+      "tryptic-soy-broth"
+    ],
+    "pruebasIds": [
+      "gram-tincion",
+      "oxidasa",
+      "catalasa",
+      "factor-x-v"
+    ],
+    "antibioticosIds": [
+      "florfenicol",
+      "ceftiofur",
+      "tulamicina",
+      "tilmicosina"
+    ],
+    "resistencia": [
+      "Variable por region y sistema productivo",
+      "Antibiograma recomendado si se logra aislamiento"
+    ],
+    "zoonosis": "No es zoonosis principal.",
+    "observacionesClinicas": "Puede ser dificil de aislar si hubo tratamiento antimicrobiano previo.",
+    "notasLab": "Cocobacilo pleomorfico; requiere medio enriquecido y condiciones cuidadas.",
+    "imagenes": {
+      "placa": "Espacio reservado para crecimiento en medio enriquecido",
+      "microscopio": "Espacio reservado para cocobacilos Gram negativos"
+    },
+    "fuentes": [
+      "Merck Veterinary Manual Histophilosis",
+      "Manual de microbiologia veterinaria"
+    ]
+  },
+  {
+    "id": "moraxella-bovis",
+    "tipoEntidad": "microorganismo",
+    "nombreCientifico": "Moraxella bovis",
+    "subtitulo": "Moraxellaceae - diplobacilo/cocobacilo Gram negativo",
+    "gramKey": "gramnegativo",
+    "gramTexto": "Gram negativo",
+    "morfologiaKey": "cocobacilo",
+    "familia": "Moraxellaceae",
+    "reservorio": "Conjuntiva y secreciones oculares de bovinos; transmision favorecida por moscas y factores ambientales.",
+    "importancia": "Queratoconjuntivitis infecciosa bovina, ulceras corneales y perdida productiva.",
+    "patogenicidad": "Pili, citotoxina, hemolisina y dano corneal.",
+    "toxinas": [
+      "Citotoxina RTX",
+      "Hemolisinas"
+    ],
+    "sistemasClave": [
+      "ocular",
+      "bovino"
+    ],
+    "agaresIds": [
+      "blood-agar",
+      "chocolate-agar",
+      "mueller-hinton-agar"
+    ],
+    "caldosIds": [
+      "brain-heart-infusion-broth",
+      "tryptic-soy-broth"
+    ],
+    "pruebasIds": [
+      "gram-tincion",
+      "oxidasa",
+      "catalasa",
+      "dnasa",
+      "hemolisis"
+    ],
+    "antibioticosIds": [
+      "tulamicina",
+      "tilmicosina",
+      "oxitetraciclina",
+      "florfenicol"
+    ],
+    "resistencia": [
+      "Variable; evaluar sensibilidad cuando el caso no responde",
+      "Uso prudente de antimicrobianos en rodeos"
+    ],
+    "zoonosis": "No es zoonosis principal.",
+    "observacionesClinicas": "El diagnostico se apoya en lesion ocular, epidemiologia y cultivo/PCR cuando esta disponible.",
+    "notasLab": "Oxidasa positiva; beta-hemolisis puede observarse en agar sangre.",
+    "imagenes": {
+      "placa": "Espacio reservado para agar sangre/chocolate",
+      "microscopio": "Espacio reservado para cocobacilos Gram negativos"
+    },
+    "fuentes": [
+      "Merck Veterinary Manual Infectious Bovine Keratoconjunctivitis",
+      "Manual de microbiologia veterinaria"
+    ]
   }
 ];
 })();

@@ -1259,6 +1259,563 @@
         "doxiciclina"
       ]
     }
+  },
+  {
+    "id": "sorbitol-macconkey-agar",
+    "tipoEntidad": "agar",
+    "nombre": "Sorbitol MacConkey Agar",
+    "alternativo": "SMAC / MacConkey Sorbitol Agar",
+    "subtitulo": "Para: Escherichia coli O157:H7",
+    "tipos": [
+      "selectivo",
+      "diferencial",
+      "enterobacterias"
+    ],
+    "gramosPorLitro": 50.03,
+    "phFinal": "7.1 +/- 0.2",
+    "objetivo": "Aislamiento diferencial de E. coli O157:H7 por ausencia o fermentacion lenta de sorbitol.",
+    "bacteriasObjetivoIds": [
+      "escherichia-coli-o157h7",
+      "escherichia-coli"
+    ],
+    "bacteriasInhibidas": [
+      "Gram positivas por cristal violeta y sales biliares"
+    ],
+    "composicion": [
+      {
+        "ingrediente": "Peptona",
+        "cantidad": "17 g"
+      },
+      {
+        "ingrediente": "Proteose peptone",
+        "cantidad": "3 g"
+      },
+      {
+        "ingrediente": "D-sorbitol",
+        "cantidad": "10 g"
+      },
+      {
+        "ingrediente": "Mezcla de sales biliares",
+        "cantidad": "1.5 g"
+      },
+      {
+        "ingrediente": "Cloruro de sodio",
+        "cantidad": "5 g"
+      },
+      {
+        "ingrediente": "Rojo neutro",
+        "cantidad": "0.03 g"
+      },
+      {
+        "ingrediente": "Cristal violeta",
+        "cantidad": "0.001 g"
+      },
+      {
+        "ingrediente": "Agar",
+        "cantidad": "13.5 g"
+      }
+    ],
+    "preparacion": {
+      "temperatura": "Enfriar a 45-50 C antes de servir",
+      "esterilizacion": "Autoclave 121 C por 15 min",
+      "noAutoclave": false,
+      "pasos": [
+        "Suspender el polvo en agua destilada.",
+        "Calentar hasta ebullicion para disolver completamente.",
+        "Autoclavar a 121 C por 15 minutos.",
+        "Evitar sobrecalentamiento.",
+        "Enfriar a 45-50 C y servir placas esteriles."
+      ]
+    },
+    "interpretacionVisual": "E. coli O157:H7 suele observarse como colonias incoloras; flora sorbitol positiva aparece rosada.",
+    "colorColonias": "Incoloras para no fermentadoras de sorbitol; rosadas para fermentadoras.",
+    "riesgosBiologicos": [
+      "Patogeno zoonotico",
+      "Riesgo alimentario",
+      "Manipular con bioseguridad"
+    ],
+    "notasLab": "Confirmar presuntivos con pruebas bioquimicas, serologia o metodo molecular validado.",
+    "fuentes": [
+      "HiMedia M298 MacConkey Sorbitol Agar Technical Data",
+      "Consultar ficha tecnica oficial del fabricante usado"
+    ],
+    "relaciones": {
+      "bacterias": [
+        "escherichia-coli-o157h7",
+        "escherichia-coli"
+      ],
+      "caldos": [
+        "buffered-peptone-water",
+        "tryptic-soy-broth",
+        "lactose-broth"
+      ],
+      "pruebas": [
+        "gram-tincion",
+        "oxidasa",
+        "indol",
+        "onpg",
+        "tsi"
+      ],
+      "antibioticos": [
+        "enrofloxacina",
+        "gentamicina",
+        "amikacina",
+        "ceftriaxona"
+      ]
+    }
+  },
+  {
+    "id": "brilliant-green-agar",
+    "tipoEntidad": "agar",
+    "nombre": "Brilliant Green Agar",
+    "alternativo": "BGA / Agar verde brillante",
+    "subtitulo": "Para: Salmonella spp.",
+    "tipos": [
+      "selectivo",
+      "diferencial",
+      "salmonella"
+    ],
+    "gramosPorLitro": 50,
+    "phFinal": "6.9 +/- 0.2",
+    "objetivo": "Aislamiento selectivo de Salmonella desde heces, orina, alimentos u otros materiales patologicos.",
+    "bacteriasObjetivoIds": [
+      "salmonella-spp"
+    ],
+    "bacteriasInhibidas": [
+      "Muchas Gram positivas",
+      "flora intestinal sensible",
+      "Salmonella Typhi puede crecer pobremente"
+    ],
+    "composicion": [
+      {
+        "ingrediente": "Proteose peptone",
+        "cantidad": "10 g"
+      },
+      {
+        "ingrediente": "Extracto de levadura",
+        "cantidad": "3 g"
+      },
+      {
+        "ingrediente": "Lactosa",
+        "cantidad": "10 g"
+      },
+      {
+        "ingrediente": "Sacarosa",
+        "cantidad": "10 g"
+      },
+      {
+        "ingrediente": "Cloruro de sodio",
+        "cantidad": "5 g"
+      },
+      {
+        "ingrediente": "Rojo fenol",
+        "cantidad": "0.08 g"
+      },
+      {
+        "ingrediente": "Verde brillante",
+        "cantidad": "0.0125 g"
+      },
+      {
+        "ingrediente": "Agar",
+        "cantidad": "12 g"
+      }
+    ],
+    "preparacion": {
+      "temperatura": "Enfriar a 45-50 C antes de servir",
+      "esterilizacion": "Autoclave segun ficha tecnica del fabricante",
+      "noAutoclave": false,
+      "pasos": [
+        "Suspender en agua destilada.",
+        "Calentar con agitacion hasta disolver.",
+        "Esterilizar segun ficha tecnica del fabricante.",
+        "Enfriar y servir placas en condiciones esteriles.",
+        "Usar junto con caldos de enriquecimiento cuando el protocolo lo indique."
+      ]
+    },
+    "interpretacionVisual": "Colonias sospechosas de Salmonella pueden verse rosadas a rojo-blanquecinas sobre fondo rojizo.",
+    "colorColonias": "Colonias rosadas, rojas o blanquecinas segun cepa y fermentacion.",
+    "riesgosBiologicos": [
+      "Zoonosis enterica",
+      "Muestras fecales y alimentos requieren contencion adecuada"
+    ],
+    "notasLab": "Confirmar siempre con TSI, LIA/SIM, ureasa, serologia o metodo validado.",
+    "fuentes": [
+      "HiMedia M016A Brilliant Green Agar Base Technical Data",
+      "Consultar ficha tecnica oficial del fabricante usado"
+    ],
+    "relaciones": {
+      "bacterias": [
+        "salmonella-spp"
+      ],
+      "caldos": [
+        "selenite-cystine-broth",
+        "selenite-f-broth",
+        "tetrathionate-broth",
+        "rappaport-vassiliadis-soy-broth"
+      ],
+      "pruebas": [
+        "tsi",
+        "sim",
+        "lia",
+        "ureasa",
+        "citrato-simmons"
+      ],
+      "antibioticos": [
+        "ampicilina",
+        "ceftiofur",
+        "ciprofloxacina",
+        "trimetoprim-sulfa"
+      ]
+    }
+  },
+  {
+    "id": "tcbs-agar",
+    "tipoEntidad": "agar",
+    "nombre": "TCBS Agar",
+    "alternativo": "Thiosulfate Citrate Bile Salts Sucrose Agar",
+    "subtitulo": "Para: Vibrio spp.",
+    "tipos": [
+      "selectivo",
+      "diferencial",
+      "vibrio"
+    ],
+    "gramosPorLitro": 89.08,
+    "phFinal": "8.6 +/- 0.2",
+    "objetivo": "Aislamiento selectivo y diferenciacion de Vibrio spp. en muestras acuaticas, alimentos o material clinico.",
+    "bacteriasObjetivoIds": [
+      "vibrio-spp",
+      "aeromonas-hydrophila"
+    ],
+    "bacteriasInhibidas": [
+      "Gram positivas",
+      "coliformes sensibles por citrato, sales biliares y pH alcalino"
+    ],
+    "composicion": [
+      {
+        "ingrediente": "Extracto de levadura y peptonas",
+        "cantidad": "Consultar ficha tecnica oficial"
+      },
+      {
+        "ingrediente": "Citrato de sodio / tiosulfato",
+        "cantidad": "Consultar ficha tecnica oficial"
+      },
+      {
+        "ingrediente": "Sales biliares",
+        "cantidad": "Consultar ficha tecnica oficial"
+      },
+      {
+        "ingrediente": "Sacarosa",
+        "cantidad": "Consultar ficha tecnica oficial"
+      },
+      {
+        "ingrediente": "Indicadores de pH",
+        "cantidad": "Consultar ficha tecnica oficial"
+      }
+    ],
+    "preparacion": {
+      "temperatura": "Enfriar a 45-50 C antes de servir",
+      "esterilizacion": "No autoclave; hervir para disolver segun fabricante",
+      "noAutoclave": true,
+      "pasos": [
+        "Suspender el medio en agua destilada.",
+        "Calentar hasta ebullicion y disolver completamente.",
+        "No autoclavar si la ficha tecnica del fabricante lo indica.",
+        "Enfriar a 45-50 C.",
+        "Servir placas esteriles y usar preferentemente frescas."
+      ]
+    },
+    "interpretacionVisual": "Vibrio fermentador de sacarosa puede verse amarillo; no fermentadores verde-azulados.",
+    "colorColonias": "Amarillas, verdes o azul-verdosas segun especie.",
+    "riesgosBiologicos": [
+      "Riesgo zoonotico y alimentario",
+      "Muestras acuaticas y pescados pueden contener flora mixta"
+    ],
+    "notasLab": "TCBS no reemplaza confirmacion bioquimica o molecular; Aeromonas puede crecer y confundirse.",
+    "fuentes": [
+      "HiMedia M189 / GM189 TCBS Agar Technical Data",
+      "Consultar ficha tecnica oficial del fabricante usado"
+    ],
+    "relaciones": {
+      "bacterias": [
+        "vibrio-spp",
+        "aeromonas-hydrophila"
+      ],
+      "caldos": [
+        "alkaline-peptone-water",
+        "tryptic-soy-broth"
+      ],
+      "pruebas": [
+        "oxidasa",
+        "gram-tincion",
+        "indol",
+        "onpg"
+      ],
+      "antibioticos": [
+        "doxiciclina",
+        "ciprofloxacina",
+        "trimetoprim-sulfa"
+      ]
+    }
+  },
+  {
+    "id": "yersinia-cin-agar",
+    "tipoEntidad": "agar",
+    "nombre": "Yersinia Selective Agar",
+    "alternativo": "CIN Agar / Cefsulodin-Irgasan-Novobiocin Agar",
+    "subtitulo": "Para: Yersinia enterocolitica",
+    "tipos": [
+      "selectivo",
+      "diferencial",
+      "yersinia"
+    ],
+    "gramosPorLitro": 58,
+    "phFinal": "7.4 +/- 0.2",
+    "objetivo": "Aislamiento selectivo de Yersinia enterocolitica desde muestras fecales, alimentos o ambiente.",
+    "bacteriasObjetivoIds": [
+      "yersinia-enterocolitica"
+    ],
+    "bacteriasInhibidas": [
+      "Flora acompanante sensible a cefsulodina, irgasan y novobiocina"
+    ],
+    "composicion": [
+      {
+        "ingrediente": "Base nutritiva con manitol",
+        "cantidad": "Consultar ficha tecnica oficial"
+      },
+      {
+        "ingrediente": "Desoxicolato / cristal violeta",
+        "cantidad": "Consultar ficha tecnica oficial"
+      },
+      {
+        "ingrediente": "Suplemento CIN",
+        "cantidad": "Agregar luego de enfriar segun fabricante"
+      }
+    ],
+    "preparacion": {
+      "temperatura": "Enfriar a 45-50 C antes de agregar suplemento",
+      "esterilizacion": "Autoclave 121 C por 15 min para la base; suplemento despues de enfriar",
+      "noAutoclave": false,
+      "pasos": [
+        "Suspender la base en agua destilada.",
+        "Calentar hasta disolver.",
+        "Autoclavar la base segun fabricante.",
+        "Enfriar a 45-50 C.",
+        "Agregar suplemento CIN en condiciones asepticas.",
+        "Servir placas y secar antes de usar."
+      ]
+    },
+    "interpretacionVisual": "Yersinia enterocolitica puede producir colonias tipo ojo de buey con centro rojo y borde transparente.",
+    "colorColonias": "Rojo profundo con zona periferica clara en presuntivos.",
+    "riesgosBiologicos": [
+      "Zoonosis alimentaria",
+      "Riesgo asociado a porcinos, leche y agua contaminada"
+    ],
+    "notasLab": "Confirmar con pruebas bioquimicas y, si aplica, identificacion molecular.",
+    "fuentes": [
+      "FDA BAM M35 CIN Agar / Yersinia Selective Agar",
+      "Consultar ficha tecnica oficial del fabricante usado"
+    ],
+    "relaciones": {
+      "bacterias": [
+        "yersinia-enterocolitica"
+      ],
+      "caldos": [
+        "buffered-peptone-water",
+        "tryptic-soy-broth"
+      ],
+      "pruebas": [
+        "gram-tincion",
+        "oxidasa",
+        "ureasa",
+        "onpg",
+        "tsi"
+      ],
+      "antibioticos": [
+        "trimetoprim-sulfa",
+        "ceftriaxona",
+        "ciprofloxacina"
+      ]
+    }
+  },
+  {
+    "id": "chocolate-agar",
+    "tipoEntidad": "agar",
+    "nombre": "Chocolate Agar",
+    "alternativo": "Agar chocolate / base enriquecida",
+    "subtitulo": "Para: bacterias fastidiosas",
+    "tipos": [
+      "enriquecido",
+      "fastidioso",
+      "respiratorio"
+    ],
+    "gramosPorLitro": 45.5,
+    "phFinal": "7.3 +/- 0.2",
+    "objetivo": "Cultivo de bacterias fastidiosas que requieren factores X/V o suplementos de crecimiento.",
+    "bacteriasObjetivoIds": [
+      "glaesserella-parasuis",
+      "histophilus-somni",
+      "moraxella-bovis"
+    ],
+    "bacteriasInhibidas": [
+      "No es selectivo; puede permitir flora acompanante si no se usan suplementos selectivos"
+    ],
+    "composicion": [
+      {
+        "ingrediente": "Proteose peptone",
+        "cantidad": "20 g"
+      },
+      {
+        "ingrediente": "Glucosa",
+        "cantidad": "0.5 g"
+      },
+      {
+        "ingrediente": "Cloruro de sodio",
+        "cantidad": "5 g"
+      },
+      {
+        "ingrediente": "Fosfato disodico",
+        "cantidad": "5 g"
+      },
+      {
+        "ingrediente": "Agar",
+        "cantidad": "15 g"
+      },
+      {
+        "ingrediente": "Suplemento o sangre calentada",
+        "cantidad": "Segun protocolo validado"
+      }
+    ],
+    "preparacion": {
+      "temperatura": "Enfriar a 45-50 C antes de agregar suplementos",
+      "esterilizacion": "Autoclave 121 C por 15 min para la base",
+      "noAutoclave": false,
+      "pasos": [
+        "Suspender la base en agua destilada.",
+        "Calentar hasta disolver.",
+        "Autoclavar a 121 C por 15 minutos.",
+        "Enfriar a 45-50 C.",
+        "Agregar suplementos o sangre tratada segun protocolo.",
+        "Servir en condiciones esteriles."
+      ]
+    },
+    "interpretacionVisual": "Crecimiento de colonias pequenas a moderadas de bacterias fastidiosas; no es diferencial por si solo.",
+    "colorColonias": "Colonias grises, translucidas o variables sobre medio marron chocolate.",
+    "riesgosBiologicos": [
+      "Patogenos respiratorios veterinarios",
+      "Manipular muestras respiratorias con bioseguridad"
+    ],
+    "notasLab": "Algunas Pasteurellaceae requieren atmosfera enriquecida con CO2 o microaerofilia.",
+    "fuentes": [
+      "HiMedia M103 Chocolate Agar Base Technical Data",
+      "Consultar protocolo diagnostico del laboratorio"
+    ],
+    "relaciones": {
+      "bacterias": [
+        "glaesserella-parasuis",
+        "histophilus-somni",
+        "moraxella-bovis"
+      ],
+      "caldos": [
+        "brain-heart-infusion-broth",
+        "tryptic-soy-broth"
+      ],
+      "pruebas": [
+        "gram-tincion",
+        "oxidasa",
+        "catalasa",
+        "factor-x-v"
+      ],
+      "antibioticos": [
+        "florfenicol",
+        "ceftiofur",
+        "tulamicina",
+        "tilmicosina"
+      ]
+    }
+  },
+  {
+    "id": "pplo-agar-base",
+    "tipoEntidad": "agar",
+    "nombre": "PPLO Agar Base",
+    "alternativo": "Mycoplasma Agar Base",
+    "subtitulo": "Para: Mycoplasma spp.",
+    "tipos": [
+      "enriquecido",
+      "fastidioso",
+      "mycoplasma"
+    ],
+    "gramosPorLitro": 36,
+    "phFinal": "7.8 +/- 0.2",
+    "objetivo": "Base para aislamiento de micoplasmas con suplementos especificos.",
+    "bacteriasObjetivoIds": [
+      "mycoplasma-bovis"
+    ],
+    "bacteriasInhibidas": [
+      "Depende del suplemento selectivo agregado"
+    ],
+    "composicion": [
+      {
+        "ingrediente": "Infusion de corazon bovino",
+        "cantidad": "Equivalente segun fabricante"
+      },
+      {
+        "ingrediente": "Peptona / digestos",
+        "cantidad": "10 g"
+      },
+      {
+        "ingrediente": "Cloruro de sodio",
+        "cantidad": "5 g"
+      },
+      {
+        "ingrediente": "Agar",
+        "cantidad": "15 g"
+      },
+      {
+        "ingrediente": "Suplementos para micoplasma",
+        "cantidad": "Segun ficha tecnica"
+      }
+    ],
+    "preparacion": {
+      "temperatura": "Enfriar a 45-50 C antes de suplementar",
+      "esterilizacion": "Autoclave 121 C por 15 min para la base; suplementos despues de enfriar",
+      "noAutoclave": false,
+      "pasos": [
+        "Suspender la base en agua destilada.",
+        "Calentar hasta disolver.",
+        "Autoclavar la base.",
+        "Enfriar a 45-50 C.",
+        "Agregar suero y suplementos selectivos segun protocolo.",
+        "Incubar por periodos prolongados y revisar colonias pequenas."
+      ]
+    },
+    "interpretacionVisual": "Colonias pequenas tipo huevo frito pueden sugerir micoplasmas; confirmar con metodologia validada.",
+    "colorColonias": "Colonias muy pequenas, translucidas, de crecimiento lento.",
+    "riesgosBiologicos": [
+      "Patogeno respiratorio y mamario bovino",
+      "Crecimiento lento y riesgo de falsos negativos"
+    ],
+    "notasLab": "Mycoplasma no se observa bien con Gram clasico y requiere medios/suplementos especificos.",
+    "fuentes": [
+      "HiMedia M266 Mycoplasma Agar / PPLO Agar Base Technical Data",
+      "Consultar protocolo diagnostico del laboratorio"
+    ],
+    "relaciones": {
+      "bacterias": [
+        "mycoplasma-bovis"
+      ],
+      "caldos": [
+        "pplo-broth-base"
+      ],
+      "pruebas": [
+        "gram-tincion"
+      ],
+      "antibioticos": [
+        "tetraciclina",
+        "doxiciclina",
+        "tulamicina",
+        "tilmicosina"
+      ]
+    }
   }
 ];
 })();

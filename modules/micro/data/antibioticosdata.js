@@ -596,6 +596,356 @@
       "CLSI VET vigente",
       "Ficha t?cnica veterinaria del producto"
     ]
+  },
+  {
+    "id": "amikacina",
+    "tipoEntidad": "antibiotico",
+    "nombre": "Amikacina",
+    "subtitulo": "Para: Gram negativos aerobios seleccionados",
+    "siglaDisco": "AK30",
+    "familia": "Aminoglucosido",
+    "familiaKey": "aminoglucosido",
+    "tipoAccion": "Bactericida concentracion-dependiente",
+    "mecanismo": "Union a subunidad 30S con alteracion de sintesis proteica.",
+    "espectro": "Gram negativos aerobios; actividad variable frente a Staphylococcus.",
+    "espectroKey": "gram-negativo",
+    "bacteriasSensiblesIds": [
+      "escherichia-coli",
+      "pseudomonas-aeruginosa",
+      "klebsiella-pneumoniae"
+    ],
+    "bacteriasResistentesIds": [
+      "clostridium-perfringens",
+      "mycoplasma-bovis"
+    ],
+    "usoClinico": "Uso veterinario seleccionado segun cultivo, sensibilidad y evaluacion renal del paciente.",
+    "interpretacion": "Interpretar con criterios veterinarios vigentes cuando existan para especie y bacteria.",
+    "resistencia": "Enzimas modificadoras de aminoglucosidos, bombas de eflujo y menor entrada celular.",
+    "observaciones": "No cubre anaerobios ni Mycoplasma; riesgo nefro/ototoxicidad segun contexto clinico.",
+    "pruebasRelacionadasIds": [
+      "oxidasa",
+      "gram-tincion"
+    ],
+    "mediosIds": [
+      "mueller-hinton-agar",
+      "mueller-hinton-broth"
+    ],
+    "fuentes": [
+      "CLSI VET vigente",
+      "Ficha tecnica veterinaria del producto"
+    ]
+  },
+  {
+    "id": "cefalexina",
+    "tipoEntidad": "antibiotico",
+    "nombre": "Cefalexina",
+    "subtitulo": "Para: Gram positivos cutaneos sensibles",
+    "siglaDisco": "CN30",
+    "familia": "Cefalosporina de primera generacion",
+    "familiaKey": "cefalosporina",
+    "tipoAccion": "Bactericida tiempo-dependiente",
+    "mecanismo": "Inhibe sintesis de pared celular por union a PBPs.",
+    "espectro": "Principalmente Gram positivos; limitada frente a Gram negativos.",
+    "espectroKey": "gram-positivo",
+    "bacteriasSensiblesIds": [
+      "staphylococcus-spp",
+      "streptococcus-spp"
+    ],
+    "bacteriasResistentesIds": [
+      "pseudomonas-aeruginosa",
+      "enterococcus-spp",
+      "mycoplasma-bovis"
+    ],
+    "usoClinico": "Pioderma e infecciones cutaneas seleccionadas segun cultivo y normativa local.",
+    "interpretacion": "No extrapolar a bacterias sin punto de corte aplicable.",
+    "resistencia": "Beta-lactamasas, cambios de PBPs y resistencia a meticilina en Staphylococcus.",
+    "observaciones": "No es opcion para Pseudomonas ni Enterococcus.",
+    "pruebasRelacionadasIds": [
+      "catalasa",
+      "coagulasa",
+      "dnasa"
+    ],
+    "mediosIds": [
+      "mueller-hinton-agar",
+      "blood-agar"
+    ],
+    "fuentes": [
+      "CLSI VET vigente",
+      "Ficha tecnica veterinaria del producto"
+    ]
+  },
+  {
+    "id": "ceftriaxona",
+    "tipoEntidad": "antibiotico",
+    "nombre": "Ceftriaxona",
+    "subtitulo": "Para: vigilancia de cefalosporinas de tercera generacion",
+    "siglaDisco": "CRO30",
+    "familia": "Cefalosporina de tercera generacion",
+    "familiaKey": "cefalosporina",
+    "tipoAccion": "Bactericida tiempo-dependiente",
+    "mecanismo": "Inhibe sintesis de pared celular.",
+    "espectro": "Gram negativos y algunos Gram positivos; uso clinico veterinario depende de normativa local.",
+    "espectroKey": "amplio",
+    "bacteriasSensiblesIds": [
+      "salmonella-spp",
+      "escherichia-coli",
+      "yersinia-enterocolitica"
+    ],
+    "bacteriasResistentesIds": [
+      "pseudomonas-aeruginosa",
+      "enterococcus-spp",
+      "mycoplasma-bovis"
+    ],
+    "usoClinico": "Marcador de laboratorio para vigilancia de Enterobacteriaceae; uso clinico solo bajo criterio normativo.",
+    "interpretacion": "Interpretar con estandar aplicable y evitar extrapolacion entre especies.",
+    "resistencia": "ESBL, AmpC, carbapenemasas y alteraciones de permeabilidad.",
+    "observaciones": "Importante en vigilancia One Health; no usar como recomendacion empirica.",
+    "pruebasRelacionadasIds": [
+      "tsi",
+      "citrato-simmons",
+      "onpg"
+    ],
+    "mediosIds": [
+      "mueller-hinton-agar",
+      "mueller-hinton-broth"
+    ],
+    "fuentes": [
+      "CLSI VET vigente",
+      "WOAH / vigilancia de resistencia antimicrobiana"
+    ]
+  },
+  {
+    "id": "neomicina",
+    "tipoEntidad": "antibiotico",
+    "nombre": "Neomicina",
+    "subtitulo": "Para: Gram negativos entercos sensibles",
+    "siglaDisco": "N30",
+    "familia": "Aminoglucosido",
+    "familiaKey": "aminoglucosido",
+    "tipoAccion": "Bactericida concentracion-dependiente",
+    "mecanismo": "Interfiere sintesis proteica en subunidad 30S.",
+    "espectro": "Gram negativos aerobios; uso frecuente como agente local o enterico segun producto.",
+    "espectroKey": "gram-negativo",
+    "bacteriasSensiblesIds": [
+      "escherichia-coli",
+      "salmonella-spp",
+      "proteus-mirabilis"
+    ],
+    "bacteriasResistentesIds": [
+      "clostridium-perfringens",
+      "mycoplasma-bovis",
+      "streptococcus-spp"
+    ],
+    "usoClinico": "Uso veterinario depende de especie, via, producto registrado y sensibilidad.",
+    "interpretacion": "La difusion en disco debe seguir estandar validado para el microorganismo.",
+    "resistencia": "Enzimas modificadoras de aminoglucosidos y menor entrada celular.",
+    "observaciones": "Sin actividad util frente a anaerobios; vigilar toxicidad segun via.",
+    "pruebasRelacionadasIds": [
+      "gram-tincion",
+      "tsi"
+    ],
+    "mediosIds": [
+      "mueller-hinton-agar"
+    ],
+    "fuentes": [
+      "CLSI VET vigente",
+      "Ficha tecnica veterinaria del producto"
+    ]
+  },
+  {
+    "id": "eritromicina",
+    "tipoEntidad": "antibiotico",
+    "nombre": "Eritromicina",
+    "subtitulo": "Para: Gram positivos y Campylobacter sensibles",
+    "siglaDisco": "E15",
+    "familia": "Macrolido",
+    "familiaKey": "macrolido",
+    "tipoAccion": "Bacteriostatico",
+    "mecanismo": "Union a subunidad 50S e inhibicion de sintesis proteica.",
+    "espectro": "Gram positivos, algunos fastidiosos y Campylobacter; baja actividad frente a Enterobacteriaceae.",
+    "espectroKey": "moderado",
+    "bacteriasSensiblesIds": [
+      "campylobacter-jejuni",
+      "staphylococcus-spp",
+      "streptococcus-spp"
+    ],
+    "bacteriasResistentesIds": [
+      "escherichia-coli",
+      "pseudomonas-aeruginosa",
+      "klebsiella-pneumoniae"
+    ],
+    "usoClinico": "Indicaciones veterinarias seleccionadas; confirmar sensibilidad cuando sea posible.",
+    "interpretacion": "Puede requerir prueba de resistencia inducible MLSb en estafilococos/estreptococos.",
+    "resistencia": "Metilacion erm, eflujo mef y mutaciones ribosomales.",
+    "observaciones": "No cubrir enterobacterias de forma empirica.",
+    "pruebasRelacionadasIds": [
+      "camp-test",
+      "catalasa",
+      "gram-tincion"
+    ],
+    "mediosIds": [
+      "mueller-hinton-agar",
+      "blood-agar"
+    ],
+    "fuentes": [
+      "CLSI VET vigente",
+      "Ficha tecnica veterinaria del producto"
+    ]
+  },
+  {
+    "id": "tilmicosina",
+    "tipoEntidad": "antibiotico",
+    "nombre": "Tilmicosina",
+    "subtitulo": "Para: patogenos respiratorios de rumiantes sensibles",
+    "siglaDisco": "TIL15",
+    "familia": "Macrolido",
+    "familiaKey": "macrolido",
+    "tipoAccion": "Bacteriostatico; puede ser bactericida frente a algunos respiratorios",
+    "mecanismo": "Inhibe sintesis proteica por union a subunidad 50S.",
+    "espectro": "Pasteurellaceae y patogenos respiratorios veterinarios seleccionados.",
+    "espectroKey": "respiratorio",
+    "bacteriasSensiblesIds": [
+      "mannheimia-haemolytica",
+      "pasteurella-multocida",
+      "histophilus-somni"
+    ],
+    "bacteriasResistentesIds": [
+      "escherichia-coli",
+      "pseudomonas-aeruginosa"
+    ],
+    "usoClinico": "Complejo respiratorio bovino/ovino segun etiqueta, especie y sensibilidad.",
+    "interpretacion": "Usar criterios veterinarios y respetar especie de destino.",
+    "resistencia": "Resistencia MLS, eflujo y seleccion por uso de macrolidos.",
+    "observaciones": "Manejo con extrema precaucion segun ficha por riesgo en humanos; respetar tiempos de retiro.",
+    "pruebasRelacionadasIds": [
+      "oxidasa",
+      "gram-tincion",
+      "hemolisis"
+    ],
+    "mediosIds": [
+      "mueller-hinton-agar",
+      "blood-agar",
+      "chocolate-agar"
+    ],
+    "fuentes": [
+      "CLSI VET vigente",
+      "Ficha tecnica veterinaria del producto"
+    ]
+  },
+  {
+    "id": "espectinomicina",
+    "tipoEntidad": "antibiotico",
+    "nombre": "Espectinomicina",
+    "subtitulo": "Para: bacterias respiratorias y entericas seleccionadas",
+    "siglaDisco": "SPT100",
+    "familia": "Aminociclitol",
+    "familiaKey": "aminociclitol",
+    "tipoAccion": "Bacteriostatico",
+    "mecanismo": "Interfiere sintesis proteica al actuar sobre subunidad 30S.",
+    "espectro": "Actividad variable frente a Gram negativos y algunos patogenos veterinarios.",
+    "espectroKey": "moderado",
+    "bacteriasSensiblesIds": [
+      "escherichia-coli",
+      "pasteurella-multocida",
+      "glaesserella-parasuis"
+    ],
+    "bacteriasResistentesIds": [
+      "pseudomonas-aeruginosa",
+      "enterococcus-spp"
+    ],
+    "usoClinico": "Uso veterinario segun producto registrado; interpretar con antibiograma cuando aplique.",
+    "interpretacion": "Consultar criterios especificos disponibles para especie y patogeno.",
+    "resistencia": "Modificacion del blanco ribosomal y enzimas inactivantes.",
+    "observaciones": "No extrapolar sensibilidad entre combinaciones comerciales.",
+    "pruebasRelacionadasIds": [
+      "gram-tincion",
+      "oxidasa"
+    ],
+    "mediosIds": [
+      "mueller-hinton-agar",
+      "chocolate-agar"
+    ],
+    "fuentes": [
+      "CLSI VET vigente",
+      "Ficha tecnica veterinaria del producto"
+    ]
+  },
+  {
+    "id": "pradofloxacina",
+    "tipoEntidad": "antibiotico",
+    "nombre": "Pradofloxacina",
+    "subtitulo": "Para: pequenos animales segun sensibilidad",
+    "siglaDisco": "PRD5",
+    "familia": "Fluoroquinolona",
+    "familiaKey": "quinolona",
+    "tipoAccion": "Bactericida concentracion-dependiente",
+    "mecanismo": "Inhibe ADN-girasa y topoisomerasa IV.",
+    "espectro": "Amplio; Gram negativos, algunos Gram positivos y anaerobios seleccionados segun especie.",
+    "espectroKey": "amplio",
+    "bacteriasSensiblesIds": [
+      "staphylococcus-spp",
+      "escherichia-coli",
+      "pasteurella-multocida"
+    ],
+    "bacteriasResistentesIds": [
+      "pseudomonas-aeruginosa",
+      "enterococcus-spp"
+    ],
+    "usoClinico": "Uso en pequenos animales segun indicacion registrada, cultivo y sensibilidad.",
+    "interpretacion": "Interpretar con criterios veterinarios disponibles; evitar sustituciones entre quinolonas sin criterio.",
+    "resistencia": "Mutaciones gyrA/parC, bombas de eflujo y resistencia cruzada de quinolonas.",
+    "observaciones": "Antimicrobiano critico; uso prudente y documentado.",
+    "pruebasRelacionadasIds": [
+      "gram-tincion",
+      "catalasa",
+      "oxidasa"
+    ],
+    "mediosIds": [
+      "mueller-hinton-agar",
+      "mueller-hinton-broth"
+    ],
+    "fuentes": [
+      "CLSI VET vigente",
+      "Ficha tecnica veterinaria del producto"
+    ]
+  },
+  {
+    "id": "tetraciclina",
+    "tipoEntidad": "antibiotico",
+    "nombre": "Tetraciclina",
+    "subtitulo": "Para: bacterias sensibles y micoplasmas seleccionados",
+    "siglaDisco": "TE30",
+    "familia": "Tetraciclina",
+    "familiaKey": "tetraciclina",
+    "tipoAccion": "Bacteriostatico",
+    "mecanismo": "Inhibe sintesis proteica por union reversible a subunidad 30S.",
+    "espectro": "Amplio; actividad variable frente a Gram positivos, Gram negativos y bacterias sin pared celular.",
+    "espectroKey": "amplio",
+    "bacteriasSensiblesIds": [
+      "mycoplasma-bovis",
+      "pasteurella-multocida",
+      "mannheimia-haemolytica"
+    ],
+    "bacteriasResistentesIds": [
+      "pseudomonas-aeruginosa",
+      "proteus-mirabilis"
+    ],
+    "usoClinico": "Uso veterinario segun especie, producto registrado y sensibilidad antimicrobiana.",
+    "interpretacion": "Interpretar con criterios veterinarios vigentes; resistencia cruzada con otras tetraciclinas puede ocurrir.",
+    "resistencia": "Bombas de eflujo tet, proteccion ribosomal y resistencia plasmidica.",
+    "observaciones": "No usar como sustituto automatico de doxiciclina u oxitetraciclina sin criterio microbiologico.",
+    "pruebasRelacionadasIds": [
+      "gram-tincion",
+      "oxidasa"
+    ],
+    "mediosIds": [
+      "mueller-hinton-agar",
+      "mueller-hinton-broth"
+    ],
+    "fuentes": [
+      "CLSI VET vigente",
+      "Ficha tecnica veterinaria del producto"
+    ]
   }
 ];
 })();
