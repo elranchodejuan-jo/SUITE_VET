@@ -1370,6 +1370,1330 @@
       definicion: "Inflamacion de la piel por causas alergicas, infecciosas, parasitarias, irritativas o inmunes.",
       importanciaClinica: "Se interpreta con prurito, distribucion, lesiones primarias/secundarias y citologia.",
       relacionados: ["prurito", "eosinofilia", "sistema-inmunologico"]
+    },
+
+    // -------------------------------------------------------------------------
+    // NEUROFISIOLOGIA CLINICA
+    // -------------------------------------------------------------------------
+    {
+      id: "sistema-nervioso-central",
+      termino: "Sistema nervioso central",
+      sigla: "SNC",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Division anatomica",
+      definicion: "Conjunto formado por encefalo y medula espinal, encargado de integrar informacion y coordinar respuestas.",
+      importanciaClinica: "Permite localizar lesiones centrales cuando hay convulsiones, alteracion mental, ataxia, paresia o deficits posturales.",
+      relacionados: ["sistema-nervioso-periferico", "centro-integrador", "neurona-motora-superior"]
+    },
+    {
+      id: "sistema-nervioso-periferico",
+      termino: "Sistema nervioso periferico",
+      sigla: "SNP",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Division anatomica",
+      definicion: "Red de nervios craneales, espinales y ganglios que conecta el SNC con organos, musculos y piel.",
+      importanciaClinica: "Se evalua en neuropatias, lesiones de raices, deficits de reflejos, dolor radicular y alteraciones sensitivas.",
+      relacionados: ["sistema-nervioso-central", "neurona-aferente", "neurona-eferente"]
+    },
+    {
+      id: "sistema-nervioso-somatico",
+      termino: "Sistema nervioso somatico",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Division funcional",
+      definicion: "Parte del sistema nervioso que controla sensibilidad consciente y movimiento voluntario de musculo esqueletico.",
+      importanciaClinica: "Se explora con marcha, postura, propiocepcion, tono, reflejos espinales y respuesta al dolor.",
+      relacionados: ["sistema-nervioso-periferico", "neurona-eferente", "arco-reflejo"]
+    },
+    {
+      id: "sistema-nervioso-autonomo",
+      termino: "Sistema nervioso autonomo",
+      sigla: "SNA",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Division funcional",
+      definicion: "Sistema que regula funciones viscerales involuntarias como frecuencia cardiaca, motilidad, secrecion y tono vascular.",
+      importanciaClinica: "Explica taquicardia, midriasis, salivacion, ileo, diarrea por estres y respuestas de lucha o reposo.",
+      relacionados: ["simpatico", "parasimpatico", "sistema-nervioso-enterico"]
+    },
+    {
+      id: "neurona",
+      termino: "Neurona",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Celula excitable",
+      definicion: "Celula especializada en recibir, procesar y transmitir informacion mediante cambios electricos y señales quimicas.",
+      importanciaClinica: "Su funcion sostiene sensibilidad, movimiento, reflejos, dolor, conducta y control visceral.",
+      relacionados: ["axon", "dendrita", "sinapsis-quimica"]
+    },
+    {
+      id: "neuroglia",
+      termino: "Neuroglia",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Celulas de soporte",
+      definicion: "Conjunto de celulas que sostienen, protegen, nutren y modulan la actividad de las neuronas.",
+      importanciaClinica: "La activacion glial participa en neuroinflamacion y dolor cronico.",
+      relacionados: ["neuroinflamacion", "microglia", "astrocito"]
+    },
+    {
+      id: "microglia",
+      termino: "Microglia",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Celula glial inmune",
+      definicion: "Celula defensiva del sistema nervioso que responde a daño, inflamacion o estimulos persistentes.",
+      importanciaClinica: "Su activacion sostenida puede amplificar dolor cronico y sensibilizacion central.",
+      relacionados: ["neuroglia", "neuroinflamacion", "dolor-cronico"]
+    },
+    {
+      id: "astrocito",
+      termino: "Astrocito",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Celula glial",
+      definicion: "Celula glial que participa en soporte metabolico, barrera, regulacion ionica y modulacion sinaptica.",
+      importanciaClinica: "Puede contribuir a neuroinflamacion, reparacion y cambios de excitabilidad neuronal.",
+      relacionados: ["neuroglia", "sinapsis-quimica", "neuroinflamacion"]
+    },
+    {
+      id: "axon",
+      termino: "Axon",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Prolongacion neuronal",
+      definicion: "Prolongacion que conduce potenciales de accion desde el cuerpo neuronal hacia terminales sinapticas.",
+      importanciaClinica: "El daño axonal altera conduccion, reflejos, sensibilidad y funcion motora.",
+      relacionados: ["neurona", "mielina", "potencial-accion"]
+    },
+    {
+      id: "dendrita",
+      termino: "Dendrita",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Prolongacion neuronal",
+      definicion: "Rama neuronal que recibe señales sinapticas de otras celulas.",
+      importanciaClinica: "Su integridad permite integracion de señales excitadoras e inhibidoras.",
+      relacionados: ["neurona", "peps", "pips"]
+    },
+    {
+      id: "mielina",
+      termino: "Mielina",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Aislante nervioso",
+      definicion: "Cubierta lipidica que rodea axones y aumenta la velocidad de conduccion nerviosa.",
+      importanciaClinica: "La desmielinizacion enlentece o bloquea señales, generando debilidad, ataxia o deficits neurologicos.",
+      relacionados: ["nodo-ranvier", "conduccion-saltatoria", "fibra-a-delta"]
+    },
+    {
+      id: "nodo-ranvier",
+      termino: "Nodo de Ranvier",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Region axonal",
+      definicion: "Espacio entre segmentos de mielina donde se concentran canales ionicos y se regenera el potencial de accion.",
+      importanciaClinica: "Es clave para conduccion saltatoria rapida en fibras mielinizadas.",
+      relacionados: ["mielina", "conduccion-saltatoria", "potencial-accion"]
+    },
+    {
+      id: "potencial-reposo",
+      termino: "Potencial de reposo",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Biofisica celular",
+      definicion: "Diferencia electrica de la membrana neuronal cuando la celula no esta disparando.",
+      importanciaClinica: "Depende de gradientes ionicos; alteraciones de potasio, calcio o energia cambian excitabilidad.",
+      relacionados: ["bomba-sodio-potasio", "hipercalemia", "despolarizacion"]
+    },
+    {
+      id: "potencial-accion",
+      termino: "Potencial de accion",
+      sigla: "PA",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Señal electrica",
+      definicion: "Cambio rapido y propagado del voltaje de membrana que transmite informacion en neuronas y musculo.",
+      importanciaClinica: "Es base de sensibilidad, movimiento, dolor, reflejos y efecto de anestesicos locales.",
+      relacionados: ["despolarizacion", "repolarizacion", "canal-sodio-voltaje"]
+    },
+    {
+      id: "despolarizacion",
+      termino: "Despolarizacion",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Cambio electrico",
+      definicion: "Disminucion de la diferencia electrica de membrana, acercandola al umbral de disparo.",
+      importanciaClinica: "Facilita excitabilidad; se altera por cambios ionicos o farmacos que bloquean canales.",
+      relacionados: ["potencial-accion", "umbral-neuronal", "canal-sodio-voltaje"]
+    },
+    {
+      id: "repolarizacion",
+      termino: "Repolarizacion",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Cambio electrico",
+      definicion: "Retorno del potencial de membrana hacia valores de reposo despues de un potencial de accion.",
+      importanciaClinica: "Depende de canales de potasio y condiciona frecuencia de disparo neuronal o cardiaco.",
+      relacionados: ["potencial-accion", "hiperpolarizacion", "hipercalemia"]
+    },
+    {
+      id: "hiperpolarizacion",
+      termino: "Hiperpolarizacion",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Cambio electrico",
+      definicion: "Aumento de la negatividad de membrana que aleja a la celula del umbral.",
+      importanciaClinica: "Reduce excitabilidad y participa en señales inhibitorias.",
+      relacionados: ["pips", "gaba", "repolarizacion"]
+    },
+    {
+      id: "umbral-neuronal",
+      termino: "Umbral neuronal",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Biofisica celular",
+      definicion: "Nivel de despolarizacion necesario para iniciar un potencial de accion.",
+      importanciaClinica: "Baja en sensibilizacion y sube con algunos analgesicos, anestesicos o inhibicion sinaptica.",
+      relacionados: ["potencial-accion", "sensibilizacion-periferica", "pips"]
+    },
+    {
+      id: "bomba-sodio-potasio",
+      termino: "Bomba sodio-potasio",
+      sigla: "Na/K ATPasa",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Transporte activo",
+      definicion: "Proteina de membrana que mantiene gradientes de sodio y potasio usando ATP.",
+      importanciaClinica: "Sostiene excitabilidad celular; falla energetica altera neuronas, musculo y equilibrio ionico.",
+      relacionados: ["potencial-reposo", "hipercalemia", "liquido-intracelular"]
+    },
+    {
+      id: "canal-sodio-voltaje",
+      termino: "Canal de sodio dependiente de voltaje",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Canal ionico",
+      definicion: "Canal que se abre ante despolarizacion y permite entrada de sodio para iniciar el potencial de accion.",
+      importanciaClinica: "Diana de anestesicos locales; su bloqueo impide conduccion del dolor.",
+      relacionados: ["potencial-accion", "anestesia-local", "transmision-nociceptiva"]
+    },
+    {
+      id: "conduccion-saltatoria",
+      termino: "Conduccion saltatoria",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Conduccion nerviosa",
+      definicion: "Propagacion rapida del impulso entre nodos de Ranvier en fibras mielinizadas.",
+      importanciaClinica: "Explica la mayor velocidad de fibras mielinicas y la lentitud de fibras amielinicas.",
+      relacionados: ["mielina", "nodo-ranvier", "fibra-a-delta"]
+    },
+    {
+      id: "excitabilidad-neuronal",
+      termino: "Excitabilidad neuronal",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Propiedad neuronal",
+      definicion: "Capacidad de una neurona para responder a estimulos con cambios de voltaje.",
+      importanciaClinica: "Aumenta en convulsiones, dolor cronico y sensibilizacion; disminuye con depresores o anestesia.",
+      relacionados: ["potencial-accion", "umbral-neuronal", "convulsion"]
+    },
+    {
+      id: "conductividad-neuronal",
+      termino: "Conductividad neuronal",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Propiedad neuronal",
+      definicion: "Capacidad de propagar un impulso electrico a lo largo del axon.",
+      importanciaClinica: "Se compromete por desmielinizacion, bloqueo de canales, neuropatia o daño axonal.",
+      relacionados: ["axon", "mielina", "conduccion-saltatoria"]
+    },
+    {
+      id: "transmisibilidad-neuronal",
+      termino: "Transmisibilidad neuronal",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Propiedad neuronal",
+      definicion: "Capacidad de comunicar la señal a otra celula mediante sinapsis.",
+      importanciaClinica: "Es base de reflejos, dolor, aprendizaje, movimiento y accion de farmacos neuroactivos.",
+      relacionados: ["sinapsis-quimica", "neurotransmisor", "hendidura-sinaptica"]
+    },
+
+    // -------------------------------------------------------------------------
+    // SINAPSIS Y NEUROTRANSMISORES
+    // -------------------------------------------------------------------------
+    {
+      id: "sinapsis-quimica",
+      termino: "Sinapsis quimica",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Comunicacion neuronal",
+      definicion: "Union funcional donde una celula libera neurotransmisores que actuan sobre receptores de otra celula.",
+      importanciaClinica: "Es la base de la mayoria de farmacos neuroactivos, analgesicos, sedantes y moduladores autonomicos.",
+      relacionados: ["neurotransmisor", "hendidura-sinaptica", "receptor-ionotropico"]
+    },
+    {
+      id: "sinapsis-electrica",
+      termino: "Sinapsis electrica",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Comunicacion rapida",
+      definicion: "Comunicacion directa entre celulas a traves de uniones que permiten paso de corriente ionica.",
+      importanciaClinica: "Favorece sincronizacion rapida en redes ritmicas y algunos tejidos excitables.",
+      relacionados: ["conexon", "sinapsis-quimica", "conductividad-neuronal"]
+    },
+    {
+      id: "conexon",
+      termino: "Conexon",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Union intercelular",
+      definicion: "Canal proteico de una union gap que conecta el citoplasma de celulas vecinas.",
+      importanciaClinica: "Permite sincronizacion electrica rapida en tejidos y redes especificas.",
+      relacionados: ["sinapsis-electrica", "conductividad-neuronal", "ciclo-cardiaco"]
+    },
+    {
+      id: "hendidura-sinaptica",
+      termino: "Hendidura sinaptica",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Espacio sinaptico",
+      definicion: "Espacio entre terminal presinaptica y membrana postsinaptica donde difunden neurotransmisores.",
+      importanciaClinica: "Es el sitio donde recaptacion, degradacion o bloqueo receptor modifican la señal.",
+      relacionados: ["sinapsis-quimica", "neurotransmisor", "recaptacion"]
+    },
+    {
+      id: "neurotransmisor",
+      termino: "Neurotransmisor",
+      sigla: "NT",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Mensajero quimico",
+      definicion: "Sustancia liberada por una neurona para modificar la actividad de otra celula.",
+      importanciaClinica: "Explica accion de farmacos sobre dolor, conducta, motilidad, tono autonomico y convulsiones.",
+      relacionados: ["acetilcolina", "glutamato", "gaba"]
+    },
+    {
+      id: "receptor-ionotropico",
+      termino: "Receptor ionotropico",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Receptor rapido",
+      definicion: "Receptor que funciona como canal ionico activado por ligando.",
+      importanciaClinica: "Produce respuestas rapidas; ejemplos relevantes incluyen nicotinico, AMPA, NMDA y GABA-A.",
+      relacionados: ["receptor-metabotropico", "peps", "pips"]
+    },
+    {
+      id: "receptor-metabotropico",
+      termino: "Receptor metabotropico",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Receptor modulador",
+      definicion: "Receptor acoplado a proteinas G o segundos mensajeros que modifica funciones celulares de forma mas lenta.",
+      importanciaClinica: "Importante en analgesia, conducta, motilidad, efectos autonomicos y modulacion farmacologica.",
+      relacionados: ["receptor-ionotropico", "receptor-muscarinico", "receptor-opioide"]
+    },
+    {
+      id: "peps",
+      termino: "Potencial excitatorio postsinaptico",
+      sigla: "PEPS",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Señal sinaptica",
+      definicion: "Cambio postsinaptico que acerca la membrana al umbral y aumenta probabilidad de disparo.",
+      importanciaClinica: "La suma excesiva de señales excitadoras favorece hiperexcitabilidad, dolor o convulsiones.",
+      relacionados: ["pips", "sumacion-temporal", "glutamato"]
+    },
+    {
+      id: "pips",
+      termino: "Potencial inhibitorio postsinaptico",
+      sigla: "PIPS",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Señal sinaptica",
+      definicion: "Cambio postsinaptico que aleja la membrana del umbral y reduce probabilidad de disparo.",
+      importanciaClinica: "La perdida de inhibicion puede favorecer convulsiones, espasticidad o dolor amplificado.",
+      relacionados: ["peps", "gaba", "hiperpolarizacion"]
+    },
+    {
+      id: "sumacion-temporal",
+      termino: "Sumacion temporal",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Integracion sinaptica",
+      definicion: "Acumulacion de señales repetidas que llegan rapidamente desde una misma sinapsis.",
+      importanciaClinica: "Puede aumentar disparo neuronal y contribuir a amplificacion de señales dolorosas.",
+      relacionados: ["sumacion-espacial", "peps", "wind-up"]
+    },
+    {
+      id: "sumacion-espacial",
+      termino: "Sumacion espacial",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Integracion sinaptica",
+      definicion: "Acumulacion de señales que llegan desde varias sinapsis al mismo tiempo.",
+      importanciaClinica: "Permite que circuitos integren informacion de multiples entradas sensitivas o motoras.",
+      relacionados: ["sumacion-temporal", "peps", "pips"]
+    },
+    {
+      id: "recaptacion",
+      termino: "Recaptacion",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Inactivacion sinaptica",
+      definicion: "Retiro de neurotransmisores de la hendidura sinaptica hacia la celula presinaptica o glia.",
+      importanciaClinica: "Diana de farmacos que modifican serotonina, noradrenalina, dopamina o GABA.",
+      relacionados: ["hendidura-sinaptica", "serotonina", "noradrenalina"]
+    },
+    {
+      id: "degradacion-enzimatica-nt",
+      termino: "Degradacion enzimatica del neurotransmisor",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Inactivacion sinaptica",
+      definicion: "Ruptura quimica del neurotransmisor por enzimas para terminar la señal.",
+      importanciaClinica: "Explica efectos de inhibidores de colinesterasa y toxicos que alteran sinapsis colinergicas.",
+      relacionados: ["acetilcolina", "hendidura-sinaptica", "sinapsis-quimica"]
+    },
+    {
+      id: "acetilcolina",
+      termino: "Acetilcolina",
+      sigla: "ACh",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Neurotransmisor",
+      definicion: "Neurotransmisor clave en union neuromuscular, parasimpatico y neuronas preganglionares autonomicas.",
+      importanciaClinica: "Relevante en motilidad, secreciones, bradicardia, intoxicaciones colinergicas y bloqueo neuromuscular.",
+      relacionados: ["receptor-nicotinico", "receptor-muscarinico", "parasimpatico"]
+    },
+    {
+      id: "receptor-nicotinico",
+      termino: "Receptor nicotinico",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Receptor colinergico",
+      definicion: "Receptor ionotropico activado por acetilcolina en placa neuromuscular y ganglios autonomicos.",
+      importanciaClinica: "Diana de bloqueantes neuromusculares y toxicos colinergicos.",
+      relacionados: ["acetilcolina", "receptor-ionotropico", "union-neuromuscular"]
+    },
+    {
+      id: "receptor-muscarinico",
+      termino: "Receptor muscarinico",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Receptor colinergico",
+      definicion: "Receptor metabotropico activado por acetilcolina en organos efectores parasimpaticos.",
+      importanciaClinica: "Relaciona salivacion, bradicardia, miosis, motilidad intestinal y efectos de atropina.",
+      relacionados: ["acetilcolina", "parasimpatico", "receptor-metabotropico"]
+    },
+    {
+      id: "noradrenalina",
+      termino: "Noradrenalina",
+      sigla: "NA",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Neurotransmisor simpatico",
+      definicion: "Catecolamina liberada por muchas neuronas postganglionares simpaticas.",
+      importanciaClinica: "Aumenta tono vascular, alerta y respuestas de estres; diana de farmacos adrenergicos.",
+      relacionados: ["simpatico", "receptor-adrenergico", "catecolaminas"]
+    },
+    {
+      id: "receptor-adrenergico",
+      termino: "Receptor adrenergico",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Receptor autonomico",
+      definicion: "Receptor sensible a catecolaminas como noradrenalina y adrenalina.",
+      importanciaClinica: "Participa en frecuencia cardiaca, vasoconstriccion, broncodilatacion y respuesta a shock.",
+      relacionados: ["noradrenalina", "catecolaminas", "simpatico"]
+    },
+    {
+      id: "glutamato",
+      termino: "Glutamato",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Neurotransmisor excitador",
+      definicion: "Principal neurotransmisor excitador del sistema nervioso central.",
+      importanciaClinica: "Participa en aprendizaje, plasticidad, dolor, excitotoxicidad y activacion NMDA.",
+      relacionados: ["receptor-nmda", "peps", "wind-up"]
+    },
+    {
+      id: "receptor-nmda",
+      termino: "Receptor NMDA",
+      sistema: "Dolor/Nocicepcion",
+      sistemaKey: "dolor-nocicepcion",
+      tipo: "Receptor glutamatergico",
+      definicion: "Receptor ionotropico del glutamato permeable a calcio y relacionado con plasticidad sinaptica.",
+      importanciaClinica: "Su activacion repetida contribuye a wind-up y sensibilizacion central; ketamina lo antagoniza.",
+      relacionados: ["glutamato", "wind-up", "sensibilizacion-central"]
+    },
+    {
+      id: "gaba",
+      termino: "GABA",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Neurotransmisor inhibidor",
+      definicion: "Principal neurotransmisor inhibidor del sistema nervioso central.",
+      importanciaClinica: "Su funcion reduce excitabilidad; muchos sedantes, anticonvulsivos y anestesicos potencian inhibicion GABAergica.",
+      relacionados: ["pips", "hiperpolarizacion", "convulsion"]
+    },
+    {
+      id: "glicina",
+      termino: "Glicina",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Neurotransmisor inhibidor",
+      definicion: "Neurotransmisor inhibidor importante en medula espinal y tronco encefalico.",
+      importanciaClinica: "Participa en reflejos y tono motor; toxicos que bloquean su accion pueden causar rigidez o convulsiones.",
+      relacionados: ["pips", "arco-reflejo", "espasticidad"]
+    },
+    {
+      id: "serotonina",
+      termino: "Serotonina",
+      sigla: "5-HT",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Neurotransmisor/modulador",
+      definicion: "Monoamina que modula animo, sueño, dolor, apetito y motilidad gastrointestinal.",
+      importanciaClinica: "Conecta neurofisiologia con conducta, dolor, farmacos serotoninergicos y eje intestino-cerebro.",
+      relacionados: ["serotonina-intestinal", "recaptacion", "eje-intestino-cerebro"]
+    },
+    {
+      id: "dopamina",
+      termino: "Dopamina",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Neurotransmisor/modulador",
+      definicion: "Catecolamina que participa en movimiento, recompensa, conducta y control neuroendocrino.",
+      importanciaClinica: "Relacionada con signos extrapiramidales, vomito, conducta y farmacos dopaminergicos/antidopaminergicos.",
+      relacionados: ["catecolaminas", "emesis", "sistema-endocrino"]
+    },
+    {
+      id: "sustancia-p",
+      termino: "Sustancia P",
+      sistema: "Dolor/Nocicepcion",
+      sistemaKey: "dolor-nocicepcion",
+      tipo: "Neuropeptido",
+      definicion: "Neuropeptido que participa en transmision nociceptiva e inflamacion neurogenica.",
+      importanciaClinica: "Relevante en dolor, vomito y accion de antagonistas NK1 como antiemeticos.",
+      relacionados: ["nocicepcion", "emesis", "neuroinflamacion"]
+    },
+    {
+      id: "opioides-endogenos",
+      termino: "Opioides endogenos",
+      sistema: "Dolor/Nocicepcion",
+      sistemaKey: "dolor-nocicepcion",
+      tipo: "Neuromoduladores analgesicos",
+      definicion: "Peptidos producidos por el organismo que activan receptores opioides y reducen transmision dolorosa.",
+      importanciaClinica: "Explican parte de la analgesia endogena y la accion farmacologica de opioides.",
+      relacionados: ["receptor-opioide", "modulacion-nociceptiva", "analgesia-multimodal"]
+    },
+    {
+      id: "receptor-opioide",
+      termino: "Receptor opioide",
+      sistema: "Dolor/Nocicepcion",
+      sistemaKey: "dolor-nocicepcion",
+      tipo: "Receptor analgesico",
+      definicion: "Receptor metabotropico activado por opioides endogenos o farmacos opioides.",
+      importanciaClinica: "Diana central y periferica para analgesia, sedacion y efectos secundarios gastrointestinales/respiratorios.",
+      relacionados: ["opioides-endogenos", "receptor-metabotropico", "modulacion-nociceptiva"]
+    },
+
+    // -------------------------------------------------------------------------
+    // REFLEJOS, SNA Y ESTRES
+    // -------------------------------------------------------------------------
+    {
+      id: "arco-reflejo",
+      termino: "Arco reflejo",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Circuito neurologico",
+      definicion: "Circuito que conecta receptor, via aferente, centro integrador, via eferente y efector para producir respuesta automatica.",
+      importanciaClinica: "Es una herramienta de localizacion neurologica en examen fisico veterinario.",
+      relacionados: ["receptor-sensorial", "neurona-aferente", "neurona-eferente"]
+    },
+    {
+      id: "receptor-sensorial",
+      termino: "Receptor sensorial",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Detector de estimulo",
+      definicion: "Estructura que detecta estimulos mecanicos, termicos, quimicos o dolorosos.",
+      importanciaClinica: "Permite evaluar sensibilidad, reflejos, dolor superficial/profundo y funcion aferente.",
+      relacionados: ["arco-reflejo", "nociceptor", "neurona-aferente"]
+    },
+    {
+      id: "neurona-aferente",
+      termino: "Neurona aferente",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Via sensitiva",
+      definicion: "Neurona que conduce informacion desde receptores perifericos hacia el sistema nervioso central.",
+      importanciaClinica: "Su lesion altera sensibilidad, reflejos y percepcion del dolor.",
+      relacionados: ["arco-reflejo", "receptor-sensorial", "centro-integrador"]
+    },
+    {
+      id: "centro-integrador",
+      termino: "Centro integrador",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Procesamiento neural",
+      definicion: "Region del SNC donde se procesa la informacion y se genera una respuesta.",
+      importanciaClinica: "Ayuda a diferenciar lesiones medulares, troncoencefalicas o corticales.",
+      relacionados: ["sistema-nervioso-central", "arco-reflejo", "interneurona"]
+    },
+    {
+      id: "interneurona",
+      termino: "Interneurona",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Neurona de integracion",
+      definicion: "Neurona ubicada entre neuronas aferentes y eferentes que modula circuitos locales.",
+      importanciaClinica: "Permite reflejos polisinapticos, coordinacion y respuestas mas elaboradas.",
+      relacionados: ["reflejo-polisinaptico", "centro-integrador", "arco-reflejo"]
+    },
+    {
+      id: "neurona-eferente",
+      termino: "Neurona eferente",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Via motora",
+      definicion: "Neurona que conduce respuestas desde el SNC hacia musculo o glandula.",
+      importanciaClinica: "Su lesion causa deficit motor, hiporreflexia, atrofia neurogena o flacidez.",
+      relacionados: ["arco-reflejo", "organo-efector", "neurona-motora-inferior"]
+    },
+    {
+      id: "organo-efector",
+      termino: "Organo efector",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Destino de respuesta",
+      definicion: "Musculo o glandula que ejecuta la respuesta final de un reflejo o via nerviosa.",
+      importanciaClinica: "Permite interpretar respuesta motora, secreciones, tono muscular y funcion autonomica.",
+      relacionados: ["neurona-eferente", "arco-reflejo", "sistema-nervioso-autonomo"]
+    },
+    {
+      id: "reflejo-monosinaptico",
+      termino: "Reflejo monosinaptico",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Reflejo simple",
+      definicion: "Reflejo con una sola sinapsis directa entre neurona aferente y eferente.",
+      importanciaClinica: "El reflejo patelar es ejemplo clasico para evaluar segmentos medulares y nervios perifericos.",
+      relacionados: ["reflejo-patelar", "arco-reflejo", "neurona-eferente"]
+    },
+    {
+      id: "reflejo-polisinaptico",
+      termino: "Reflejo polisinaptico",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Reflejo complejo",
+      definicion: "Reflejo que utiliza una o mas interneuronas para generar respuestas coordinadas.",
+      importanciaClinica: "Permite evaluar circuitos protectores como reflejo flexor y respuestas perineales.",
+      relacionados: ["interneurona", "reflejo-flexor", "reflejo-perineal"]
+    },
+    {
+      id: "reflejo-patelar",
+      termino: "Reflejo patelar",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Reflejo espinal",
+      definicion: "Extension refleja de la rodilla al percutir el ligamento patelar.",
+      importanciaClinica: "Ayuda a localizar lesiones femorales, segmentos lumbares o vias motoras superiores/inferiores.",
+      relacionados: ["reflejo-monosinaptico", "hiperreflexia", "hiporreflexia"]
+    },
+    {
+      id: "reflejo-flexor",
+      termino: "Reflejo flexor",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Reflejo protector",
+      definicion: "Retirada refleja de una extremidad ante estimulo nocivo o molesto.",
+      importanciaClinica: "Evalua vias sensitivas, motoras y segmentos medulares de la extremidad.",
+      relacionados: ["reflejo-polisinaptico", "nociceptor", "arco-reflejo"]
+    },
+    {
+      id: "reflejo-perineal",
+      termino: "Reflejo perineal",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Reflejo espinal",
+      definicion: "Contraccion anal y respuesta de cola/perineo ante estimulo perineal.",
+      importanciaClinica: "Ayuda a evaluar segmentos sacros, nervio pudendo y funcion neurologica caudal.",
+      relacionados: ["reflejo-polisinaptico", "arco-reflejo", "neurona-eferente"]
+    },
+    {
+      id: "neurona-motora-superior",
+      termino: "Neurona motora superior",
+      sigla: "NMS",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Via motora",
+      definicion: "Neurona o via que desciende desde centros superiores para modular neuronas motoras inferiores.",
+      importanciaClinica: "Su lesion suele producir hiperreflexia, aumento de tono y paresia espastica caudal a la lesion.",
+      relacionados: ["hiperreflexia", "espasticidad", "neurona-motora-inferior"]
+    },
+    {
+      id: "neurona-motora-inferior",
+      termino: "Neurona motora inferior",
+      sigla: "NMI",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Via motora",
+      definicion: "Neurona que conecta directamente con el musculo esqueletico.",
+      importanciaClinica: "Su lesion produce hiporreflexia, flacidez, atrofia rapida y debilidad marcada.",
+      relacionados: ["hiporreflexia", "flacidez", "neurona-motora-superior"]
+    },
+    {
+      id: "hiperreflexia",
+      termino: "Hiperreflexia",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Hallazgo neurologico",
+      definicion: "Respuesta refleja aumentada frente a un estimulo.",
+      importanciaClinica: "Sugiere lesion de neurona motora superior o perdida de control inhibitorio descendente.",
+      relacionados: ["neurona-motora-superior", "reflejo-patelar", "espasticidad"]
+    },
+    {
+      id: "hiporreflexia",
+      termino: "Hiporreflexia",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Hallazgo neurologico",
+      definicion: "Respuesta refleja reducida o ausente.",
+      importanciaClinica: "Sugiere lesion de neurona motora inferior, nervio periferico, raiz o union neuromuscular.",
+      relacionados: ["neurona-motora-inferior", "flacidez", "reflejo-patelar"]
+    },
+    {
+      id: "espasticidad",
+      termino: "Espasticidad",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Alteracion del tono",
+      definicion: "Aumento del tono muscular asociado a lesion de vias motoras superiores.",
+      importanciaClinica: "Acompaña hiperreflexia y paresia espastica en lesiones centrales.",
+      relacionados: ["neurona-motora-superior", "hiperreflexia", "paresia"]
+    },
+    {
+      id: "flacidez",
+      termino: "Flacidez",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Alteracion del tono",
+      definicion: "Disminucion del tono muscular por falla de via motora inferior o unidad neuromuscular.",
+      importanciaClinica: "Se observa junto a hiporreflexia y atrofia neurogena.",
+      relacionados: ["neurona-motora-inferior", "hiporreflexia", "paresia"]
+    },
+    {
+      id: "simpatico",
+      termino: "Simpatico",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Rama autonomica",
+      definicion: "Rama del SNA asociada a respuestas de alerta, movilizacion energetica y adaptacion al estres.",
+      importanciaClinica: "Predomina en dolor, miedo, shock, estres calórico y situaciones de emergencia.",
+      relacionados: ["noradrenalina", "catecolaminas", "eje-sam"]
+    },
+    {
+      id: "parasimpatico",
+      termino: "Parasimpatico",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Rama autonomica",
+      definicion: "Rama del SNA asociada a reposo, digestion, secreciones y conservacion energetica.",
+      importanciaClinica: "Modula motilidad digestiva, tono vagal, bradicardia, salivacion y respuesta visceral.",
+      relacionados: ["acetilcolina", "nervio-vago", "tono-vagal"]
+    },
+    {
+      id: "eje-sam",
+      termino: "Eje simpatico-adreno-medular",
+      sigla: "SAM",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Respuesta rapida al estres",
+      definicion: "Sistema de activacion simpatica y liberacion de catecolaminas ante estres agudo.",
+      importanciaClinica: "Explica taquicardia, midriasis, hiperglucemia, redistribucion sanguinea y alerta.",
+      relacionados: ["simpatico", "catecolaminas", "midriasis"]
+    },
+    {
+      id: "eje-hha",
+      termino: "Eje hipotalamo-hipofisis-adrenal",
+      sigla: "HHA",
+      sistema: "Endocrino/Metabolico",
+      sistemaKey: "endocrino-metabolico",
+      tipo: "Respuesta sostenida al estres",
+      definicion: "Eje endocrino que activa liberacion de cortisol ante estres fisico o psicologico.",
+      importanciaClinica: "Relaciona estres cronico con inmunidad, metabolismo, reproduccion, conducta y productividad.",
+      relacionados: ["cortisol", "estres-cronico", "sistema-endocrino"]
+    },
+    {
+      id: "cortisol",
+      termino: "Cortisol",
+      sistema: "Endocrino/Metabolico",
+      sistemaKey: "endocrino-metabolico",
+      tipo: "Glucocorticoide",
+      definicion: "Hormona adrenal relacionada con metabolismo, inflamacion y respuesta sostenida al estres.",
+      importanciaClinica: "Clave en estres, Cushing, Addison, inmunosupresion y adaptacion metabolica.",
+      relacionados: ["eje-hha", "estres-cronico", "hiperglucemia"]
+    },
+    {
+      id: "catecolaminas",
+      termino: "Catecolaminas",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Mediadores de estres",
+      definicion: "Grupo de aminas como adrenalina, noradrenalina y dopamina.",
+      importanciaClinica: "Participan en shock, respuesta de estres, frecuencia cardiaca, tono vascular y metabolismo.",
+      relacionados: ["noradrenalina", "eje-sam", "taquicardia"]
+    },
+    {
+      id: "estres-agudo",
+      termino: "Estres agudo",
+      sistema: "Clinico general",
+      sistemaKey: "clinico-general",
+      tipo: "Respuesta adaptativa",
+      definicion: "Respuesta rapida ante amenaza o demanda intensa de corta duracion.",
+      importanciaClinica: "Puede elevar frecuencia cardiaca, respiratoria, glucosa y activar conducta de escape o defensa.",
+      relacionados: ["eje-sam", "simpatico", "catecolaminas"]
+    },
+    {
+      id: "estres-cronico",
+      termino: "Estres cronico",
+      sistema: "Clinico general",
+      sistemaKey: "clinico-general",
+      tipo: "Respuesta maladaptativa",
+      definicion: "Activacion prolongada de sistemas de estres con costos fisiologicos acumulados.",
+      importanciaClinica: "Afecta inmunidad, reproduccion, crecimiento, conducta, motilidad digestiva y productividad.",
+      relacionados: ["eje-hha", "cortisol", "alostasis"]
+    },
+    {
+      id: "alostasis",
+      termino: "Alostasis",
+      sistema: "Homeostasis",
+      sistemaKey: "homeostasis",
+      tipo: "Adaptacion fisiologica",
+      definicion: "Ajuste activo de variables fisiologicas para responder a demandas cambiantes.",
+      importanciaClinica: "Cuando la carga alostatica es alta, el estres deja de ser adaptativo y favorece enfermedad.",
+      relacionados: ["homeostasis", "estres-cronico", "cortisol"]
+    },
+    {
+      id: "midriasis",
+      termino: "Midriasis",
+      sistema: "Neurologico",
+      sistemaKey: "nervioso-neuroendocrino",
+      tipo: "Signo autonomico",
+      definicion: "Dilatacion de la pupila.",
+      importanciaClinica: "Puede aparecer por activacion simpatica, dolor, miedo, farmacos, lesiones neurologicas o hipoxia.",
+      relacionados: ["simpatico", "eje-sam", "dolor"]
+    },
+
+    // -------------------------------------------------------------------------
+    // DOLOR Y NOCICEPCION
+    // -------------------------------------------------------------------------
+    {
+      id: "dolor",
+      termino: "Dolor",
+      sistema: "Dolor/Nocicepcion",
+      sistemaKey: "dolor-nocicepcion",
+      tipo: "Experiencia sensorial y emocional",
+      definicion: "Experiencia desagradable asociada a daño real o potencial, integrada por componentes sensoriales, autonomicos y emocionales.",
+      importanciaClinica: "Debe evaluarse por conducta, postura, respuesta a palpacion, signos autonomicos y contexto de especie.",
+      relacionados: ["nocicepcion", "dolor-agudo", "dolor-cronico"]
+    },
+    {
+      id: "nocicepcion",
+      termino: "Nocicepcion",
+      sistema: "Dolor/Nocicepcion",
+      sistemaKey: "dolor-nocicepcion",
+      tipo: "Procesamiento de estimulos nocivos",
+      definicion: "Proceso neural que detecta, transmite y modula estimulos potencialmente dañinos.",
+      importanciaClinica: "Permite diseñar analgesia racional segun la etapa afectada.",
+      relacionados: ["nociceptor", "transduccion-nociceptiva", "transmision-nociceptiva"]
+    },
+    {
+      id: "nociceptor",
+      termino: "Nociceptor",
+      sistema: "Dolor/Nocicepcion",
+      sistemaKey: "dolor-nocicepcion",
+      tipo: "Receptor de daño",
+      definicion: "Receptor sensorial especializado en detectar estimulos mecanicos, termicos o quimicos nocivos.",
+      importanciaClinica: "Su sensibilizacion reduce umbral y aumenta dolor inflamatorio.",
+      relacionados: ["transduccion-nociceptiva", "sensibilizacion-periferica", "receptor-sensorial"]
+    },
+    {
+      id: "transduccion-nociceptiva",
+      termino: "Transduccion nociceptiva",
+      sistema: "Dolor/Nocicepcion",
+      sistemaKey: "dolor-nocicepcion",
+      tipo: "Etapa de nocicepcion",
+      definicion: "Conversion de un estimulo nocivo en una señal electrica en el nociceptor.",
+      importanciaClinica: "Diana de AINEs y estrategias que reducen inflamacion periferica.",
+      relacionados: ["nociceptor", "sensibilizacion-periferica", "analgesia-multimodal"]
+    },
+    {
+      id: "transmision-nociceptiva",
+      termino: "Transmision nociceptiva",
+      sistema: "Dolor/Nocicepcion",
+      sistemaKey: "dolor-nocicepcion",
+      tipo: "Etapa de nocicepcion",
+      definicion: "Conduccion de la señal dolorosa desde periferia hacia medula y centros superiores.",
+      importanciaClinica: "Diana de anestesicos locales que bloquean canales de sodio.",
+      relacionados: ["fibra-a-delta", "fibra-c", "anestesia-local"]
+    },
+    {
+      id: "modulacion-nociceptiva",
+      termino: "Modulacion nociceptiva",
+      sistema: "Dolor/Nocicepcion",
+      sistemaKey: "dolor-nocicepcion",
+      tipo: "Etapa de nocicepcion",
+      definicion: "Ajuste de la señal dolorosa por circuitos medulares y vias descendentes que inhiben o facilitan dolor.",
+      importanciaClinica: "Diana de opioides, ketamina y analgesia multimodal.",
+      relacionados: ["opioides-endogenos", "receptor-nmda", "teoria-compuerta"]
+    },
+    {
+      id: "percepcion-dolor",
+      termino: "Percepcion del dolor",
+      sistema: "Dolor/Nocicepcion",
+      sistemaKey: "dolor-nocicepcion",
+      tipo: "Etapa cortical",
+      definicion: "Integracion consciente de la experiencia dolorosa en el sistema nervioso central.",
+      importanciaClinica: "Se modifica con anestesia general, sedacion profunda y estado emocional del paciente.",
+      relacionados: ["dolor", "analgesia-multimodal", "sistema-nervioso-central"]
+    },
+    {
+      id: "fibra-a-delta",
+      termino: "Fibra A-delta",
+      sinonimos: ["Fibra Aδ"],
+      sistema: "Dolor/Nocicepcion",
+      sistemaKey: "dolor-nocicepcion",
+      tipo: "Fibra nociceptiva",
+      definicion: "Fibra mielinica fina que conduce dolor rapido, agudo y relativamente localizado.",
+      importanciaClinica: "Explica la primera respuesta dolorosa ante un estimulo nocivo.",
+      relacionados: ["transmision-nociceptiva", "mielina", "dolor-agudo"]
+    },
+    {
+      id: "fibra-c",
+      termino: "Fibra C",
+      sistema: "Dolor/Nocicepcion",
+      sistemaKey: "dolor-nocicepcion",
+      tipo: "Fibra nociceptiva",
+      definicion: "Fibra amielinica que conduce dolor lento, sordo, difuso y persistente.",
+      importanciaClinica: "Importante en dolor inflamatorio, visceral y cronico.",
+      relacionados: ["transmision-nociceptiva", "dolor-visceral", "dolor-cronico"]
+    },
+    {
+      id: "dolor-somatico",
+      termino: "Dolor somatico",
+      sistema: "Dolor/Nocicepcion",
+      sistemaKey: "dolor-nocicepcion",
+      tipo: "Tipo de dolor",
+      definicion: "Dolor originado en piel, musculo, articulaciones o estructuras de la pared corporal.",
+      importanciaClinica: "Suele ser mejor localizado y proporcional al estimulo; responde a analgesia antiinflamatoria y opioide segun caso.",
+      relacionados: ["dolor", "fibra-a-delta", "nociceptor"]
+    },
+    {
+      id: "dolor-visceral",
+      termino: "Dolor visceral",
+      sistema: "Dolor/Nocicepcion",
+      sistemaKey: "dolor-nocicepcion",
+      tipo: "Tipo de dolor",
+      definicion: "Dolor originado en organos internos, frecuentemente difuso y mal localizado.",
+      importanciaClinica: "Puede acompañarse de signos autonomicos como taquicardia, nausea, sudoracion o cambios de conducta.",
+      relacionados: ["dolor-referido", "fibra-c", "simpatico"]
+    },
+    {
+      id: "dolor-neuropatico",
+      termino: "Dolor neuropatico",
+      sistema: "Dolor/Nocicepcion",
+      sistemaKey: "dolor-nocicepcion",
+      tipo: "Tipo de dolor",
+      definicion: "Dolor causado por lesion o disfuncion del sistema nervioso.",
+      importanciaClinica: "Puede persistir sin lesion tisular activa y requerir analgesia dirigida a modulacion neural.",
+      relacionados: ["sensibilizacion-central", "dolor-cronico", "alodinia"]
+    },
+    {
+      id: "dolor-agudo",
+      termino: "Dolor agudo",
+      sistema: "Dolor/Nocicepcion",
+      sistemaKey: "dolor-nocicepcion",
+      tipo: "Curso temporal",
+      definicion: "Dolor reciente con funcion protectora y relacionado con lesion o estimulo actual.",
+      importanciaClinica: "Debe tratarse temprano para evitar sensibilizacion y dolor cronico.",
+      relacionados: ["dolor", "nocicepcion", "analgesia-preventiva"]
+    },
+    {
+      id: "dolor-cronico",
+      termino: "Dolor cronico",
+      sistema: "Dolor/Nocicepcion",
+      sistemaKey: "dolor-nocicepcion",
+      tipo: "Curso temporal",
+      definicion: "Dolor persistente que puede mantenerse por cambios maladaptativos del sistema nervioso.",
+      importanciaClinica: "Puede convertirse en enfermedad propia con sensibilizacion central, neuroinflamacion y cambios conductuales.",
+      relacionados: ["neuroinflamacion", "sensibilizacion-central", "dolor-neuropatico"]
+    },
+    {
+      id: "dolor-referido",
+      termino: "Dolor referido",
+      sistema: "Dolor/Nocicepcion",
+      sistemaKey: "dolor-nocicepcion",
+      tipo: "Patron doloroso",
+      definicion: "Dolor percibido en una zona distinta al sitio real de origen.",
+      importanciaClinica: "Ocurre por convergencia de aferentes viscerales y somaticas en circuitos medulares.",
+      relacionados: ["dolor-visceral", "asta-dorsal", "convergencia-viscerosomatica"]
+    },
+    {
+      id: "asta-dorsal",
+      termino: "Asta dorsal",
+      sistema: "Dolor/Nocicepcion",
+      sistemaKey: "dolor-nocicepcion",
+      tipo: "Region medular",
+      definicion: "Zona de la medula espinal donde ingresan y se procesan muchas señales sensitivas y nociceptivas.",
+      importanciaClinica: "Sitio clave de modulacion, wind-up y sensibilizacion central.",
+      relacionados: ["modulacion-nociceptiva", "wind-up", "dolor-referido"]
+    },
+    {
+      id: "convergencia-viscerosomatica",
+      termino: "Convergencia viscerosomatica",
+      sistema: "Dolor/Nocicepcion",
+      sistemaKey: "dolor-nocicepcion",
+      tipo: "Mecanismo de dolor referido",
+      definicion: "Convergencia de aferentes viscerales y somaticas sobre neuronas medulares compartidas.",
+      importanciaClinica: "Explica por que el dolor visceral puede percibirse como dolor corporal mal localizado.",
+      relacionados: ["dolor-referido", "dolor-visceral", "asta-dorsal"]
+    },
+    {
+      id: "sensibilizacion-periferica",
+      termino: "Sensibilizacion periferica",
+      sistema: "Dolor/Nocicepcion",
+      sistemaKey: "dolor-nocicepcion",
+      tipo: "Amplificacion periferica",
+      definicion: "Reduccion del umbral de nociceptores por mediadores inflamatorios locales.",
+      importanciaClinica: "Produce dolor aumentado en zonas lesionadas y es diana de AINEs.",
+      relacionados: ["nociceptor", "hiperalgesia", "transduccion-nociceptiva"]
+    },
+    {
+      id: "sensibilizacion-central",
+      termino: "Sensibilizacion central",
+      sistema: "Dolor/Nocicepcion",
+      sistemaKey: "dolor-nocicepcion",
+      tipo: "Amplificacion central",
+      definicion: "Aumento de excitabilidad de circuitos medulares o centrales por estimulacion repetida o intensa.",
+      importanciaClinica: "Puede causar hiperalgesia, alodinia y dolor persistente despues de la lesion inicial.",
+      relacionados: ["wind-up", "receptor-nmda", "dolor-cronico"]
+    },
+    {
+      id: "wind-up",
+      termino: "Wind-up",
+      sistema: "Dolor/Nocicepcion",
+      sistemaKey: "dolor-nocicepcion",
+      tipo: "Potenciacion dolorosa",
+      definicion: "Aumento progresivo de respuesta neuronal ante estimulos nociceptivos repetidos.",
+      importanciaClinica: "Relaciona receptor NMDA, entrada de calcio y dolor cronico; ketamina puede ayudar a bloquearlo.",
+      relacionados: ["receptor-nmda", "sensibilizacion-central", "sumacion-temporal"]
+    },
+    {
+      id: "hiperalgesia",
+      termino: "Hiperalgesia",
+      sistema: "Dolor/Nocicepcion",
+      sistemaKey: "dolor-nocicepcion",
+      tipo: "Dolor aumentado",
+      definicion: "Respuesta dolorosa exagerada ante un estimulo que normalmente seria doloroso.",
+      importanciaClinica: "Puede ser periferica o secundaria a sensibilizacion central.",
+      relacionados: ["sensibilizacion-periferica", "sensibilizacion-central", "alodinia"]
+    },
+    {
+      id: "alodinia",
+      termino: "Alodinia",
+      sistema: "Dolor/Nocicepcion",
+      sistemaKey: "dolor-nocicepcion",
+      tipo: "Dolor anormal",
+      definicion: "Dolor provocado por un estimulo que normalmente no deberia doler.",
+      importanciaClinica: "Sugiere sensibilizacion central o dolor neuropatico.",
+      relacionados: ["hiperalgesia", "dolor-neuropatico", "sensibilizacion-central"]
+    },
+    {
+      id: "neuroinflamacion",
+      termino: "Neuroinflamacion",
+      sistema: "Dolor/Nocicepcion",
+      sistemaKey: "dolor-nocicepcion",
+      tipo: "Inflamacion neural",
+      definicion: "Activacion inflamatoria de celulas y mediadores dentro del sistema nervioso.",
+      importanciaClinica: "Participa en dolor cronico, activacion glial y cambios persistentes de excitabilidad.",
+      relacionados: ["microglia", "astrocito", "dolor-cronico"]
+    },
+    {
+      id: "teoria-compuerta",
+      termino: "Teoria de la compuerta",
+      sistema: "Dolor/Nocicepcion",
+      sistemaKey: "dolor-nocicepcion",
+      tipo: "Modelo de modulacion",
+      definicion: "Modelo donde señales tactiles o circuitos inhibitorios reducen transmision dolorosa en medula.",
+      importanciaClinica: "Explica por que frotar, presion, fisioterapia o estimulacion pueden disminuir dolor.",
+      relacionados: ["modulacion-nociceptiva", "asta-dorsal", "pips"]
+    },
+    {
+      id: "anestesia-local",
+      termino: "Anestesia local",
+      sistema: "Dolor/Nocicepcion",
+      sistemaKey: "dolor-nocicepcion",
+      tipo: "Bloqueo de transmision",
+      definicion: "Bloqueo reversible de conduccion nerviosa en una zona especifica.",
+      importanciaClinica: "Reduce transmision nociceptiva al bloquear canales de sodio dependientes de voltaje.",
+      relacionados: ["canal-sodio-voltaje", "transmision-nociceptiva", "analgesia-multimodal"]
+    },
+    {
+      id: "analgesia-multimodal",
+      termino: "Analgesia multimodal",
+      sistema: "Dolor/Nocicepcion",
+      sistemaKey: "dolor-nocicepcion",
+      tipo: "Estrategia analgesica",
+      definicion: "Uso combinado de tecnicas o farmacos que actuan en diferentes etapas del dolor.",
+      importanciaClinica: "Permite mejor control del dolor y reduce dosis o efectos adversos de un solo farmaco.",
+      relacionados: ["transduccion-nociceptiva", "modulacion-nociceptiva", "percepcion-dolor"]
+    },
+    {
+      id: "analgesia-preventiva",
+      termino: "Analgesia preventiva",
+      sistema: "Dolor/Nocicepcion",
+      sistemaKey: "dolor-nocicepcion",
+      tipo: "Estrategia analgesica",
+      definicion: "Analgesia aplicada antes o durante el estimulo doloroso para reducir sensibilizacion posterior.",
+      importanciaClinica: "Importante en cirugia, trauma y manejo temprano de dolor agudo.",
+      relacionados: ["dolor-agudo", "sensibilizacion-central", "analgesia-multimodal"]
+    },
+
+    // -------------------------------------------------------------------------
+    // SISTEMA NERVIOSO ENTERICO Y EJE INTESTINO-CEREBRO
+    // -------------------------------------------------------------------------
+    {
+      id: "sistema-nervioso-enterico",
+      termino: "Sistema nervioso enterico",
+      sigla: "SNE",
+      sistema: "Enterico",
+      sistemaKey: "enterico",
+      tipo: "Red neural digestiva",
+      definicion: "Red de neuronas del tubo digestivo capaz de coordinar motilidad, secrecion y flujo local.",
+      importanciaClinica: "Explica autonomia intestinal, ileo por estres, diarrea funcional y conexion digestivo-neural.",
+      relacionados: ["plexo-mienterico", "plexo-submucoso", "eje-intestino-cerebro"]
+    },
+    {
+      id: "plexo-mienterico",
+      termino: "Plexo mienterico",
+      sinonimos: ["Plexo de Auerbach"],
+      sistema: "Enterico",
+      sistemaKey: "enterico",
+      tipo: "Plexo enterico",
+      definicion: "Red neuronal entre capas musculares del intestino que regula principalmente la motilidad.",
+      importanciaClinica: "Alteraciones se reflejan en ileo, hipomotilidad, espasmos o dismotilidad.",
+      relacionados: ["sistema-nervioso-enterico", "peristalsis-enterica", "motilidad-intestinal"]
+    },
+    {
+      id: "plexo-submucoso",
+      termino: "Plexo submucoso",
+      sinonimos: ["Plexo de Meissner"],
+      sistema: "Enterico",
+      sistemaKey: "enterico",
+      tipo: "Plexo enterico",
+      definicion: "Red neuronal de la submucosa que regula secrecion, flujo sanguineo local e interaccion mucosa.",
+      importanciaClinica: "Participa en secrecion intestinal, diarrea y respuesta mucosa a irritantes o inflamacion.",
+      relacionados: ["sistema-nervioso-enterico", "secrecion-intestinal", "galt"]
+    },
+    {
+      id: "peristalsis-enterica",
+      termino: "Peristalsis enterica",
+      sistema: "Enterico",
+      sistemaKey: "enterico",
+      tipo: "Motilidad digestiva",
+      definicion: "Patron coordinado de contraccion y relajacion que desplaza contenido intestinal.",
+      importanciaClinica: "Su falla contribuye a ileo, estreñimiento, distension o trastornos de transito.",
+      relacionados: ["plexo-mienterico", "motilidad-intestinal", "peristalsis"]
+    },
+    {
+      id: "segmentacion-intestinal",
+      termino: "Segmentacion intestinal",
+      sistema: "Enterico",
+      sistemaKey: "enterico",
+      tipo: "Motilidad digestiva",
+      definicion: "Contracciones locales que mezclan contenido intestinal y favorecen digestion/absorcion.",
+      importanciaClinica: "Su alteracion puede afectar mezcla, absorcion y transito intestinal.",
+      relacionados: ["plexo-mienterico", "motilidad-intestinal", "digestion-quimica"]
+    },
+    {
+      id: "motilidad-intestinal",
+      termino: "Motilidad intestinal",
+      sistema: "Enterico",
+      sistemaKey: "enterico",
+      tipo: "Funcion digestiva",
+      definicion: "Conjunto de movimientos que mezclan, retienen o propulsan contenido intestinal.",
+      importanciaClinica: "Se modifica por estres, dolor, inflamacion, farmacos, vago y simpatico.",
+      relacionados: ["peristalsis-enterica", "segmentacion-intestinal", "tono-vagal"]
+    },
+    {
+      id: "ileo",
+      termino: "Ileo",
+      sistema: "Enterico",
+      sistemaKey: "enterico",
+      tipo: "Trastorno de motilidad",
+      definicion: "Disminucion o ausencia funcional de motilidad intestinal sin necesariamente existir obstruccion mecanica.",
+      importanciaClinica: "Puede aparecer por dolor, cirugia, inflamacion, shock, hipocalemia o activacion simpatica.",
+      relacionados: ["motilidad-intestinal", "hipocalemia", "simpatico"]
+    },
+    {
+      id: "eje-intestino-cerebro",
+      termino: "Eje intestino-cerebro",
+      sistema: "Enterico",
+      sistemaKey: "enterico",
+      tipo: "Comunicacion bidireccional",
+      definicion: "Red de comunicacion neural, endocrina e inmune entre intestino, microbiota y sistema nervioso.",
+      importanciaClinica: "Relaciona dieta, microbiota, estres, apetito, conducta, dolor visceral y motilidad.",
+      relacionados: ["nervio-vago", "microbiota-intestinal", "serotonina-intestinal"]
+    },
+    {
+      id: "nervio-vago",
+      termino: "Nervio vago",
+      sistema: "Enterico",
+      sistemaKey: "enterico",
+      tipo: "Via neurovisceral",
+      definicion: "Nervio craneal que comunica visceras con tronco encefalico y modula funciones digestivas y autonomicas.",
+      importanciaClinica: "Su tono influye en motilidad, secrecion, apetito, frecuencia cardiaca y respuesta al estres.",
+      relacionados: ["tono-vagal", "eje-intestino-cerebro", "parasimpatico"]
+    },
+    {
+      id: "tono-vagal",
+      termino: "Tono vagal",
+      sistema: "Enterico",
+      sistemaKey: "enterico",
+      tipo: "Estado autonomico",
+      definicion: "Nivel de actividad funcional del nervio vago sobre organos viscerales.",
+      importanciaClinica: "Tono vagal adecuado favorece motilidad y reposo; cambios se relacionan con estres, colico, bradicardia o digestion.",
+      relacionados: ["nervio-vago", "parasimpatico", "motilidad-intestinal"]
+    },
+    {
+      id: "nucleo-tracto-solitario",
+      termino: "Nucleo del tracto solitario",
+      sigla: "NTS",
+      sistema: "Enterico",
+      sistemaKey: "enterico",
+      tipo: "Centro integrador visceral",
+      definicion: "Region del tronco encefalico que recibe informacion visceral aferente, incluida señal vagal.",
+      importanciaClinica: "Integra señales de apetito, saciedad, nausea, presion y estado visceral.",
+      relacionados: ["nervio-vago", "eje-intestino-cerebro", "centro-integrador"]
+    },
+    {
+      id: "galt",
+      termino: "Tejido linfoide asociado a intestino",
+      sigla: "GALT",
+      sistema: "Enterico",
+      sistemaKey: "enterico",
+      tipo: "Inmunidad mucosa",
+      definicion: "Sistema inmune especializado de la mucosa intestinal.",
+      importanciaClinica: "Conecta microbiota, inflamacion intestinal, barrera mucosa y respuesta inmunitaria.",
+      relacionados: ["sistema-inmunologico", "microbiota-intestinal", "barrera-intestinal"]
+    },
+    {
+      id: "celula-enterocromafin",
+      termino: "Celula enterocromafin",
+      sistema: "Enterico",
+      sistemaKey: "enterico",
+      tipo: "Celula enteroendocrina",
+      definicion: "Celula intestinal que produce y libera serotonina en respuesta a estimulos luminales.",
+      importanciaClinica: "Participa en motilidad, secrecion, nausea, dolor visceral y comunicacion intestino-cerebro.",
+      relacionados: ["serotonina-intestinal", "eje-intestino-cerebro", "motilidad-intestinal"]
+    },
+    {
+      id: "serotonina-intestinal",
+      termino: "Serotonina intestinal",
+      sistema: "Enterico",
+      sistemaKey: "enterico",
+      tipo: "Mediador intestinal",
+      definicion: "Serotonina producida principalmente en el intestino por celulas enterocromafines.",
+      importanciaClinica: "Regula motilidad, secrecion, sensibilidad visceral y señales hacia el eje intestino-cerebro.",
+      relacionados: ["serotonina", "celula-enterocromafin", "motilidad-intestinal"]
+    },
+    {
+      id: "acidos-grasos-cadena-corta",
+      termino: "Acidos grasos de cadena corta",
+      sigla: "AGCC",
+      sistema: "Enterico",
+      sistemaKey: "enterico",
+      tipo: "Metabolitos microbianos",
+      definicion: "Metabolitos como acetato, propionato y butirato producidos por fermentacion microbiana.",
+      importanciaClinica: "Nutren epitelio, modulan inflamacion, barrera intestinal y comunicacion microbiota-huesped.",
+      relacionados: ["butirato", "microbiota-intestinal", "barrera-intestinal"]
+    },
+    {
+      id: "butirato",
+      termino: "Butirato",
+      sistema: "Enterico",
+      sistemaKey: "enterico",
+      tipo: "AGCC",
+      definicion: "Acido graso de cadena corta usado por colonocitos como fuente energetica.",
+      importanciaClinica: "Favorece barrera intestinal, salud de mucosa y modulacion inflamatoria.",
+      relacionados: ["acidos-grasos-cadena-corta", "barrera-intestinal", "microbiota-intestinal"]
+    },
+    {
+      id: "barrera-intestinal",
+      termino: "Barrera intestinal",
+      sistema: "Enterico",
+      sistemaKey: "enterico",
+      tipo: "Proteccion mucosa",
+      definicion: "Conjunto de epitelio, moco, uniones estrechas, inmunidad y microbiota que separa lumen y medio interno.",
+      importanciaClinica: "Su falla favorece inflamacion, translocacion bacteriana, diarrea y respuesta sistemica.",
+      relacionados: ["permeabilidad-intestinal", "galt", "microbiota-intestinal"]
+    },
+    {
+      id: "permeabilidad-intestinal",
+      termino: "Permeabilidad intestinal",
+      sistema: "Enterico",
+      sistemaKey: "enterico",
+      tipo: "Funcion de barrera",
+      definicion: "Grado en que sustancias del lumen pueden atravesar la barrera intestinal.",
+      importanciaClinica: "Aumenta con inflamacion, estres, disbiosis o daño epitelial y puede agravar enfermedad sistemica.",
+      relacionados: ["barrera-intestinal", "disbiosis", "galt"]
+    },
+    {
+      id: "disbiosis",
+      termino: "Disbiosis",
+      sistema: "Enterico",
+      sistemaKey: "enterico",
+      tipo: "Desequilibrio microbiano",
+      definicion: "Alteracion de composicion o funcion de la microbiota intestinal.",
+      importanciaClinica: "Puede asociarse a diarrea, inflamacion intestinal, cambios de motilidad, conducta o recuperacion lenta.",
+      relacionados: ["microbiota-intestinal", "barrera-intestinal", "eje-intestino-cerebro"]
+    },
+    {
+      id: "vip",
+      termino: "Peptido intestinal vasoactivo",
+      sigla: "VIP",
+      sistema: "Enterico",
+      sistemaKey: "enterico",
+      tipo: "Neurotransmisor enterico",
+      definicion: "Peptido que modula relajacion de musculo liso, secrecion y flujo sanguineo intestinal.",
+      importanciaClinica: "Participa en regulacion enterica fina de motilidad, secrecion y vasodilatacion.",
+      relacionados: ["sistema-nervioso-enterico", "plexo-submucoso", "oxido-nitrico"]
+    },
+    {
+      id: "oxido-nitrico",
+      termino: "Oxido nitrico",
+      sigla: "NO",
+      sistema: "Enterico",
+      sistemaKey: "enterico",
+      tipo: "Mediador inhibidor",
+      definicion: "Gasotransmisor que participa en relajacion de musculo liso y regulacion vascular.",
+      importanciaClinica: "Importante en motilidad gastrointestinal, tono vascular y control local de flujo.",
+      relacionados: ["vip", "motilidad-intestinal", "plexo-mienterico"]
+    },
+    {
+      id: "vagotomia",
+      termino: "Vagotomia",
+      sistema: "Enterico",
+      sistemaKey: "enterico",
+      tipo: "Interrupcion neural",
+      definicion: "Seccion o bloqueo funcional del nervio vago.",
+      importanciaClinica: "Permite entender que el intestino conserva actividad enterica, aunque pierde modulacion vagal eficiente.",
+      relacionados: ["nervio-vago", "sistema-nervioso-enterico", "tono-vagal"]
     }
   ];
 })();

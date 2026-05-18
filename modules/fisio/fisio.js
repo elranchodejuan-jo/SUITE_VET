@@ -67,6 +67,20 @@
       icon:  "HP",
       label: "Hepático"
     },
+    "dolor-nocicepcion": {
+      color: "#f43f5e",
+      bg:    "rgba(244,63,94,0.12)",
+      glow:  "rgba(244,63,94,0.25)",
+      icon:  "DN",
+      label: "Dolor/Nocicepción"
+    },
+    "enterico": {
+      color: "#22c55e",
+      bg:    "rgba(34,197,94,0.12)",
+      glow:  "rgba(34,197,94,0.24)",
+      icon:  "SE",
+      label: "Entérico"
+    },
     "clinico-general": {
       color: "#94a3b8",
       bg:    "rgba(148,163,184,0.12)",
