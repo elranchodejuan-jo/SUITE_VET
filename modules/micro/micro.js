@@ -127,6 +127,18 @@
     });
 
     root.addEventListener("click", (e) => {
+      const closePrint = e.target.closest("[data-micro-print-close]");
+      if (closePrint || e.target === els.printArea) {
+        closePrintView();
+        return;
+      }
+
+      const printNow = e.target.closest("[data-micro-print-now]");
+      if (printNow) {
+        runMicroPrint();
+        return;
+      }
+
       const close = e.target.closest("[data-micro-close]");
       if (close) {
         closeModals();
@@ -173,6 +185,12 @@
 
     els.calcContent.addEventListener("input", updateCalcResult);
     els.calcContent.addEventListener("change", updateCalcResult);
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && els.printArea.classList.contains("is-open")) {
+        closePrintView();
+      }
+    });
 
     renderFilters();
     render();
@@ -900,120 +918,45 @@
     }
 
     function printDocument(title, html) {
-      const documentHtml = buildMicroPrintDocument(title, html);
-      const printWindow = window.open("", "_blank", "width=980,height=1200");
-
-      if (printWindow?.document) {
-        writeAndPrint(printWindow, documentHtml, () => {
-          try { printWindow.close(); } catch (_) {}
-        });
+      if (!els.printArea) {
+        toast("No se encontro la vista de impresion.");
         return;
       }
 
-      printDocumentInFrame(title, documentHtml);
-    }
-
-    function printDocumentInFrame(title, documentHtml) {
-      const frame = document.createElement("iframe");
-      frame.title = title;
-      frame.setAttribute("aria-hidden", "true");
-      frame.style.position = "fixed";
-      frame.style.left = "-10000px";
-      frame.style.top = "0";
-      frame.style.width = "210mm";
-      frame.style.height = "297mm";
-      frame.style.border = "0";
-      frame.style.opacity = "0";
-      frame.style.pointerEvents = "none";
-
-      document.body.appendChild(frame);
-      const frameWindow = frame.contentWindow;
-      const frameDocument = frame.contentDocument || frameWindow?.document;
-      if (!frameWindow || !frameDocument) {
-        frame.remove();
-        toast("No se pudo abrir la vista de impresión.");
-        return;
-      }
-
-      writeAndPrint(frameWindow, documentHtml, () => setTimeout(() => frame.remove(), 250));
-    }
-
-    function writeAndPrint(targetWindow, documentHtml, cleanupAfterPrint) {
-      let printed = false;
-      let cleanupTimer = null;
-
-      const cleanup = () => {
-        clearTimeout(cleanupTimer);
-        targetWindow.removeEventListener("afterprint", cleanup);
-        cleanupAfterPrint();
-      };
-
-      const startPrint = () => {
-        if (printed) return;
-        printed = true;
-        targetWindow.focus();
-        targetWindow.print();
-      };
-
-      const targetDocument = targetWindow.document;
-      targetDocument.open();
-      targetDocument.write(documentHtml);
-      targetDocument.close();
-      targetWindow.addEventListener("afterprint", cleanup, { once: true });
-      targetWindow.onload = () => setTimeout(startPrint, 80);
-      cleanupTimer = setTimeout(cleanup, 120000);
-      setTimeout(startPrint, 220);
-    }
-
-    function buildMicroPrintDocument(title, html) {
-      return `
-        <!doctype html>
-        <html lang="es">
-          <head>
-            <meta charset="UTF-8" />
-            <meta name="viewport" content="width=device-width, initial-scale=1" />
-            <title>${escapeHtml(title)}</title>
-            <style>${microPrintStyles()}</style>
-          </head>
-          <body>
+      closeModals();
+      document.body.classList.add("micro-printing");
+      els.printArea.classList.add("is-open");
+      els.printArea.innerHTML = `
+        <div class="micro-print-shell" role="dialog" aria-modal="true" aria-label="${escapeAttr(title)}">
+          <div class="micro-print-toolbar no-print">
+            <div>
+              <span class="micro-kicker">Vista imprimible</span>
+              <h3>${escapeHtml(title)}</h3>
+              <p>Revisa el documento y luego genera PDF o imprime desde tu dispositivo.</p>
+            </div>
+            <div class="micro-print-actions">
+              <button class="sv-btn sv-btn-secondary" type="button" data-micro-print-close>Volver</button>
+              <button class="sv-btn sv-btn-primary" type="button" data-micro-print-now>Imprimir / PDF</button>
+            </div>
+          </div>
+          <div class="micro-print-preview">
             <article class="micro-print-doc">${html}</article>
-          </body>
-        </html>
+          </div>
+        </div>
       `;
+      els.printArea.scrollTo({ top: 0, behavior: "auto" });
     }
 
-    function microPrintStyles() {
-      return `
-        @page { margin: 12mm; size: A4 portrait; }
-        * { box-sizing: border-box; }
-        html, body { background: #ffffff; color: #0f172a; margin: 0; padding: 0; }
-        body { font-family: Arial, Helvetica, sans-serif; font-size: 12px; line-height: 1.45; }
-        .micro-print-doc { background: #ffffff; color: #0f172a; margin: 0 auto; max-width: 190mm; padding: 0; }
-        .micro-print-header { align-items: flex-start; border-bottom: 3px solid #0f766e; display: flex; gap: 12mm; justify-content: space-between; margin-bottom: 9mm; padding-bottom: 5mm; }
-        .micro-print-header h1 { color: #0f766e; font-family: Georgia, "Times New Roman", serif; font-size: 27px; line-height: 1; margin: 0 0 2mm; }
-        .micro-print-header p, .micro-print-header small, .micro-print-header span { color: #475569; display: block; margin: 0; }
-        .micro-print-header strong { color: #0f172a; display: block; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; }
-        .micro-print-section { break-inside: avoid; margin-bottom: 7mm; page-break-inside: avoid; }
-        .micro-print-section h2 { border-bottom: 1px solid #cbd5e1; color: #0f172a; font-size: 15px; margin: 0 0 3mm; padding-bottom: 1.5mm; }
-        .micro-print-section h3 { color: #0f766e; font-size: 13px; margin: 4mm 0 1mm; }
-        .micro-print-section p { color: #0f172a; margin: 2mm 0; }
-        table, .micro-table { border-collapse: collapse; width: 100%; }
-        th, td, .micro-table th, .micro-table td { border: 1px solid #cbd5e1; color: #0f172a; font-size: 11.5px; padding: 6px 8px; text-align: left; vertical-align: top; }
-        th, .micro-table th { background: #f1f5f9; color: #334155; font-weight: 700; width: 34%; }
-        ol { margin: 0; padding-left: 18px; }
-        ol li { margin: 1.6mm 0; }
-        .micro-print-alert { background: #fee2e2; border: 1px solid #ef4444; color: #991b1b; font-weight: 700; margin-top: 3mm; padding: 8px 10px; }
-        .micro-print-muted { color: #64748b; font-size: 11px; margin-top: 7px; }
-        .micro-print-list { margin: 2mm 0 0; padding-left: 18px; }
-        .micro-print-list li { color: #0f172a; font-size: 11.5px; margin: 1.5mm 0; }
-        .micro-print-image-grid { display: grid; gap: 7mm; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-        .micro-print-placeholder { align-items: center; border: 1px dashed #94a3b8; color: #475569; display: flex; flex-direction: column; gap: 3mm; justify-content: center; min-height: 50mm; text-align: center; }
-        .micro-print-placeholder strong { color: #0f172a; font-size: 12px; text-transform: uppercase; }
-        .micro-print-notes div { align-items: center; display: flex; gap: 10px; margin: 6mm 0; }
-        .micro-print-notes span { color: #475569; min-width: 145px; }
-        .micro-print-notes i { border-bottom: 1px solid #0f172a; flex: 1; height: 1px; }
-        @media print { html, body { width: 210mm; } .micro-print-doc { max-width: none; } }
-      `;
+    function closePrintView() {
+      if (!els.printArea) return;
+      document.body.classList.remove("micro-printing");
+      els.printArea.classList.remove("is-open");
+      els.printArea.innerHTML = "";
+    }
+
+    function runMicroPrint() {
+      if (!els.printArea?.classList.contains("is-open")) return;
+      window.print();
     }
 
     function printHeader(kind, title) {

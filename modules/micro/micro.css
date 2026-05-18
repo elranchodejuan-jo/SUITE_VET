@@ -560,6 +560,246 @@
   display: none;
 }
 
+body.micro-printing {
+  overflow: hidden;
+}
+
+.micro-print-area.is-open {
+  background:
+    linear-gradient(180deg, rgba(2, 6, 23, 0.92), rgba(2, 6, 23, 0.98)),
+    rgba(2, 6, 23, 0.95);
+  display: block;
+  inset: 0;
+  overflow: auto;
+  padding: 1rem;
+  position: fixed;
+  z-index: 3000;
+}
+
+.micro-print-shell {
+  display: grid;
+  gap: 1rem;
+  margin: 0 auto;
+  max-width: 980px;
+  min-height: 100%;
+}
+
+.micro-print-toolbar {
+  align-items: center;
+  background: var(--sv-bg-surface);
+  border: 1px solid var(--sv-border);
+  border-radius: 1rem;
+  box-shadow: var(--sv-shadow-sm);
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  padding: 0.9rem 1rem;
+  position: sticky;
+  top: 0.7rem;
+  z-index: 2;
+}
+
+.micro-print-toolbar h3 {
+  color: var(--sv-text-primary);
+  font-family: var(--sv-font-heading);
+  font-size: 1.05rem;
+  line-height: 1.2;
+  margin: 0.15rem 0 0;
+}
+
+.micro-print-toolbar p {
+  color: var(--sv-text-muted);
+  font-size: 0.82rem;
+  margin: 0.22rem 0 0;
+}
+
+.micro-print-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  justify-content: flex-end;
+}
+
+.micro-print-preview {
+  display: flex;
+  justify-content: center;
+  padding: 0 0 1rem;
+}
+
+.micro-print-doc {
+  background: #fff;
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.42);
+  color: #0f172a;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  line-height: 1.45;
+  min-height: 297mm;
+  padding: 18mm;
+  width: min(190mm, 100%);
+}
+
+.micro-print-header {
+  align-items: flex-start;
+  border-bottom: 3px solid #0f766e;
+  display: flex;
+  gap: 12mm;
+  justify-content: space-between;
+  margin-bottom: 9mm;
+  padding-bottom: 5mm;
+}
+
+.micro-print-header h1 {
+  color: #0f766e;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 27px;
+  line-height: 1;
+  margin: 0 0 2mm;
+}
+
+.micro-print-header p,
+.micro-print-header small,
+.micro-print-header span {
+  color: #475569;
+  display: block;
+  margin: 0;
+}
+
+.micro-print-header strong {
+  color: #0f172a;
+  display: block;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.micro-print-section {
+  break-inside: avoid;
+  margin-bottom: 7mm;
+  page-break-inside: avoid;
+}
+
+.micro-print-section h2 {
+  border-bottom: 1px solid #cbd5e1;
+  color: #0f172a;
+  font-size: 15px;
+  margin: 0 0 3mm;
+  padding-bottom: 1.5mm;
+}
+
+.micro-print-section h3 {
+  color: #0f766e;
+  font-size: 13px;
+  margin: 4mm 0 1mm;
+}
+
+.micro-print-section p {
+  color: #0f172a;
+  margin: 2mm 0;
+}
+
+.micro-print-section table,
+.micro-print-section .micro-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.micro-print-section th,
+.micro-print-section td,
+.micro-print-section .micro-table th,
+.micro-print-section .micro-table td {
+  border: 1px solid #cbd5e1;
+  color: #0f172a;
+  font-size: 11.5px;
+  padding: 6px 8px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.micro-print-section th,
+.micro-print-section .micro-table th {
+  background: #f1f5f9;
+  color: #334155;
+  font-weight: 700;
+  width: 34%;
+}
+
+.micro-print-section ol {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.micro-print-section ol li {
+  margin: 1.6mm 0;
+}
+
+.micro-print-alert {
+  background: #fee2e2;
+  border: 1px solid #ef4444;
+  color: #991b1b;
+  font-weight: 700;
+  margin-top: 3mm;
+  padding: 8px 10px;
+}
+
+.micro-print-muted {
+  color: #64748b;
+  font-size: 11px;
+  margin-top: 7px;
+}
+
+.micro-print-list {
+  margin: 2mm 0 0;
+  padding-left: 18px;
+}
+
+.micro-print-list li {
+  color: #0f172a;
+  font-size: 11.5px;
+  margin: 1.5mm 0;
+}
+
+.micro-print-image-grid {
+  display: grid;
+  gap: 7mm;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.micro-print-placeholder {
+  align-items: center;
+  border: 1px dashed #94a3b8;
+  color: #475569;
+  display: flex;
+  flex-direction: column;
+  gap: 3mm;
+  justify-content: center;
+  min-height: 50mm;
+  text-align: center;
+}
+
+.micro-print-placeholder strong {
+  color: #0f172a;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.micro-print-notes div {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  margin: 6mm 0;
+}
+
+.micro-print-notes span {
+  color: #475569;
+  min-width: 145px;
+}
+
+.micro-print-notes i {
+  border-bottom: 1px solid #0f172a;
+  flex: 1;
+  height: 1px;
+}
+
 @keyframes micro-focus {
   0% { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.0); }
   35% { box-shadow: 0 0 0 6px rgba(34, 211, 238, 0.24), 0 0 42px rgba(34, 211, 238, 0.22); }
@@ -585,6 +825,19 @@
   .micro-calc-result-panel {
     grid-template-columns: 1fr;
   }
+
+  .micro-print-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .micro-print-actions {
+    justify-content: stretch;
+  }
+
+  .micro-print-actions .sv-btn {
+    flex: 1 1 160px;
+  }
 }
 
 @media (max-width: 560px) {
@@ -598,6 +851,27 @@
 
   .micro-modal-overlay {
     padding: 0.5rem;
+  }
+
+  .micro-print-area.is-open {
+    padding: 0.55rem;
+  }
+
+  .micro-print-toolbar {
+    border-radius: 0.85rem;
+    top: 0.45rem;
+  }
+
+  .micro-print-preview {
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding-bottom: 0.7rem;
+  }
+
+  .micro-print-doc {
+    min-height: auto;
+    min-width: 720px;
+    padding: 12mm;
   }
 }
 
@@ -622,15 +896,39 @@
     display: block !important;
     inset: 0;
     min-height: 100vh;
+    overflow: visible !important;
+    padding: 0 !important;
     position: absolute;
     width: 100%;
   }
 
+  body.micro-printing .micro-print-toolbar,
+  body.micro-printing .micro-print-actions,
+  body.micro-printing .no-print {
+    display: none !important;
+  }
+
+  body.micro-printing .micro-print-shell,
+  body.micro-printing .micro-print-preview {
+    display: block !important;
+    margin: 0 !important;
+    max-width: none !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    padding: 0 !important;
+  }
+
   .micro-print-doc {
     background: #fff;
+    box-shadow: none !important;
     color: #0f172a;
     font-family: Arial, sans-serif;
+    font-size: 12px;
+    line-height: 1.45;
+    min-height: auto !important;
+    min-width: 0 !important;
     padding: 18mm;
+    width: auto !important;
   }
 
   .micro-print-header {
