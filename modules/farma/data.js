@@ -1,6 +1,6 @@
 // =============================================================================
 // SUITE VET 2.0 — modules/farma/data.js
-// VADEMÉCUM COMPLETO — 55 fármacos
+// VADEMÉCUM COMPLETO — 63 fármacos
 // Fuentes:
 //   • Flashcards Farmacología en Medicina Veterinaria - FORMAVET 2024
 //   • Farmacología para Médicos Veterinarios - Jazven 2013

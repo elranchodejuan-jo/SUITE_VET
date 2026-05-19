@@ -46,18 +46,20 @@
   // ---------------------------------------------------------------------------
   function showView(viewName) {
     const views   = document.querySelectorAll(".sv-view");
-    const navBtns = document.querySelectorAll(".sv-nav-btn[data-view]");
+    const navBtns = document.querySelectorAll(".sv-nav-btn[data-view], .sv-menu-route[data-view]");
 
     views.forEach((v) =>
       v.classList.toggle("sv-view-active", v.id === `view-${viewName}`)
     );
 
-    navBtns.forEach((btn) =>
-      btn.classList.toggle("sv-nav-active", btn.dataset.view === viewName)
-    );
+    navBtns.forEach((btn) => {
+      btn.classList.toggle("sv-nav-active", btn.dataset.view === viewName);
+      btn.classList.toggle("sv-menu-active", btn.dataset.view === viewName);
+    });
 
     window.SuiteVet.currentView = viewName;
     closeMenu();
+    closeSearch(false);
 
     // Emitir evento para que los módulos sepan cuándo se activan
     document.dispatchEvent(
@@ -76,6 +78,7 @@
     const toggle = document.getElementById("sv-menu-toggle");
     if (panel)  panel.classList.add("sv-menu-open");
     if (toggle) toggle.classList.add("is-open");
+    if (toggle) toggle.setAttribute("aria-expanded", "true");
   }
 
   function closeMenu() {
@@ -83,6 +86,7 @@
     const toggle = document.getElementById("sv-menu-toggle");
     if (panel)  panel.classList.remove("sv-menu-open");
     if (toggle) toggle.classList.remove("is-open");
+    if (toggle) toggle.setAttribute("aria-expanded", "false");
   }
 
   function toggleMenu() {
@@ -92,6 +96,90 @@
   }
 
   window.SuiteVet.closeMenu = closeMenu;
+
+  function hydrateModuleMenu(panel) {
+    if (!panel) return;
+    panel.innerHTML = `
+      <p class="sv-menu-title">M&oacute;dulos SUITE VET</p>
+      <button class="sv-menu-item sv-menu-route" data-view="fisiologia" type="button">
+        <span class="sv-menu-icon sv-menu-icon-fisio">FI</span>
+        <span>
+          <strong>Fisiolog&iacute;a</strong>
+          <small>Hormonas, vitaminas y glosario</small>
+        </span>
+      </button>
+      <button class="sv-menu-item sv-menu-route" data-view="farmacologia" type="button">
+        <span class="sv-menu-icon sv-menu-icon-farma">Rx</span>
+        <span>
+          <strong>Farmacolog&iacute;a</strong>
+          <small>Vadem&eacute;cum, dosis y recetario</small>
+        </span>
+      </button>
+      <button class="sv-menu-item sv-menu-route" data-view="microbiologia" type="button">
+        <span class="sv-menu-icon sv-menu-icon-micro">MB</span>
+        <span>
+          <strong>Microbiolog&iacute;a</strong>
+          <small>Agares, caldos, pruebas y atlas</small>
+        </span>
+      </button>
+      <button class="sv-menu-item sv-menu-route" data-view="patologia" type="button">
+        <span class="sv-menu-icon sv-menu-icon-pato">PT</span>
+        <span>
+          <strong>Patolog&iacute;a</strong>
+          <small>Lesiones y diagn&oacute;stico diferencial</small>
+        </span>
+      </button>
+      <button class="sv-menu-item sv-disabled" type="button" disabled>
+        <span class="sv-menu-icon">CT</span>
+        <span>
+          <strong>CATTLE</strong>
+          <small>Pr&oacute;ximamente</small>
+        </span>
+      </button>
+    `;
+  }
+
+  function openSearch() {
+    const wrap = document.querySelector(".sv-search-wrap");
+    const btn = document.getElementById("sv-search-toggle");
+    const input = document.getElementById("sv-search-global");
+    if (!wrap) return;
+    wrap.classList.add("sv-search-visible");
+    wrap.setAttribute("aria-hidden", "false");
+    if (btn) {
+      btn.classList.add("is-active");
+      btn.setAttribute("aria-expanded", "true");
+    }
+    window.setTimeout(() => input && input.focus(), 0);
+  }
+
+  function closeSearch(clearValue = false) {
+    const wrap = document.querySelector(".sv-search-wrap");
+    const btn = document.getElementById("sv-search-toggle");
+    const input = document.getElementById("sv-search-global");
+    const results = document.getElementById("sv-search-results");
+    if (!wrap) return;
+    wrap.classList.remove("sv-search-visible");
+    wrap.setAttribute("aria-hidden", "true");
+    if (btn) {
+      btn.classList.remove("is-active");
+      btn.setAttribute("aria-expanded", "false");
+    }
+    if (results) {
+      results.classList.remove("sv-search-open");
+      results.innerHTML = "";
+    }
+    if (clearValue && input) input.value = "";
+  }
+
+  function toggleSearch() {
+    const wrap = document.querySelector(".sv-search-wrap");
+    if (!wrap) return;
+    wrap.classList.contains("sv-search-visible") ? closeSearch(false) : openSearch();
+  }
+
+  window.SuiteVet.openSearch = openSearch;
+  window.SuiteVet.closeSearch = closeSearch;
 
   // ---------------------------------------------------------------------------
   // 5. BUSCADOR GLOBAL
@@ -128,9 +216,11 @@
   // 6. DOMContentLoaded — conectar eventos
   // ---------------------------------------------------------------------------
   document.addEventListener("DOMContentLoaded", () => {
+    const menuPanel = document.getElementById("sv-menu-panel");
+    hydrateModuleMenu(menuPanel);
 
     // — Botones de nav principal —
-    document.querySelectorAll(".sv-nav-btn[data-view]").forEach((btn) => {
+    document.querySelectorAll(".sv-nav-btn[data-view], .sv-menu-route[data-view]").forEach((btn) => {
       btn.addEventListener("click", () => showView(btn.dataset.view));
     });
 
@@ -141,12 +231,19 @@
 
     // — Menú hamburguesa —
     const menuToggle = document.getElementById("sv-menu-toggle");
-    const menuPanel  = document.getElementById("sv-menu-panel");
 
     if (menuToggle) {
       menuToggle.addEventListener("click", (e) => {
         e.stopPropagation();
         toggleMenu();
+      });
+    }
+
+    const searchToggle = document.getElementById("sv-search-toggle");
+    if (searchToggle) {
+      searchToggle.addEventListener("click", (e) => {
+        e.stopPropagation();
+        toggleSearch();
       });
     }
 
@@ -184,6 +281,10 @@
           const results = await globalSearch(q);
           renderGlobalResults(results, globalResults, globalInput);
         }, 220);
+      });
+
+      globalInput.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeSearch(false);
       });
 
       // Cerrar al hacer click fuera
@@ -240,6 +341,7 @@
           if (typeof item.action === "function") item.action();
           container.classList.remove("sv-search-open");
           if (input) input.value = "";
+          closeSearch(false);
         });
         group.appendChild(el);
       });

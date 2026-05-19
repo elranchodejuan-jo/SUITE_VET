@@ -658,7 +658,9 @@
         : pane === "antibioticos"
           ? `Pasaporte del antibiótico: ${item.nombre}`
           : `Ficha técnica: ${item.nombre}`;
-      printDocument(title, renderPrintableFicha(item, pane));
+      printDocument(title, renderPrintableFicha(item, pane), {
+        docClass: pane === "antibioticos" ? "is-antibiotic-passport" : ""
+      });
     }
 
     function renderPrintablePreparation(calc) {
@@ -942,12 +944,13 @@
       return area;
     }
 
-    function printDocument(title, html) {
+    function printDocument(title, html, options = {}) {
       if (!els.printArea) {
         toast("No se encontro la vista de impresion.");
         return;
       }
 
+      const docClass = options.docClass ? ` ${escapeAttr(options.docClass)}` : "";
       closeModals();
       ensureMicroPrintOverride();
       document.body.classList.add("micro-printing");
@@ -959,7 +962,7 @@
             <div>
               <span class="micro-kicker">Vista imprimible</span>
               <h3>${escapeHtml(title)}</h3>
-              <p>Revisa el documento y luego genera PDF o imprime desde tu dispositivo.</p>
+              <p>Revisa el documento compacto y luego genera PDF o imprime desde tu dispositivo.</p>
             </div>
             <div class="micro-print-actions">
               <button class="sv-btn sv-btn-secondary" type="button" data-micro-print-close>Volver</button>
@@ -967,7 +970,7 @@
             </div>
           </div>
           <div class="micro-print-preview">
-            <article class="micro-print-doc">${html}</article>
+            <article class="micro-print-doc${docClass}">${html}</article>
           </div>
         </div>
       `;
@@ -995,7 +998,7 @@
       style.id = "micro-print-override";
       style.textContent = `
         @media print {
-          @page { size: A4 portrait; margin: 0; }
+          @page { size: A4 portrait; margin: 12mm; }
           html, body, body.micro-printing { background: #fff !important; }
           body.micro-printing > *:not(#micro-print-area) { display: none !important; }
           body.micro-printing #micro-print-area,
@@ -1025,13 +1028,60 @@
           body.micro-printing .micro-print-doc {
             background: #fff !important;
             box-shadow: none !important;
+            column-count: 2 !important;
+            column-gap: 10mm !important;
             color: #0f172a !important;
+            display: block !important;
+            font-size: 11pt !important;
+            line-height: 1.35 !important;
             margin: 0 !important;
             min-height: auto !important;
             min-width: 0 !important;
-            padding: 18mm !important;
+            padding: 0 !important;
             width: auto !important;
           }
+          body.micro-printing .micro-print-doc.is-antibiotic-passport {
+            column-count: 1 !important;
+            column-gap: 0 !important;
+            font-size: 11pt !important;
+          }
+          body.micro-printing .micro-print-header {
+            column-span: all;
+            margin-bottom: 4mm !important;
+            padding-bottom: 3mm !important;
+          }
+          body.micro-printing .micro-print-header h1 { font-size: 20pt !important; }
+          body.micro-printing .micro-print-header p,
+          body.micro-printing .micro-print-header span,
+          body.micro-printing .micro-print-header small { font-size: 11pt !important; }
+          body.micro-printing .micro-print-header strong { font-size: 11pt !important; }
+          body.micro-printing .micro-print-section {
+            break-inside: avoid;
+            margin-bottom: 4mm !important;
+            page-break-inside: avoid;
+          }
+          body.micro-printing .micro-print-section h2 {
+            font-size: 12pt !important;
+            margin: 0 0 1.8mm !important;
+            padding-bottom: 1mm !important;
+          }
+          body.micro-printing .micro-print-section th,
+          body.micro-printing .micro-print-section td,
+          body.micro-printing .micro-print-section .micro-table th,
+          body.micro-printing .micro-print-section .micro-table td {
+            font-size: 11pt !important;
+            padding: 3.5px 5px !important;
+          }
+          body.micro-printing .micro-print-list { margin-top: 1mm !important; padding-left: 13px !important; }
+          body.micro-printing .micro-print-list li,
+          body.micro-printing .micro-print-section ol li {
+            font-size: 11pt !important;
+            margin: 0.8mm 0 !important;
+          }
+          body.micro-printing .micro-print-muted { font-size: 11pt !important; margin-top: 1mm !important; }
+          body.micro-printing .micro-print-alert { font-size: 11pt !important; margin-top: 1.5mm !important; padding: 5px 7px !important; }
+          body.micro-printing .micro-print-placeholder { min-height: 32mm !important; }
+          body.micro-printing .micro-print-notes div { margin: 3mm 0 !important; }
         }
       `;
       document.head.appendChild(style);

@@ -63,7 +63,7 @@
   .sv-topbar {
     align-items: center;
     display: grid;
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: auto auto auto 1fr auto;
   }
 
   .sv-topbar-brand {
@@ -72,6 +72,7 @@
 
   .sv-search-wrap {
     grid-column: 1 / -1;
+    grid-row: 2;
     max-width: none;
     width: 100%;
   }
@@ -163,7 +164,7 @@
 /* Celular estrecho */
 @media screen and (max-width: 420px) {
   .sv-topbar {
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: auto auto auto 1fr auto;
   }
 
   .sv-search-global {

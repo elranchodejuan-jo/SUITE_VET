@@ -15,8 +15,32 @@
   }
 
   window.FISIO_DATA = {
-    hormonas: parts.hormonas || [],
-    vitaminas: parts.vitaminas || [],
-    glosario: parts.glosario || []
+    hormonas: normalizeIds(parts.hormonas || [], "hormona"),
+    vitaminas: normalizeIds(parts.vitaminas || [], "vitamina"),
+    glosario: normalizeIds(parts.glosario || [], "glosario")
   };
+
+  function normalizeIds(list, prefix) {
+    const seen = new Set();
+    return list.map((item, index) => {
+      const base = item.id || item.nombre || item.sigla || `${prefix}-${index + 1}`;
+      let id = slug(base) || `${prefix}-${index + 1}`;
+      let suffix = 2;
+      while (seen.has(id)) {
+        id = `${slug(base) || prefix}-${suffix}`;
+        suffix += 1;
+      }
+      seen.add(id);
+      return { id, ...item };
+    });
+  }
+
+  function slug(value) {
+    return String(value || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+  }
 })();

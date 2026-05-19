@@ -621,7 +621,7 @@ body.micro-printing {
 }
 
 .micro-print-preview {
-  display: flex;
+  display: block;
   justify-content: center;
   padding: 0 0 1rem;
 }
@@ -629,29 +629,40 @@ body.micro-printing {
 .micro-print-doc {
   background: #fff;
   box-shadow: 0 28px 80px rgba(0, 0, 0, 0.42);
+  column-count: 2;
+  column-gap: 10mm;
+  box-sizing: border-box;
   color: #0f172a;
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 12px;
-  line-height: 1.45;
-  min-height: 297mm;
-  padding: 18mm;
-  width: min(190mm, 100%);
+  font-size: 11pt;
+  line-height: 1.35;
+  margin: 0 auto;
+  min-height: auto;
+  padding: 12mm;
+  width: min(210mm, 100%);
+}
+
+.micro-print-doc.is-antibiotic-passport {
+  column-count: 1;
+  column-gap: 0;
+  font-size: 11pt;
 }
 
 .micro-print-header {
   align-items: flex-start;
   border-bottom: 3px solid #0f766e;
+  column-span: all;
   display: flex;
   gap: 12mm;
   justify-content: space-between;
-  margin-bottom: 9mm;
-  padding-bottom: 5mm;
+  margin-bottom: 4mm;
+  padding-bottom: 3mm;
 }
 
 .micro-print-header h1 {
   color: #0f766e;
   font-family: Georgia, "Times New Roman", serif;
-  font-size: 27px;
+  font-size: 20pt;
   line-height: 1;
   margin: 0 0 2mm;
 }
@@ -667,28 +678,28 @@ body.micro-printing {
 .micro-print-header strong {
   color: #0f172a;
   display: block;
-  font-size: 12px;
+  font-size: 11pt;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .micro-print-section {
   break-inside: avoid;
-  margin-bottom: 7mm;
+  margin-bottom: 4mm;
   page-break-inside: avoid;
 }
 
 .micro-print-section h2 {
   border-bottom: 1px solid #cbd5e1;
   color: #0f172a;
-  font-size: 15px;
-  margin: 0 0 3mm;
-  padding-bottom: 1.5mm;
+  font-size: 12pt;
+  margin: 0 0 1.8mm;
+  padding-bottom: 1mm;
 }
 
 .micro-print-section h3 {
   color: #0f766e;
-  font-size: 13px;
+  font-size: 11pt;
   margin: 4mm 0 1mm;
 }
 
@@ -709,8 +720,8 @@ body.micro-printing {
 .micro-print-section .micro-table td {
   border: 1px solid #cbd5e1;
   color: #0f172a;
-  font-size: 11.5px;
-  padding: 6px 8px;
+  font-size: 11pt;
+  padding: 3.5px 5px;
   text-align: left;
   vertical-align: top;
 }
@@ -729,33 +740,34 @@ body.micro-printing {
 }
 
 .micro-print-section ol li {
-  margin: 1.6mm 0;
+  margin: 0.8mm 0;
 }
 
 .micro-print-alert {
   background: #fee2e2;
   border: 1px solid #ef4444;
   color: #991b1b;
+  font-size: 11pt;
   font-weight: 700;
-  margin-top: 3mm;
-  padding: 8px 10px;
+  margin-top: 1.5mm;
+  padding: 5px 7px;
 }
 
 .micro-print-muted {
   color: #64748b;
-  font-size: 11px;
-  margin-top: 7px;
+  font-size: 11pt;
+  margin-top: 1mm;
 }
 
 .micro-print-list {
-  margin: 2mm 0 0;
-  padding-left: 18px;
+  margin: 1mm 0 0;
+  padding-left: 13px;
 }
 
 .micro-print-list li {
   color: #0f172a;
-  font-size: 11.5px;
-  margin: 1.5mm 0;
+  font-size: 11pt;
+  margin: 0.8mm 0;
 }
 
 .micro-print-image-grid {
@@ -772,13 +784,13 @@ body.micro-printing {
   flex-direction: column;
   gap: 3mm;
   justify-content: center;
-  min-height: 50mm;
+  min-height: 32mm;
   text-align: center;
 }
 
 .micro-print-placeholder strong {
   color: #0f172a;
-  font-size: 12px;
+  font-size: 11pt;
   text-transform: uppercase;
 }
 
@@ -786,7 +798,7 @@ body.micro-printing {
   align-items: center;
   display: flex;
   gap: 10px;
-  margin: 6mm 0;
+  margin: 3mm 0;
 }
 
 .micro-print-notes span {
@@ -863,14 +875,13 @@ body.micro-printing {
   }
 
   .micro-print-preview {
-    justify-content: flex-start;
     overflow-x: auto;
     padding-bottom: 0.7rem;
   }
 
   .micro-print-doc {
     min-height: auto;
-    min-width: 720px;
+    min-width: 210mm;
     padding: 12mm;
   }
 }
@@ -925,29 +936,39 @@ body.micro-printing {
   .micro-print-doc {
     background: #fff;
     box-shadow: none !important;
+    column-count: 2;
+    column-gap: 10mm;
     color: #0f172a;
+    display: block !important;
     font-family: Arial, sans-serif;
-    font-size: 12px;
-    line-height: 1.45;
+    font-size: 11pt;
+    line-height: 1.35;
     min-height: auto !important;
     min-width: 0 !important;
-    padding: 18mm;
+    padding: 0 !important;
     width: auto !important;
+  }
+
+  .micro-print-doc.is-antibiotic-passport {
+    column-count: 1 !important;
+    column-gap: 0 !important;
+    font-size: 11pt !important;
   }
 
   .micro-print-header {
     align-items: flex-start;
     border-bottom: 3px solid #0f766e;
+    column-span: all;
     display: flex;
     justify-content: space-between;
-    margin-bottom: 12mm;
-    padding-bottom: 6mm;
+    margin-bottom: 4mm;
+    padding-bottom: 3mm;
   }
 
   .micro-print-header h1 {
     color: #0f766e;
     font-family: "Times New Roman", serif;
-    font-size: 26px;
+    font-size: 20pt;
     margin: 0;
   }
 
@@ -961,21 +982,21 @@ body.micro-printing {
   .micro-print-header strong {
     color: #0f172a;
     display: block;
-    font-size: 13px;
+    font-size: 11pt;
     text-transform: uppercase;
   }
 
   .micro-print-section {
     break-inside: avoid;
-    margin-bottom: 8mm;
+    margin-bottom: 4mm;
   }
 
   .micro-print-section h2 {
     border-bottom: 1px solid #cbd5e1;
     color: #0f172a;
-    font-size: 16px;
-    margin-bottom: 4mm;
-    padding-bottom: 2mm;
+    font-size: 12pt;
+    margin-bottom: 1.8mm;
+    padding-bottom: 1mm;
   }
 
   .micro-print-section table,
@@ -990,34 +1011,35 @@ body.micro-printing {
   .micro-print-section .micro-table td {
     border: 1px solid #cbd5e1;
     color: #0f172a;
-    font-size: 12px;
-    padding: 6px 8px;
+    font-size: 11pt;
+    padding: 3.5px 5px;
   }
 
   .micro-print-alert {
     background: #fee2e2;
     border: 1px solid #ef4444;
     color: #991b1b;
+    font-size: 11pt;
     font-weight: 700;
-    margin-top: 4mm;
-    padding: 8px 10px;
+    margin-top: 1.5mm;
+    padding: 5px 7px;
   }
 
   .micro-print-muted {
     color: #64748b;
-    font-size: 11px;
-    margin-top: 8px;
+    font-size: 11pt;
+    margin-top: 1mm;
   }
 
   .micro-print-list {
-    margin: 4mm 0 0;
-    padding-left: 18px;
+    margin: 1mm 0 0;
+    padding-left: 13px;
   }
 
   .micro-print-list li {
     color: #0f172a;
-    font-size: 12px;
-    margin: 2mm 0;
+    font-size: 11pt;
+    margin: 0.8mm 0;
   }
 
   .micro-print-image-grid {
@@ -1034,13 +1056,13 @@ body.micro-printing {
     flex-direction: column;
     gap: 3mm;
     justify-content: center;
-    min-height: 55mm;
+    min-height: 32mm;
     text-align: center;
   }
 
   .micro-print-placeholder strong {
     color: #0f172a;
-    font-size: 13px;
+    font-size: 11pt;
     text-transform: uppercase;
   }
 
@@ -1048,7 +1070,7 @@ body.micro-printing {
     align-items: center;
     display: flex;
     gap: 10px;
-    margin: 7mm 0;
+    margin: 3mm 0;
   }
 
   .micro-print-notes span {
@@ -1063,7 +1085,7 @@ body.micro-printing {
   }
 
   @page {
-    margin: 0;
+    margin: 12mm;
     size: A4 portrait;
   }
 }
