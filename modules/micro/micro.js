@@ -284,8 +284,8 @@
 
     els.calcContent.addEventListener("input", updateCalcResult);
     els.calcContent.addEventListener("change", updateCalcResult);
-    els.labelContent.addEventListener("input", actualizarVistaPreviaEtiqueta);
-    els.labelContent.addEventListener("change", actualizarVistaPreviaEtiqueta);
+    els.labelContent.addEventListener("input", handleLabelFormInput);
+    els.labelContent.addEventListener("change", handleLabelFormChange);
 
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape" && els.printArea.classList.contains("is-open")) {
@@ -787,11 +787,8 @@
 
       const remembered = getRememberedMicroUser();
       const savedForm = savedLabel?.formulario || {};
-      const tipoInicial = savedForm.tipoEtiqueta || "auto";
-      const tipoResuelto = resolveLabelType(tipoInicial, calc);
-      const cantidadAutomatica = obtenerCantidadEtiquetas(calc, tipoResuelto, { usarCantidadAutomatica: true });
-      const cantidadManual = savedForm.cantidadManual || savedLabel?.cantidadEtiquetas || cantidadAutomatica;
-      const usarCantidadAutomatica = savedForm.usarCantidadAutomatica !== false;
+      const preparationType = getPreparationType(calc);
+      const labelOptions = buildInitialLabelOptions(calc, savedLabel);
       const subject = getLabelSubject(calc);
       const primaryAction = action === "combo" ? "combo" : action === "save" ? "save" : "print";
 
@@ -820,26 +817,18 @@
               <span>Paralelo / curso / semestre</span>
               <input id="micro-label-paralelo" class="sv-input" type="text" value="${escapeAttr(savedForm.paralelo || remembered.paralelo)}" placeholder="Ej. 2do MVZ" />
             </label>
-            <label>
+            <div class="micro-label-type-block is-wide">
               <span>Tipo de etiqueta</span>
-              <select id="micro-label-type" class="sv-select">
-                <option value="auto"${tipoInicial === "auto" ? " selected" : ""}>Automatico segun el calculo actual</option>
-                <option value="petri"${tipoInicial === "petri" ? " selected" : ""}>Caja Petri</option>
-                <option value="tubo"${tipoInicial === "tubo" ? " selected" : ""}>Tubo de ensayo</option>
-                <option value="matraz"${tipoInicial === "matraz" ? " selected" : ""}>Matraz</option>
-              </select>
-            </label>
+              <div class="micro-label-type-grid" id="micro-label-options">
+                ${labelOptions.map((option) => renderLabelOptionRow(option)).join("")}
+              </div>
+              <small id="micro-label-type-help" class="micro-label-type-help">
+                ${escapeHtml(getLabelOptionsHelp(preparationType))}
+              </small>
+            </div>
             <label>
               <span>Lote / codigo de lote</span>
               <input id="micro-label-lote" class="sv-input" type="text" value="${escapeAttr(savedForm.lote || savedLabel?.lote || generarLoteMicro())}" placeholder="SV-MIC-2026-001" />
-            </label>
-            <div class="micro-check-row">
-              <input id="micro-label-auto-count" type="checkbox"${usarCantidadAutomatica ? " checked" : ""} />
-              <label for="micro-label-auto-count">Usar cantidad calculada automaticamente</label>
-            </div>
-            <label>
-              <span>Cantidad de etiquetas</span>
-              <input id="micro-label-count" class="sv-input" type="number" min="1" max="999" value="${escapeAttr(cantidadManual)}" />
             </label>
             <label class="is-wide">
               <span>Observaciones opcionales</span>
@@ -874,36 +863,51 @@
       state.labelContext = null;
     }
 
+    function handleLabelFormInput(e) {
+      if (e.target?.matches?.("[data-label-quantity]")) {
+        normalizeLabelQuantityInput(e.target);
+      }
+      actualizarVistaPreviaEtiqueta();
+    }
+
+    function handleLabelFormChange(e) {
+      if (e.target?.matches?.("[data-label-quantity]")) {
+        normalizeLabelQuantityInput(e.target);
+      }
+      actualizarVistaPreviaEtiqueta();
+    }
+
     function actualizarVistaPreviaEtiqueta() {
       if (!state.labelContext) return;
       const calc = state.labelContext.calc;
       const form = obtenerDatosFormularioEtiqueta();
-      const tipo = resolveLabelType(form.tipoEtiqueta, calc);
-      const countInput = root.querySelector("#micro-label-count");
-      const autoCount = root.querySelector("#micro-label-auto-count");
       const preview = root.querySelector("#micro-label-preview");
       const previewCount = root.querySelector("#micro-label-preview-count");
 
-      if (countInput) {
-        countInput.disabled = tipo === "matraz" || Boolean(autoCount?.checked);
-        if (tipo === "matraz") countInput.value = "1";
-        if (autoCount?.checked && tipo !== "matraz") {
-          countInput.value = String(obtenerCantidadEtiquetas(calc, tipo, { usarCantidadAutomatica: true }));
-        }
-      }
-
       const labels = generarDatosEtiqueta(calc, obtenerDatosFormularioEtiqueta());
       const first = labels[0];
-      if (!preview || !first) return;
+      actualizarEstadoOpcionesEtiqueta(form.labelOptions);
+
+      if (!preview) return;
+      if (!first) {
+        preview.innerHTML = `
+          <div class="micro-label-preview-empty">
+            Selecciona al menos un tipo de etiqueta para generar la vista previa.
+          </div>
+        `;
+        if (previewCount) previewCount.textContent = "0 etiquetas";
+        return;
+      }
 
       preview.innerHTML = `
         ${generarHTMLEtiqueta(first)}
         <p class="micro-label-preview-summary">
-          Se generaran ${labels.length} etiqueta${labels.length === 1 ? "" : "s"} en hoja A4. Si no entran en una pagina, continuaran automaticamente en paginas adicionales.
+          Se generaran ${labels.length} etiqueta${labels.length === 1 ? "" : "s"} en total en hoja A4. Si no entran en una pagina, continuaran automaticamente en paginas adicionales.
         </p>
+        ${renderLabelSelectionSummary(form.labelOptions)}
       `;
       if (previewCount) {
-        previewCount.textContent = `${labels.length} etiqueta${labels.length === 1 ? "" : "s"}`;
+        previewCount.textContent = `${labels.length} etiqueta${labels.length === 1 ? "" : "s"} en total`;
       }
     }
 
@@ -911,9 +915,8 @@
       const responsable = root.querySelector("#micro-label-responsable")?.value.trim() || "";
       const paralelo = root.querySelector("#micro-label-paralelo")?.value.trim() || "";
       const observaciones = root.querySelector("#micro-label-observaciones")?.value.trim() || "";
-      const tipoEtiqueta = root.querySelector("#micro-label-type")?.value || "auto";
-      const usarCantidadAutomatica = Boolean(root.querySelector("#micro-label-auto-count")?.checked);
-      const cantidadManual = clampLabelCount(root.querySelector("#micro-label-count")?.value || 1);
+      const labelOptions = getLabelOptionsFromForm();
+      const firstSelected = labelOptions.find((option) => option.checked);
       const lote = root.querySelector("#micro-label-lote")?.value.trim() || "";
 
       saveRememberedMicroUser({ responsable, paralelo });
@@ -921,9 +924,9 @@
         responsable,
         paralelo,
         observaciones,
-        tipoEtiqueta,
-        usarCantidadAutomatica,
-        cantidadManual,
+        labelOptions,
+        tipoEtiqueta: firstSelected?.id || "",
+        cantidadManual: firstSelected?.quantity || 1,
         lote
       };
     }
@@ -932,6 +935,12 @@
       if (!state.labelContext) return;
       const calc = state.labelContext.calc;
       const form = obtenerDatosFormularioEtiqueta();
+      const labels = generarDatosEtiqueta(calc, form);
+
+      if (!labels.length) {
+        toast("Selecciona al menos un tipo de etiqueta para imprimir.");
+        return;
+      }
 
       if (action === "save") {
         guardarEtiqueta(calc, form, { id: state.labelContext.savedId });
@@ -952,6 +961,11 @@
     }
 
     function imprimirEtiqueta(calc, datosFormulario) {
+      const labels = generarDatosEtiqueta(calc, datosFormulario);
+      if (!labels.length) {
+        toast("Selecciona al menos un tipo de etiqueta para imprimir.");
+        return;
+      }
       const subject = getLabelSubject(calc);
       printDocument(
         `Etiquetas de ${subject.nombre}`,
@@ -1013,6 +1027,7 @@
       }
 
       const subject = getLabelSubject(calc);
+      const selectedOptions = getSelectedLabelOptions(datosFormulario.labelOptions);
       const saved = obtenerGuardadosMicrobiologia();
       const item = {
         id: options.id || uniqueMicroId("etiq"),
@@ -1024,14 +1039,24 @@
         fecha: formatDateOnly(new Date()),
         fechaHora: new Date().toISOString(),
         lote: datosFormulario.lote || "",
-        tipoEtiqueta: labelTypeName(labels[0].tipo),
-        tipoEtiquetaKey: labels[0].tipo,
+        tipoEtiqueta: selectedOptions.map((option) => `${option.label} (${option.quantity})`).join(", "),
+        tipoEtiquetaKey: selectedOptions.map((option) => option.id).join(","),
         cantidadEtiquetas: labels.length,
         responsable: datosFormulario.responsable || "",
         paralelo: datosFormulario.paralelo || "",
         observaciones: datosFormulario.observaciones || "",
         codigos: labels.map((label) => label.codigo),
-        formulario: { ...datosFormulario, tipoEtiqueta: labels[0].tipo },
+        formulario: {
+          ...datosFormulario,
+          labelOptions: datosFormulario.labelOptions || [],
+          tiposSeleccionados: selectedOptions.map((option) => ({
+            id: option.id,
+            label: option.label,
+            quantity: option.quantity,
+            suffix: option.suffix
+          })),
+          cantidadTotal: labels.length
+        },
         datosTecnicos: {
           calculo: serializeCalcSnapshot(calc),
           primeraEtiqueta: labels[0]
@@ -1196,47 +1221,60 @@
     function generarHojaEtiquetas(calc, datosFormulario, options = {}) {
       const labels = generarDatosEtiqueta(calc, datosFormulario);
       const subject = getLabelSubject(calc);
-      const tipo = labels[0]?.tipo || resolveLabelType(datosFormulario.tipoEtiqueta, calc);
       const header = options.includeHeader === false ? "" : printHeader("Etiquetas de laboratorio", subject.nombre);
+      const selectedOptions = getSelectedLabelOptions(datosFormulario.labelOptions);
 
       return `
         ${header}
         <section class="micro-print-section micro-label-print-section">
           <h2>Etiquetas de laboratorio para recortar</h2>
           <p class="micro-print-muted">Se generaran ${labels.length} etiqueta${labels.length === 1 ? "" : "s"} distribuidas automaticamente en hoja A4.</p>
-          <div class="micro-label-sheet micro-label-sheet-${escapeAttr(tipo)}">
-            ${labels.map((label) => generarHTMLEtiqueta(label)).join("")}
-          </div>
+          ${renderPrintableLabelSummary(selectedOptions)}
+          ${groupLabelsByType(labels).map((group) => `
+            <div class="micro-label-sheet-group">
+              <h3>${escapeHtml(group.label)} · ${group.labels.length} etiqueta${group.labels.length === 1 ? "" : "s"}</h3>
+              <div class="micro-label-sheet micro-label-sheet-${escapeAttr(group.type)}">
+                ${group.labels.map((label) => generarHTMLEtiqueta(label)).join("")}
+              </div>
+            </div>
+          `).join("")}
         </section>
       `;
     }
 
     function generarDatosEtiqueta(calc, datosFormulario = {}) {
-      const tipo = resolveLabelType(datosFormulario.tipoEtiqueta, calc);
-      const cantidad = obtenerCantidadEtiquetas(calc, tipo, datosFormulario);
       const subject = getLabelSubject(calc);
       const fecha = formatDateOnly(new Date());
-      const observaciones = buildLabelObservations(calc, tipo, datosFormulario.observaciones);
+      const selectedOptions = getSelectedLabelOptions(datosFormulario.labelOptions || fallbackLabelOptions(calc, datosFormulario));
 
-      return Array.from({ length: cantidad }, (_, index) => ({
-        nombre: subject.nombre,
-        categoria: subject.categoria,
-        tipo,
-        tipoEtiqueta: labelTypeName(tipo),
-        fecha,
-        responsable: datosFormulario.responsable || "",
-        paralelo: datosFormulario.paralelo || "",
-        lote: datosFormulario.lote || "",
-        observaciones,
-        modulo: "Microbiologia",
-        app: "SUITE VET",
-        indice: index + 1,
-        total: cantidad,
-        secuencia: labelSequence(tipo, index + 1, cantidad),
-        codigo: generarCodigoEtiqueta(subject.nombre, tipo, index),
-        volumenTotal: `${formatNumber(calc.totalMl)} mL`,
-        volumenUnidad: `${formatNumber(calc.perUnit)} mL`
-      }));
+      return selectedOptions.flatMap((option) => {
+        const tipo = normalizeLabelType(option.id);
+        const cantidad = clampLabelCount(option.quantity);
+        const observaciones = buildLabelObservations(calc, tipo, datosFormulario.observaciones);
+
+        return Array.from({ length: cantidad }, (_, index) => ({
+          nombre: subject.nombre,
+          categoria: subject.categoria,
+          tipo,
+          tipoEtiqueta: option.label || labelTypeName(tipo),
+          labelIcon: option.icon || "",
+          labelSuffix: option.suffix || getLabelSuffix(tipo),
+          fecha,
+          responsable: datosFormulario.responsable || "",
+          paralelo: datosFormulario.paralelo || "",
+          lote: datosFormulario.lote || "",
+          observaciones,
+          modulo: "Microbiologia",
+          app: "SUITE VET",
+          indice: index + 1,
+          total: cantidad,
+          cantidadTotalSeleccionada: selectedOptions.reduce((sum, item) => sum + clampLabelCount(item.quantity), 0),
+          secuencia: labelSequence(tipo, index + 1, cantidad),
+          codigo: generarCodigoEtiqueta(subject.nombre, option.suffix || tipo, index),
+          volumenTotal: `${formatNumber(calc.totalMl)} mL`,
+          volumenUnidad: `${formatNumber(calc.perUnit)} mL`
+        }));
+      });
     }
 
     function generarHTMLEtiqueta(label) {
@@ -1244,7 +1282,7 @@
         ? `<div class="micro-lab-label-obs"><span>Obs.</span>${label.observaciones.map((item) => `<p>${escapeHtml(item)}</p>`).join("")}</div>`
         : "";
       const lote = label.lote ? `<span>Lote: ${escapeHtml(label.lote)}</span>` : "";
-      const volume = label.tipo === "matraz"
+      const volume = label.tipo === "frasco"
         ? `<span>Vol. total: ${escapeHtml(label.volumenTotal)}</span>`
         : "";
 
@@ -1256,10 +1294,12 @@
           </header>
           <div class="micro-lab-label-grid">
             <span>Tipo: ${escapeHtml(label.categoria)}</span>
+            <span>Etiqueta: ${escapeHtml(label.tipoEtiqueta)}</span>
             <span>Fecha: ${escapeHtml(label.fecha)}</span>
             ${label.responsable ? `<span>Resp.: ${escapeHtml(label.responsable)}</span>` : ""}
             ${label.paralelo ? `<span>Paralelo: ${escapeHtml(label.paralelo)}</span>` : ""}
             <span>${escapeHtml(label.secuencia)}</span>
+            <span>Cantidad: ${escapeHtml(label.total)} etiqueta${label.total === 1 ? "" : "s"}</span>
             ${volume}
             ${lote}
           </div>
@@ -1280,24 +1320,260 @@
       const initials = clean.length > 1
         ? clean.slice(0, 2).map((word) => word[0]).join("")
         : (clean[0] || "sv").slice(0, 2);
-      const typeCode = { petri: "P", tubo: "T", matraz: "M" }[tipoEtiqueta] || "L";
+      const typeCode = getLabelCodeSuffix(tipoEtiqueta);
       return `${initials.toUpperCase()}-${typeCode}-${String(index + 1).padStart(3, "0")}`;
     }
 
+    function getAvailableLabelOptions(preparationType) {
+      const type = norm(preparationType);
+
+      if (type.includes("agar")) {
+        return [
+          { id: "petri", label: "Caja Petri", icon: "🧫", defaultChecked: true, defaultQuantitySource: "calculated", suffix: "P" },
+          { id: "frasco", label: "Matraz / Frasco", icon: "⚗️", defaultChecked: false, defaultQuantitySource: "one", suffix: "F" }
+        ];
+      }
+
+      if (type.includes("caldo")) {
+        return [
+          { id: "tubo", label: "Tubo de ensayo", icon: "🧪", defaultChecked: true, defaultQuantitySource: "calculated", suffix: "T" },
+          { id: "frasco", label: "Matraz / Frasco", icon: "⚗️", defaultChecked: false, defaultQuantitySource: "one", suffix: "F" }
+        ];
+      }
+
+      if (type.includes("prueba") || type.includes("bioquim") || type.includes("antibi")) {
+        return [
+          { id: "tubo", label: "Tubo de ensayo", icon: "🧪", defaultChecked: true, defaultQuantitySource: "calculated", suffix: "T" },
+          { id: "frasco", label: "Matraz / Frasco", icon: "⚗️", defaultChecked: false, defaultQuantitySource: "one", suffix: "F" }
+        ];
+      }
+
+      return [
+        { id: "frasco", label: "Matraz / Frasco", icon: "⚗️", defaultChecked: true, defaultQuantitySource: "one", suffix: "F" }
+      ];
+    }
+
+    function buildInitialLabelOptions(calc, savedLabel = null) {
+      const preparationType = getPreparationType(calc);
+      const calculatedQuantity = getCalculatedLabelQuantity(calc);
+      const savedForm = savedLabel?.formulario || {};
+      const savedOptions = Array.isArray(savedForm.labelOptions) ? savedForm.labelOptions : null;
+      const savedMap = new Map();
+
+      if (savedOptions) {
+        savedOptions.forEach((option) => savedMap.set(normalizeLabelType(option.id), option));
+      } else if (savedLabel || savedForm.tipoEtiqueta) {
+        const oldType = normalizeLabelType(savedForm.tipoEtiqueta || savedLabel?.tipoEtiquetaKey || "auto");
+        const resolvedType = oldType === "auto" ? getAutoLabelType(preparationType) : oldType;
+        savedMap.set(resolvedType, {
+          id: resolvedType,
+          checked: true,
+          quantity: savedForm.cantidadManual || savedLabel?.cantidadEtiquetas || calculatedQuantity
+        });
+      }
+
+      const options = getAvailableLabelOptions(preparationType).map((option) => {
+        const saved = savedMap.get(option.id);
+        const defaultQuantity = option.defaultQuantitySource === "calculated" ? calculatedQuantity : 1;
+        return {
+          ...option,
+          checked: saved ? Boolean(saved.checked) : savedMap.size ? false : option.defaultChecked,
+          quantity: saved ? clampLabelCount(saved.quantity) : defaultQuantity
+        };
+      });
+
+      if (!savedMap.size && !options.some((option) => option.checked) && options[0]) {
+        options[0].checked = true;
+      }
+
+      return options;
+    }
+
+    function renderLabelOptionRow(option) {
+      return `
+        <div class="micro-label-option-row${option.checked ? " is-selected" : ""}" data-label-option-row="${escapeAttr(option.id)}" data-label="${escapeAttr(option.label)}" data-icon="${escapeAttr(option.icon)}" data-suffix="${escapeAttr(option.suffix)}">
+          <label class="micro-label-option-check">
+            <input type="checkbox" data-label-option value="${escapeAttr(option.id)}"${option.checked ? " checked" : ""} />
+            <span class="micro-label-option-box"></span>
+            <i>${option.icon}</i>
+            <strong>${escapeHtml(option.label)}</strong>
+          </label>
+          <label class="micro-label-option-quantity">
+            <span>Cantidad</span>
+            <input class="sv-input" type="number" min="1" max="999" step="1" data-label-quantity data-label-type="${escapeAttr(option.id)}" value="${escapeAttr(option.quantity)}" />
+          </label>
+        </div>
+      `;
+    }
+
+    function getLabelOptionsFromForm() {
+      return Array.from(root.querySelectorAll("[data-label-option-row]")).map((row) => {
+        const id = normalizeLabelType(row.dataset.labelOptionRow);
+        const quantityInput = row.querySelector("[data-label-quantity]");
+        return {
+          id,
+          label: row.dataset.label || labelTypeName(id),
+          icon: row.dataset.icon || "",
+          suffix: row.dataset.suffix || getLabelCodeSuffix(id),
+          checked: Boolean(row.querySelector("[data-label-option]")?.checked),
+          quantity: clampLabelCount(quantityInput?.value || 1)
+        };
+      });
+    }
+
+    function getSelectedLabelOptions(options = []) {
+      return (Array.isArray(options) ? options : [])
+        .map((option) => {
+          const id = normalizeLabelType(option.id);
+          return {
+            ...option,
+            id,
+            label: option.label || labelTypeName(id),
+            suffix: option.suffix || getLabelCodeSuffix(id),
+            quantity: clampLabelCount(option.quantity)
+          };
+        })
+        .filter((option) => option.checked && option.id !== "auto");
+    }
+
+    function fallbackLabelOptions(calc, datosFormulario = {}) {
+      const options = buildInitialLabelOptions(calc, null);
+      const selectedType = normalizeLabelType(datosFormulario.tipoEtiqueta || "");
+      if (!datosFormulario.tipoEtiqueta || selectedType === "auto") return options;
+
+      return options.map((option) => ({
+        ...option,
+        checked: option.id === selectedType,
+        quantity: option.id === selectedType ? clampLabelCount(datosFormulario.cantidadManual || 1) : option.quantity
+      }));
+    }
+
+    function groupLabelsByType(labels) {
+      const groups = new Map();
+      labels.forEach((label) => {
+        if (!groups.has(label.tipo)) {
+          groups.set(label.tipo, { type: label.tipo, label: label.tipoEtiqueta, labels: [] });
+        }
+        groups.get(label.tipo).labels.push(label);
+      });
+      return Array.from(groups.values());
+    }
+
+    function renderLabelSelectionSummary(options = []) {
+      const selected = getSelectedLabelOptions(options);
+      if (!selected.length) return "";
+      return `
+        <div class="micro-label-selection-summary">
+          <span>Incluye:</span>
+          ${selected.map((option) => `<p>${escapeHtml(option.quantity)} etiqueta${option.quantity === 1 ? "" : "s"} para ${escapeHtml(option.label)}</p>`).join("")}
+        </div>
+      `;
+    }
+
+    function renderPrintableLabelSummary(options = []) {
+      const selected = getSelectedLabelOptions(options);
+      if (!selected.length) return "";
+      return `
+        <div class="micro-print-label-summary">
+          ${selected.map((option) => `<p>${escapeHtml(option.quantity)} etiqueta${option.quantity === 1 ? "" : "s"} para ${escapeHtml(option.label)}</p>`).join("")}
+        </div>
+      `;
+    }
+
+    function actualizarEstadoOpcionesEtiqueta(options = []) {
+      root.querySelectorAll("[data-label-option-row]").forEach((row) => {
+        const checked = Boolean(row.querySelector("[data-label-option]")?.checked);
+        row.classList.toggle("is-selected", checked);
+      });
+
+      const help = root.querySelector("#micro-label-type-help");
+      if (!help) return;
+
+      const selected = getSelectedLabelOptions(options);
+      const base = getLabelOptionsHelp(getPreparationType(state.labelContext?.calc || {}));
+      help.innerHTML = selected.length
+        ? `${escapeHtml(base)} <strong>Seleccionado: ${selected.map((option) => `${option.quantity} ${option.label}`).join(" + ")}</strong>`
+        : `${escapeHtml(base)} <strong>Selecciona al menos un tipo de etiqueta.</strong>`;
+    }
+
+    function getLabelOptionsHelp(preparationType) {
+      const type = norm(preparationType);
+      if (type.includes("agar")) {
+        return "Sugerencia: en agares se suelen imprimir etiquetas para cajas Petri y, si lo necesitas, una etiqueta adicional para el matraz o frasco de preparacion.";
+      }
+      if (type.includes("caldo")) {
+        return "Sugerencia: en caldos se suelen imprimir etiquetas para tubos de ensayo y, si lo necesitas, una etiqueta adicional para el frasco de preparacion.";
+      }
+      if (type.includes("prueba") || type.includes("bioquim")) {
+        return "Sugerencia: en pruebas bioquimicas se suelen imprimir etiquetas para tubos de ensayo y, si lo necesitas, una etiqueta adicional para el frasco de preparacion.";
+      }
+      return "Sugerencia: imprime la etiqueta del frasco de preparacion y ajusta la cantidad si necesitas copias adicionales.";
+    }
+
     function obtenerCantidadEtiquetas(calc, tipoEtiqueta, datosFormulario = {}) {
-      if (tipoEtiqueta === "matraz") return 1;
       if (datosFormulario.usarCantidadAutomatica === false) {
         return clampLabelCount(datosFormulario.cantidadManual);
       }
-      return clampLabelCount(calc.count || 1);
+      return getCalculatedLabelQuantity(calc);
     }
 
     function resolveLabelType(value, calc) {
-      if (["petri", "tubo", "matraz"].includes(value)) return value;
-      const profile = norm(calc.profileText || "");
-      if (profile.includes("tubo") || profile.includes("alicuota") || profile.includes("frasco")) return "tubo";
-      if (calc.targetPane === "agares") return "petri";
-      return "tubo";
+      return getResolvedLabelType(value, getPreparationType(calc));
+    }
+
+    function getAutoLabelType(preparationType) {
+      const type = norm(preparationType);
+
+      if (type.includes("agar")) return "petri";
+      if (type.includes("caldo")) return "tubo";
+      if (type.includes("prueba")) return "tubo";
+      if (type.includes("bioquim")) return "tubo";
+      if (type.includes("antibi")) return "tubo";
+
+      return "frasco";
+    }
+
+    function getResolvedLabelType(selectedLabelType, preparationType) {
+      const selected = normalizeLabelType(selectedLabelType);
+      if (selected === "auto") return getAutoLabelType(preparationType);
+      return selected;
+    }
+
+    function getPreparationType(calc) {
+      return getLabelSubject(calc).categoria || "";
+    }
+
+    function normalizeLabelType(value) {
+      const type = String(value || "auto").toLowerCase();
+      if (type === "matraz") return "frasco";
+      return ["auto", "petri", "tubo", "frasco"].includes(type) ? type : "auto";
+    }
+
+    function getLabelCodeSuffix(resolvedLabelType) {
+      const suffix = String(resolvedLabelType || "").toUpperCase();
+      if (["P", "T", "F", "G"].includes(suffix)) return suffix;
+      if (resolvedLabelType === "petri") return "P";
+      if (resolvedLabelType === "tubo") return "T";
+      if (resolvedLabelType === "frasco") return "F";
+      return "G";
+    }
+
+    function getLabelSuffix(labelType) {
+      return getLabelCodeSuffix(labelType);
+    }
+
+    function getCalculatedLabelQuantity(calc) {
+      return clampLabelCount(calc?.count || 1);
+    }
+
+    function normalizeLabelQuantityInput(input) {
+      if (!input) return;
+      const parsed = Number(input.value);
+      if (!Number.isFinite(parsed) || parsed < 1) {
+        input.value = "1";
+        return;
+      }
+      input.value = String(clampLabelCount(parsed));
     }
 
     function getLabelSubject(calc) {
@@ -1322,20 +1598,25 @@
       const names = {
         petri: "Caja Petri",
         tubo: "Tubo de ensayo",
-        matraz: "Matraz"
+        frasco: "Matraz / Frasco"
       };
       return names[type] || "Etiqueta";
     }
 
     function labelSequence(type, index, total) {
-      if (type === "petri") return `Placa ${index}/${total}`;
-      if (type === "tubo") return `Tubo ${index}/${total}`;
-      return "Matraz 1/1";
+      return `${getCounterLabel(type)} ${index}/${total}`;
+    }
+
+    function getCounterLabel(labelType) {
+      if (labelType === "petri") return "Placa";
+      if (labelType === "tubo") return "Tubo";
+      if (labelType === "frasco") return "Frasco";
+      return "Etiqueta";
     }
 
     function buildLabelObservations(calc, type, userNotes) {
       const notes = [];
-      if (type === "matraz" && Number(calc.totalMl) > 200) {
+      if (type === "frasco" && Number(calc.totalMl) > 200) {
         notes.push("Dividir la preparacion en otro envase.");
       }
       if (userNotes) notes.push(userNotes);
@@ -1397,15 +1678,19 @@
     }
 
     function formFromSavedEtiqueta(etiqueta) {
-      return {
+      const form = {
         responsable: etiqueta.responsable || "",
         paralelo: etiqueta.paralelo || "",
         observaciones: etiqueta.observaciones || "",
-        tipoEtiqueta: etiqueta.tipoEtiquetaKey || "auto",
+        tipoEtiqueta: normalizeLabelType(etiqueta.formulario?.tipoEtiqueta || etiqueta.tipoEtiquetaKey || "auto"),
         usarCantidadAutomatica: false,
         cantidadManual: etiqueta.cantidadEtiquetas || 1,
         lote: etiqueta.lote || ""
       };
+      if (Array.isArray(etiqueta.formulario?.labelOptions)) {
+        form.labelOptions = etiqueta.formulario.labelOptions;
+      }
+      return form;
     }
 
     function getRememberedMicroUser() {
@@ -1911,6 +2196,7 @@
           }
           body.micro-printing .micro-label-sheet-petri { grid-template-columns: repeat(3, 58mm) !important; gap: 3mm !important; }
           body.micro-printing .micro-label-sheet-tubo { grid-template-columns: repeat(4, 43mm) !important; gap: 2.5mm !important; }
+          body.micro-printing .micro-label-sheet-frasco,
           body.micro-printing .micro-label-sheet-matraz { grid-template-columns: repeat(2, 80mm) !important; gap: 4mm !important; }
           body.micro-printing .micro-lab-label {
             break-inside: avoid !important;
