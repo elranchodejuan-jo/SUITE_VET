@@ -418,6 +418,226 @@
   padding: 0.85rem 1.1rem 1rem;
 }
 
+.micro-calc-actions {
+  align-items: stretch;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  justify-content: stretch;
+}
+
+.micro-action-group {
+  background: rgba(15, 23, 42, 0.32);
+  border: 1px solid var(--sv-border-subtle);
+  border-radius: 0.75rem;
+  display: grid;
+  gap: 0.45rem;
+  padding: 0.65rem;
+}
+
+[data-theme="light"] .micro-action-group {
+  background: #f8fafc;
+}
+
+.micro-action-group.is-full {
+  grid-column: 1 / -1;
+}
+
+.micro-action-group > span,
+.micro-label-form label span,
+.micro-label-preview-head span,
+.micro-saved-section h4 {
+  color: var(--sv-text-muted);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.micro-modal-label {
+  max-width: 1060px;
+}
+
+.micro-label-modal-body {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(260px, 1fr) minmax(280px, 0.95fr);
+  padding: 1rem 1.1rem;
+}
+
+.micro-label-form {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.micro-label-form label {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.micro-label-form .is-wide {
+  grid-column: 1 / -1;
+}
+
+.micro-label-textarea {
+  min-height: 88px;
+  resize: vertical;
+}
+
+.micro-check-row {
+  align-items: center;
+  background: rgba(34, 211, 238, 0.07);
+  border: 1px solid rgba(34, 211, 238, 0.18);
+  border-radius: 0.7rem;
+  display: flex;
+  gap: 0.5rem;
+  min-height: 42px;
+  padding: 0.55rem 0.65rem;
+}
+
+.micro-check-row input {
+  accent-color: var(--sv-micro-color);
+}
+
+.micro-check-row label {
+  color: var(--sv-text-secondary);
+  cursor: pointer;
+  font-size: 0.82rem;
+}
+
+.micro-label-preview-panel {
+  background: rgba(15, 23, 42, 0.42);
+  border: 1px solid var(--sv-border);
+  border-radius: 0.85rem;
+  display: grid;
+  gap: 0.8rem;
+  padding: 0.8rem;
+}
+
+[data-theme="light"] .micro-label-preview-panel {
+  background: #f8fafc;
+}
+
+.micro-label-preview-head {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.micro-label-preview-head strong {
+  color: var(--sv-micro-color);
+  font-size: 0.8rem;
+}
+
+.micro-label-preview {
+  display: grid;
+  gap: 0.8rem;
+  justify-items: center;
+}
+
+.micro-label-preview .micro-lab-label {
+  transform: scale(1.08);
+  transform-origin: top center;
+}
+
+.micro-label-preview-summary {
+  color: var(--sv-text-muted);
+  font-size: 0.82rem;
+  line-height: 1.45;
+  margin-top: 0.3rem;
+  text-align: center;
+}
+
+.micro-label-actions {
+  align-items: center;
+}
+
+.micro-fab-lab {
+  background: var(--sv-micro-color);
+  box-shadow: 0 12px 32px rgba(34, 211, 238, 0.28);
+}
+
+.micro-fab-lab:hover {
+  background: #0891b2;
+}
+
+.micro-fab-lab .sv-fab-badge {
+  border-color: var(--sv-micro-color);
+}
+
+.micro-modal-saved {
+  max-width: 940px;
+}
+
+.micro-saved-body {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem 1.1rem;
+}
+
+.micro-saved-section {
+  border: 1px solid var(--sv-border);
+  border-radius: 0.85rem;
+  display: grid;
+  gap: 0.65rem;
+  padding: 0.75rem;
+}
+
+.micro-saved-empty {
+  color: var(--sv-text-muted);
+  font-size: 0.84rem;
+}
+
+.micro-saved-list {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.micro-saved-item {
+  align-items: center;
+  background: rgba(15, 23, 42, 0.34);
+  border: 1px solid var(--sv-border-subtle);
+  border-radius: 0.7rem;
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: 1fr auto;
+  padding: 0.7rem;
+}
+
+[data-theme="light"] .micro-saved-item {
+  background: #f8fafc;
+}
+
+.micro-saved-item strong,
+.micro-saved-item span,
+.micro-saved-item small {
+  display: block;
+}
+
+.micro-saved-item strong {
+  color: var(--sv-text-primary);
+  font-size: 0.9rem;
+}
+
+.micro-saved-item span {
+  color: var(--sv-text-secondary);
+  font-size: 0.8rem;
+  margin-top: 0.12rem;
+}
+
+.micro-saved-item small {
+  color: var(--sv-text-muted);
+  font-size: 0.72rem;
+  margin-top: 0.12rem;
+}
+
+.micro-saved-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  justify-content: flex-end;
+}
+
 .micro-detail-grid {
   display: grid;
   gap: 0.65rem;
@@ -812,6 +1032,146 @@ body.micro-printing {
   height: 1px;
 }
 
+.micro-print-doc.is-label-sheet,
+.micro-print-doc.is-prep-with-labels {
+  column-count: 1;
+  column-gap: 0;
+}
+
+.micro-label-print-section {
+  break-inside: auto;
+  page-break-inside: auto;
+}
+
+.micro-label-sheet {
+  display: grid;
+  gap: 3mm;
+  grid-template-columns: repeat(auto-fill, minmax(58mm, 1fr));
+}
+
+.micro-label-sheet-tubo {
+  gap: 2.5mm;
+  grid-template-columns: repeat(auto-fill, minmax(43mm, 1fr));
+}
+
+.micro-label-sheet-matraz {
+  gap: 4mm;
+  grid-template-columns: repeat(auto-fill, minmax(80mm, 1fr));
+}
+
+.micro-lab-label {
+  background: #fff;
+  border: 1px dashed #64748b;
+  border-radius: 4px;
+  box-sizing: border-box;
+  break-inside: avoid;
+  color: #0f172a;
+  display: flex;
+  flex-direction: column;
+  font-family: Arial, Helvetica, sans-serif;
+  gap: 1.2mm;
+  min-height: 34mm;
+  overflow: hidden;
+  page-break-inside: avoid;
+  padding: 2.4mm;
+  width: 58mm;
+}
+
+.micro-lab-label-tubo {
+  font-size: 8.8pt;
+  min-height: 22mm;
+  padding: 1.8mm;
+  width: 43mm;
+}
+
+.micro-lab-label-matraz {
+  min-height: 46mm;
+  width: 80mm;
+}
+
+.micro-lab-label header {
+  align-items: flex-start;
+  border-bottom: 1px solid #cbd5e1;
+  display: flex;
+  gap: 2mm;
+  justify-content: space-between;
+  padding-bottom: 1mm;
+}
+
+.micro-lab-label strong {
+  color: #0f172a;
+  font-size: 10pt;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.micro-lab-label-tubo strong {
+  font-size: 8.8pt;
+}
+
+.micro-lab-label b {
+  color: #0f766e;
+  flex-shrink: 0;
+  font-size: 8.5pt;
+}
+
+.micro-lab-label-grid {
+  display: grid;
+  gap: 0.7mm;
+}
+
+.micro-lab-label-grid span,
+.micro-lab-label footer span {
+  color: #334155;
+  font-size: 8.7pt;
+  line-height: 1.12;
+}
+
+.micro-lab-label-tubo .micro-lab-label-grid span,
+.micro-lab-label-tubo footer span {
+  font-size: 7.7pt;
+}
+
+.micro-lab-label-obs {
+  border-top: 1px dotted #cbd5e1;
+  color: #0f172a;
+  display: grid;
+  gap: 0.4mm;
+  margin-top: auto;
+  padding-top: 0.8mm;
+}
+
+.micro-lab-label-obs span {
+  color: #475569;
+  font-size: 7.4pt;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.micro-lab-label-obs p {
+  color: #0f172a;
+  display: -webkit-box;
+  font-size: 8pt;
+  line-height: 1.1;
+  margin: 0;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.micro-lab-label-tubo .micro-lab-label-obs p {
+  -webkit-line-clamp: 1;
+  font-size: 7pt;
+}
+
+.micro-lab-label footer {
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 0.8mm;
+}
+
 @keyframes micro-focus {
   0% { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.0); }
   35% { box-shadow: 0 0 0 6px rgba(34, 211, 238, 0.24), 0 0 42px rgba(34, 211, 238, 0.22); }
@@ -834,8 +1194,15 @@ body.micro-printing {
 
   .micro-detail-grid,
   .micro-calc-form,
-  .micro-calc-result-panel {
+  .micro-calc-result-panel,
+  .micro-label-modal-body,
+  .micro-label-form,
+  .micro-calc-actions {
     grid-template-columns: 1fr;
+  }
+
+  .micro-action-group.is-full {
+    grid-column: auto;
   }
 
   .micro-print-toolbar {
@@ -859,6 +1226,19 @@ body.micro-printing {
 
   .micro-card-actions {
     grid-template-columns: 1fr;
+  }
+
+  .micro-saved-item {
+    align-items: stretch;
+    grid-template-columns: 1fr;
+  }
+
+  .micro-saved-actions {
+    justify-content: stretch;
+  }
+
+  .micro-saved-actions .sv-btn {
+    flex: 1 1 110px;
   }
 
   .micro-modal-overlay {
@@ -953,6 +1333,12 @@ body.micro-printing {
     column-count: 1 !important;
     column-gap: 0 !important;
     font-size: 11pt !important;
+  }
+
+  .micro-print-doc.is-label-sheet,
+  .micro-print-doc.is-prep-with-labels {
+    column-count: 1 !important;
+    column-gap: 0 !important;
   }
 
   .micro-print-header {
@@ -1082,6 +1468,38 @@ body.micro-printing {
     border-bottom: 1px solid #0f172a;
     flex: 1;
     height: 1px;
+  }
+
+  .micro-label-print-section {
+    break-inside: auto !important;
+    page-break-inside: auto !important;
+  }
+
+  .micro-label-sheet {
+    break-inside: auto !important;
+    display: grid !important;
+    page-break-inside: auto !important;
+  }
+
+  .micro-label-sheet-petri {
+    gap: 3mm !important;
+    grid-template-columns: repeat(3, 58mm) !important;
+  }
+
+  .micro-label-sheet-tubo {
+    gap: 2.5mm !important;
+    grid-template-columns: repeat(4, 43mm) !important;
+  }
+
+  .micro-label-sheet-matraz {
+    gap: 4mm !important;
+    grid-template-columns: repeat(2, 80mm) !important;
+  }
+
+  .micro-lab-label {
+    break-inside: avoid !important;
+    box-shadow: none !important;
+    page-break-inside: avoid !important;
   }
 
   @page {

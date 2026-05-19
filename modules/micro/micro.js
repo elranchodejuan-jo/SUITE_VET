@@ -40,7 +40,16 @@
       secondary: "",
       selectedId: null,
       calcTarget: null,
-      calcOrigin: null
+      calcOrigin: null,
+      labelContext: null
+    };
+
+    const microStorage = {
+      responsable: "suitevet_micro_responsable",
+      paralelo: "suitevet_micro_paralelo",
+      preparaciones: "suitevet_micro_preparaciones",
+      etiquetas: "suitevet_micro_etiquetas",
+      guardados: "suitevet_micro_guardados"
     };
 
     root.innerHTML = `
@@ -86,6 +95,23 @@
           <div id="micro-calc-content"></div>
         </div>
       </div>
+
+      <div id="micro-label-modal" class="micro-modal-overlay">
+        <div class="micro-modal micro-modal-label">
+          <div id="micro-label-content"></div>
+        </div>
+      </div>
+
+      <div id="micro-saved-modal" class="micro-modal-overlay">
+        <div class="micro-modal micro-modal-saved">
+          <div id="micro-saved-content"></div>
+        </div>
+      </div>
+
+      <button id="micro-fab-lab" class="sv-fab micro-fab-lab sv-fab-hidden" type="button" data-micro-open-saved title="Guardados de Microbiologia">
+        Lab
+        <span id="micro-fab-badge" class="sv-fab-badge" data-count="0">0</span>
+      </button>
     `;
 
     const printArea = ensureGlobalPrintArea();
@@ -101,6 +127,12 @@
       fichaContent: root.querySelector("#micro-ficha-content"),
       calcModal: root.querySelector("#micro-calc-modal"),
       calcContent: root.querySelector("#micro-calc-content"),
+      labelModal: root.querySelector("#micro-label-modal"),
+      labelContent: root.querySelector("#micro-label-content"),
+      savedModal: root.querySelector("#micro-saved-modal"),
+      savedContent: root.querySelector("#micro-saved-content"),
+      labFab: root.querySelector("#micro-fab-lab"),
+      labBadge: root.querySelector("#micro-fab-badge"),
       printArea
     };
 
@@ -139,13 +171,25 @@
         return;
       }
 
+      const closeLabel = e.target.closest("[data-micro-label-close]");
+      if (closeLabel) {
+        cerrarModalEtiqueta();
+        return;
+      }
+
+      const closeSaved = e.target.closest("[data-micro-saved-close]");
+      if (closeSaved) {
+        cerrarPanelGuardadosMicrobiologia();
+        return;
+      }
+
       const close = e.target.closest("[data-micro-close]");
       if (close) {
         closeModals();
         return;
       }
 
-      if (e.target === els.fichaModal || e.target === els.calcModal) {
+      if (e.target === els.fichaModal || e.target === els.calcModal || e.target === els.labelModal || e.target === els.savedModal) {
         closeModals();
         return;
       }
@@ -176,6 +220,48 @@
         return;
       }
 
+      const savePrep = e.target.closest("[data-micro-save-prep]");
+      if (savePrep) {
+        guardarPreparacionActual();
+        return;
+      }
+
+      const labelAction = e.target.closest("[data-micro-label-action]");
+      if (labelAction) {
+        abrirModalEtiqueta(labelAction.dataset.microLabelAction || "print");
+        return;
+      }
+
+      const openSaved = e.target.closest("[data-micro-open-saved]");
+      if (openSaved) {
+        abrirPanelGuardadosMicrobiologia();
+        return;
+      }
+
+      const labelSubmit = e.target.closest("[data-micro-label-submit]");
+      if (labelSubmit) {
+        ejecutarAccionEtiqueta(labelSubmit.dataset.microLabelSubmit || "print");
+        return;
+      }
+
+      const printSaved = e.target.closest("[data-micro-print-saved]");
+      if (printSaved) {
+        imprimirGuardadoMicrobiologia(printSaved.dataset.id);
+        return;
+      }
+
+      const editSavedLabel = e.target.closest("[data-micro-edit-saved-label]");
+      if (editSavedLabel) {
+        abrirEtiquetaGuardadaParaEditar(editSavedLabel.dataset.id);
+        return;
+      }
+
+      const deleteSaved = e.target.closest("[data-micro-delete-saved]");
+      if (deleteSaved) {
+        eliminarGuardadoMicrobiologia(deleteSaved.dataset.id);
+        return;
+      }
+
       const printFicha = e.target.closest("[data-micro-print-ficha]");
       if (printFicha) {
         printFichaDoc(printFicha.dataset.pane, printFicha.dataset.id);
@@ -198,15 +284,28 @@
 
     els.calcContent.addEventListener("input", updateCalcResult);
     els.calcContent.addEventListener("change", updateCalcResult);
+    els.labelContent.addEventListener("input", actualizarVistaPreviaEtiqueta);
+    els.labelContent.addEventListener("change", actualizarVistaPreviaEtiqueta);
 
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape" && els.printArea.classList.contains("is-open")) {
         closePrintView();
+        return;
       }
+
+      if (e.key === "Escape") {
+        closeModals();
+      }
+    });
+
+    document.addEventListener("suitevet:viewchange", (e) => {
+      actualizarVisibilidadFabMicro(e.detail?.view || "");
     });
 
     renderFilters();
     render();
+    renderMicroSavedBadge();
+    actualizarVisibilidadFabMicro(window.SuiteVet?.currentView || "home");
     registerGlobalSearch();
 
     function switchPane(pane, selectedId = null) {
@@ -586,9 +685,25 @@
           </div>
         </div>
         <div id="micro-calc-result" class="micro-calc-result-panel"></div>
-        <div class="micro-modal-actions">
-          <button class="sv-btn sv-btn-secondary" type="button" data-micro-ficha data-pane="${origin.pane}" data-id="${origin.id}">Ficha técnica</button>
-          <button class="sv-btn sv-btn-primary" type="button" data-micro-print-prep>Imprimir preparación</button>
+        <div class="micro-modal-actions micro-calc-actions">
+          <div class="micro-action-group">
+            <span>Consulta</span>
+            <button class="sv-btn sv-btn-secondary" type="button" data-micro-ficha data-pane="${origin.pane}" data-id="${origin.id}">Ficha tecnica</button>
+          </div>
+          <div class="micro-action-group">
+            <span>Acciones de preparacion</span>
+            <button class="sv-btn sv-btn-primary" type="button" data-micro-print-prep>Imprimir preparacion</button>
+            <button class="sv-btn sv-btn-secondary" type="button" data-micro-save-prep>Guardar preparacion</button>
+          </div>
+          <div class="micro-action-group">
+            <span>Acciones de etiquetas</span>
+            <button class="sv-btn sv-btn-primary" type="button" data-micro-label-action="print">Imprimir etiqueta</button>
+            <button class="sv-btn sv-btn-secondary" type="button" data-micro-label-action="save">Guardar etiqueta</button>
+          </div>
+          <div class="micro-action-group is-full">
+            <span>Accion completa</span>
+            <button class="sv-btn sv-btn-primary" type="button" data-micro-label-action="combo">Imprimir preparacion + etiqueta</button>
+          </div>
         </div>
       `;
       els.calcModal.classList.add("is-open");
@@ -661,6 +776,705 @@
       printDocument(title, renderPrintableFicha(item, pane), {
         docClass: pane === "antibioticos" ? "is-antibiotic-passport" : ""
       });
+    }
+
+    function abrirModalEtiqueta(action = "print", savedLabel = null) {
+      const calc = savedLabel ? restoreCalcSnapshot(savedLabel.calculo || savedLabel.datosTecnicos?.calculo) : getCalcSnapshot();
+      if (!calc) {
+        toast("Calcula una preparacion antes de generar etiquetas.");
+        return;
+      }
+
+      const remembered = getRememberedMicroUser();
+      const savedForm = savedLabel?.formulario || {};
+      const tipoInicial = savedForm.tipoEtiqueta || "auto";
+      const tipoResuelto = resolveLabelType(tipoInicial, calc);
+      const cantidadAutomatica = obtenerCantidadEtiquetas(calc, tipoResuelto, { usarCantidadAutomatica: true });
+      const cantidadManual = savedForm.cantidadManual || savedLabel?.cantidadEtiquetas || cantidadAutomatica;
+      const usarCantidadAutomatica = savedForm.usarCantidadAutomatica !== false;
+      const subject = getLabelSubject(calc);
+      const primaryAction = action === "combo" ? "combo" : action === "save" ? "save" : "print";
+
+      state.labelContext = {
+        action,
+        calc,
+        savedId: savedLabel?.id || null
+      };
+
+      els.labelContent.innerHTML = `
+        <div class="micro-modal-head">
+          <div>
+            <span class="micro-kicker">ETIQUETAS DE LABORATORIO</span>
+            <h3>${escapeHtml(subject.nombre)}</h3>
+            <p>${escapeHtml(subject.categoria)} · ${formatNumber(calc.totalMl)} mL preparados · ${calc.count || 1} unidad${Number(calc.count) === 1 ? "" : "es"}</p>
+          </div>
+          <button class="micro-icon-btn" type="button" data-micro-label-close aria-label="Cerrar">×</button>
+        </div>
+        <div class="micro-label-modal-body">
+          <form class="micro-label-form" autocomplete="off">
+            <label>
+              <span>Responsable</span>
+              <input id="micro-label-responsable" class="sv-input" type="text" value="${escapeAttr(savedForm.responsable || remembered.responsable)}" placeholder="Nombre del estudiante o responsable" />
+            </label>
+            <label>
+              <span>Paralelo / curso / semestre</span>
+              <input id="micro-label-paralelo" class="sv-input" type="text" value="${escapeAttr(savedForm.paralelo || remembered.paralelo)}" placeholder="Ej. 2do MVZ" />
+            </label>
+            <label>
+              <span>Tipo de etiqueta</span>
+              <select id="micro-label-type" class="sv-select">
+                <option value="auto"${tipoInicial === "auto" ? " selected" : ""}>Automatico segun el calculo actual</option>
+                <option value="petri"${tipoInicial === "petri" ? " selected" : ""}>Caja Petri</option>
+                <option value="tubo"${tipoInicial === "tubo" ? " selected" : ""}>Tubo de ensayo</option>
+                <option value="matraz"${tipoInicial === "matraz" ? " selected" : ""}>Matraz</option>
+              </select>
+            </label>
+            <label>
+              <span>Lote / codigo de lote</span>
+              <input id="micro-label-lote" class="sv-input" type="text" value="${escapeAttr(savedForm.lote || savedLabel?.lote || generarLoteMicro())}" placeholder="SV-MIC-2026-001" />
+            </label>
+            <div class="micro-check-row">
+              <input id="micro-label-auto-count" type="checkbox"${usarCantidadAutomatica ? " checked" : ""} />
+              <label for="micro-label-auto-count">Usar cantidad calculada automaticamente</label>
+            </div>
+            <label>
+              <span>Cantidad de etiquetas</span>
+              <input id="micro-label-count" class="sv-input" type="number" min="1" max="999" value="${escapeAttr(cantidadManual)}" />
+            </label>
+            <label class="is-wide">
+              <span>Observaciones opcionales</span>
+              <textarea id="micro-label-observaciones" class="sv-input micro-label-textarea" rows="3" placeholder="Solo si debe aparecer en la etiqueta">${escapeHtml(savedForm.observaciones || savedLabel?.observaciones || "")}</textarea>
+            </label>
+          </form>
+          <aside class="micro-label-preview-panel">
+            <div class="micro-label-preview-head">
+              <span>Vista previa</span>
+              <strong id="micro-label-preview-count"></strong>
+            </div>
+            <div id="micro-label-preview" class="micro-label-preview"></div>
+          </aside>
+        </div>
+        <div class="micro-modal-actions micro-label-actions">
+          <button class="sv-btn sv-btn-secondary" type="button" data-micro-label-close>Cancelar</button>
+          ${primaryAction !== "save" ? `<button class="sv-btn sv-btn-secondary" type="button" data-micro-label-submit="save">Guardar etiqueta</button>` : ""}
+          ${primaryAction !== "print" ? `<button class="sv-btn sv-btn-secondary" type="button" data-micro-label-submit="print">Imprimir etiqueta</button>` : ""}
+          <button class="sv-btn sv-btn-primary" type="button" data-micro-label-submit="${primaryAction}">
+            ${primaryAction === "combo" ? "Imprimir preparacion + etiqueta" : primaryAction === "save" ? "Guardar etiqueta" : "Imprimir etiqueta"}
+          </button>
+        </div>
+      `;
+
+      els.labelModal.classList.add("is-open");
+      actualizarVistaPreviaEtiqueta();
+    }
+
+    function cerrarModalEtiqueta() {
+      els.labelModal.classList.remove("is-open");
+      els.labelContent.innerHTML = "";
+      state.labelContext = null;
+    }
+
+    function actualizarVistaPreviaEtiqueta() {
+      if (!state.labelContext) return;
+      const calc = state.labelContext.calc;
+      const form = obtenerDatosFormularioEtiqueta();
+      const tipo = resolveLabelType(form.tipoEtiqueta, calc);
+      const countInput = root.querySelector("#micro-label-count");
+      const autoCount = root.querySelector("#micro-label-auto-count");
+      const preview = root.querySelector("#micro-label-preview");
+      const previewCount = root.querySelector("#micro-label-preview-count");
+
+      if (countInput) {
+        countInput.disabled = tipo === "matraz" || Boolean(autoCount?.checked);
+        if (tipo === "matraz") countInput.value = "1";
+        if (autoCount?.checked && tipo !== "matraz") {
+          countInput.value = String(obtenerCantidadEtiquetas(calc, tipo, { usarCantidadAutomatica: true }));
+        }
+      }
+
+      const labels = generarDatosEtiqueta(calc, obtenerDatosFormularioEtiqueta());
+      const first = labels[0];
+      if (!preview || !first) return;
+
+      preview.innerHTML = `
+        ${generarHTMLEtiqueta(first)}
+        <p class="micro-label-preview-summary">
+          Se generaran ${labels.length} etiqueta${labels.length === 1 ? "" : "s"} en hoja A4. Si no entran en una pagina, continuaran automaticamente en paginas adicionales.
+        </p>
+      `;
+      if (previewCount) {
+        previewCount.textContent = `${labels.length} etiqueta${labels.length === 1 ? "" : "s"}`;
+      }
+    }
+
+    function obtenerDatosFormularioEtiqueta() {
+      const responsable = root.querySelector("#micro-label-responsable")?.value.trim() || "";
+      const paralelo = root.querySelector("#micro-label-paralelo")?.value.trim() || "";
+      const observaciones = root.querySelector("#micro-label-observaciones")?.value.trim() || "";
+      const tipoEtiqueta = root.querySelector("#micro-label-type")?.value || "auto";
+      const usarCantidadAutomatica = Boolean(root.querySelector("#micro-label-auto-count")?.checked);
+      const cantidadManual = clampLabelCount(root.querySelector("#micro-label-count")?.value || 1);
+      const lote = root.querySelector("#micro-label-lote")?.value.trim() || "";
+
+      saveRememberedMicroUser({ responsable, paralelo });
+      return {
+        responsable,
+        paralelo,
+        observaciones,
+        tipoEtiqueta,
+        usarCantidadAutomatica,
+        cantidadManual,
+        lote
+      };
+    }
+
+    function ejecutarAccionEtiqueta(action) {
+      if (!state.labelContext) return;
+      const calc = state.labelContext.calc;
+      const form = obtenerDatosFormularioEtiqueta();
+
+      if (action === "save") {
+        guardarEtiqueta(calc, form, { id: state.labelContext.savedId });
+        cerrarModalEtiqueta();
+        return;
+      }
+
+      if (action === "combo") {
+        printDocument(
+          `Preparacion y etiquetas de ${calc.target.nombre}`,
+          `${renderPrintablePreparation(calc)}${generarHojaEtiquetas(calc, form, { includeHeader: false })}`,
+          { docClass: "is-prep-with-labels" }
+        );
+        return;
+      }
+
+      imprimirEtiqueta(calc, form);
+    }
+
+    function imprimirEtiqueta(calc, datosFormulario) {
+      const subject = getLabelSubject(calc);
+      printDocument(
+        `Etiquetas de ${subject.nombre}`,
+        generarHojaEtiquetas(calc, datosFormulario),
+        { docClass: "is-label-sheet" }
+      );
+    }
+
+    function guardarPreparacionActual() {
+      const calc = getCalcSnapshot();
+      if (!calc) {
+        toast("Calcula una preparacion antes de guardarla.");
+        return;
+      }
+      guardarPreparacion(calc, { ...getRememberedMicroUser(), lote: generarLoteMicro() });
+    }
+
+    function guardarPreparacion(calc, datosFormulario = {}) {
+      const subject = getLabelSubject(calc);
+      const saved = obtenerGuardadosMicrobiologia();
+      const item = {
+        id: uniqueMicroId("prep"),
+        tipo: "preparacion",
+        modulo: "Microbiologia",
+        categoria: subject.categoria,
+        categoriaKey: subject.pane,
+        nombre: subject.nombre,
+        nombreMedio: calc.target.nombre,
+        fecha: formatDateOnly(new Date()),
+        fechaHora: new Date().toISOString(),
+        lote: datosFormulario.lote || generarLoteMicro(),
+        volumenTotal: `${formatNumber(calc.totalMl)} mL`,
+        cantidadPlacas: calc.targetPane === "agares" ? calc.count : null,
+        cantidadTubos: calc.targetPane === "caldos" || subject.pane === "pruebas" ? calc.count : null,
+        cantidadUnidades: calc.count,
+        tamanoPlaca: calc.targetPane === "agares" ? calc.profileText : "",
+        volumenPorUnidad: `${formatNumber(calc.perUnit)} mL`,
+        responsable: datosFormulario.responsable || "",
+        paralelo: datosFormulario.paralelo || "",
+        datosTecnicos: {
+          calculo: serializeCalcSnapshot(calc)
+        },
+        calculo: serializeCalcSnapshot(calc)
+      };
+
+      saved.preparaciones.push(item);
+      persistirGuardadosMicrobiologia(saved);
+      renderMicroSavedBadge(true);
+      renderPanelGuardadosMicrobiologia();
+      toast(`Preparacion guardada: ${subject.nombre}`);
+      return item;
+    }
+
+    function guardarEtiqueta(calc, datosFormulario, options = {}) {
+      const labels = generarDatosEtiqueta(calc, datosFormulario);
+      if (!labels.length) {
+        toast("No hay etiquetas para guardar.");
+        return null;
+      }
+
+      const subject = getLabelSubject(calc);
+      const saved = obtenerGuardadosMicrobiologia();
+      const item = {
+        id: options.id || uniqueMicroId("etiq"),
+        tipo: "etiqueta",
+        modulo: "Microbiologia",
+        categoria: subject.categoria,
+        categoriaKey: subject.pane,
+        nombre: subject.nombre,
+        fecha: formatDateOnly(new Date()),
+        fechaHora: new Date().toISOString(),
+        lote: datosFormulario.lote || "",
+        tipoEtiqueta: labelTypeName(labels[0].tipo),
+        tipoEtiquetaKey: labels[0].tipo,
+        cantidadEtiquetas: labels.length,
+        responsable: datosFormulario.responsable || "",
+        paralelo: datosFormulario.paralelo || "",
+        observaciones: datosFormulario.observaciones || "",
+        codigos: labels.map((label) => label.codigo),
+        formulario: { ...datosFormulario, tipoEtiqueta: labels[0].tipo },
+        datosTecnicos: {
+          calculo: serializeCalcSnapshot(calc),
+          primeraEtiqueta: labels[0]
+        },
+        calculo: serializeCalcSnapshot(calc)
+      };
+
+      const existingIndex = saved.etiquetas.findIndex((entry) => entry.id === item.id);
+      if (existingIndex >= 0) {
+        saved.etiquetas[existingIndex] = item;
+      } else {
+        saved.etiquetas.push(item);
+      }
+
+      persistirGuardadosMicrobiologia(saved);
+      renderMicroSavedBadge(true);
+      renderPanelGuardadosMicrobiologia();
+      toast(`Etiqueta guardada: ${subject.nombre}`);
+      return item;
+    }
+
+    function obtenerGuardadosMicrobiologia() {
+      const preparaciones = readStorageArray(microStorage.preparaciones);
+      const etiquetas = readStorageArray(microStorage.etiquetas);
+      return { preparaciones, etiquetas };
+    }
+
+    function persistirGuardadosMicrobiologia(saved) {
+      writeStorageArray(microStorage.preparaciones, saved.preparaciones);
+      writeStorageArray(microStorage.etiquetas, saved.etiquetas);
+      writeStorageArray(microStorage.guardados, [
+        ...saved.preparaciones.map((item) => ({ ...item, tipo: "preparacion" })),
+        ...saved.etiquetas.map((item) => ({ ...item, tipo: "etiqueta" }))
+      ]);
+    }
+
+    function abrirPanelGuardadosMicrobiologia() {
+      renderPanelGuardadosMicrobiologia();
+      els.savedModal.classList.add("is-open");
+    }
+
+    function cerrarPanelGuardadosMicrobiologia() {
+      els.savedModal.classList.remove("is-open");
+      els.savedContent.innerHTML = "";
+    }
+
+    function renderPanelGuardadosMicrobiologia() {
+      if (!els.savedContent) return;
+      const saved = obtenerGuardadosMicrobiologia();
+      const total = saved.preparaciones.length + saved.etiquetas.length;
+      els.savedContent.innerHTML = `
+        <div class="micro-modal-head">
+          <div>
+            <span class="micro-kicker">MICRO LAB</span>
+            <h3>Guardados de Microbiologia</h3>
+            <p>${total} elemento${total === 1 ? "" : "s"} guardado${total === 1 ? "" : "s"} localmente.</p>
+          </div>
+          <button class="micro-icon-btn" type="button" data-micro-saved-close aria-label="Cerrar">×</button>
+        </div>
+        <div class="micro-saved-body">
+          ${renderSavedSection("Preparaciones guardadas", saved.preparaciones, "preparacion")}
+          ${renderSavedSection("Etiquetas guardadas", saved.etiquetas, "etiqueta")}
+        </div>
+      `;
+    }
+
+    function renderSavedSection(title, items, type) {
+      if (!items.length) {
+        return `
+          <section class="micro-saved-section">
+            <h4>${escapeHtml(title)}</h4>
+            <p class="micro-saved-empty">Todavia no hay ${type === "preparacion" ? "preparaciones" : "etiquetas"} guardadas.</p>
+          </section>
+        `;
+      }
+
+      return `
+        <section class="micro-saved-section">
+          <h4>${escapeHtml(title)}</h4>
+          <div class="micro-saved-list">
+            ${[...items].sort((a, b) => String(b.fechaHora).localeCompare(String(a.fechaHora))).map((item) => renderSavedItem(item, type)).join("")}
+          </div>
+        </section>
+      `;
+    }
+
+    function renderSavedItem(item, type) {
+      const details = type === "preparacion"
+        ? `${item.volumenTotal || "Volumen no registrado"} · ${item.fecha || ""}`
+        : `${item.tipoEtiqueta || "Etiqueta"} · ${item.cantidadEtiquetas || 0} etiqueta${Number(item.cantidadEtiquetas) === 1 ? "" : "s"}`;
+      return `
+        <article class="micro-saved-item">
+          <div>
+            <strong>${escapeHtml(item.nombre || "Sin nombre")}</strong>
+            <span>${escapeHtml(details)}</span>
+            <small>${escapeHtml([item.responsable, item.paralelo, item.lote].filter(Boolean).join(" · "))}</small>
+          </div>
+          <div class="micro-saved-actions">
+            <button class="sv-btn sv-btn-sm sv-btn-secondary" type="button" data-micro-print-saved data-id="${escapeAttr(item.id)}">Imprimir</button>
+            ${type === "etiqueta" ? `<button class="sv-btn sv-btn-sm sv-btn-secondary" type="button" data-micro-edit-saved-label data-id="${escapeAttr(item.id)}">Editar</button>` : ""}
+            <button class="sv-btn sv-btn-sm sv-btn-danger" type="button" data-micro-delete-saved data-id="${escapeAttr(item.id)}">Eliminar</button>
+          </div>
+        </article>
+      `;
+    }
+
+    function eliminarGuardadoMicrobiologia(id) {
+      const saved = obtenerGuardadosMicrobiologia();
+      const before = saved.preparaciones.length + saved.etiquetas.length;
+      saved.preparaciones = saved.preparaciones.filter((item) => item.id !== id);
+      saved.etiquetas = saved.etiquetas.filter((item) => item.id !== id);
+      if (saved.preparaciones.length + saved.etiquetas.length === before) return;
+      persistirGuardadosMicrobiologia(saved);
+      renderMicroSavedBadge();
+      renderPanelGuardadosMicrobiologia();
+      toast("Guardado eliminado.");
+    }
+
+    function imprimirGuardadoMicrobiologia(id) {
+      const saved = obtenerGuardadosMicrobiologia();
+      const prep = saved.preparaciones.find((item) => item.id === id);
+      if (prep) {
+        const calc = restoreCalcSnapshot(prep.calculo || prep.datosTecnicos?.calculo);
+        printDocument(`Preparacion guardada: ${prep.nombre}`, renderPrintablePreparation(calc));
+        return;
+      }
+
+      const etiqueta = saved.etiquetas.find((item) => item.id === id);
+      if (etiqueta) {
+        const calc = restoreCalcSnapshot(etiqueta.calculo || etiqueta.datosTecnicos?.calculo);
+        const form = etiqueta.formulario || formFromSavedEtiqueta(etiqueta);
+        imprimirEtiqueta(calc, form);
+      }
+    }
+
+    function abrirEtiquetaGuardadaParaEditar(id) {
+      const etiqueta = obtenerGuardadosMicrobiologia().etiquetas.find((item) => item.id === id);
+      if (!etiqueta) return;
+      cerrarPanelGuardadosMicrobiologia();
+      abrirModalEtiqueta("print", etiqueta);
+    }
+
+    function renderMicroSavedBadge(animate = false) {
+      const saved = obtenerGuardadosMicrobiologia();
+      const total = saved.preparaciones.length + saved.etiquetas.length;
+      if (els.labBadge) {
+        els.labBadge.textContent = total;
+        els.labBadge.dataset.count = String(total);
+      }
+      if (animate) {
+        els.labFab?.classList.add("sv-pulse");
+        setTimeout(() => els.labFab?.classList.remove("sv-pulse"), 350);
+      }
+    }
+
+    function actualizarVisibilidadFabMicro(viewName) {
+      const visible = viewName === "microbiologia";
+      els.labFab?.classList.toggle("sv-fab-hidden", !visible);
+      if (!visible) cerrarPanelGuardadosMicrobiologia();
+    }
+
+    function generarHojaEtiquetas(calc, datosFormulario, options = {}) {
+      const labels = generarDatosEtiqueta(calc, datosFormulario);
+      const subject = getLabelSubject(calc);
+      const tipo = labels[0]?.tipo || resolveLabelType(datosFormulario.tipoEtiqueta, calc);
+      const header = options.includeHeader === false ? "" : printHeader("Etiquetas de laboratorio", subject.nombre);
+
+      return `
+        ${header}
+        <section class="micro-print-section micro-label-print-section">
+          <h2>Etiquetas de laboratorio para recortar</h2>
+          <p class="micro-print-muted">Se generaran ${labels.length} etiqueta${labels.length === 1 ? "" : "s"} distribuidas automaticamente en hoja A4.</p>
+          <div class="micro-label-sheet micro-label-sheet-${escapeAttr(tipo)}">
+            ${labels.map((label) => generarHTMLEtiqueta(label)).join("")}
+          </div>
+        </section>
+      `;
+    }
+
+    function generarDatosEtiqueta(calc, datosFormulario = {}) {
+      const tipo = resolveLabelType(datosFormulario.tipoEtiqueta, calc);
+      const cantidad = obtenerCantidadEtiquetas(calc, tipo, datosFormulario);
+      const subject = getLabelSubject(calc);
+      const fecha = formatDateOnly(new Date());
+      const observaciones = buildLabelObservations(calc, tipo, datosFormulario.observaciones);
+
+      return Array.from({ length: cantidad }, (_, index) => ({
+        nombre: subject.nombre,
+        categoria: subject.categoria,
+        tipo,
+        tipoEtiqueta: labelTypeName(tipo),
+        fecha,
+        responsable: datosFormulario.responsable || "",
+        paralelo: datosFormulario.paralelo || "",
+        lote: datosFormulario.lote || "",
+        observaciones,
+        modulo: "Microbiologia",
+        app: "SUITE VET",
+        indice: index + 1,
+        total: cantidad,
+        secuencia: labelSequence(tipo, index + 1, cantidad),
+        codigo: generarCodigoEtiqueta(subject.nombre, tipo, index),
+        volumenTotal: `${formatNumber(calc.totalMl)} mL`,
+        volumenUnidad: `${formatNumber(calc.perUnit)} mL`
+      }));
+    }
+
+    function generarHTMLEtiqueta(label) {
+      const obs = label.observaciones?.length
+        ? `<div class="micro-lab-label-obs"><span>Obs.</span>${label.observaciones.map((item) => `<p>${escapeHtml(item)}</p>`).join("")}</div>`
+        : "";
+      const lote = label.lote ? `<span>Lote: ${escapeHtml(label.lote)}</span>` : "";
+      const volume = label.tipo === "matraz"
+        ? `<span>Vol. total: ${escapeHtml(label.volumenTotal)}</span>`
+        : "";
+
+      return `
+        <article class="micro-lab-label micro-lab-label-${escapeAttr(label.tipo)}">
+          <header>
+            <strong>${escapeHtml(label.nombre)}</strong>
+            <b>${escapeHtml(label.codigo)}</b>
+          </header>
+          <div class="micro-lab-label-grid">
+            <span>Tipo: ${escapeHtml(label.categoria)}</span>
+            <span>Fecha: ${escapeHtml(label.fecha)}</span>
+            ${label.responsable ? `<span>Resp.: ${escapeHtml(label.responsable)}</span>` : ""}
+            ${label.paralelo ? `<span>Paralelo: ${escapeHtml(label.paralelo)}</span>` : ""}
+            <span>${escapeHtml(label.secuencia)}</span>
+            ${volume}
+            ${lote}
+          </div>
+          ${obs}
+          <footer>
+            <span>Modulo: ${escapeHtml(label.modulo)}</span>
+            <span>${escapeHtml(label.app)}</span>
+          </footer>
+        </article>
+      `;
+    }
+
+    function generarCodigoEtiqueta(nombre, tipoEtiqueta, index) {
+      const clean = norm(nombre)
+        .replace(/[^a-z0-9\s]/g, " ")
+        .split(/\s+/)
+        .filter(Boolean);
+      const initials = clean.length > 1
+        ? clean.slice(0, 2).map((word) => word[0]).join("")
+        : (clean[0] || "sv").slice(0, 2);
+      const typeCode = { petri: "P", tubo: "T", matraz: "M" }[tipoEtiqueta] || "L";
+      return `${initials.toUpperCase()}-${typeCode}-${String(index + 1).padStart(3, "0")}`;
+    }
+
+    function obtenerCantidadEtiquetas(calc, tipoEtiqueta, datosFormulario = {}) {
+      if (tipoEtiqueta === "matraz") return 1;
+      if (datosFormulario.usarCantidadAutomatica === false) {
+        return clampLabelCount(datosFormulario.cantidadManual);
+      }
+      return clampLabelCount(calc.count || 1);
+    }
+
+    function resolveLabelType(value, calc) {
+      if (["petri", "tubo", "matraz"].includes(value)) return value;
+      const profile = norm(calc.profileText || "");
+      if (profile.includes("tubo") || profile.includes("alicuota") || profile.includes("frasco")) return "tubo";
+      if (calc.targetPane === "agares") return "petri";
+      return "tubo";
+    }
+
+    function getLabelSubject(calc) {
+      const useOrigin = calc.origin && calc.originPane === "pruebas" && calc.origin.id !== calc.target.id;
+      const pane = useOrigin ? calc.originPane : calc.targetPane;
+      const item = useOrigin ? calc.origin : calc.target;
+      return {
+        pane,
+        nombre: printableName(item, pane),
+        categoria: labelCategory(pane)
+      };
+    }
+
+    function labelCategory(pane) {
+      if (pane === "agares") return "AGAR";
+      if (pane === "caldos") return "CALDO";
+      if (pane === "pruebas") return "PRUEBA BIOQUIMICA";
+      return "MICROBIOLOGIA";
+    }
+
+    function labelTypeName(type) {
+      const names = {
+        petri: "Caja Petri",
+        tubo: "Tubo de ensayo",
+        matraz: "Matraz"
+      };
+      return names[type] || "Etiqueta";
+    }
+
+    function labelSequence(type, index, total) {
+      if (type === "petri") return `Placa ${index}/${total}`;
+      if (type === "tubo") return `Tubo ${index}/${total}`;
+      return "Matraz 1/1";
+    }
+
+    function buildLabelObservations(calc, type, userNotes) {
+      const notes = [];
+      if (type === "matraz" && Number(calc.totalMl) > 200) {
+        notes.push("Dividir la preparacion en otro envase.");
+      }
+      if (userNotes) notes.push(userNotes);
+      return notes;
+    }
+
+    function serializeCalcSnapshot(calc) {
+      return {
+        targetPane: calc.targetPane,
+        targetId: calc.target?.id || "",
+        target: {
+          id: calc.target?.id || "",
+          nombre: calc.target?.nombre || "",
+          objetivo: calc.target?.objetivo || "",
+          phFinal: calc.target?.phFinal || "",
+          gramosPorLitro: calc.target?.gramosPorLitro || 0,
+          preparacion: calc.target?.preparacion || {},
+          composicion: calc.target?.composicion || [],
+          notasLab: calc.target?.notasLab || "",
+          observaciones: calc.target?.observaciones || "",
+          riesgosBiologicos: calc.target?.riesgosBiologicos || []
+        },
+        originPane: calc.originPane || calc.targetPane,
+        originId: calc.origin?.id || "",
+        origin: calc.origin ? {
+          id: calc.origin.id,
+          nombre: calc.origin.nombre,
+          nombreCientifico: calc.origin.nombreCientifico
+        } : null,
+        profileText: calc.profileText,
+        count: calc.count,
+        perUnit: calc.perUnit,
+        totalMl: calc.totalMl,
+        grams: calc.grams,
+        totalWithMargin: calc.totalWithMargin,
+        gramsWithMargin: calc.gramsWithMargin,
+        marginPercent: calc.marginPercent
+      };
+    }
+
+    function restoreCalcSnapshot(value) {
+      const stored = value || {};
+      const target = stored.target || findItem(stored.targetPane, stored.targetId);
+      const origin = stored.origin || (stored.originPane && stored.originId ? findItem(stored.originPane, stored.originId) : null);
+      return {
+        target: target || { nombre: "Preparacion guardada", gramosPorLitro: 0, preparacion: {} },
+        targetPane: stored.targetPane || "agares",
+        origin,
+        originPane: stored.originPane || stored.targetPane || "agares",
+        profileText: stored.profileText || "",
+        count: Number(stored.count) || 1,
+        perUnit: Number(stored.perUnit) || 0,
+        totalMl: Number(stored.totalMl) || 0,
+        grams: Number(stored.grams) || 0,
+        totalWithMargin: Number(stored.totalWithMargin) || Number(stored.totalMl || 0) * 1.1,
+        gramsWithMargin: Number(stored.gramsWithMargin) || 0,
+        marginPercent: Number(stored.marginPercent) || 10
+      };
+    }
+
+    function formFromSavedEtiqueta(etiqueta) {
+      return {
+        responsable: etiqueta.responsable || "",
+        paralelo: etiqueta.paralelo || "",
+        observaciones: etiqueta.observaciones || "",
+        tipoEtiqueta: etiqueta.tipoEtiquetaKey || "auto",
+        usarCantidadAutomatica: false,
+        cantidadManual: etiqueta.cantidadEtiquetas || 1,
+        lote: etiqueta.lote || ""
+      };
+    }
+
+    function getRememberedMicroUser() {
+      return {
+        responsable: readLocalValue(microStorage.responsable),
+        paralelo: readLocalValue(microStorage.paralelo)
+      };
+    }
+
+    function saveRememberedMicroUser(data) {
+      writeLocalValue(microStorage.responsable, data.responsable || "");
+      writeLocalValue(microStorage.paralelo, data.paralelo || "");
+    }
+
+    function generarLoteMicro() {
+      const saved = obtenerGuardadosMicrobiologia();
+      const number = saved.preparaciones.length + saved.etiquetas.length + 1;
+      return `SV-MIC-${new Date().getFullYear()}-${String(number).padStart(3, "0")}`;
+    }
+
+    function uniqueMicroId(prefix) {
+      return `${prefix}-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+    }
+
+    function formatDateOnly(date) {
+      return new Intl.DateTimeFormat("es-EC", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric"
+      }).format(date);
+    }
+
+    function clampLabelCount(value) {
+      const n = Math.floor(Number(value));
+      if (!Number.isFinite(n) || n < 1) return 1;
+      return Math.min(n, 999);
+    }
+
+    function readStorageArray(key) {
+      try {
+        const parsed = JSON.parse(localStorage.getItem(key) || "[]");
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function writeStorageArray(key, value) {
+      try {
+        localStorage.setItem(key, JSON.stringify(value));
+      } catch {
+        toast("No se pudo guardar localmente. Revisa el almacenamiento del navegador.");
+      }
+    }
+
+    function readLocalValue(key) {
+      try {
+        return localStorage.getItem(key) || "";
+      } catch {
+        return "";
+      }
+    }
+
+    function writeLocalValue(key, value) {
+      try {
+        localStorage.setItem(key, value || "");
+      } catch {
+        // localStorage puede estar bloqueado en navegadores con restricciones.
+      }
     }
 
     function renderPrintablePreparation(calc) {
@@ -930,6 +1744,9 @@
     function closeModals() {
       els.fichaModal.classList.remove("is-open");
       els.calcModal.classList.remove("is-open");
+      els.labelModal.classList.remove("is-open");
+      els.savedModal.classList.remove("is-open");
+      state.labelContext = null;
     }
 
     function ensureGlobalPrintArea() {
@@ -1045,6 +1862,11 @@
             column-gap: 0 !important;
             font-size: 11pt !important;
           }
+          body.micro-printing .micro-print-doc.is-label-sheet,
+          body.micro-printing .micro-print-doc.is-prep-with-labels {
+            column-count: 1 !important;
+            column-gap: 0 !important;
+          }
           body.micro-printing .micro-print-header {
             column-span: all;
             margin-bottom: 4mm !important;
@@ -1082,6 +1904,18 @@
           body.micro-printing .micro-print-alert { font-size: 11pt !important; margin-top: 1.5mm !important; padding: 5px 7px !important; }
           body.micro-printing .micro-print-placeholder { min-height: 32mm !important; }
           body.micro-printing .micro-print-notes div { margin: 3mm 0 !important; }
+          body.micro-printing .micro-label-sheet {
+            break-inside: auto !important;
+            display: grid !important;
+            page-break-inside: auto !important;
+          }
+          body.micro-printing .micro-label-sheet-petri { grid-template-columns: repeat(3, 58mm) !important; gap: 3mm !important; }
+          body.micro-printing .micro-label-sheet-tubo { grid-template-columns: repeat(4, 43mm) !important; gap: 2.5mm !important; }
+          body.micro-printing .micro-label-sheet-matraz { grid-template-columns: repeat(2, 80mm) !important; gap: 4mm !important; }
+          body.micro-printing .micro-lab-label {
+            break-inside: avoid !important;
+            page-break-inside: avoid !important;
+          }
         }
       `;
       document.head.appendChild(style);
