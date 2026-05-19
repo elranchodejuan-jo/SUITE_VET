@@ -86,9 +86,9 @@
           <div id="micro-calc-content"></div>
         </div>
       </div>
-
-      <div id="micro-print-area" class="micro-print-area"></div>
     `;
+
+    const printArea = ensureGlobalPrintArea();
 
     const els = {
       subnav: root.querySelector("#micro-subnav"),
@@ -101,7 +101,7 @@
       fichaContent: root.querySelector("#micro-ficha-content"),
       calcModal: root.querySelector("#micro-calc-modal"),
       calcContent: root.querySelector("#micro-calc-content"),
-      printArea: root.querySelector("#micro-print-area")
+      printArea
     };
 
     els.subnav.addEventListener("click", (e) => {
@@ -180,6 +180,19 @@
       if (printFicha) {
         printFichaDoc(printFicha.dataset.pane, printFicha.dataset.id);
         return;
+      }
+    });
+
+    els.printArea.addEventListener("click", (e) => {
+      const closePrint = e.target.closest("[data-micro-print-close]");
+      if (closePrint || e.target === els.printArea) {
+        closePrintView();
+        return;
+      }
+
+      const printNow = e.target.closest("[data-micro-print-now]");
+      if (printNow) {
+        runMicroPrint();
       }
     });
 
@@ -917,6 +930,18 @@
       els.calcModal.classList.remove("is-open");
     }
 
+    function ensureGlobalPrintArea() {
+      let area = document.getElementById("micro-print-area");
+      if (!area) {
+        area = document.createElement("div");
+        area.id = "micro-print-area";
+        document.body.appendChild(area);
+      }
+      area.classList.add("micro-print-area");
+      area.setAttribute("aria-hidden", "true");
+      return area;
+    }
+
     function printDocument(title, html) {
       if (!els.printArea) {
         toast("No se encontro la vista de impresion.");
@@ -924,8 +949,10 @@
       }
 
       closeModals();
+      ensureMicroPrintOverride();
       document.body.classList.add("micro-printing");
       els.printArea.classList.add("is-open");
+      els.printArea.removeAttribute("aria-hidden");
       els.printArea.innerHTML = `
         <div class="micro-print-shell" role="dialog" aria-modal="true" aria-label="${escapeAttr(title)}">
           <div class="micro-print-toolbar no-print">
@@ -951,12 +978,67 @@
       if (!els.printArea) return;
       document.body.classList.remove("micro-printing");
       els.printArea.classList.remove("is-open");
+      els.printArea.setAttribute("aria-hidden", "true");
       els.printArea.innerHTML = "";
+      removeMicroPrintOverride();
     }
 
     function runMicroPrint() {
       if (!els.printArea?.classList.contains("is-open")) return;
       window.print();
+    }
+
+    function ensureMicroPrintOverride() {
+      let style = document.getElementById("micro-print-override");
+      if (style) return;
+      style = document.createElement("style");
+      style.id = "micro-print-override";
+      style.textContent = `
+        @media print {
+          @page { size: A4 portrait; margin: 0; }
+          html, body, body.micro-printing { background: #fff !important; }
+          body.micro-printing > *:not(#micro-print-area) { display: none !important; }
+          body.micro-printing #micro-print-area,
+          body.micro-printing #micro-print-area * { visibility: visible !important; }
+          body.micro-printing #micro-print-area {
+            background: #fff !important;
+            display: block !important;
+            inset: auto !important;
+            min-height: 0 !important;
+            overflow: visible !important;
+            padding: 0 !important;
+            position: static !important;
+            width: 100% !important;
+          }
+          body.micro-printing .micro-print-toolbar,
+          body.micro-printing .micro-print-actions,
+          body.micro-printing .no-print { display: none !important; }
+          body.micro-printing .micro-print-shell,
+          body.micro-printing .micro-print-preview {
+            display: block !important;
+            margin: 0 !important;
+            max-width: none !important;
+            min-height: 0 !important;
+            overflow: visible !important;
+            padding: 0 !important;
+          }
+          body.micro-printing .micro-print-doc {
+            background: #fff !important;
+            box-shadow: none !important;
+            color: #0f172a !important;
+            margin: 0 !important;
+            min-height: auto !important;
+            min-width: 0 !important;
+            padding: 18mm !important;
+            width: auto !important;
+          }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    function removeMicroPrintOverride() {
+      document.getElementById("micro-print-override")?.remove();
     }
 
     function printHeader(kind, title) {

@@ -886,6 +886,10 @@ body.micro-printing {
     visibility: hidden !important;
   }
 
+  body.micro-printing > *:not(#micro-print-area) {
+    display: none !important;
+  }
+
   body.micro-printing #micro-print-area,
   body.micro-printing #micro-print-area * {
     visibility: visible !important;

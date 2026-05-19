@@ -418,7 +418,7 @@
    IMPRESIÓN
 ────────────────────────────────────────────── */
 @media print {
-  body > *:not(#sv-modal-receta) { display: none !important; }
+  body:not(.micro-printing) > *:not(#sv-modal-receta) { display: none !important; }
   .sv-modal-overlay { position: absolute !important; background: white !important; display: block !important; padding: 0 !important; inset: 0; }
   .sv-receta-container { max-height: none; height: 100%; }
   .sv-receta-controls, .no-print { display: none !important; }
