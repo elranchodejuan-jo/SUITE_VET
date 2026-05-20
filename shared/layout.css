@@ -246,6 +246,7 @@
    MAIN / VISTAS
 ────────────────────────────────────────────── */
 .sv-main {
+  flex: 1 0 auto;
   max-width: 1240px;
   margin: 0 auto;
   padding: 1.25rem 1.25rem 3rem;

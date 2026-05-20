@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="shared/components.css" />
   <link rel="stylesheet" href="shared/categorias.css" />
   <link rel="stylesheet" href="shared/layout.css" />
+  <link rel="stylesheet" href="shared/about.css?v=20260520-photo-carousel" />
   <link rel="stylesheet" href="shared/favoritos.css" />
 
   <!-- ── MÓDULOS CSS ── -->
@@ -128,6 +129,11 @@
       <div id="favoritos-root"></div>
     </section>
 
+    <!-- SOBRE SUITE VET -->
+    <section id="view-about" class="sv-view">
+      <div id="about-suite-vet-root"></div>
+    </section>
+
     <!-- ── FISIOLOGÍA ── -->
     <section id="view-fisiologia" class="sv-view">
       <div id="fisio-root"></div>
@@ -150,6 +156,25 @@
 
   </main>
 
+  <footer class="sv-legal-footer" aria-label="Informaci&oacute;n institucional de SUITE VET">
+    <div class="sv-legal-footer-copy">
+      <strong>SUITE VET</strong>
+      <span>Copyright &copy; 2026 SUITE VET. Todos los derechos reservados.</span>
+    </div>
+    <nav class="sv-legal-footer-links" aria-label="Enlaces institucionales">
+      <button type="button" data-legal-link="privacy">Pol&iacute;tica de privacidad</button>
+      <button type="button" data-legal-link="legal">Aviso legal</button>
+      <button type="button" data-legal-link="terms">T&eacute;rminos de uso</button>
+      <button type="button" data-legal-link="sitemap">Mapa del sitio</button>
+      <button type="button" data-suite-view="about">Sobre SUITE VET</button>
+    </nav>
+    <div class="sv-legal-footer-meta">
+      <span>Creado por Juan Baja&ntilde;a</span>
+      <span>Ecuador | Espa&ntilde;ol</span>
+      <span>Versi&oacute;n 1.0</span>
+    </div>
+  </footer>
+
   <!-- ════════════════════════════════════════
        FAB — RECETARIO
   ════════════════════════════════════════ -->
@@ -157,6 +182,19 @@
     📝 Receta
     <span id="sv-fab-badge" class="sv-fab-badge" data-count="0">0</span>
   </button>
+
+  <div id="sv-legal-modal" class="sv-modal-overlay" aria-hidden="true">
+    <div class="sv-modal sv-legal-modal" role="dialog" aria-modal="true" aria-labelledby="sv-legal-modal-title">
+      <div class="sv-modal-header">
+        <h3 id="sv-legal-modal-title">SUITE VET</h3>
+        <button class="sv-icon-btn" type="button" data-legal-close aria-label="Cerrar">&times;</button>
+      </div>
+      <div class="sv-modal-body" id="sv-legal-modal-body"></div>
+      <div class="sv-modal-footer">
+        <button class="sv-btn sv-btn-ghost" type="button" data-legal-close>Cerrar</button>
+      </div>
+    </div>
+  </div>
 
   <!-- ════════════════════════════════════════
        MODAL RECETARIO
@@ -239,6 +277,7 @@
   <!-- Shared -->
   <script src="shared/favoritos.js" defer></script>
   <script src="shared/recetario.js" defer></script>
+  <script src="shared/about.js?v=20260520-photo-carousel" defer></script>
 
   <!-- Fisiología -->
   <script src="modules/fisio/data/hormonasvitaminasdata.js" defer></script>

@@ -101,6 +101,13 @@
     if (!panel) return;
     panel.innerHTML = `
       <p class="sv-menu-title">M&oacute;dulos SUITE VET</p>
+      <button class="sv-menu-item sv-menu-route" data-view="home" type="button">
+        <span class="sv-menu-icon">IN</span>
+        <span>
+          <strong>Inicio</strong>
+          <small>Vista principal de la plataforma</small>
+        </span>
+      </button>
       <button class="sv-menu-item sv-menu-route" data-view="fisiologia" type="button">
         <span class="sv-menu-icon sv-menu-icon-fisio">FI</span>
         <span>
@@ -129,11 +136,33 @@
           <small>Lesiones y diagn&oacute;stico diferencial</small>
         </span>
       </button>
+      <button class="sv-menu-item sv-menu-route" data-view="favoritos" type="button">
+        <span class="sv-menu-icon sv-menu-icon-fav">FV</span>
+        <span>
+          <strong>Favoritos</strong>
+          <small>Recursos guardados</small>
+        </span>
+      </button>
+      <button class="sv-menu-item sv-disabled" type="button" disabled>
+        <span class="sv-menu-icon">CD</span>
+        <span>
+          <strong>Cartilla Digital</strong>
+          <small>Pr&oacute;ximamente</small>
+        </span>
+      </button>
       <button class="sv-menu-item sv-disabled" type="button" disabled>
         <span class="sv-menu-icon">CT</span>
         <span>
           <strong>CATTLE</strong>
           <small>Pr&oacute;ximamente</small>
+        </span>
+      </button>
+      <div class="sv-menu-divider" aria-hidden="true"></div>
+      <button class="sv-menu-item sv-menu-route sv-menu-about" data-view="about" type="button">
+        <span class="sv-menu-icon sv-menu-icon-about">i</span>
+        <span>
+          <strong>Sobre SUITE VET</strong>
+          <small>Proyecto, creador y cr&eacute;ditos</small>
         </span>
       </button>
     `;
