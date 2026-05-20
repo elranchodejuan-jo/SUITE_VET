@@ -13,6 +13,12 @@
 
     const farmacos = (window.FARMA_DATA || {}).farmacos || [];
     const Cat = window.SuiteVet?.Categorias;
+    const favSlug = window.SuiteVet?.Favorites?.slugify || ((value) => String(value || "")
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "") || "favorito");
 
     if (!Cat) {
       console.warn("[Farma] shared/categorias.js no está cargado. El módulo funcionará sin colores.");
@@ -140,6 +146,12 @@
       // Aplicar identidad visual de categoría
       art.className = "cat-card sv-card sv-fade-in";
       art.setAttribute("data-categoria", catId);
+      art.dataset.favId = `farmacologia-${favSlug(f.id || f.principio)}`;
+      art.dataset.favTitle = f.principio || "Farmaco";
+      art.dataset.favModule = "Farmacologia";
+      art.dataset.favSubmodule = f.grupo || cat.label || "Farmacos";
+      art.dataset.favType = "Tarjeta";
+      art.dataset.favDescription = f.mecanismo || (f.comerciales || []).join(", ");
 
       // ── Opciones de especie con dosis/kg visible ──────────────────────────────
       // Formato: "Canino — 5 mg/kg" para que el veterinario vea la dosis de un vistazo
@@ -228,6 +240,8 @@
       `;
 
       // ── Referencias al DOM ───────────────────────────────────────────────────
+      window.SuiteVet?.Favorites?.bindCard(art);
+
       const selEsp       = art.querySelector("._esp");
       const inputPeso    = art.querySelector("._peso");
       const inputConc    = art.querySelector("._conc");

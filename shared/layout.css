@@ -460,7 +460,7 @@
 /* Header compacto: menu, inicio y busqueda desplegable */
 .sv-topbar {
   display: grid;
-  grid-template-columns: auto auto auto 1fr auto;
+  grid-template-columns: auto auto auto auto 1fr auto;
 }
 
 .sv-menu-toggle.sv-topbar-actions {
@@ -478,14 +478,19 @@
   grid-row: 1;
 }
 
-.sv-topbar-brand {
+.sv-favorites-toggle {
   grid-column: 4;
+  grid-row: 1;
+}
+
+.sv-topbar-brand {
+  grid-column: 5;
   grid-row: 1;
   justify-self: center;
 }
 
 .sv-topbar > div.sv-topbar-actions {
-  grid-column: 5;
+  grid-column: 6;
   grid-row: 1;
   justify-self: end;
 }

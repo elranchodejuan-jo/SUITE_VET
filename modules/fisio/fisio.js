@@ -196,6 +196,39 @@
     return `rgba(${r},${g},${b},0.30)`;
   }
 
+  function favSlug(value) {
+    return String(value || "")
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "") || "favorito";
+  }
+
+  function favEscape(value) {
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  function favoriteAttrs({ id, titulo, submodulo, descripcion }) {
+    return [
+      `data-fav-id="${favEscape(id)}"`,
+      `data-fav-title="${favEscape(titulo)}"`,
+      `data-fav-module="Fisiologia"`,
+      `data-fav-submodule="${favEscape(submodulo)}"`,
+      `data-fav-type="Tarjeta"`,
+      `data-fav-description="${favEscape(descripcion)}"`
+    ].join(" ");
+  }
+
+  function bindFavorites(container) {
+    window.SuiteVet?.Favorites?.bindWithin(container);
+  }
+
   // ---------------------------------------------------------------------------
   // DOM READY
   // ---------------------------------------------------------------------------
@@ -361,6 +394,7 @@
       lista.innerHTML = filtradas.length === 0
         ? `<div class="sv-empty"><div class="sv-empty-icon">🔍</div>Sin resultados</div>`
         : filtradas.map(cardHormona).join("");
+      bindFavorites(lista);
     }
 
     function cardHormona(h) {
@@ -377,6 +411,12 @@
 
       return `
         <article class="sv-card fisio-card-hormona sv-fade-in"
+          ${favoriteAttrs({
+            id: `fisiologia-hormonas-${h.id || favSlug(h.nombre)}`,
+            titulo: h.nombre,
+            submodulo: "Hormonas",
+            descripcion: h.funcionPrincipal || h.sistema || ""
+          })}
           style="--card-color:${sv.color}; --card-glow:${sv.glow};">
           <div class="sv-card-header">
             <span class="sv-card-title">
@@ -435,6 +475,7 @@
       lista.innerHTML = filtradas.length === 0
         ? `<div class="sv-empty"><div class="sv-empty-icon">🔍</div>Sin resultados</div>`
         : filtradas.map(cardVitamina).join("");
+      bindFavorites(lista);
     }
 
     function cardVitamina(v) {
@@ -443,6 +484,12 @@
 
       return `
         <article class="sv-card fisio-card-vitamina sv-fade-in"
+          ${favoriteAttrs({
+            id: `fisiologia-vitaminas-${v.id || favSlug(v.nombre)}`,
+            titulo: v.nombre,
+            submodulo: "Vitaminas",
+            descripcion: v.funcion || v.tipo || ""
+          })}
           style="--card-color:${vv.cardColor}; --card-glow:${vv.cardGlow};">
           <div class="sv-card-header">
             <span class="sv-card-title">
@@ -534,6 +581,7 @@
       lista.innerHTML = filtrados.length === 0
         ? `<div class="sv-empty"><div class="sv-empty-icon">🔍</div>Sin resultados</div>`
         : filtrados.map(cardGlosario).join("");
+      bindFavorites(lista);
     }
 
     function cardGlosario(g) {
@@ -551,6 +599,12 @@
 
       return `
         <article class="sv-card fisio-card-glosario sv-fade-in"
+          ${favoriteAttrs({
+            id: `fisiologia-nombres-clinicos-${g.id || favSlug(g.termino)}`,
+            titulo: g.termino || "",
+            submodulo: "Nombres clinicos",
+            descripcion: g.definicion || g.importanciaClinica || ""
+          })}
           style="--card-color:${sv.color}; --card-glow:${sv.glow};">
           <div class="sv-card-header">
             <span class="sv-card-title">

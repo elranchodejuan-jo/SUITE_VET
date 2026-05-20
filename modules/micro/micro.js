@@ -41,7 +41,8 @@
       selectedId: null,
       calcTarget: null,
       calcOrigin: null,
-      labelContext: null
+      labelContext: null,
+      printFavorite: null
     };
 
     const microStorage = {
@@ -171,6 +172,12 @@
         return;
       }
 
+      const printFavorite = e.target.closest("[data-micro-print-favorite]");
+      if (printFavorite) {
+        toggleMicroPrintFavorite();
+        return;
+      }
+
       const closeLabel = e.target.closest("[data-micro-label-close]");
       if (closeLabel) {
         cerrarModalEtiqueta();
@@ -244,6 +251,12 @@
         return;
       }
 
+      const labelFavorite = e.target.closest("[data-micro-label-favorite]");
+      if (labelFavorite) {
+        toggleMicroLabelFavorite();
+        return;
+      }
+
       const printSaved = e.target.closest("[data-micro-print-saved]");
       if (printSaved) {
         imprimirGuardadoMicrobiologia(printSaved.dataset.id);
@@ -279,6 +292,12 @@
       const printNow = e.target.closest("[data-micro-print-now]");
       if (printNow) {
         runMicroPrint();
+        return;
+      }
+
+      const printFavorite = e.target.closest("[data-micro-print-favorite]");
+      if (printFavorite) {
+        toggleMicroPrintFavorite();
       }
     });
 
@@ -367,6 +386,7 @@
       els.content.innerHTML = list.length
         ? list.map((item) => renderCard(item, pane)).join("")
         : `<div class="sv-empty"><div class="sv-empty-icon">🔎</div>Sin resultados en este submódulo.</div>`;
+      window.SuiteVet?.Favorites?.bindWithin(els.content);
     }
 
     function filterList(pane) {
@@ -388,11 +408,27 @@
       return renderMediaCard(item, pane);
     }
 
+    function favoriteAttrs(item, pane, overrides = {}) {
+      const title = overrides.title || printableName(item, pane);
+      const meta = paneById[pane] || {};
+      const description = overrides.description || item.objetivo || item.utilidadDiagnostica || item.mecanismo || item.importancia || item.subtitulo || "";
+      const id = overrides.id || `microbiologia-${pane}-${item.id || slugText(title)}`;
+
+      return [
+        `data-fav-id="${escapeAttr(id)}"`,
+        `data-fav-title="${escapeAttr(title)}"`,
+        `data-fav-module="Microbiologia"`,
+        `data-fav-submodule="${escapeAttr(meta.label || pane)}"`,
+        `data-fav-type="Tarjeta"`,
+        `data-fav-description="${escapeAttr(description)}"`
+      ].join(" ");
+    }
+
     function renderMediaCard(item, pane) {
       const meta = paneById[pane];
       const rel = getRelations(item, pane);
       return `
-        <article class="micro-card micro-card-${meta.singular} sv-fade-in" data-micro-card="${item.id}">
+        <article class="micro-card micro-card-${meta.singular} sv-fade-in" data-micro-card="${item.id}" ${favoriteAttrs(item, pane)}>
           <div class="micro-card-visual" data-kind="${meta.singular}">
             <span>${meta.icon}</span>
             <i></i><i></i><i></i>
@@ -425,7 +461,7 @@
     function renderTestCard(item) {
       const rel = getRelations(item, "pruebas");
       return `
-        <article class="micro-card micro-card-prueba sv-fade-in" data-micro-card="${item.id}">
+        <article class="micro-card micro-card-prueba sv-fade-in" data-micro-card="${item.id}" ${favoriteAttrs(item, "pruebas")}>
           <div class="micro-card-visual" data-kind="prueba"><span>⚗️</span><i></i><i></i><i></i></div>
           <div class="micro-card-head">
             <div>
@@ -455,7 +491,7 @@
     function renderAntibioticCard(item) {
       const rel = getRelations(item, "antibioticos");
       return `
-        <article class="micro-card micro-card-antibiotico sv-fade-in" data-micro-card="${item.id}">
+        <article class="micro-card micro-card-antibiotico sv-fade-in" data-micro-card="${item.id}" ${favoriteAttrs(item, "antibioticos")}>
           <div class="micro-card-visual" data-kind="antibiotico"><span>💊</span><i></i><i></i><i></i></div>
           <div class="micro-card-head">
             <div>
@@ -489,7 +525,7 @@
     function renderMicroorganismCard(item) {
       const rel = getRelations(item, "microorganismos");
       return `
-        <article class="micro-card micro-card-microorganismo sv-fade-in" data-micro-card="${item.id}">
+        <article class="micro-card micro-card-microorganismo sv-fade-in" data-micro-card="${item.id}" ${favoriteAttrs(item, "microorganismos", { title: item.nombreCientifico, description: item.importancia || item.subtitulo || "" })}>
           <div class="micro-card-visual" data-kind="microorganismo"><span>🦠</span><i></i><i></i><i></i></div>
           <div class="micro-card-head">
             <div>
@@ -761,7 +797,8 @@
 
       printDocument(
         `Preparación de ${calc.target.nombre}`,
-        renderPrintablePreparation(calc)
+        renderPrintablePreparation(calc),
+        { favorite: buildPreparationFavorite(calc) }
       );
     }
 
@@ -847,6 +884,7 @@
           <button class="sv-btn sv-btn-secondary" type="button" data-micro-label-close>Cancelar</button>
           ${primaryAction !== "save" ? `<button class="sv-btn sv-btn-secondary" type="button" data-micro-label-submit="save">Guardar etiqueta</button>` : ""}
           ${primaryAction !== "print" ? `<button class="sv-btn sv-btn-secondary" type="button" data-micro-label-submit="print">Imprimir etiqueta</button>` : ""}
+          <button class="sv-favorite-action micro-label-favorite-btn" type="button" data-micro-label-favorite aria-label="Guardar etiqueta en favoritos" title="Favorito">&#9733;</button>
           <button class="sv-btn sv-btn-primary" type="button" data-micro-label-submit="${primaryAction}">
             ${primaryAction === "combo" ? "Imprimir preparacion + etiqueta" : primaryAction === "save" ? "Guardar etiqueta" : "Imprimir etiqueta"}
           </button>
@@ -887,6 +925,7 @@
       const labels = generarDatosEtiqueta(calc, obtenerDatosFormularioEtiqueta());
       const first = labels[0];
       actualizarEstadoOpcionesEtiqueta(form.labelOptions);
+      syncMicroLabelFavoriteButton(calc, form);
 
       if (!preview) return;
       if (!first) {
@@ -972,6 +1011,112 @@
         generarHojaEtiquetas(calc, datosFormulario),
         { docClass: "is-label-sheet" }
       );
+    }
+
+    function buildPreparationFavorite(calc, datosFormulario = {}) {
+      const subject = getLabelSubject(calc);
+      const submodulo = paneById[subject.pane]?.label || subject.categoria || "Microbiologia";
+      const volumeText = `${formatNumber(calc.totalMl)} mL`;
+      const id = `prep-microbiologia-${subject.pane}-${calc.target?.id || slugText(subject.nombre)}-${slugText(volumeText)}-${calc.count || 1}u`;
+
+      return {
+        id,
+        titulo: `Preparacion de ${subject.nombre} - ${volumeText}`,
+        modulo: "Microbiologia",
+        submodulo,
+        tipo: "Preparacion",
+        descripcion: "Preparacion calculada para impresion.",
+        data: {
+          medio: subject.nombre,
+          tipoMedio: subject.categoria,
+          volumen: volumeText,
+          cantidad: calc.count || "",
+          volumenPorUnidad: `${formatNumber(calc.perUnit)} mL`,
+          responsable: datosFormulario.responsable || "",
+          paralelo: datosFormulario.paralelo || "",
+          fecha: formatDateOnly(new Date()),
+          lote: datosFormulario.lote || "",
+          observaciones: datosFormulario.observaciones || "",
+          calculo: serializeCalcSnapshot(calc)
+        }
+      };
+    }
+
+    function buildLabelFavorite(calc, datosFormulario) {
+      const labels = generarDatosEtiqueta(calc, datosFormulario);
+      if (!labels.length) return null;
+
+      const subject = getLabelSubject(calc);
+      const selectedOptions = getSelectedLabelOptions(datosFormulario.labelOptions);
+      const optionKey = selectedOptions.map((option) => `${option.id}-${option.quantity}`).join("-");
+      const id = `label-microbiologia-${subject.pane}-${calc.origin?.id || calc.target?.id || slugText(subject.nombre)}-${slugText(optionKey || "etiqueta")}-${slugText(datosFormulario.lote || "sin-lote")}`;
+
+      return {
+        id,
+        titulo: `Etiqueta - ${subject.nombre}`,
+        modulo: "Microbiologia",
+        submodulo: "Etiquetas",
+        tipo: "Etiqueta",
+        descripcion: "Etiqueta guardada desde el formulario de microbiologia.",
+        data: {
+          laboratorio: "SUITE VET",
+          medio: subject.nombre,
+          responsable: datosFormulario.responsable || "",
+          paralelo: datosFormulario.paralelo || "",
+          fecha: labels[0]?.fecha || formatDateOnly(new Date()),
+          lote: datosFormulario.lote || "",
+          tipoEtiqueta: selectedOptions.map((option) => `${option.label} (${option.quantity})`).join(", "),
+          tipoEnvase: selectedOptions.map((option) => option.label).join(", "),
+          observaciones: datosFormulario.observaciones || "",
+          cantidadEtiquetas: labels.length,
+          tiposSeleccionados: selectedOptions,
+          codigos: labels.map((label) => label.codigo),
+          calculo: serializeCalcSnapshot(calc)
+        }
+      };
+    }
+
+    function toggleMicroPrintFavorite() {
+      if (!state.printFavorite) return;
+      window.SuiteVet?.Favorites?.toggleFavorite?.(state.printFavorite, {
+        addedMessage: "Preparacion agregada a favoritos",
+        removedMessage: "Preparacion eliminada de favoritos"
+      });
+      syncMicroPrintFavoriteButton();
+    }
+
+    function syncMicroPrintFavoriteButton() {
+      const btn = els.printArea?.querySelector("[data-micro-print-favorite]");
+      if (!btn || !state.printFavorite) return;
+      const active = Boolean(window.SuiteVet?.Favorites?.isFavorite?.(state.printFavorite.id));
+      btn.classList.toggle("is-active", active);
+      btn.setAttribute("aria-pressed", active ? "true" : "false");
+    }
+
+    function toggleMicroLabelFavorite() {
+      if (!state.labelContext) return;
+      const form = obtenerDatosFormularioEtiqueta();
+      const favorite = buildLabelFavorite(state.labelContext.calc, form);
+      if (!favorite) {
+        toast("Selecciona al menos un tipo de etiqueta para guardar en favoritos.");
+        return;
+      }
+
+      window.SuiteVet?.Favorites?.toggleFavorite?.(favorite, {
+        addedMessage: "Etiqueta agregada a favoritos",
+        removedMessage: "Etiqueta eliminada de favoritos"
+      });
+      syncMicroLabelFavoriteButton(state.labelContext.calc, form);
+    }
+
+    function syncMicroLabelFavoriteButton(calc, datosFormulario) {
+      const btn = root.querySelector("[data-micro-label-favorite]");
+      if (!btn || !calc) return;
+      const favorite = buildLabelFavorite(calc, datosFormulario);
+      const active = favorite ? Boolean(window.SuiteVet?.Favorites?.isFavorite?.(favorite.id)) : false;
+      btn.classList.toggle("is-active", active);
+      btn.setAttribute("aria-pressed", active ? "true" : "false");
+      btn.disabled = !favorite;
     }
 
     function guardarPreparacionActual() {
@@ -1180,7 +1325,9 @@
       const prep = saved.preparaciones.find((item) => item.id === id);
       if (prep) {
         const calc = restoreCalcSnapshot(prep.calculo || prep.datosTecnicos?.calculo);
-        printDocument(`Preparacion guardada: ${prep.nombre}`, renderPrintablePreparation(calc));
+        printDocument(`Preparacion guardada: ${prep.nombre}`, renderPrintablePreparation(calc), {
+          favorite: buildPreparationFavorite(calc, prep)
+        });
         return;
       }
 
@@ -2053,6 +2200,11 @@
       }
 
       const docClass = options.docClass ? ` ${escapeAttr(options.docClass)}` : "";
+      state.printFavorite = options.favorite || null;
+      const favoriteActive = state.printFavorite && window.SuiteVet?.Favorites?.isFavorite?.(state.printFavorite.id);
+      const favoriteButton = state.printFavorite
+        ? `<button class="sv-favorite-action micro-print-favorite-btn${favoriteActive ? " is-active" : ""}" type="button" data-micro-print-favorite aria-label="Guardar preparacion en favoritos" title="Favorito">&#9733;</button>`
+        : "";
       closeModals();
       ensureMicroPrintOverride();
       document.body.classList.add("micro-printing");
@@ -2068,6 +2220,7 @@
             </div>
             <div class="micro-print-actions">
               <button class="sv-btn sv-btn-secondary" type="button" data-micro-print-close>Volver</button>
+              ${favoriteButton}
               <button class="sv-btn sv-btn-primary" type="button" data-micro-print-now>Imprimir / PDF</button>
             </div>
           </div>
@@ -2085,6 +2238,7 @@
       els.printArea.classList.remove("is-open");
       els.printArea.setAttribute("aria-hidden", "true");
       els.printArea.innerHTML = "";
+      state.printFavorite = null;
       removeMicroPrintOverride();
     }
 
@@ -2514,6 +2668,12 @@
 
     function norm(value) {
       return String(value || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    }
+
+    function slugText(value) {
+      return norm(value)
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "") || "favorito";
     }
 
     function escapeHtml(value) {

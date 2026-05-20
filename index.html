@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="shared/components.css" />
   <link rel="stylesheet" href="shared/categorias.css" />
   <link rel="stylesheet" href="shared/layout.css" />
+  <link rel="stylesheet" href="shared/favoritos.css" />
 
   <!-- ── MÓDULOS CSS ── -->
   <link rel="stylesheet" href="modules/fisio/fisio.css" />
@@ -44,6 +45,10 @@
     </button>
     <button class="sv-icon-btn sv-search-toggle" id="sv-search-toggle" type="button" aria-label="Abrir busqueda global" aria-expanded="false" title="Buscar">
       &#128269;
+    </button>
+    <button class="sv-icon-btn sv-favorites-toggle" id="sv-favorites-toggle" type="button" data-go-view="favoritos" aria-label="Abrir favoritos" title="Favoritos">
+      &#9733;
+      <span id="sv-favorites-count" class="sv-favorites-count" hidden>0</span>
     </button>
     <span class="sv-topbar-brand">SUITE VET</span>
     <div class="sv-search-wrap">
@@ -116,6 +121,11 @@
           <span class="sv-coming-tag">Próximamente</span>
         </button>
       </div>
+    </section>
+
+    <!-- FAVORITOS -->
+    <section id="view-favoritos" class="sv-view">
+      <div id="favoritos-root"></div>
     </section>
 
     <!-- ── FISIOLOGÍA ── -->
@@ -227,6 +237,7 @@
        SCRIPTS — orden de carga correcto
   ════════════════════════════════════════ -->
   <!-- Shared -->
+  <script src="shared/favoritos.js" defer></script>
   <script src="shared/recetario.js" defer></script>
 
   <!-- Fisiología -->
