@@ -74,6 +74,13 @@
       icon:  "DN",
       label: "Dolor/Nocicepción"
     },
+    "muscular": {
+      color: "#d97706",
+      bg:    "rgba(217,119,6,0.12)",
+      glow:  "rgba(217,119,6,0.24)",
+      icon:  "MU",
+      label: "Muscular"
+    },
     "enterico": {
       color: "#22c55e",
       bg:    "rgba(34,197,94,0.12)",

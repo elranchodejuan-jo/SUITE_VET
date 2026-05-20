@@ -1871,6 +1871,16 @@
       relacionados: ["catecolaminas", "emesis", "sistema-endocrino"]
     },
     {
+      id: "histamina",
+      termino: "Histamina",
+      sistema: "Inmunologico",
+      sistemaKey: "inmunologico",
+      tipo: "Amina biogena",
+      definicion: "Mediador liberado por mastocitos, basofilos, celulas gastricas y neuronas histaminergicas.",
+      importanciaClinica: "Conecta alergia, prurito, anafilaxia y secrecion acida gastrica con receptores H1/H2.",
+      relacionados: ["sistema-inmunologico", "prurito", "acido-clorhidrico"]
+    },
+    {
       id: "sustancia-p",
       termino: "Sustancia P",
       sistema: "Dolor/Nocicepcion",
@@ -1883,6 +1893,7 @@
     {
       id: "opioides-endogenos",
       termino: "Opioides endogenos",
+      sinonimos: ["Endorfinas", "Encefalinas", "Dinorfinas"],
       sistema: "Dolor/Nocicepcion",
       sistemaKey: "dolor-nocicepcion",
       tipo: "Neuromoduladores analgesicos",
@@ -2137,6 +2148,113 @@
       definicion: "Hormona adrenal relacionada con metabolismo, inflamacion y respuesta sostenida al estres.",
       importanciaClinica: "Clave en estres, Cushing, Addison, inmunosupresion y adaptacion metabolica.",
       relacionados: ["eje-hha", "estres-cronico", "hiperglucemia"]
+    },
+    {
+      id: "hipotalamo",
+      termino: "Hipotalamo",
+      sistema: "Endocrino/Metabolico",
+      sistemaKey: "endocrino-metabolico",
+      tipo: "Centro neuroendocrino",
+      definicion: "Region del encefalo que integra señales nerviosas y endocrinas para controlar hipofisis y homeostasis.",
+      importanciaClinica: "Coordina sed, hambre, temperatura, ADH, oxitocina y ejes hormonales como HHA, tiroideo y gonadal.",
+      relacionados: ["hipofisis", "eje-hha", "sistema-endocrino"]
+    },
+    {
+      id: "hipofisis",
+      termino: "Hipofisis",
+      sinonimos: ["Pituitaria"],
+      sistema: "Endocrino/Metabolico",
+      sistemaKey: "endocrino-metabolico",
+      tipo: "Glandula endocrina",
+      definicion: "Glandula ubicada bajo el hipotalamo que libera hormonas tróficas y neurohormonas.",
+      importanciaClinica: "Clave en Cushing dependiente de hipofisis, PPID equino, lactacion, crecimiento y reproduccion.",
+      relacionados: ["adenohipofisis", "neurohipofisis", "hipotalamo"]
+    },
+    {
+      id: "adenohipofisis",
+      termino: "Adenohipofisis",
+      sistema: "Endocrino/Metabolico",
+      sistemaKey: "endocrino-metabolico",
+      tipo: "Hipofisis anterior",
+      definicion: "Porcion glandular de la hipofisis que produce ACTH, TSH, GH, prolactina, LH y FSH.",
+      importanciaClinica: "Sus alteraciones explican endocrinopatias centrales y pruebas de estimulacion o supresion hormonal.",
+      relacionados: ["hipofisis", "acth", "tsh"]
+    },
+    {
+      id: "neurohipofisis",
+      termino: "Neurohipofisis",
+      sistema: "Endocrino/Metabolico",
+      sistemaKey: "endocrino-metabolico",
+      tipo: "Hipofisis posterior",
+      definicion: "Porcion neural de la hipofisis que almacena y libera ADH y oxitocina sintetizadas en el hipotalamo.",
+      importanciaClinica: "Relaciona diabetes insipida central, parto, eyeccion de leche y regulacion de agua corporal.",
+      relacionados: ["hipofisis", "hormona-antidiuretica", "hipotalamo"]
+    },
+    {
+      id: "crh",
+      termino: "Hormona liberadora de corticotropina",
+      sigla: "CRH",
+      sistema: "Endocrino/Metabolico",
+      sistemaKey: "endocrino-metabolico",
+      tipo: "Hormona hipotalamica",
+      definicion: "Hormona que estimula a la adenohipofisis para liberar ACTH durante la respuesta al estres.",
+      importanciaClinica: "Es el disparador central del eje HHA y participa en carga alostatica, dolor e inflamacion.",
+      relacionados: ["eje-hha", "acth", "cortisol"]
+    },
+    {
+      id: "acth",
+      termino: "Hormona adrenocorticotropa",
+      sigla: "ACTH",
+      sistema: "Endocrino/Metabolico",
+      sistemaKey: "endocrino-metabolico",
+      tipo: "Hormona hipofisaria",
+      definicion: "Hormona de adenohipofisis que estimula corteza suprarrenal para producir cortisol.",
+      importanciaClinica: "Se mide en Cushing, Addison y PPID equino; tambien se usa en prueba de estimulacion adrenal.",
+      relacionados: ["crh", "cortisol", "eje-hha"]
+    },
+    {
+      id: "trh",
+      termino: "Hormona liberadora de tirotropina",
+      sigla: "TRH",
+      sistema: "Endocrino/Metabolico",
+      sistemaKey: "endocrino-metabolico",
+      tipo: "Hormona hipotalamica",
+      definicion: "Hormona hipotalamica que estimula liberacion de TSH y puede aumentar prolactina.",
+      importanciaClinica: "Conecta eje tiroideo, metabolismo y pruebas de estimulacion con TRH, especialmente en equinos con sospecha de PPID.",
+      relacionados: ["tsh", "hipotalamo", "adenohipofisis"]
+    },
+    {
+      id: "tsh",
+      termino: "Hormona estimulante de tiroides",
+      sigla: "TSH",
+      sistema: "Endocrino/Metabolico",
+      sistemaKey: "endocrino-metabolico",
+      tipo: "Hormona hipofisaria",
+      definicion: "Hormona de adenohipofisis que estimula captacion de yodo y produccion de T4/T3 en tiroides.",
+      importanciaClinica: "Ayuda a interpretar hipotiroidismo canino e hipertiroidismo felino junto con T4 y T4 libre.",
+      relacionados: ["trh", "tiroxina", "triyodotironina"]
+    },
+    {
+      id: "tiroxina",
+      termino: "Tiroxina",
+      sigla: "T4",
+      sistema: "Endocrino/Metabolico",
+      sistemaKey: "endocrino-metabolico",
+      tipo: "Hormona tiroidea",
+      definicion: "Hormona tiroidea circulante que sirve como reserva y precursora de T3 activa.",
+      importanciaClinica: "Central para diagnosticar hipotiroidismo en perros e hipertiroidismo en gatos.",
+      relacionados: ["tsh", "triyodotironina", "hiperglucemia"]
+    },
+    {
+      id: "triyodotironina",
+      termino: "Triyodotironina",
+      sigla: "T3",
+      sistema: "Endocrino/Metabolico",
+      sistemaKey: "endocrino-metabolico",
+      tipo: "Hormona tiroidea activa",
+      definicion: "Forma tiroidea con mayor actividad biologica, producida por tiroides y conversion periferica de T4.",
+      importanciaClinica: "Aumenta metabolismo basal, termogenesis y sensibilidad cardiovascular a catecolaminas.",
+      relacionados: ["tiroxina", "tsh", "catecolaminas"]
     },
     {
       id: "catecolaminas",
@@ -2462,6 +2580,426 @@
       definicion: "Analgesia aplicada antes o durante el estimulo doloroso para reducir sensibilizacion posterior.",
       importanciaClinica: "Importante en cirugia, trauma y manejo temprano de dolor agudo.",
       relacionados: ["dolor-agudo", "sensibilizacion-central", "analgesia-multimodal"]
+    },
+
+    // -------------------------------------------------------------------------
+    // SISTEMA MUSCULAR
+    // -------------------------------------------------------------------------
+    {
+      id: "sistema-muscular",
+      termino: "Sistema muscular",
+      sistema: "Muscular",
+      sistemaKey: "muscular",
+      tipo: "Sistema efector",
+      definicion: "Conjunto de tejidos contractiles que generan movimiento, postura, propulsion visceral y bombeo cardiaco.",
+      importanciaClinica: "Permite interpretar debilidad, dolor, fatiga, alteraciones de marcha, anestesia y trastornos de motilidad.",
+      relacionados: ["musculo-esqueletico", "musculo-cardiaco", "musculo-liso"]
+    },
+    {
+      id: "musculo-esqueletico",
+      termino: "Musculo esqueletico",
+      sistema: "Muscular",
+      sistemaKey: "muscular",
+      tipo: "Musculo estriado voluntario",
+      definicion: "Tejido contractil unido al esqueleto y controlado por neuronas motoras somaticas.",
+      importanciaClinica: "Base de locomocion, postura, examen neurologico, bloqueos neuromusculares y miopatias.",
+      relacionados: ["unidad-motora", "union-neuromuscular", "sarcomero"]
+    },
+    {
+      id: "musculo-cardiaco",
+      termino: "Musculo cardiaco",
+      sistema: "Muscular",
+      sistemaKey: "muscular",
+      tipo: "Musculo estriado involuntario",
+      definicion: "Tejido del miocardio con automatismo, discos intercalares y contraccion ritmica coordinada.",
+      importanciaClinica: "Explica arritmias, insuficiencia cardiaca, inotropismo y proteccion frente a tetanos.",
+      relacionados: ["disco-intercalar", "automatismo-cardiaco", "periodo-refractario-cardiaco"]
+    },
+    {
+      id: "musculo-liso",
+      termino: "Musculo liso",
+      sistema: "Muscular",
+      sistemaKey: "muscular",
+      tipo: "Musculo involuntario no estriado",
+      definicion: "Tejido contractil de visceras y vasos que regula tono, propulsion y diametro luminal.",
+      importanciaClinica: "Clave en colico, ileo, broncoconstriccion, vasomotricidad, parto y esfinteres.",
+      relacionados: ["calmodulina", "mlck", "cuerpos-densos"]
+    },
+    {
+      id: "fibra-muscular",
+      termino: "Fibra muscular",
+      sistema: "Muscular",
+      sistemaKey: "muscular",
+      tipo: "Celula contractil",
+      definicion: "Celula muscular alargada capaz de generar fuerza por interaccion de actina y miosina.",
+      importanciaClinica: "Su lesion libera enzimas musculares y altera fuerza, tono o locomocion.",
+      relacionados: ["sarcolema", "miofibrilla", "reticulo-sarcoplasmico"]
+    },
+    {
+      id: "sarcolema",
+      termino: "Sarcolema",
+      sistema: "Muscular",
+      sistemaKey: "muscular",
+      tipo: "Membrana muscular",
+      definicion: "Membrana plasmatica de la fibra muscular que conduce despolarizacion hacia el interior celular.",
+      importanciaClinica: "Daño del sarcolema favorece fuga de CK, mioglobinuria y debilidad muscular.",
+      relacionados: ["fibra-muscular", "tubulos-t", "placa-motora"]
+    },
+    {
+      id: "miofibrilla",
+      termino: "Miofibrilla",
+      sistema: "Muscular",
+      sistemaKey: "muscular",
+      tipo: "Estructura contractil",
+      definicion: "Cilindro intracelular formado por sarcomeros repetidos con filamentos de actina y miosina.",
+      importanciaClinica: "Su organizacion estriada permite entender contraccion, rigidez y enfermedades musculares.",
+      relacionados: ["sarcomero", "actina", "miosina"]
+    },
+    {
+      id: "sarcomero",
+      termino: "Sarcomero",
+      sistema: "Muscular",
+      sistemaKey: "muscular",
+      tipo: "Unidad contractil",
+      definicion: "Unidad funcional del musculo estriado delimitada por lineas Z donde se deslizan actina y miosina.",
+      importanciaClinica: "Explica fuerza, longitud muscular, contraccion esquelética/cardiaca y alteraciones de rigidez.",
+      relacionados: ["actina", "miosina", "puente-cruzado"]
+    },
+    {
+      id: "actina",
+      termino: "Actina",
+      sistema: "Muscular",
+      sistemaKey: "muscular",
+      tipo: "Filamento fino",
+      definicion: "Proteina del filamento fino que ofrece sitios de union para cabezas de miosina durante la contraccion.",
+      importanciaClinica: "Su interaccion con miosina determina fuerza muscular y consumo de ATP.",
+      relacionados: ["tropomiosina", "troponina", "puente-cruzado"]
+    },
+    {
+      id: "miosina",
+      termino: "Miosina",
+      sistema: "Muscular",
+      sistemaKey: "muscular",
+      tipo: "Filamento grueso",
+      definicion: "Proteina motora cuyas cabezas hidrolizan ATP y traccionan actina en el ciclo de puentes cruzados.",
+      importanciaClinica: "Es el motor molecular de la contraccion y depende de ATP para liberar y recargar el puente cruzado.",
+      relacionados: ["actina", "puente-cruzado", "mlck"]
+    },
+    {
+      id: "troponina",
+      termino: "Troponina",
+      sistema: "Muscular",
+      sistemaKey: "muscular",
+      tipo: "Complejo regulador",
+      definicion: "Complejo del filamento fino que une calcio y desplaza tropomiosina para permitir contraccion estriada.",
+      importanciaClinica: "La troponina cardiaca es marcador de daño miocardico; el musculo liso no usa troponina.",
+      relacionados: ["tropomiosina", "sarcomero", "calcio"]
+    },
+    {
+      id: "tropomiosina",
+      termino: "Tropomiosina",
+      sistema: "Muscular",
+      sistemaKey: "muscular",
+      tipo: "Proteina reguladora",
+      definicion: "Proteina que cubre sitios de union de actina en reposo y se desplaza cuando la troponina une calcio.",
+      importanciaClinica: "Permite diferenciar regulacion de musculo estriado frente a musculo liso.",
+      relacionados: ["troponina", "actina", "contraccion-muscular"]
+    },
+    {
+      id: "reticulo-sarcoplasmico",
+      termino: "Reticulo sarcoplasmico",
+      sistema: "Muscular",
+      sistemaKey: "muscular",
+      tipo: "Reserva de calcio",
+      definicion: "Red intracelular que almacena y libera Ca2+ para iniciar la contraccion muscular.",
+      importanciaClinica: "Su recaptacion de calcio permite relajacion; fallas causan contracturas o fatiga.",
+      relacionados: ["calcio", "tubulos-t", "acoplamiento-excitacion-contraccion"]
+    },
+    {
+      id: "tubulos-t",
+      termino: "Tubulos T",
+      sistema: "Muscular",
+      sistemaKey: "muscular",
+      tipo: "Invaginacion del sarcolema",
+      definicion: "Conductos del sarcolema que llevan el potencial de accion hacia el interior de la fibra muscular.",
+      importanciaClinica: "Sin tubulos T, la contraccion seria lenta y descoordinada en fibras grandes.",
+      relacionados: ["sarcolema", "triada-muscular", "reticulo-sarcoplasmico"]
+    },
+    {
+      id: "triada-muscular",
+      termino: "Triada muscular",
+      sistema: "Muscular",
+      sistemaKey: "muscular",
+      tipo: "Complejo de acoplamiento",
+      definicion: "Asociacion de un tubulo T con dos cisternas terminales del reticulo sarcoplasmico en musculo esqueletico.",
+      importanciaClinica: "Convierte señal electrica en liberacion sincronizada de calcio.",
+      relacionados: ["tubulos-t", "reticulo-sarcoplasmico", "acoplamiento-excitacion-contraccion"]
+    },
+    {
+      id: "acoplamiento-excitacion-contraccion",
+      termino: "Acoplamiento excitacion-contraccion",
+      sistema: "Muscular",
+      sistemaKey: "muscular",
+      tipo: "Proceso muscular",
+      definicion: "Secuencia que transforma despolarizacion de membrana en liberacion de calcio y generacion de fuerza.",
+      importanciaClinica: "Ayuda a entender anestesia, hipertermia maligna, debilidad y trastornos de calcio.",
+      relacionados: ["potencial-de-accion", "reticulo-sarcoplasmico", "contraccion-muscular"]
+    },
+    {
+      id: "union-neuromuscular",
+      termino: "Union neuromuscular",
+      sigla: "UNM",
+      sistema: "Muscular",
+      sistemaKey: "muscular",
+      tipo: "Sinapsis motora",
+      definicion: "Sinapsis entre neurona motora somatica y fibra muscular esqueletica.",
+      importanciaClinica: "Diana de bloqueantes neuromusculares, toxina botulinica, miastenia y organofosforados.",
+      relacionados: ["placa-motora", "acetilcolina", "unidad-motora"]
+    },
+    {
+      id: "placa-motora",
+      termino: "Placa motora",
+      sistema: "Muscular",
+      sistemaKey: "muscular",
+      tipo: "Region postsinaptica",
+      definicion: "Zona especializada del sarcolema donde la acetilcolina activa receptores nicotinicos musculares.",
+      importanciaClinica: "Su falla produce debilidad fatigable o paralisis flacida segun el mecanismo.",
+      relacionados: ["union-neuromuscular", "receptor-nicotinico", "acetilcolinesterasa"]
+    },
+    {
+      id: "unidad-motora",
+      termino: "Unidad motora",
+      sistema: "Muscular",
+      sistemaKey: "muscular",
+      tipo: "Unidad funcional motora",
+      definicion: "Neurona motora inferior y todas las fibras musculares que inerva.",
+      importanciaClinica: "Determina precision y fuerza; su reclutamiento explica tono, marcha y debilidad neurologica.",
+      relacionados: ["neurona-motora-inferior", "tono-muscular", "musculo-esqueletico"]
+    },
+    {
+      id: "acetilcolinesterasa",
+      termino: "Acetilcolinesterasa",
+      sigla: "AChE",
+      sistema: "Muscular",
+      sistemaKey: "muscular",
+      tipo: "Enzima sinaptica",
+      definicion: "Enzima que degrada acetilcolina y termina la señal en sinapsis colinergicas.",
+      importanciaClinica: "Su inhibicion por organofosforados causa crisis colinergica; sus inhibidores pueden tratar miastenia.",
+      relacionados: ["acetilcolina", "placa-motora", "receptor-nicotinico"]
+    },
+    {
+      id: "puente-cruzado",
+      termino: "Puente cruzado",
+      sistema: "Muscular",
+      sistemaKey: "muscular",
+      tipo: "Ciclo molecular",
+      definicion: "Union ciclica entre cabeza de miosina y actina que genera desplazamiento del filamento fino.",
+      importanciaClinica: "Explica rigidez post mortem, consumo de ATP y fatiga por fallo energetico.",
+      relacionados: ["actina", "miosina", "sarcomero"]
+    },
+    {
+      id: "contraccion-muscular",
+      termino: "Contraccion muscular",
+      sistema: "Muscular",
+      sistemaKey: "muscular",
+      tipo: "Respuesta efectora",
+      definicion: "Generacion de tension por interaccion actina-miosina regulada por calcio y ATP.",
+      importanciaClinica: "Puede alterarse por hipocalcemia, hipercalemia, anestesia, miopatias o lesiones neurologicas.",
+      relacionados: ["acoplamiento-excitacion-contraccion", "puente-cruzado", "calcio"]
+    },
+    {
+      id: "contraccion-isotonica",
+      termino: "Contraccion isotonica",
+      sistema: "Muscular",
+      sistemaKey: "muscular",
+      tipo: "Tipo de contraccion",
+      definicion: "Contraccion donde el musculo cambia de longitud mientras mueve una carga.",
+      importanciaClinica: "Describe movimientos locomotores y trabajo muscular dinamico.",
+      relacionados: ["contraccion-muscular", "musculo-esqueletico", "unidad-motora"]
+    },
+    {
+      id: "contraccion-isometrica",
+      termino: "Contraccion isometrica",
+      sistema: "Muscular",
+      sistemaKey: "muscular",
+      tipo: "Tipo de contraccion",
+      definicion: "Contraccion donde aumenta la tension sin cambio apreciable de longitud muscular.",
+      importanciaClinica: "Sostiene postura y estabilizacion articular; aumenta carga cardiovascular en esfuerzo intenso.",
+      relacionados: ["tono-muscular", "contraccion-muscular", "unidad-motora"]
+    },
+    {
+      id: "sumacion-muscular",
+      termino: "Sumacion muscular",
+      sistema: "Muscular",
+      sistemaKey: "muscular",
+      tipo: "Incremento de fuerza",
+      definicion: "Aumento de tension por estimulos repetidos antes de que el musculo se relaje por completo.",
+      importanciaClinica: "Explica gradacion de fuerza y puede progresar a tetanos muscular.",
+      relacionados: ["tetanos-muscular", "contraccion-muscular", "unidad-motora"]
+    },
+    {
+      id: "tetanos-muscular",
+      termino: "Tetanos muscular",
+      sistema: "Muscular",
+      sistemaKey: "muscular",
+      tipo: "Contraccion sostenida",
+      definicion: "Contraccion continua por estimulos de alta frecuencia que fusionan respuestas individuales.",
+      importanciaClinica: "No debe confundirse con la enfermedad tetanos; el corazon evita tetanizacion por su periodo refractario largo.",
+      relacionados: ["sumacion-muscular", "periodo-refractario-cardiaco", "contraccion-muscular"]
+    },
+    {
+      id: "tono-muscular",
+      termino: "Tono muscular",
+      sistema: "Muscular",
+      sistemaKey: "muscular",
+      tipo: "Tension basal",
+      definicion: "Tension parcial mantenida por activacion nerviosa de baja intensidad y reclutamiento asincronico.",
+      importanciaClinica: "Se evalua en examen neurologico; aumenta en espasticidad y disminuye en flacidez.",
+      relacionados: ["unidad-motora", "espasticidad", "flacidez"]
+    },
+    {
+      id: "fatiga-muscular",
+      termino: "Fatiga muscular",
+      sistema: "Muscular",
+      sistemaKey: "muscular",
+      tipo: "Perdida de rendimiento",
+      definicion: "Disminucion reversible de fuerza por uso prolongado, alteracion energetica o falla de excitacion-contraccion.",
+      importanciaClinica: "Puede indicar sobreesfuerzo, hipoxia, alteraciones electroliticas, miopatias o enfermedad neuromuscular.",
+      relacionados: ["contraccion-muscular", "hipocalemia", "unidad-motora"]
+    },
+    {
+      id: "disco-intercalar",
+      termino: "Disco intercalar",
+      sistema: "Muscular",
+      sistemaKey: "muscular",
+      tipo: "Union cardiaca",
+      definicion: "Union especializada entre cardiomiocitos con desmosomas y gap junctions.",
+      importanciaClinica: "Permite sincitio funcional y contraccion cardiaca coordinada.",
+      relacionados: ["gap-junction", "sincitio-funcional", "musculo-cardiaco"]
+    },
+    {
+      id: "gap-junction",
+      termino: "Gap junction",
+      sinonimos: ["Union comunicante", "Nexo"],
+      sistema: "Muscular",
+      sistemaKey: "muscular",
+      tipo: "Union electrica",
+      definicion: "Canal intercelular que permite paso de iones y acoplamiento electrico entre celulas.",
+      importanciaClinica: "Coordina miocardio y musculo liso unitario; alteraciones favorecen arritmias o dismotilidad.",
+      relacionados: ["disco-intercalar", "sincitio-funcional", "musculo-liso-unitario"]
+    },
+    {
+      id: "sincitio-funcional",
+      termino: "Sincitio funcional",
+      sistema: "Muscular",
+      sistemaKey: "muscular",
+      tipo: "Coordinacion celular",
+      definicion: "Comportamiento coordinado de celulas conectadas electricamente que se activan como una unidad.",
+      importanciaClinica: "Fundamental en miocardio y musculo liso unitario para contracciones sincronizadas.",
+      relacionados: ["gap-junction", "musculo-cardiaco", "musculo-liso-unitario"]
+    },
+    {
+      id: "automatismo-cardiaco",
+      termino: "Automatismo cardiaco",
+      sistema: "Muscular",
+      sistemaKey: "muscular",
+      tipo: "Propiedad electrica",
+      definicion: "Capacidad de celulas marcapaso para generar potenciales de accion espontaneos y ritmicos.",
+      importanciaClinica: "Base de frecuencia cardiaca, arritmias y efectos del SNA sobre el nodo sinoauricular.",
+      relacionados: ["nodo-sinoauricular", "electrocardiograma", "musculo-cardiaco"]
+    },
+    {
+      id: "nodo-sinoauricular",
+      termino: "Nodo sinoauricular",
+      sigla: "NSA",
+      sistema: "Muscular",
+      sistemaKey: "muscular",
+      tipo: "Marcapaso cardiaco",
+      definicion: "Grupo de celulas marcapaso que inicia el ritmo cardiaco normal.",
+      importanciaClinica: "Su actividad determina frecuencia sinusal y responde a simpatico, parasimpatico y farmacos.",
+      relacionados: ["automatismo-cardiaco", "bradicardia", "taquicardia"]
+    },
+    {
+      id: "nodo-auriculoventricular",
+      termino: "Nodo auriculoventricular",
+      sigla: "NAV",
+      sistema: "Muscular",
+      sistemaKey: "muscular",
+      tipo: "Conduccion cardiaca",
+      definicion: "Nodo que retrasa y conduce el impulso desde auriculas hacia ventriculos.",
+      importanciaClinica: "Su retraso permite llenado ventricular; bloqueos AV producen bradicardia o sincope.",
+      relacionados: ["electrocardiograma", "bradicardia", "sincitio-funcional"]
+    },
+    {
+      id: "periodo-refractario-cardiaco",
+      termino: "Periodo refractario cardiaco",
+      sistema: "Muscular",
+      sistemaKey: "muscular",
+      tipo: "Propiedad electrica cardiaca",
+      definicion: "Intervalo prolongado durante el cual el cardiomiocito no puede responder a un nuevo estimulo.",
+      importanciaClinica: "Evita tetanos cardiaco y permite ciclos de llenado y eyeccion.",
+      relacionados: ["musculo-cardiaco", "tetanos-muscular", "ciclo-cardiaco"]
+    },
+    {
+      id: "calmodulina",
+      termino: "Calmodulina",
+      sistema: "Muscular",
+      sistemaKey: "muscular",
+      tipo: "Sensor de calcio",
+      definicion: "Proteina que une Ca2+ y activa MLCK en musculo liso para iniciar contraccion.",
+      importanciaClinica: "Sustituye funcionalmente a la troponina en musculo liso.",
+      relacionados: ["mlck", "musculo-liso", "calcio"]
+    },
+    {
+      id: "mlck",
+      termino: "Quinasa de cadena ligera de miosina",
+      sigla: "MLCK",
+      sistema: "Muscular",
+      sistemaKey: "muscular",
+      tipo: "Enzima contractil",
+      definicion: "Enzima activada por Ca2+-calmodulina que fosforila miosina y permite contraccion del musculo liso.",
+      importanciaClinica: "Diana funcional de regulacion por SNA, hormonas, vasodilatadores y tono visceral.",
+      relacionados: ["calmodulina", "miosina", "musculo-liso"]
+    },
+    {
+      id: "cuerpos-densos",
+      termino: "Cuerpos densos",
+      sistema: "Muscular",
+      sistemaKey: "muscular",
+      tipo: "Anclaje del musculo liso",
+      definicion: "Estructuras de anclaje para actina en musculo liso, equivalentes funcionales a lineas Z.",
+      importanciaClinica: "Explican por que el musculo liso genera fuerza sin sarcomeros ni estriaciones.",
+      relacionados: ["musculo-liso", "actina", "estado-latch"]
+    },
+    {
+      id: "musculo-liso-unitario",
+      termino: "Musculo liso unitario",
+      sistema: "Muscular",
+      sistemaKey: "muscular",
+      tipo: "Musculo liso visceral",
+      definicion: "Musculo liso con muchas gap junctions que actua como sincitio funcional.",
+      importanciaClinica: "Coordina peristaltismo intestinal, contracciones uterinas y ondas lentas viscerales.",
+      relacionados: ["gap-junction", "sincitio-funcional", "peristalsis-enterica"]
+    },
+    {
+      id: "musculo-liso-multiunitario",
+      termino: "Musculo liso multiunitario",
+      sistema: "Muscular",
+      sistemaKey: "muscular",
+      tipo: "Musculo liso de control fino",
+      definicion: "Musculo liso con poca comunicacion electrica entre celulas y control neural individualizado.",
+      importanciaClinica: "Permite ajustes precisos en iris, musculo ciliar y musculo piloerector.",
+      relacionados: ["musculo-liso", "simpatico", "parasimpatico"]
+    },
+    {
+      id: "estado-latch",
+      termino: "Estado latch",
+      sistema: "Muscular",
+      sistemaKey: "muscular",
+      tipo: "Ahorro energetico del musculo liso",
+      definicion: "Estado en que el musculo liso mantiene fuerza con bajo consumo de ATP.",
+      importanciaClinica: "Permite tono vascular, esfinteriano y visceral sostenido sin fatiga rapida.",
+      relacionados: ["musculo-liso", "mlck", "cuerpos-densos"]
     },
 
     // -------------------------------------------------------------------------
