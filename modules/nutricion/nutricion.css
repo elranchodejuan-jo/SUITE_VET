@@ -1,0 +1,655 @@
+/* =============================================================================
+   SUITE VET - Nutricion Animal Lab
+   ============================================================================= */
+
+.nutri-shell {
+  --nutri-color: #10b981;
+  --nutri-color-2: #38bdf8;
+  --nutri-warn: #f59e0b;
+  display: grid;
+  gap: 1rem;
+}
+
+.nutri-hero {
+  align-items: center;
+  background:
+    linear-gradient(135deg, rgba(16, 185, 129, 0.14), rgba(56, 189, 248, 0.06)),
+    var(--sv-bg-surface);
+  border: 1px solid rgba(16, 185, 129, 0.24);
+  border-radius: 1rem;
+  box-shadow: 0 14px 36px rgba(16, 185, 129, 0.10);
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  padding: 1rem;
+}
+
+.nutri-kicker {
+  color: var(--nutri-color);
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.nutri-hero h2,
+.nutri-page-head h3,
+.nutri-panel-head h3 {
+  margin: 0.12rem 0 0;
+}
+
+.nutri-hero-actions,
+.nutri-print-actions,
+.nutri-action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.nutri-global-search {
+  max-width: 760px;
+  width: 100%;
+}
+
+.nutri-section-grid,
+.nutri-submodule-grid,
+.nutri-card-grid,
+.nutri-saved-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.nutri-section-grid {
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.nutri-submodule-grid,
+.nutri-card-grid,
+.nutri-saved-list {
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+}
+
+.nutri-card-grid.is-compact {
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+}
+
+.nutri-section-card,
+.nutri-card,
+.nutri-saved-item {
+  border-left: 4px solid var(--nutri-color);
+}
+
+.nutri-section-title,
+.nutri-page-head,
+.nutri-panel-head,
+.nutri-card-actions-mini,
+.nutri-result-item,
+.nutri-context-line {
+  align-items: flex-start;
+  display: flex;
+  gap: 0.65rem;
+}
+
+.nutri-section-title,
+.nutri-panel-head,
+.nutri-page-head {
+  justify-content: space-between;
+}
+
+.nutri-icon {
+  align-items: center;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.28);
+  border-radius: 999px;
+  color: var(--nutri-color);
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-size: 0.72rem;
+  font-weight: 900;
+  height: 34px;
+  justify-content: center;
+  min-width: 34px;
+  padding: 0 0.45rem;
+}
+
+.nutri-status,
+.nutri-count {
+  align-items: center;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 999px;
+  color: var(--sv-text-muted);
+  display: inline-flex;
+  flex-shrink: 0;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  padding: 0.18rem 0.55rem;
+  text-transform: uppercase;
+}
+
+.nutri-status.is-disponible {
+  border-color: rgba(16, 185, 129, 0.35);
+  color: #34d399;
+}
+
+.nutri-status.is-beta {
+  border-color: rgba(56, 189, 248, 0.35);
+  color: #38bdf8;
+}
+
+.nutri-status.is-proximamente {
+  border-color: rgba(245, 158, 11, 0.38);
+  color: #f59e0b;
+}
+
+.nutri-status.is-fusionable {
+  border-color: rgba(244, 63, 94, 0.34);
+  color: #fb7185;
+}
+
+.nutri-submodule-board,
+.nutri-search-panel,
+.nutri-panel {
+  background: var(--sv-bg-surface);
+  border: 1px solid var(--sv-border);
+  border-radius: 1rem;
+  display: grid;
+  gap: 0.85rem;
+  padding: 1rem;
+}
+
+.nutri-submodule-card,
+.nutri-result-item {
+  background: var(--sv-bg-elevated);
+  border: 1px solid var(--sv-border);
+  border-radius: 0.85rem;
+  color: var(--sv-text-primary);
+  cursor: pointer;
+  font-family: var(--sv-font-body);
+  padding: 0.8rem;
+  text-align: left;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+.nutri-submodule-card {
+  display: grid;
+  gap: 0.45rem;
+  min-height: 158px;
+}
+
+.nutri-submodule-card strong,
+.nutri-result-item strong {
+  color: var(--sv-text-primary);
+  font-size: 0.95rem;
+}
+
+.nutri-submodule-card small,
+.nutri-result-item span {
+  color: var(--sv-text-muted);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.nutri-submodule-card:hover,
+.nutri-result-item:hover {
+  border-color: rgba(16, 185, 129, 0.48);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.12);
+  transform: translateY(-1px);
+}
+
+.nutri-result-list {
+  display: grid;
+  gap: 0.55rem;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+}
+
+.nutri-page {
+  display: grid;
+  gap: 1rem;
+}
+
+.nutri-page-head {
+  background: var(--sv-bg-surface);
+  border: 1px solid var(--sv-border);
+  border-radius: 1rem;
+  padding: 0.9rem 1rem;
+}
+
+.nutri-page-head > div {
+  flex: 1;
+}
+
+.nutri-page-head p {
+  margin-top: 0.2rem;
+}
+
+.nutri-toolbar {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.nutri-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.nutri-chip {
+  background: var(--sv-bg-elevated);
+  border: 1px solid var(--sv-border);
+  border-radius: 999px;
+  color: var(--sv-text-secondary);
+  cursor: pointer;
+  font-family: var(--sv-font-body);
+  font-size: 0.78rem;
+  padding: 0.32rem 0.75rem;
+}
+
+.nutri-chip:hover,
+.nutri-chip.is-active {
+  border-color: var(--nutri-color);
+  color: var(--nutri-color);
+}
+
+.nutri-chip.is-active {
+  background: rgba(16, 185, 129, 0.14);
+}
+
+.nutri-card {
+  gap: 0.7rem;
+}
+
+.nutri-card-actions-mini {
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 0.35rem;
+}
+
+.nutri-star,
+.nutri-icon-button {
+  align-items: center;
+  background: var(--sv-bg-elevated);
+  border: 1px solid var(--sv-border);
+  border-radius: 999px;
+  color: var(--sv-text-muted);
+  cursor: pointer;
+  display: inline-flex;
+  font-family: var(--sv-font-body);
+  font-size: 0.9rem;
+  height: 32px;
+  justify-content: center;
+  line-height: 1;
+  min-width: 32px;
+  padding: 0 0.45rem;
+}
+
+.nutri-star:hover,
+.nutri-star.is-active,
+.nutri-icon-button:hover {
+  border-color: var(--nutri-color);
+  color: var(--nutri-color);
+}
+
+.nutri-field {
+  color: var(--sv-text-secondary);
+  font-size: 0.84rem;
+  line-height: 1.52;
+}
+
+.nutri-field strong {
+  color: var(--sv-text-primary);
+}
+
+.nutri-recognition {
+  background: rgba(16, 185, 129, 0.06);
+  border: 1px solid rgba(16, 185, 129, 0.16);
+  border-radius: 0.75rem;
+  display: grid;
+  gap: 0.25rem;
+  margin-top: 0.25rem;
+  padding: 0.65rem;
+}
+
+.nutri-recognition > span,
+.nutri-form-grid label span,
+.nutri-result-line span {
+  color: var(--sv-text-muted);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.nutri-mini-table,
+.nutri-result-grid {
+  display: grid;
+  gap: 0.45rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.nutri-mini-table div,
+.nutri-result-line {
+  background: var(--sv-bg-elevated);
+  border: 1px solid var(--sv-border-subtle);
+  border-radius: 0.65rem;
+  padding: 0.55rem 0.6rem;
+}
+
+.nutri-mini-table span {
+  color: var(--sv-text-muted);
+  display: block;
+  font-size: 0.66rem;
+  text-transform: uppercase;
+}
+
+.nutri-mini-table strong,
+.nutri-result-line strong {
+  color: var(--sv-text-primary);
+  display: block;
+  font-size: 0.88rem;
+  margin-top: 0.1rem;
+}
+
+.nutri-two-col {
+  align-items: start;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(0, 1fr) minmax(330px, 0.9fr);
+}
+
+.nutri-calculator {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.nutri-calculator.is-secondary {
+  border-top: 1px solid var(--sv-border);
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+}
+
+.nutri-form-grid {
+  display: grid;
+  gap: 0.7rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.nutri-form-grid label {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.nutri-result-box {
+  background: rgba(15, 23, 42, 0.30);
+  border: 1px solid var(--sv-border);
+  border-radius: 0.85rem;
+  display: grid;
+  gap: 0.65rem;
+  padding: 0.75rem;
+}
+
+[data-theme="light"] .nutri-result-box {
+  background: #f8fafc;
+}
+
+.nutri-result-box h4 {
+  color: var(--sv-text-primary);
+  font-size: 0.95rem;
+}
+
+.nutri-alert {
+  background: rgba(245, 158, 11, 0.10);
+  border: 1px solid rgba(245, 158, 11, 0.28);
+  border-radius: 0.65rem;
+  color: #fbbf24;
+  font-size: 0.8rem;
+  font-weight: 650;
+  padding: 0.5rem 0.6rem;
+}
+
+[data-theme="light"] .nutri-alert {
+  color: #92400e;
+}
+
+.nutri-table-wrap {
+  overflow-x: auto;
+}
+
+.nutri-table {
+  border-collapse: collapse;
+  min-width: 680px;
+  width: 100%;
+}
+
+.nutri-table th,
+.nutri-table td {
+  border-bottom: 1px solid var(--sv-border);
+  color: var(--sv-text-secondary);
+  font-size: 0.82rem;
+  padding: 0.5rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.nutri-table th {
+  color: var(--sv-text-primary);
+}
+
+.nutri-ration-table {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.nutri-ration-row {
+  display: grid;
+  gap: 0.45rem;
+  grid-template-columns: minmax(160px, 1.3fr) minmax(95px, 0.7fr) minmax(95px, 0.7fr) 38px;
+}
+
+.nutri-ration-row.is-head {
+  color: var(--sv-text-muted);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.nutricion-fab {
+  background: var(--nutri-color, #10b981);
+  box-shadow: 0 12px 32px rgba(16, 185, 129, 0.26);
+}
+
+.nutricion-fab:hover {
+  background: #059669;
+}
+
+.nutricion-print-area {
+  display: none;
+}
+
+.nutricion-print-area.is-open {
+  background: rgba(2, 6, 23, 0.96);
+  display: block;
+  inset: 0;
+  overflow: auto;
+  padding: 1rem;
+  position: fixed;
+  z-index: 3000;
+}
+
+.nutri-print-shell {
+  display: grid;
+  gap: 1rem;
+  margin: 0 auto;
+  max-width: 920px;
+}
+
+.nutri-print-toolbar {
+  align-items: center;
+  background: var(--sv-bg-surface);
+  border: 1px solid var(--sv-border);
+  border-radius: 1rem;
+  display: flex;
+  justify-content: space-between;
+  padding: 0.9rem 1rem;
+  position: sticky;
+  top: 0.7rem;
+  z-index: 2;
+}
+
+.nutri-print-doc {
+  background: #fff;
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.42);
+  color: #0f172a;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 11pt;
+  line-height: 1.4;
+  margin: 0 auto 1rem;
+  min-height: 297mm;
+  padding: 14mm;
+  width: min(210mm, 100%);
+}
+
+.nutri-print-doc header {
+  border-bottom: 3px solid #0f766e;
+  margin-bottom: 6mm;
+  padding-bottom: 4mm;
+}
+
+.nutri-print-doc h1 {
+  color: #0f766e;
+  font-size: 20pt;
+  margin: 0;
+}
+
+.nutri-print-doc h2 {
+  color: #0f172a;
+  font-size: 15pt;
+  margin: 0 0 4mm;
+}
+
+.nutri-print-doc p,
+.nutri-print-doc li {
+  color: #0f172a;
+  font-size: 11pt;
+}
+
+.nutri-print-doc table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.nutri-print-doc th,
+.nutri-print-doc td {
+  border: 1px solid #cbd5e1;
+  color: #0f172a;
+  padding: 5px 7px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.nutri-print-doc th {
+  background: #f1f5f9;
+  width: 34%;
+}
+
+.nutri-print-doc footer {
+  border-top: 1px solid #cbd5e1;
+  color: #475569;
+  font-size: 10pt;
+  margin-top: 8mm;
+  padding-top: 3mm;
+}
+
+.nutri-print-alert {
+  background: #fff7ed;
+  border: 1px solid #f59e0b;
+  color: #92400e;
+  padding: 6px 8px;
+}
+
+@media (max-width: 900px) {
+  .nutri-hero,
+  .nutri-page-head,
+  .nutri-panel-head,
+  .nutri-print-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .nutri-two-col,
+  .nutri-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .nutri-section-grid,
+  .nutri-submodule-grid,
+  .nutri-card-grid,
+  .nutri-card-grid.is-compact,
+  .nutri-saved-list,
+  .nutri-result-list {
+    grid-template-columns: 1fr;
+  }
+
+  .nutri-ration-row {
+    grid-template-columns: 1fr;
+  }
+
+  .nutri-ration-row.is-head {
+    display: none;
+  }
+
+  .nutri-action-row .sv-btn,
+  .nutri-hero-actions .sv-btn {
+    flex: 1 1 150px;
+  }
+
+  .nutricion-print-area.is-open {
+    padding: 0.55rem;
+  }
+
+  .nutri-print-doc {
+    min-width: 210mm;
+  }
+}
+
+@media print {
+  body.nutricion-printing {
+    background: #fff !important;
+  }
+
+  body.nutricion-printing > *:not(#nutricion-print-area) {
+    display: none !important;
+  }
+
+  body.nutricion-printing #nutricion-print-area {
+    background: #fff !important;
+    display: block !important;
+    inset: auto !important;
+    overflow: visible !important;
+    padding: 0 !important;
+    position: static !important;
+  }
+
+  body.nutricion-printing .no-print,
+  body.nutricion-printing .nutri-print-toolbar {
+    display: none !important;
+  }
+
+  body.nutricion-printing .nutri-print-doc {
+    box-shadow: none !important;
+    margin: 0 !important;
+    min-height: auto !important;
+    padding: 0 !important;
+    width: auto !important;
+  }
+
+  @page {
+    margin: 12mm;
+    size: A4 portrait;
+  }
+}

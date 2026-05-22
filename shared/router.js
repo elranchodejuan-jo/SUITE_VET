@@ -136,6 +136,13 @@
           <small>Lesiones y diagn&oacute;stico diferencial</small>
         </span>
       </button>
+      <button class="sv-menu-item sv-menu-route" data-view="nutricion" type="button">
+        <span class="sv-menu-icon sv-menu-icon-nutri">NA</span>
+        <span>
+          <strong>Nutrici&oacute;n Animal</strong>
+          <small>Nutrientes, raciones y cl&iacute;nica nutricional</small>
+        </span>
+      </button>
       <button class="sv-menu-item sv-menu-route" data-view="favoritos" type="button">
         <span class="sv-menu-icon sv-menu-icon-fav">FV</span>
         <span>
@@ -352,6 +359,7 @@
       farma: "💉 Farmacología",
       micro: "🧫 Microbiología",
       pato:  "🔬 Patología",
+      nutricion: "Nutrición Animal",
     };
 
     for (const [moduleId, items] of Object.entries(grupos)) {

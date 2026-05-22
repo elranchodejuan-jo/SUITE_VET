@@ -300,6 +300,7 @@
 .sv-home-card-farma::before { border-color: var(--sv-farma-color); }
 .sv-home-card-micro::before { border-color: var(--sv-micro-color); }
 .sv-home-card-pato::before  { border-color: var(--sv-pato-color);  }
+.sv-home-card-nutri::before { border-color: var(--sv-nutri-color); }
 
 .sv-home-card:hover {
   transform: translateY(-3px);
@@ -601,6 +602,7 @@
 .sv-menu-icon-farma { color: var(--sv-farma-color); border-color: rgba(163, 230, 53, 0.55); }
 .sv-menu-icon-micro { color: var(--sv-micro-color); border-color: rgba(34, 211, 238, 0.55); }
 .sv-menu-icon-pato { color: var(--sv-pato-color); border-color: rgba(249, 115, 22, 0.55); }
+.sv-menu-icon-nutri { color: var(--sv-nutri-color); border-color: rgba(16, 185, 129, 0.55); }
 
 @media print {
   .sv-topbar, .sv-nav, .sv-fab, .sv-menu-panel, #sv-theme-toggle { display: none !important; }
