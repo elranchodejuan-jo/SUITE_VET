@@ -18,12 +18,15 @@
     const tipos    = [...new Set(lesiones.map((l) => l.tipo))];
 
     root.innerHTML = `
-      <h2>Patología</h2>
-      <p class="sv-view-intro">
-        Atlas de lesiones, hallazgos macroscópicos y diagnóstico diferencial veterinario.
-      </p>
+      <section class="sv-module-shell">
+      <section class="sv-module-header">
+        <h2>Patología</h2>
+        <p class="sv-view-intro">
+          Atlas de lesiones, hallazgos macroscópicos y diagnóstico diferencial veterinario.
+        </p>
+      </section>
 
-      <div class="sv-toolbar">
+      <div class="sv-toolbar sv-module-toolbar">
         <input
           type="text"
           id="pato-search"
@@ -43,6 +46,7 @@
       </div>
 
       <div class="sv-grid" id="pato-lista"></div>
+      </section>
     `;
 
     const searchInput   = root.querySelector("#pato-search");

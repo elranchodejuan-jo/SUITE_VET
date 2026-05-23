@@ -161,3 +161,342 @@
   color: var(--sv-text-primary);
   font-weight: 600;
 }
+
+/* -----------------------------------------------------------------------------
+   SUBMODULOS FARMACOLOGIA
+   ----------------------------------------------------------------------------- */
+.farma-shell {
+  gap: 0.95rem;
+}
+
+.farma-subnav {
+  border-bottom: 1px solid var(--sv-border);
+  padding-bottom: 0.7rem;
+}
+
+.farma-subtab {
+  font-weight: 600;
+}
+
+.farma-panel {
+  display: grid;
+  gap: 0.85rem;
+}
+
+/* -----------------------------------------------------------------------------
+   CALCULADORA LIBRE
+   ----------------------------------------------------------------------------- */
+.farma-free-shell {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.farma-free-grid,
+.farma-advanced-grid,
+.farma-component-grid {
+  display: grid;
+  gap: 0.7rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.farma-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.28rem;
+}
+
+.farma-field > span {
+  font-size: 0.73rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--sv-text-muted);
+}
+
+.farma-field textarea.sv-input {
+  min-height: 84px;
+  resize: vertical;
+}
+
+.farma-field-wide {
+  grid-column: 1 / -1;
+}
+
+.farma-free-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.4rem;
+}
+
+.farma-free-warning {
+  border: 1px solid rgba(234, 179, 8, 0.45);
+  background: rgba(234, 179, 8, 0.12);
+  color: #facc15;
+  border-radius: 0.7rem;
+  padding: 0.65rem 0.8rem;
+  display: grid;
+  gap: 0.25rem;
+}
+
+.farma-free-warning p {
+  font-size: 0.82rem;
+}
+
+.farma-free-result {
+  border: 1px solid var(--sv-border);
+  background: var(--sv-bg-elevated);
+  border-radius: 0.8rem;
+  padding: 0.8rem 0.9rem;
+  display: grid;
+  gap: 0.15rem;
+}
+
+.farma-free-result.muted {
+  opacity: 0.75;
+}
+
+.farma-free-result-main {
+  font-size: 1.14rem;
+  font-weight: 700;
+  color: var(--sv-text-primary);
+}
+
+.farma-free-result-final {
+  color: var(--sv-success);
+}
+
+.farma-procedure-box {
+  border: 1px solid var(--sv-border-subtle);
+  background: var(--sv-bg-elevated);
+  border-radius: 0.8rem;
+  padding: 0.75rem 0.85rem;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.farma-procedure-box h3,
+.farma-procedure-box h4 {
+  margin: 0;
+}
+
+.farma-procedure-steps {
+  background: var(--sv-bg-surface);
+  border: 1px solid var(--sv-border);
+  border-radius: 0.65rem;
+  padding: 0.5rem 0.65rem;
+  display: grid;
+  gap: 0.2rem;
+  font-family: var(--sv-font-mono);
+}
+
+/* -----------------------------------------------------------------------------
+   MODO PROFESIONAL
+   ----------------------------------------------------------------------------- */
+.farma-advanced-card {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.farma-components-block,
+.farma-interactions-block,
+.farma-dose-species-block,
+.farma-product-photo-block {
+  display: grid;
+  gap: 0.65rem;
+  border: 1px solid var(--sv-border);
+  border-radius: 0.85rem;
+  padding: 0.8rem;
+  background: var(--sv-bg-elevated);
+}
+
+.farma-components-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.farma-components-header h3 {
+  margin: 0;
+  font-size: 0.98rem;
+}
+
+.farma-components-list {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.farma-component-card {
+  border: 1px solid var(--sv-border-subtle);
+}
+
+.farma-species-dose-list {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.farma-species-dose-card {
+  border: 1px solid var(--sv-border-subtle);
+}
+
+.farma-species-dose-grid {
+  display: grid;
+  gap: 0.65rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.farma-species-dose-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.farma-component-result {
+  border: 1px dashed var(--sv-border);
+  border-radius: 0.55rem;
+  padding: 0.55rem 0.7rem;
+  background: var(--sv-bg-surface);
+  font-size: 0.85rem;
+  color: var(--sv-text-secondary);
+}
+
+.farma-product-photo-grid {
+  display: grid;
+  gap: 0.65rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.farma-file-input {
+  padding: 0.35rem 0.45rem;
+}
+
+.farma-product-photo-preview {
+  border: 1px dashed var(--sv-border);
+  background: var(--sv-bg-surface);
+  border-radius: 0.75rem;
+  padding: 0.65rem;
+  min-height: 82px;
+  display: grid;
+  place-items: center;
+  gap: 0.35rem;
+}
+
+.farma-photo-empty {
+  color: var(--sv-text-muted);
+  font-size: 0.83rem;
+}
+
+.farma-photo-preview-image {
+  width: 100%;
+  max-height: 220px;
+  object-fit: contain;
+  border-radius: 0.6rem;
+  border: 1px solid var(--sv-border-subtle);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.farma-photo-name {
+  font-size: 0.75rem;
+  color: var(--sv-text-muted);
+}
+
+.farma-product-photo-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.farma-interaction-results {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.farma-interaction-alert {
+  border-radius: 0.65rem;
+  padding: 0.6rem 0.72rem;
+  border: 1px solid var(--sv-border-subtle);
+  background: var(--sv-bg-surface);
+  display: grid;
+  gap: 0.15rem;
+  font-size: 0.83rem;
+}
+
+.farma-interaction-alert.sinergismo {
+  border-color: rgba(59, 130, 246, 0.5);
+  background: rgba(59, 130, 246, 0.12);
+}
+
+.farma-interaction-alert.antagonismo {
+  border-color: rgba(239, 68, 68, 0.48);
+  background: rgba(239, 68, 68, 0.13);
+}
+
+.farma-interaction-alert.precaucion {
+  border-color: rgba(234, 179, 8, 0.48);
+  background: rgba(234, 179, 8, 0.13);
+}
+
+.farma-interaction-alert.sin_alertas {
+  border-color: rgba(34, 197, 94, 0.45);
+  background: rgba(34, 197, 94, 0.13);
+}
+
+/* -----------------------------------------------------------------------------
+   PERSONALIZADOS / HISTORIAL
+   ----------------------------------------------------------------------------- */
+.farma-custom-shell,
+.farma-history-shell {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.farma-custom-actions,
+.farma-history-actions {
+  gap: 0.38rem;
+}
+
+.farma-mini-box {
+  border: 1px solid var(--sv-border-subtle);
+  border-radius: 0.72rem;
+  padding: 0.58rem 0.65rem;
+  background: var(--sv-bg-elevated);
+  display: grid;
+  gap: 0.2rem;
+}
+
+.farma-mini-box strong {
+  color: var(--sv-text-primary);
+  font-size: 0.82rem;
+}
+
+.farma-mini-box ul {
+  margin: 0;
+  padding-left: 1rem;
+  display: grid;
+  gap: 0.14rem;
+  font-size: 0.8rem;
+  color: var(--sv-text-secondary);
+}
+
+.farma-product-thumb-wrap {
+  border: 1px solid var(--sv-border-subtle);
+  border-radius: 0.75rem;
+  background: var(--sv-bg-elevated);
+  padding: 0.45rem;
+}
+
+.farma-product-thumb {
+  width: 100%;
+  max-height: 180px;
+  object-fit: cover;
+  border-radius: 0.5rem;
+}
+
+@media (max-width: 900px) {
+  .farma-free-grid,
+  .farma-advanced-grid,
+  .farma-component-grid,
+  .farma-species-dose-grid,
+  .farma-product-photo-grid {
+    grid-template-columns: 1fr;
+  }
+}

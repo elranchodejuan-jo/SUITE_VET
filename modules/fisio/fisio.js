@@ -253,12 +253,15 @@
     // 1. HTML DEL MÓDULO
     // -------------------------------------------------------------------------
     root.innerHTML = `
-      <h2>Fisiología</h2>
-      <p class="sv-view-intro">
-        Hormonas por sistema fisiológico, vitaminas y glosario clínico veterinario.
-      </p>
+      <section class="sv-module-shell">
+      <section class="sv-module-header">
+        <h2>Fisiología</h2>
+        <p class="sv-view-intro">
+          Hormonas por sistema fisiológico, vitaminas y glosario clínico veterinario.
+        </p>
+      </section>
 
-      <div class="sv-subnav" id="fisio-subnav">
+      <div class="sv-subnav sv-module-subnav" id="fisio-subnav">
         <button class="sv-tab sv-tab-active" data-pane="hormonas">
           Hormonas
           <span style="opacity:0.55;font-size:0.75em;margin-left:0.2rem">(${hormonas.length})</span>
@@ -275,7 +278,7 @@
 
       <!-- ── PANE HORMONAS ── -->
       <div id="fisio-pane-hormonas" class="sv-pane sv-pane-active">
-        <div class="sv-toolbar">
+        <div class="sv-toolbar sv-module-toolbar">
           <input type="text" id="fisio-search-hormona" class="sv-input"
             placeholder="Buscar por nombre, sigla o sistema…"
             style="max-width:400px;" autocomplete="off" />
@@ -286,7 +289,7 @@
 
       <!-- ── PANE VITAMINAS ── -->
       <div id="fisio-pane-vitaminas" class="sv-pane">
-        <div class="sv-toolbar" id="fisio-toolbar-vitaminas">
+        <div class="sv-toolbar sv-module-toolbar" id="fisio-toolbar-vitaminas">
           <input type="text" id="fisio-search-vitamina" class="sv-input"
             placeholder="Buscar vitamina (A, B1, K2, tiamina, cobalamina…)"
             style="max-width:340px;" autocomplete="off" />
@@ -308,7 +311,7 @@
 
       <!-- ── PANE GLOSARIO ── -->
       <div id="fisio-pane-glosario" class="sv-pane">
-        <div class="sv-toolbar">
+        <div class="sv-toolbar sv-module-toolbar">
           <input type="text" id="fisio-search-glosario" class="sv-input"
             placeholder="Buscar término (ej. disuria, poliuria, prurito)…"
             style="max-width:340px;" autocomplete="off" />
@@ -316,6 +319,7 @@
         <div id="fisio-filtros-glosario" style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:1rem;"></div>
         <div class="sv-grid" id="fisio-lista-glosario"></div>
       </div>
+      </section>
     `;
 
     // -------------------------------------------------------------------------

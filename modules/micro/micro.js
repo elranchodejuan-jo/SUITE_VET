@@ -54,8 +54,8 @@
     };
 
     root.innerHTML = `
-      <section class="micro-shell">
-        <header class="micro-hero">
+      <section class="micro-shell sv-module-shell">
+        <header class="micro-hero sv-module-header">
           <div>
             <span class="micro-kicker">SUITE VET / FITBET 2.2</span>
             <h2>Microbiología</h2>
@@ -65,9 +65,9 @@
           </div>
         </header>
 
-        <div class="micro-subnav" id="micro-subnav">
+        <div class="micro-subnav sv-module-subnav" id="micro-subnav">
           ${panes.map((p) => `
-            <button class="micro-tab ${p.id === state.pane ? "is-active" : ""}" data-pane="${p.id}" type="button">
+            <button class="micro-tab sv-module-tab ${p.id === state.pane ? "is-active" : ""}" data-pane="${p.id}" type="button">
               <span>${p.icon}</span>
               <strong>${p.label}</strong>
               <b>${data[p.id]?.length || 0}</b>
@@ -75,13 +75,13 @@
           `).join("")}
         </div>
 
-        <div class="micro-toolbar">
+        <div class="micro-toolbar sv-module-toolbar">
           <input id="micro-search" class="sv-input" type="text" placeholder="Buscar en el ecosistema microbiológico..." autocomplete="off" />
           <select id="micro-filter-primary" class="sv-select"></select>
           <select id="micro-filter-secondary" class="sv-select"></select>
         </div>
 
-        <div id="micro-context" class="micro-context"></div>
+        <div id="micro-context" class="micro-context sv-module-context"></div>
         <div id="micro-content" class="micro-grid"></div>
       </section>
 
@@ -428,7 +428,7 @@
       const meta = paneById[pane];
       const rel = getRelations(item, pane);
       return `
-        <article class="micro-card micro-card-${meta.singular} sv-fade-in" data-micro-card="${item.id}" ${favoriteAttrs(item, pane)}>
+        <article class="micro-card sv-module-card micro-card-${meta.singular} sv-fade-in" data-micro-card="${item.id}" ${favoriteAttrs(item, pane)}>
           <div class="micro-card-visual" data-kind="${meta.singular}">
             <span>${meta.icon}</span>
             <i></i><i></i><i></i>
@@ -461,7 +461,7 @@
     function renderTestCard(item) {
       const rel = getRelations(item, "pruebas");
       return `
-        <article class="micro-card micro-card-prueba sv-fade-in" data-micro-card="${item.id}" ${favoriteAttrs(item, "pruebas")}>
+        <article class="micro-card sv-module-card micro-card-prueba sv-fade-in" data-micro-card="${item.id}" ${favoriteAttrs(item, "pruebas")}>
           <div class="micro-card-visual" data-kind="prueba"><span>⚗️</span><i></i><i></i><i></i></div>
           <div class="micro-card-head">
             <div>
@@ -491,7 +491,7 @@
     function renderAntibioticCard(item) {
       const rel = getRelations(item, "antibioticos");
       return `
-        <article class="micro-card micro-card-antibiotico sv-fade-in" data-micro-card="${item.id}" ${favoriteAttrs(item, "antibioticos")}>
+        <article class="micro-card sv-module-card micro-card-antibiotico sv-fade-in" data-micro-card="${item.id}" ${favoriteAttrs(item, "antibioticos")}>
           <div class="micro-card-visual" data-kind="antibiotico"><span>💊</span><i></i><i></i><i></i></div>
           <div class="micro-card-head">
             <div>
@@ -525,7 +525,7 @@
     function renderMicroorganismCard(item) {
       const rel = getRelations(item, "microorganismos");
       return `
-        <article class="micro-card micro-card-microorganismo sv-fade-in" data-micro-card="${item.id}" ${favoriteAttrs(item, "microorganismos", { title: item.nombreCientifico, description: item.importancia || item.subtitulo || "" })}>
+        <article class="micro-card sv-module-card micro-card-microorganismo sv-fade-in" data-micro-card="${item.id}" ${favoriteAttrs(item, "microorganismos", { title: item.nombreCientifico, description: item.importancia || item.subtitulo || "" })}>
           <div class="micro-card-visual" data-kind="microorganismo"><span>🦠</span><i></i><i></i><i></i></div>
           <div class="micro-card-head">
             <div>

@@ -12,6 +12,7 @@
 
     const state = {
       page: "home",
+      section: "aprender",
       globalQuery: "",
       filters: {},
       queries: {},
@@ -36,6 +37,7 @@
     };
 
     const submoduleById = Object.fromEntries((D.submodulos || []).map((item) => [item.id, item]));
+    const sectionById = Object.fromEntries((D.secciones || []).map((item) => [item.id, item]));
     const printArea = ensurePrintArea();
 
     root.addEventListener("click", handleClick);
@@ -63,12 +65,12 @@
     registerGlobalSearch();
 
     function render() {
-      const current = state.page;
+      const current = currentContentPage();
       root.innerHTML = `
-        <section class="nutri-shell">
-          ${renderHero()}
+        <section class="nutri-shell sv-module-shell">
+          ${renderModuleNav(current)}
           ${renderGlobalResults()}
-          ${current === "home" ? renderHome() : renderSubmodule(current)}
+          ${renderSubmodule(current)}
         </section>
         <button id="nutri-fab-saved" class="sv-fab nutricion-fab" type="button" data-nutri-page="guardados" title="Guardados de Nutricion">
           Guardados
@@ -80,22 +82,37 @@
       updateSavedFab(window.SuiteVet?.currentView || "home");
     }
 
-    function renderHero() {
-      const savedCount = getSaved().length;
+    function currentContentPage() {
+      if (state.page === "guardados") return "guardados";
+      if (state.page === "home") return firstSubmoduleForSection(state.section) || "aminoacidos";
+      return state.page;
+    }
+
+    function renderModuleNav(current) {
+      const activeSection = activeSectionId(current);
+      const submodules = submodulesForSection(activeSection);
       return `
-        <header class="nutri-hero">
-          <div>
-            <span class="nutri-kicker">Nutricion Animal Lab</span>
-            <h2>Nutrici&oacute;n Animal</h2>
-            <p class="sv-view-intro">
-              Biblioteca educativa, calculadoras, comparador de alimentos, raciones simples y gu&iacute;a cl&iacute;nica nutricional.
-            </p>
-          </div>
-          <div class="nutri-hero-actions">
-            <button class="sv-btn sv-btn-secondary" type="button" data-nutri-page="home">Inicio</button>
-            <button class="sv-btn sv-btn-primary" type="button" data-nutri-page="guardados">Guardados (${savedCount})</button>
-          </div>
-        </header>
+        <div class="nutri-subnav sv-module-subnav nutri-section-tabs" aria-label="Secciones de Nutricion Animal">
+          ${(D.secciones || []).map((section) => `
+            <button class="nutri-tab sv-module-tab ${section.id === activeSection ? "is-active" : ""}" type="button"
+              data-nutri-section-pill="${escapeAttr(section.id)}">
+              <span>${icon(section.icono)}</span>
+              <strong>${escapeHtml(section.titulo)}</strong>
+              <b>${section.submodulos?.length || 0}</b>
+            </button>
+          `).join("")}
+        </div>
+
+        <div class="nutri-subnav sv-module-subnav nutri-module-tabs" aria-label="Submodulos de Nutricion Animal">
+          ${submodules.map((mod) => `
+            <button class="nutri-tab sv-module-tab nutri-module-pill ${mod.id === current ? "is-active" : ""}" type="button"
+              data-nutri-page="${escapeAttr(mod.id)}" title="${escapeAttr(mod.descripcion)}">
+              <span>${icon(mod.icono)}</span>
+              <strong>${escapeHtml(mod.titulo)}</strong>
+              <b>${escapeHtml(navCountLabel(mod))}</b>
+            </button>
+          `).join("")}
+        </div>
 
         <div class="nutri-global-search">
           <input
@@ -166,7 +183,7 @@
     function renderSectionCard(section) {
       const count = section.submodulos?.length || 0;
       return `
-        <article class="sv-card nutri-section-card" data-nutri-section="${escapeAttr(section.id)}">
+        <article class="sv-card sv-module-card nutri-section-card" data-nutri-section="${escapeAttr(section.id)}">
           <div class="sv-card-header">
             <div class="nutri-section-title">
               <span class="nutri-icon">${icon(section.icono)}</span>
@@ -212,13 +229,13 @@
       const body = renderSubmoduleBody(page, canonical);
       return `
         <section class="nutri-page">
-          <div class="nutri-page-head">
-            <button class="sv-btn sv-btn-ghost" type="button" data-nutri-page="home">Volver</button>
+          <div class="nutri-context sv-module-context">
             <div>
-              <span class="nutri-kicker">${escapeHtml(meta.categoria || "Nutricion Animal")}</span>
-              <h3><span class="nutri-icon">${icon(meta.icono)}</span>${escapeHtml(meta.titulo)}</h3>
-              <p>${escapeHtml(meta.descripcion || "")}</p>
+              <span class="nutri-icon">${icon(meta.icono)}</span>
+              <strong>${escapeHtml(meta.titulo)}</strong>
+              <small>${escapeHtml(contextCountLabel(page, canonical))}</small>
             </div>
+            <p>${escapeHtml(meta.descripcion || "")}</p>
             ${statusBadge(meta.estado || "Beta")}
           </div>
           ${body}
@@ -250,14 +267,14 @@
       });
 
       return `
-        ${renderLocalToolbar(page, filters)}
+        ${renderLocalToolbar(page, filters, items, canonical)}
         <div class="nutri-card-grid">
           ${filtered.length ? filtered.map((item) => renderDataCard(page, canonical, item)).join("") : emptyState("Sin resultados en este submodulo.")}
         </div>
       `;
     }
 
-    function renderLocalToolbar(page, filters) {
+    function renderLocalToolbar(page, filters, items, canonical) {
       return `
         <div class="nutri-toolbar">
           <input class="sv-input" type="text" data-nutri-search="${escapeAttr(page)}"
@@ -267,7 +284,8 @@
             ${filters.map((filter) => `
               <button class="nutri-chip ${(state.filters[page] || "todos") === filter.id ? "is-active" : ""}"
                 type="button" data-nutri-filter="${escapeAttr(filter.id)}" data-nutri-filter-page="${escapeAttr(page)}">
-                ${escapeHtml(filter.label)}
+                <span>${escapeHtml(filter.label)}</span>
+                <b>${filterCount(page, canonical, items, filter.id)}</b>
               </button>
             `).join("")}
           </div>
@@ -280,10 +298,9 @@
       const subtitle = subtitleFor(page, canonical, item);
       const favId = favoriteId(page, item);
       const description = descriptionFor(page, canonical, item);
-      const favActive = Fav?.isFavorite?.(favId);
 
       return `
-        <article class="sv-card nutri-card sv-fade-in"
+        <article class="sv-card sv-module-card nutri-card sv-fade-in"
           data-nutri-item="${escapeAttr(item.id || title)}"
           data-fav-id="${escapeAttr(favId)}"
           data-fav-title="${escapeAttr(title)}"
@@ -296,17 +313,16 @@
               <span class="sv-card-title">${escapeHtml(title)}</span>
               <span class="sv-card-subtitle">${escapeHtml(subtitle)}</span>
             </div>
-            <div class="nutri-card-actions-mini">
-              <button class="nutri-star ${favActive ? "is-active" : ""}" type="button"
-                title="Favorito" data-nutri-fav="${escapeAttr(favId)}"
-                data-title="${escapeAttr(title)}" data-submodule="${escapeAttr(submoduleById[page]?.titulo || submoduleById[canonical]?.titulo || page)}"
-                data-description="${escapeAttr(description)}">${favActive ? "★" : "☆"}</button>
-              <button class="nutri-icon-button" type="button" title="Imprimir ficha"
-                data-nutri-print-card data-page="${escapeAttr(page)}" data-id="${escapeAttr(item.id || title)}">⎙</button>
-            </div>
           </div>
           <div class="sv-card-body">
             ${renderCardBody(page, canonical, item)}
+          </div>
+          <div class="sv-card-footer nutri-card-footer-actions">
+            <button class="nutri-print-pill" type="button" title="Imprimir ficha"
+              data-nutri-print-card data-page="${escapeAttr(page)}" data-id="${escapeAttr(item.id || title)}">
+              <span aria-hidden="true">&#x2399;</span>
+              Imprimir
+            </button>
           </div>
         </article>
       `;
@@ -435,7 +451,7 @@
     function renderWeendePage(page) {
       return `
         <div class="nutri-two-col">
-          <section class="nutri-panel">
+          <section class="nutri-panel sv-module-panel">
             <div class="nutri-panel-head">
               <div>
                 <span class="nutri-kicker">Analisis proximal</span>
@@ -446,7 +462,7 @@
               ${(D.weende || []).map((item) => renderDataCard("weende", "weende", item)).join("")}
             </div>
           </section>
-          <section class="nutri-panel">
+          <section class="nutri-panel sv-module-panel">
             ${renderWeendeCalculator(page)}
             ${renderBaseConverter()}
           </section>
@@ -519,7 +535,7 @@
       const result = calcWater(v);
       return `
         <div class="nutri-two-col">
-          <section class="nutri-panel">
+          <section class="nutri-panel sv-module-panel">
             <div class="nutri-panel-head">
               <div>
                 <span class="nutri-kicker">Agua</span>
@@ -533,7 +549,7 @@
             ${field("Agua metabolica", `Carbohidratos: ${D.agua?.aguaMetabolica?.carbohidratos}; grasa: ${D.agua?.aguaMetabolica?.grasa}; proteina: ${D.agua?.aguaMetabolica?.proteina}.`)}
             ${field("Restriccion", `${D.agua?.restriccion?.moderada} ${D.agua?.restriccion?.severa}`)}
           </section>
-          <section class="nutri-panel">
+          <section class="nutri-panel sv-module-panel">
             <div class="nutri-calculator">
               <div class="nutri-panel-head">
                 <div>
@@ -572,7 +588,7 @@
       const v = state.calcs.etiqueta;
       const result = calcLabel(v);
       return `
-        <section class="nutri-panel">
+        <section class="nutri-panel sv-module-panel">
           <div class="nutri-calculator">
             <div class="nutri-panel-head">
               <div>
@@ -607,7 +623,7 @@
       const items = [v.a, v.b, v.c].filter(Boolean).map((id) => findById(D.ingredientes, id)).filter(Boolean);
       const conclusions = compareFoods(items);
       return `
-        <section class="nutri-panel">
+        <section class="nutri-panel sv-module-panel">
           <div class="nutri-panel-head">
             <div>
               <span class="nutri-kicker">Comparador</span>
@@ -633,7 +649,7 @@
       const v = state.calcs.racion;
       const result = calcRation(v);
       return `
-        <section class="nutri-panel">
+        <section class="nutri-panel sv-module-panel">
           <div class="nutri-calculator">
             <div class="nutri-panel-head">
               <div>
@@ -670,7 +686,7 @@
       const v = state.calcs.costo;
       const result = calcCost(v);
       return `
-        <section class="nutri-panel">
+        <section class="nutri-panel sv-module-panel">
           <div class="nutri-calculator">
             <div class="nutri-panel-head">
               <div>
@@ -698,7 +714,7 @@
     function renderPendingClinical(page) {
       const title = page === "prevencion" ? "Prevencion nutricional" : "Recomendaciones por especie";
       return `
-        <section class="nutri-panel">
+        <section class="nutri-panel sv-module-panel">
           <div class="sv-empty">
             <div class="sv-empty-icon">+</div>
             <h3>${escapeHtml(title)}</h3>
@@ -712,13 +728,13 @@
       const saved = getSaved();
       return `
         <section class="nutri-page">
-          <div class="nutri-page-head">
-            <button class="sv-btn sv-btn-ghost" type="button" data-nutri-page="home">Volver</button>
+          <div class="nutri-context sv-module-context">
             <div>
-              <span class="nutri-kicker">LocalStorage</span>
-              <h3>Guardados de Nutricion Animal</h3>
-              <p>Calculos, interpretaciones, raciones y comparaciones guardadas para consulta rapida.</p>
+              <span class="nutri-icon">GD</span>
+              <strong>Guardados de Nutricion Animal</strong>
+              <small>${saved.length} guardado${saved.length === 1 ? "" : "s"}</small>
             </div>
+            <p>Calculos, interpretaciones, raciones y comparaciones guardadas para consulta rapida.</p>
             <span class="nutri-count">${saved.length}</span>
           </div>
           <div class="nutri-saved-list">
@@ -730,7 +746,7 @@
 
     function renderSavedItem(item) {
       return `
-        <article class="sv-card nutri-saved-item">
+        <article class="sv-card sv-module-card nutri-saved-item">
           <div class="sv-card-header">
             <div>
               <span class="sv-card-title">${escapeHtml(item.nombre)}</span>
@@ -760,14 +776,27 @@
       const section = event.target.closest("[data-nutri-open-section]");
       if (section) {
         const first = (D.secciones || []).find((item) => item.id === section.dataset.nutriOpenSection)?.submodulos?.[0];
+        state.section = section.dataset.nutriOpenSection || state.section;
         state.page = first || "home";
+        render();
+        return;
+      }
+
+      const sectionPill = event.target.closest("[data-nutri-section-pill]");
+      if (sectionPill) {
+        const sectionId = sectionPill.dataset.nutriSectionPill;
+        state.section = sectionId;
+        state.page = firstSubmoduleForSection(sectionId) || "home";
         render();
         return;
       }
 
       const pageBtn = event.target.closest("[data-nutri-page]");
       if (pageBtn) {
-        state.page = pageBtn.dataset.nutriPage || "home";
+        const nextPage = pageBtn.dataset.nutriPage || "home";
+        state.page = nextPage;
+        const nextSection = sectionForPage(nextPage);
+        if (nextSection) state.section = nextSection;
         const focus = pageBtn.dataset.nutriFocus;
         if (focus) state.queries[state.page] = titleFor(state.page, findItemForPage(state.page, focus) || { nombre: focus });
         render();
@@ -913,6 +942,52 @@
         return list;
       }
       return [];
+    }
+
+    function activeSectionId(page) {
+      return sectionForPage(page) || state.section || "aprender";
+    }
+
+    function sectionForPage(page) {
+      if (!page || page === "home" || page === "guardados") return "";
+      const found = (D.secciones || []).find((section) => (section.submodulos || []).includes(page));
+      return found?.id || "";
+    }
+
+    function firstSubmoduleForSection(sectionId) {
+      return sectionById[sectionId]?.submodulos?.[0] || "";
+    }
+
+    function submodulesForSection(sectionId) {
+      return (sectionById[sectionId]?.submodulos || [])
+        .map((id) => submoduleById[id])
+        .filter(Boolean);
+    }
+
+    function navCountLabel(mod) {
+      const count = itemCountForPage(mod.id);
+      if (count) return String(count);
+      return mod.estado === "Disponible" ? "Lab" : mod.estado || "Beta";
+    }
+
+    function contextCountLabel(page, canonical) {
+      const count = itemCountForPage(page);
+      if (count) return `${count} resultado${count === 1 ? "" : "s"}`;
+      if (["agua", "etiquetas", "comparador", "formulacion", "costo-kg", "costo-animal"].includes(canonical) || page === "costo-kg") {
+        return "Herramienta interactiva";
+      }
+      return "Dato pendiente";
+    }
+
+    function itemCountForPage(page) {
+      const canonical = pageAliases[page] || page;
+      return getPageItems(page, canonical).length;
+    }
+
+    function filterCount(page, canonical, items, filter) {
+      if (filter === "todos") return items.length;
+      if (filter === "favoritos") return items.filter((item) => Fav?.isFavorite?.(favoriteId(page, item))).length;
+      return items.filter((item) => matchesFilter(page, canonical, item, filter)).length;
     }
 
     function getFilters(page, canonical, items) {

@@ -1,0 +1,182 @@
+/* ==========================================================================
+   SUITE VET - module layout system
+   Shared visual skeleton for module shells, headers, tabs, toolbars, context.
+   ========================================================================== */
+
+.sv-module-shell,
+.micro-shell,
+.nutri-shell {
+  display: grid;
+  gap: var(--sv-space-4);
+}
+
+.sv-module-header,
+.micro-hero {
+  background: var(--sv-bg-surface);
+  border: 1px solid var(--sv-border);
+  border-radius: var(--sv-radius-lg);
+  box-shadow: var(--sv-shadow-sm);
+  padding: 1rem 1.1rem;
+}
+
+.micro-hero {
+  background: var(--sv-bg-surface);
+  border-color: var(--sv-border);
+  box-shadow: var(--sv-shadow-sm);
+}
+
+.sv-module-header h2,
+.micro-hero h2,
+#fisio-root > h2,
+#farma-root > h2,
+#patologia-root > h2 {
+  margin: 0;
+  font-size: clamp(1.35rem, 1.1rem + 0.7vw, 1.75rem);
+}
+
+.sv-module-subnav,
+.micro-subnav,
+.nutri-subnav,
+.sv-subnav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.nutri-section-tabs,
+.micro-subnav,
+.sv-subnav {
+  border-bottom: 1px solid var(--sv-border);
+  padding-bottom: 0.75rem;
+}
+
+.sv-module-tab,
+.micro-tab,
+.nutri-tab,
+.sv-tab {
+  align-items: center;
+  background: var(--sv-bg-elevated);
+  border: 1px solid var(--sv-border);
+  border-radius: 999px;
+  color: var(--sv-text-secondary);
+  cursor: pointer;
+  display: inline-flex;
+  font-family: var(--sv-font-body);
+  font-size: 0.83rem;
+  font-weight: 500;
+  gap: 0.38rem;
+  min-height: var(--sv-control-height);
+  padding: 0.42rem 0.9rem;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, color 0.18s ease, background 0.18s ease;
+}
+
+.micro-tab strong,
+.nutri-tab strong,
+.sv-tab strong {
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+}
+
+.micro-tab b,
+.nutri-tab b,
+.nutri-tab span {
+  align-items: center;
+  background: rgba(47, 125, 225, 0.12);
+  border: 1px solid rgba(47, 125, 225, 0.24);
+  border-radius: 999px;
+  color: var(--sv-text-primary);
+  display: inline-flex;
+  font-size: 0.7rem;
+  font-weight: 800;
+  justify-content: center;
+  line-height: 1;
+  min-width: 1.35rem;
+  padding: 0.18rem 0.36rem;
+}
+
+.sv-module-tab:hover,
+.sv-module-tab.is-active,
+.micro-tab:hover,
+.micro-tab.is-active,
+.nutri-tab:hover,
+.nutri-tab.is-active,
+.sv-tab:hover,
+.sv-tab-active {
+  background: rgba(47, 125, 225, 0.15);
+  border-color: var(--sv-accent);
+  box-shadow: 0 0 0 3px var(--sv-accent-shadow);
+  color: var(--sv-text-primary);
+}
+
+.sv-module-toolbar,
+.micro-toolbar,
+.nutri-toolbar {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.micro-toolbar {
+  grid-template-columns: minmax(220px, 1fr) minmax(180px, 240px) minmax(180px, 240px);
+}
+
+.sv-module-context,
+.micro-context,
+.nutri-context {
+  align-items: center;
+  background: var(--sv-bg-surface);
+  border: 1px solid var(--sv-border);
+  border-radius: var(--sv-radius-md);
+  box-shadow: var(--sv-shadow-sm);
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  padding: 0.7rem 0.9rem;
+}
+
+.nutri-panel,
+.nutri-search-panel,
+.nutri-submodule-board {
+  background: var(--sv-bg-surface);
+  border: 1px solid var(--sv-border);
+  border-radius: var(--sv-radius-lg);
+  box-shadow: var(--sv-shadow-sm);
+}
+
+.micro-modal {
+  background: var(--sv-bg-surface);
+  border: 1px solid var(--sv-border);
+  border-radius: var(--sv-radius-lg);
+}
+
+@media (max-width: 900px) {
+  .micro-toolbar {
+    grid-template-columns: 1fr;
+  }
+
+  .sv-module-context,
+  .micro-context,
+  .nutri-context {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 640px) {
+  .sv-module-subnav,
+  .micro-subnav,
+  .nutri-subnav,
+  .sv-subnav {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 0.55rem;
+  }
+
+  .sv-module-tab,
+  .micro-tab,
+  .nutri-tab,
+  .sv-tab {
+    flex: 0 0 auto;
+    max-width: 86vw;
+  }
+}

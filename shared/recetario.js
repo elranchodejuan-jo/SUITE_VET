@@ -142,6 +142,112 @@ const Recetario = {
     this._toast(`✅ ${item.nombre} agregado a la receta`);
   },
 
+  agregarItemExtendido(payload = {}) {
+    const nombre = String(payload.nombre || payload.farmaco || "").trim();
+    if (!nombre) {
+      this._toast("No se pudo agregar al recetario: falta nombre del farmaco.");
+      return false;
+    }
+
+    const formatNum = (value) => {
+      const n = Number(value);
+      if (!Number.isFinite(n)) return "";
+      if (Math.abs(n) >= 1000) return n.toLocaleString("es-EC", { maximumFractionDigits: 2 });
+      if (Math.abs(n) >= 10) return n.toLocaleString("es-EC", { maximumFractionDigits: 3 });
+      if (Math.abs(n) >= 1) return n.toLocaleString("es-EC", { maximumFractionDigits: 4 });
+      return n.toLocaleString("es-EC", { maximumFractionDigits: 6 });
+    };
+
+    const especieBase = String(payload.especie || "").trim() || "N/D";
+    const pesoTxt = Number(payload.pesoKg) > 0 ? `, ${formatNum(payload.pesoKg)} kg` : "";
+    const especie = `${especieBase}${pesoTxt}`;
+
+    const resultadoFinal = Number(payload.resultadoFinal);
+    const dosisTotal = Number(payload.dosisTotal);
+    const dosisBase = Number(payload.dosis);
+
+    const resultadoTxt = Number.isFinite(resultadoFinal)
+      ? `${formatNum(resultadoFinal)} ${String(payload.unidadFinal || "").trim()}`.trim()
+      : "";
+
+    const dosisTotalTxt = Number.isFinite(dosisTotal)
+      ? `${formatNum(dosisTotal)} ${String(payload.dosisTotalUnidad || "").trim()}`.trim()
+      : "";
+
+    const dosisSimpleTxt = Number.isFinite(dosisBase)
+      ? `${formatNum(dosisBase)} ${String(payload.unidadDosis || "").trim()}`.trim()
+      : "";
+
+    const dosis = [resultadoTxt, dosisTotalTxt ? `dosis total: ${dosisTotalTxt}` : "", !resultadoTxt ? dosisSimpleTxt : ""]
+      .filter(Boolean)
+      .join(" · ");
+
+    const concValue = Number(payload.concentracion);
+    const concText = Number.isFinite(concValue)
+      ? `${formatNum(concValue)} ${String(payload.unidadConcentracion || "").trim()}`.trim()
+      : String(payload.concentracionTexto || "").trim();
+
+    const advertencias = Array.isArray(payload.advertencias)
+      ? payload.advertencias.filter(Boolean).join("; ")
+      : String(payload.advertencias || "").trim();
+
+    const componentes = Array.isArray(payload.componentes)
+      ? payload.componentes
+          .map((comp) => String(comp?.nombre || "").trim())
+          .filter(Boolean)
+          .join(", ")
+      : "";
+
+    const dosisEspecies = Array.isArray(payload.speciesDoses)
+      ? payload.speciesDoses
+          .map((row) => {
+            const especie = String(row?.especie || "").trim();
+            const dosis = Number(row?.dosis);
+            const unidad = String(row?.unidadDosis || "").trim();
+            const nota = String(row?.notas || "").trim();
+            if (!especie || !Number.isFinite(dosis) || dosis <= 0 || !unidad) return "";
+            return `${especie}: ${formatNum(dosis)} ${unidad}${nota ? ` (${nota})` : ""}`;
+          })
+          .filter(Boolean)
+          .join("; ")
+      : "";
+
+    const instrucciones = [
+      payload.frecuencia ? `Frecuencia: ${payload.frecuencia}` : "",
+      payload.duracion ? `Duracion: ${payload.duracion}` : "",
+      payload.indicaciones ? `Indicaciones: ${payload.indicaciones}` : "",
+      payload.observaciones ? `Observaciones: ${payload.observaciones}` : "",
+      advertencias ? `Advertencias: ${advertencias}` : "",
+      componentes ? `Componentes: ${componentes}` : "",
+      dosisEspecies ? `Dosis por especies: ${dosisEspecies}` : ""
+    ]
+      .filter(Boolean)
+      .join(" | ");
+
+    const retiro = payload.tiempoRetiro
+      ? `Tiempo de retiro: ${payload.tiempoRetiro}`
+      : String(payload.retiro || "").trim();
+
+    const item = {
+      id: Date.now() + Math.floor(Math.random() * 1000),
+      nombre,
+      comercial: String(payload.nombreComercial || payload.comercial || "").trim(),
+      concentracion: concText || "N/D",
+      dosis: dosis || "N/D",
+      via: String(payload.viaAdministracion || payload.via || "N/D").trim(),
+      especie,
+      retiro,
+      instrucciones
+    };
+
+    this.items.push(item);
+    this._guardar();
+    this._renderBadge();
+    this._animarBadge();
+    this._toast(`✅ ${item.nombre} agregado a la receta`);
+    return true;
+  },
+
   eliminarItem(id) {
     this.items = this.items.filter((i) => i.id !== id);
     this._guardar();

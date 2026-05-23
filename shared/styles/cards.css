@@ -1,0 +1,91 @@
+/* ==========================================================================
+   SUITE VET - cards system
+   Shared card language across modules without touching technical content.
+   ========================================================================== */
+
+.sv-module-card {
+  border-radius: var(--sv-radius-md);
+  box-shadow: var(--sv-shadow-sm);
+}
+
+.micro-card,
+.nutri-card,
+.nutri-section-card,
+.nutri-saved-item,
+.nutri-submodule-card,
+.nutri-result-item,
+.micro-saved-item,
+.micro-saved-section {
+  background: var(--sv-bg-surface);
+  border: 1px solid var(--sv-border);
+  border-radius: var(--sv-radius-md);
+  box-shadow: var(--sv-shadow-sm);
+}
+
+.micro-card {
+  background: var(--sv-bg-surface);
+  border-color: var(--sv-border);
+  padding: 0.9rem;
+}
+
+.micro-card:hover {
+  border-color: var(--sv-border-strong);
+  box-shadow: var(--sv-shadow-md);
+  transform: translateY(-1px);
+}
+
+.micro-card-visual {
+  background:
+    linear-gradient(160deg, rgba(47, 125, 225, 0.18), rgba(42, 168, 121, 0.08)),
+    var(--sv-bg-elevated);
+  border: 1px solid var(--sv-border-subtle);
+  border-radius: var(--sv-radius-sm);
+}
+
+.micro-card-visual i {
+  display: none;
+}
+
+.micro-quick,
+.nutri-mini-table div,
+.nutri-result-line,
+.micro-detail,
+.micro-panel,
+.micro-relation-center,
+.micro-action-group,
+.micro-label-option-row,
+.micro-label-preview-panel,
+.micro-label-selection-summary,
+.micro-label-preview-empty,
+.micro-check-row,
+.nutri-result-box,
+.nutri-recognition {
+  background: var(--sv-bg-elevated);
+  border: 1px solid var(--sv-border-subtle);
+  border-radius: var(--sv-radius-sm);
+}
+
+.micro-type-badge,
+.nutri-status,
+.nutri-count,
+.micro-tag,
+.micro-link-chip {
+  border-radius: 999px;
+}
+
+.micro-detail p,
+.micro-panel li,
+.micro-panel p,
+.nutri-field {
+  line-height: 1.52;
+}
+
+@media (max-width: 640px) {
+  .micro-card,
+  .nutri-card,
+  .nutri-section-card,
+  .nutri-saved-item,
+  .micro-saved-item {
+    border-radius: var(--sv-radius-sm);
+  }
+}
