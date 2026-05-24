@@ -56,15 +56,46 @@
     "Canino",
     "Felino",
     "Bovino",
+    "Bufalino",
     "Equino",
+    "Asnal",
+    "Mular",
     "Porcino",
     "Ovino",
     "Caprino",
     "Camelido",
     "Cunicola",
+    "Cobayo",
     "Aviar",
     "Piscicola",
+    "Reptil",
+    "Anfibio",
+    "Fauna silvestre",
     "Exoticos"
+  ];
+
+  const ROUTE_OPTIONS = [
+    { value: "IM", label: "IM (Intramuscular)" },
+    { value: "IV", label: "IV (Intravenosa)" },
+    { value: "SC", label: "SC/SQ (Subcutanea)" },
+    { value: "ID", label: "ID (Intradermica)" },
+    { value: "IP", label: "IP (Intraperitoneal)" },
+    { value: "IA", label: "IA (Intraarticular)" },
+    { value: "IO", label: "IO (Intraosea)" },
+    { value: "IT", label: "IT (Intratecal)" },
+    { value: "IN", label: "IN (Intranasal)" },
+    { value: "VO", label: "VO/PO (Oral)" },
+    { value: "SL", label: "SL (Sublingual)" },
+    { value: "IR", label: "IR/PR (Rectal)" },
+    { value: "Topica", label: "Topica" },
+    { value: "Transdermica", label: "Transdermica" },
+    { value: "Inhalatoria", label: "Inhalatoria / Nebulizada" },
+    { value: "Oftalmica", label: "Oftalmica" },
+    { value: "Otica", label: "Otica" },
+    { value: "Intramamaria", label: "Intramamaria" },
+    { value: "Intrauterina", label: "Intrauterina" },
+    { value: "Intravaginal", label: "Intravaginal" },
+    { value: "Implante", label: "Implante" }
   ];
 
   const MAX_PRODUCT_IMAGE_SIZE = 1800000;
@@ -91,6 +122,7 @@
       freeComponents: [],
       freeResult: null,
       freeAlerts: [],
+      freeSaveMissing: [],
       freeProcedureVisible: false,
       freeAdvancedVisible: false,
       freeLastHistoryId: "",
@@ -108,6 +140,18 @@
       historyTo: "",
       lastLoadedHistorySignature: ""
     };
+
+    const customCompact = compactCustomItemsForStorage(state.customItems);
+    state.customItems = customCompact.items;
+    if (customCompact.compacted) {
+      writeStorageArray(STORAGE_CUSTOM, state.customItems, { silent: true, replaceOnFail: true });
+    }
+
+    const historyCompact = compactLegacyHistorySnapshots(state.historyItems);
+    state.historyItems = historyCompact.items;
+    if (historyCompact.compacted) {
+      writeStorageArray(STORAGE_HISTORY, state.historyItems, { silent: true, replaceOnFail: true });
+    }
 
     root.innerHTML = `
       <section class="sv-module-shell farma-shell">
@@ -574,8 +618,7 @@
             <button class="sv-btn sv-btn-primary" type="button" id="farma-free-calc">Calcular</button>
             <button class="sv-btn sv-btn-ghost" type="button" id="farma-free-procedure">${state.freeProcedureVisible ? "Ocultar procedimiento" : "Ver procedimiento"}</button>
             <button class="sv-btn sv-btn-secondary" type="button" id="farma-free-toggle-advanced">${state.freeAdvancedVisible ? "Ocultar detalles" : "Agregar mas detalles"}</button>
-            <button class="sv-btn sv-btn-secondary" type="button" id="farma-free-to-recipe" ${state.freeResult ? "" : "disabled"}>Agregar al recetario</button>
-            <button class="sv-btn sv-btn-primary" type="button" id="farma-free-save-custom">${state.editingPersonalizedId ? "Actualizar personalizado" : "Guardar como farmaco personalizado"}</button>
+            <button class="sv-btn sv-btn-secondary" type="button" id="farma-free-to-recipe">Agregar al recetario</button>
             <button class="sv-btn sv-btn-ghost" type="button" id="farma-free-reset">Limpiar</button>
           </div>
 
@@ -585,6 +628,10 @@
         </section>
 
         ${state.freeAdvancedVisible ? renderAdvancedBlock(state) : ""}
+
+        <div class="farma-free-save-end">
+          <button class="sv-btn sv-btn-primary sv-btn-full" type="button" id="farma-free-save-custom-end">${state.editingPersonalizedId ? "Actualizar personalizado" : "Guardar como farmaco personalizado"}</button>
+        </div>
       </div>
     `;
 
@@ -596,6 +643,7 @@
     return `
       ${inputField("Nombre del farmaco", "farma-free-name", form.nombre)}
       ${speciesField("Especie", "farma-free-species-select", "farma-free-species-custom", form.especie)}
+      ${routeField("Via de administracion", "farma-free-route-select", "farma-free-route-custom", form.viaAdministracion)}
       ${numberField("Peso (kg)", "farma-free-weight", form.pesoKg, "0", "0.01")}
       ${numberField("Dosis por especie", "farma-free-dose", form.dosis, "0", "any")}
       ${unitField("Unidad de dosis", "farma-free-dose-unit", form.unidadDosis, FREE_DOSE_UNIT_OPTIONS, form.unidadDosisCustom, "farma-free-dose-unit-custom")}
@@ -621,6 +669,21 @@
       renderFreeCalculatorSubmodule(panel, state);
     });
     bindInput(panel, "#farma-free-species-custom", (value) => { state.freeForm.especie = value; });
+    bindSelect(panel, "#farma-free-route-select", (value) => {
+      if (!value) {
+        state.freeForm.viaAdministracion = "";
+        renderFreeCalculatorSubmodule(panel, state);
+        return;
+      }
+      if (value === "Otro") {
+        if (isKnownRoute(state.freeForm.viaAdministracion)) state.freeForm.viaAdministracion = "";
+        renderFreeCalculatorSubmodule(panel, state);
+        return;
+      }
+      state.freeForm.viaAdministracion = value;
+      renderFreeCalculatorSubmodule(panel, state);
+    });
+    bindInput(panel, "#farma-free-route-custom", (value) => { state.freeForm.viaAdministracion = value; });
     bindInput(panel, "#farma-free-weight", (value) => { state.freeForm.pesoKg = value; });
     bindInput(panel, "#farma-free-dose", (value) => { state.freeForm.dosis = value; });
     bindInput(panel, "#farma-free-conc", (value) => { state.freeForm.concentracion = value; });
@@ -638,9 +701,11 @@
     bindInput(panel, "#farma-free-conc-unit-custom", (value) => { state.freeForm.unidadConcentracionCustom = value; });
 
     panel.querySelector("#farma-free-calc")?.addEventListener("click", () => {
+      syncFreeStateFromPanel(panel, state);
       const result = calculateFreeDose(state.freeForm);
       state.freeResult = result;
       state.freeAlerts = result.warnings || [];
+      state.freeSaveMissing = [];
 
       if (result.ok) {
         const interactionAlerts = buildInteractionAlerts(state);
@@ -675,27 +740,73 @@
     });
 
     panel.querySelector("#farma-free-toggle-advanced")?.addEventListener("click", () => {
+      syncFreeStateFromPanel(panel, state);
       state.freeAdvancedVisible = !state.freeAdvancedVisible;
       renderFreeCalculatorSubmodule(panel, state);
     });
 
     panel.querySelector("#farma-free-to-recipe")?.addEventListener("click", () => {
+      syncFreeStateFromPanel(panel, state);
+      const result = calculateFreeDose(state.freeForm);
+      state.freeResult = result;
+      state.freeAlerts = result.warnings || [];
+
+      if (result.ok) {
+        const interactionAlerts = buildInteractionAlerts(state);
+        const historyId = appendHistoryEntry(state, {
+          farmaco: state.freeForm.nombre,
+          especie: state.freeForm.especie,
+          peso: parseNum(state.freeForm.pesoKg),
+          dosis: parseNum(state.freeForm.dosis),
+          unidadDosis: resolveUnit(state.freeForm.unidadDosis, state.freeForm.unidadDosisCustom),
+          concentracion: parseNum(state.freeForm.concentracion),
+          unidadConcentracion: resolveUnit(state.freeForm.unidadConcentracion, state.freeForm.unidadConcentracionCustom),
+          dosisTotal: result.doseTotalValue,
+          dosisTotalUnidad: result.doseTotalUnit,
+          resultadoCalculado: `${formatNum(result.finalValue)} ${result.finalUnit}`,
+          tipoCalculo: state.freeAdvancedVisible ? "profesional" : "simple",
+          enviadoRecetario: false,
+          guardadoPersonalizado: false,
+          contieneComponentes: normalizedComponents(state.freeComponents).length > 0,
+          advertencias: state.freeAlerts,
+          interacciones: interactionAlerts.map((x) => x.text),
+          snapshot: buildFreeSnapshot(state)
+        }, { dedupeMs: 2000 });
+        state.freeLastHistoryId = historyId;
+      }
+
       if (!state.freeResult || !state.freeResult.ok) {
-        toast("Primero calcula una dosis valida.");
+        toast("No se pudo calcular una dosis valida para enviar al recetario.");
+        renderFreeCalculatorSubmodule(panel, state);
         return;
       }
 
       const payload = buildRecipePayloadFromFree(state);
-      const added = window.Recetario?.agregarItemExtendido?.(payload);
+      const added = addPayloadToRecipe(payload);
       if (added && state.freeLastHistoryId) {
         patchHistoryEntry(state, state.freeLastHistoryId, { enviadoRecetario: true });
       }
     });
 
-    panel.querySelector("#farma-free-save-custom")?.addEventListener("click", () => {
+    const saveCustomBtn = panel.querySelector("#farma-free-save-custom-end")
+      || panel.querySelector("#farma-free-save-custom");
+    saveCustomBtn?.addEventListener("click", () => {
+      syncFreeStateFromPanel(panel, state);
       const saveResult = saveFreeAsCustomDrug(state);
       if (!saveResult.ok) {
-        toast("Para guardar este farmaco personalizado, completa los datos clinicos minimos.");
+        if (saveResult.reason === "calc") {
+          state.freeSaveMissing = [];
+          toast("No se pudo calcular la dosis con los datos actuales. Revisa peso, dosis, concentracion y unidades.");
+        }
+        if (saveResult.reason === "minimal") {
+          state.freeAdvancedVisible = true;
+          state.freeSaveMissing = Array.isArray(saveResult.missingFields) ? saveResult.missingFields : [];
+          const joined = state.freeSaveMissing.join(", ");
+          toast(`Completa los datos clinicos minimos: ${joined || "campos obligatorios"}.`);
+        }
+        if (saveResult.reason !== "storage" && saveResult.reason !== "calc" && saveResult.reason !== "minimal") {
+          toast("Para guardar este farmaco personalizado, completa los datos clinicos minimos.");
+        }
       }
       renderFreeCalculatorSubmodule(panel, state);
     });
@@ -706,6 +817,7 @@
       state.freeComponents = [];
       state.freeResult = null;
       state.freeAlerts = [];
+      state.freeSaveMissing = [];
       state.freeProcedureVisible = false;
       state.freeAdvancedVisible = false;
       state.editingPersonalizedId = "";
@@ -732,7 +844,21 @@
     });
     bindInput(panel, "#farma-adv-func", (value) => { adv.funcionTerapeutica = value; });
     bindInput(panel, "#farma-adv-description", (value) => { adv.descripcion = value; });
-    bindInput(panel, "#farma-adv-via", (value) => { adv.viaAdministracion = value; });
+    bindSelect(panel, "#farma-adv-via-select", (value) => {
+      if (!value) {
+        adv.viaAdministracion = "";
+        renderFreeCalculatorSubmodule(panel, state);
+        return;
+      }
+      if (value === "Otro") {
+        if (isKnownRoute(adv.viaAdministracion)) adv.viaAdministracion = "";
+        renderFreeCalculatorSubmodule(panel, state);
+        return;
+      }
+      adv.viaAdministracion = value;
+      renderFreeCalculatorSubmodule(panel, state);
+    });
+    bindInput(panel, "#farma-adv-via-custom", (value) => { adv.viaAdministracion = value; });
     bindInput(panel, "#farma-adv-frequency", (value) => { adv.frecuencia = value; });
     bindInput(panel, "#farma-adv-duration", (value) => { adv.duracion = value; });
     bindInput(panel, "#farma-adv-contra", (value) => { adv.contraindicaciones = value; });
@@ -747,6 +873,7 @@
     if (!Array.isArray(state.freeAdvanced.speciesDoses)) state.freeAdvanced.speciesDoses = [];
 
     panel.querySelector("#farma-add-species-dose")?.addEventListener("click", () => {
+      syncFreeStateFromPanel(panel, state);
       state.freeAdvanced.speciesDoses.push(buildDefaultSpeciesDose());
       renderFreeCalculatorSubmodule(panel, state);
     });
@@ -757,6 +884,7 @@
     list.addEventListener("click", (event) => {
       const remove = event.target.closest("[data-dose-remove]");
       if (!remove) return;
+      syncFreeStateFromPanel(panel, state);
       const id = remove.dataset.doseRemove;
       state.freeAdvanced.speciesDoses = state.freeAdvanced.speciesDoses.filter((row) => row.id !== id);
       renderFreeCalculatorSubmodule(panel, state);
@@ -844,6 +972,7 @@
 
   function bindComponentsEvents(panel, state) {
     panel.querySelector("#farma-add-component")?.addEventListener("click", () => {
+      syncFreeStateFromPanel(panel, state);
       state.freeComponents.push(buildDefaultComponent());
       renderFreeCalculatorSubmodule(panel, state);
     });
@@ -854,6 +983,7 @@
     componentsRoot.addEventListener("click", (event) => {
       const delBtn = event.target.closest("[data-comp-remove]");
       if (!delBtn) return;
+      syncFreeStateFromPanel(panel, state);
       const id = delBtn.dataset.compRemove;
       state.freeComponents = state.freeComponents.filter((comp) => comp.id !== id);
       renderFreeCalculatorSubmodule(panel, state);
@@ -931,10 +1061,12 @@
 
   function renderFreeAlerts(state) {
     const warnings = state.freeAlerts || [];
-    if (!warnings.length) return "";
+    const missing = state.freeSaveMissing || [];
+    if (!warnings.length && !missing.length) return "";
     return `
       <div class="farma-free-warning">
         ${warnings.map((w) => `<p>${escapeHtml(w)}</p>`).join("")}
+        ${missing.length ? `<p><strong>Para guardar faltan:</strong> ${escapeHtml(missing.join(", "))}.</p>` : ""}
       </div>
     `;
   }
@@ -998,7 +1130,7 @@
   }
 
   function renderAdvancedBlock(state) {
-    const groupOptions = buildGroupOptions(state.cat, state.freeAdvanced.grupoKey);
+    const groupOptions = buildGroupOptions(state.cat, state.freeAdvanced.grupoKey, state.farmacos);
 
     return `
       <section class="sv-card farma-advanced-card">
@@ -1024,7 +1156,7 @@
 
           ${inputField("Funcion terapeutica", "farma-adv-func", state.freeAdvanced.funcionTerapeutica)}
           ${textareaField("Descripcion", "farma-adv-description", state.freeAdvanced.descripcion)}
-          ${inputField("Via de administracion", "farma-adv-via", state.freeAdvanced.viaAdministracion)}
+          ${routeField("Via de administracion", "farma-adv-via-select", "farma-adv-via-custom", state.freeAdvanced.viaAdministracion)}
           ${inputField("Frecuencia", "farma-adv-frequency", state.freeAdvanced.frecuencia)}
           ${inputField("Duracion del tratamiento", "farma-adv-duration", state.freeAdvanced.duracion)}
           ${textareaField("Contraindicaciones", "farma-adv-contra", state.freeAdvanced.contraindicaciones)}
@@ -1107,7 +1239,7 @@
     }
 
     return state.freeComponents.map((comp) => {
-      const groupOptions = buildGroupOptions(state.cat, comp.grupoKey || "");
+      const groupOptions = buildGroupOptions(state.cat, comp.grupoKey || "", state.farmacos);
       const doseUnit = comp.unidadDosis || "mg/kg";
       const concUnit = comp.unidadConcentracion || "mg/mL";
 
@@ -1493,7 +1625,7 @@
 
       if (act === "recipe") {
         const payload = buildRecipePayloadFromCustom(item);
-        const added = window.Recetario?.agregarItemExtendido?.(payload);
+        const added = addPayloadToRecipe(payload);
         if (added) {
           appendHistoryEntry(state, {
             farmaco: item.nombre,
@@ -1642,6 +1774,7 @@
     state.freeForm = {
       nombre: item.nombre || "",
       especie: item.especie || "",
+      viaAdministracion: item.viaAdministracion || "",
       pesoKg: item.pesoKg != null ? String(item.pesoKg) : "",
       dosis: item.dosis != null ? String(item.dosis) : "",
       unidadDosis: normalizeFreeUnit(item.unidadDosis, FREE_DOSE_UNIT_OPTIONS),
@@ -1699,6 +1832,7 @@
     state.freeAdvancedVisible = true;
     state.freeResult = null;
     state.freeAlerts = [];
+    state.freeSaveMissing = [];
     state.freeProcedureVisible = false;
     state.editingPersonalizedId = editingMode ? item.id : "";
   }
@@ -1795,7 +1929,7 @@
 
       if (actionType === "recipe") {
         const payload = buildRecipePayloadFromHistory(entry);
-        const added = window.Recetario?.agregarItemExtendido?.(payload);
+        const added = addPayloadToRecipe(payload);
         if (added) {
           patchHistoryEntry(state, id, { enviadoRecetario: true });
           renderHistoryCards(listRoot, state);
@@ -1806,7 +1940,14 @@
       if (actionType === "save-custom") {
         const save = saveHistoryAsCustomDrug(state, entry);
         if (!save.ok) {
-          toast("Para guardar este farmaco personalizado, completa los datos clinicos minimos.");
+          if (save.reason === "minimal") {
+            const joined = Array.isArray(save.missingFields) ? save.missingFields.join(", ") : "";
+            toast(`Completa los datos clinicos minimos para guardar: ${joined || "campos obligatorios"}.`);
+            return;
+          }
+          if (save.reason !== "storage") {
+            toast("Para guardar este farmaco personalizado, completa los datos clinicos minimos.");
+          }
         } else {
           patchHistoryEntry(state, id, { guardadoPersonalizado: true });
           renderHistoryCards(listRoot, state);
@@ -1912,6 +2053,7 @@
     state.freeForm = {
       nombre: form.nombre || entry.farmaco || "",
       especie: form.especie || entry.especie || "",
+      viaAdministracion: form.viaAdministracion || advanced.viaAdministracion || "",
       pesoKg: form.pesoKg != null ? String(form.pesoKg) : String(entry.peso || ""),
       dosis: form.dosis != null ? String(form.dosis) : String(entry.dosis || ""),
       unidadDosis: normalizeFreeUnit(form.unidadDosis || entry.unidadDosis, FREE_DOSE_UNIT_OPTIONS),
@@ -1957,6 +2099,7 @@
     state.freeAdvancedVisible = entry.tipoCalculo === "profesional" || Boolean(state.freeComponents.length) || editMode;
     state.freeResult = null;
     state.freeAlerts = [];
+    state.freeSaveMissing = [];
     state.freeProcedureVisible = false;
     state.editingPersonalizedId = "";
   }
@@ -1974,10 +2117,10 @@
       unidadDosis: form.unidadDosis || entry.unidadDosis || "",
       concentracion: parseNum(form.concentracion != null ? form.concentracion : entry.concentracion),
       unidadConcentracion: form.unidadConcentracion || entry.unidadConcentracion || "",
-      grupoKey: advanced.grupoKey || "",
-      viaAdministracion: advanced.viaAdministracion || "",
-      funcionTerapeutica: advanced.funcionTerapeutica || "",
-      descripcion: advanced.descripcion || advanced.observaciones || "",
+      grupoKey: advanced.grupoKey || "default",
+      viaAdministracion: advanced.viaAdministracion || form.viaAdministracion || "Dato pendiente",
+      funcionTerapeutica: advanced.funcionTerapeutica || "Dato pendiente",
+      descripcion: advanced.descripcion || advanced.observaciones || "Dato pendiente",
       componentes,
       speciesDoses: normalizedSpeciesDoses(advanced.speciesDoses || []),
       productImage: advanced.productImage || "",
@@ -1985,12 +2128,13 @@
       productImageName: advanced.productImageName || ""
     };
 
-    if (!validateCustomMinimalData(toSave)) {
-      return { ok: false };
+    const missingFields = getMissingCustomFields(toSave);
+    if (missingFields.length) {
+      return { ok: false, reason: "minimal", missingFields };
     }
 
     const now = new Date().toISOString();
-    state.customItems.unshift({
+    const nextItem = {
       id: createId("custom"),
       createdAt: now,
       updatedAt: now,
@@ -2031,9 +2175,21 @@
         unidadFinal: parseResultUnit(entry.resultadoCalculado)
       },
       snapshot
-    });
+    };
 
-    persistCustom(state);
+    let nextCustomItems = [nextItem, ...state.customItems];
+    let persisted = writeStorageArray(STORAGE_CUSTOM, nextCustomItems, { silent: true });
+    if (!persisted) {
+      const compact = compactCustomItemsForStorage(nextCustomItems);
+      nextCustomItems = compact.items;
+      persisted = writeStorageArray(STORAGE_CUSTOM, nextCustomItems, {
+        message: "No se pudo guardar el farmaco personalizado desde historial. Se limpio contenido pesado, intenta nuevamente si el navegador sigue sin espacio.",
+        replaceOnFail: true
+      });
+    }
+    if (!persisted) return { ok: false, reason: "storage" };
+
+    state.customItems = nextCustomItems;
     toast("Farmaco personalizado guardado desde historial.");
     return { ok: true };
   }
@@ -2109,8 +2265,24 @@
     patchHistoryEntry(state, target.id, patch);
   }
 
+  function addPayloadToRecipe(payload) {
+    const recetario = window.Recetario;
+    if (!recetario || typeof recetario.agregarItemExtendido !== "function") {
+      toast("No se pudo agregar al recetario: el recetario aun no esta disponible.");
+      return false;
+    }
+
+    try {
+      return Boolean(recetario.agregarItemExtendido(payload));
+    } catch (error) {
+      console.warn("[Farma] Error al enviar al recetario:", error);
+      toast("No se pudo agregar al recetario. Revisa los datos e intenta nuevamente.");
+      return false;
+    }
+  }
+
   function saveFreeAsCustomDrug(state) {
-    const result = state.freeResult;
+    const result = calculateFreeDose(state.freeForm);
     const form = state.freeForm;
     const advanced = state.freeAdvanced;
     const components = normalizedComponents(state.freeComponents);
@@ -2123,17 +2295,26 @@
       unidadDosis: resolveUnit(form.unidadDosis, form.unidadDosisCustom),
       concentracion: parseNum(form.concentracion),
       unidadConcentracion: resolveUnit(form.unidadConcentracion, form.unidadConcentracionCustom),
-      grupoKey: advanced.grupoKey,
-      viaAdministracion: advanced.viaAdministracion,
-      funcionTerapeutica: advanced.funcionTerapeutica,
-      descripcion: advanced.descripcion || advanced.observaciones,
+      grupoKey: advanced.grupoKey || "default",
+      viaAdministracion: advanced.viaAdministracion || form.viaAdministracion || "Dato pendiente",
+      funcionTerapeutica: advanced.funcionTerapeutica || "Dato pendiente",
+      descripcion: advanced.descripcion || advanced.observaciones || "Dato pendiente",
       componentes,
       speciesDoses
     };
 
-    if (!result || !result.ok || !validateCustomMinimalData(data)) {
-      return { ok: false };
+    if (!result || !result.ok) {
+      return { ok: false, reason: "calc" };
     }
+
+    const missingFields = getMissingCustomFields(data);
+    if (missingFields.length) {
+      return { ok: false, reason: "minimal", missingFields };
+    }
+
+    state.freeResult = result;
+    state.freeAlerts = result.warnings || [];
+    state.freeSaveMissing = [];
 
     const now = new Date().toISOString();
     const interactionAlerts = buildInteractionAlerts(state);
@@ -2151,10 +2332,10 @@
       unidadConcentracion: resolveUnit(form.unidadConcentracion, form.unidadConcentracionCustom),
       nombreComercial: advanced.nombreComercial || "",
       laboratorio: advanced.laboratorio || "",
-      grupoKey: advanced.grupoKey || "",
-      funcionTerapeutica: advanced.funcionTerapeutica || "",
-      descripcion: advanced.descripcion || "",
-      viaAdministracion: advanced.viaAdministracion || "",
+      grupoKey: advanced.grupoKey || "default",
+      funcionTerapeutica: advanced.funcionTerapeutica || "Dato pendiente",
+      descripcion: advanced.descripcion || advanced.observaciones || "Dato pendiente",
+      viaAdministracion: advanced.viaAdministracion || form.viaAdministracion || "Dato pendiente",
       frecuencia: advanced.frecuencia || "",
       duracion: advanced.duracion || "",
       contraindicaciones: advanced.contraindicaciones || "",
@@ -2168,7 +2349,7 @@
       advertencias: state.freeAlerts || [],
       componentes,
       speciesDoses,
-      productImage: advanced.productImage || "",
+      productImage: shouldStoreProductImage(advanced.productImage, advanced.productImageSource) ? advanced.productImage : "",
       productImageSource: advanced.productImageSource || "",
       productImageName: advanced.productImageName || "",
       tipoCalculo: state.freeAdvancedVisible ? "profesional" : "simple",
@@ -2181,19 +2362,33 @@
       snapshot: buildFreeSnapshot(state)
     };
 
+    let nextCustomItems = state.customItems.slice();
+    let successMessage = "Farmaco personalizado guardado.";
+
     if (state.editingPersonalizedId) {
       const current = state.customItems.find((item) => item.id === state.editingPersonalizedId);
       payload.createdAt = current?.createdAt || now;
-      state.customItems = state.customItems.map((item) =>
+      nextCustomItems = state.customItems.map((item) =>
         item.id === state.editingPersonalizedId ? { ...item, ...payload, updatedAt: now } : item
       );
-      toast("Farmaco personalizado actualizado.");
+      successMessage = "Farmaco personalizado actualizado.";
     } else {
-      state.customItems.unshift(payload);
-      toast("Farmaco personalizado guardado.");
+      nextCustomItems.unshift(payload);
     }
 
-    persistCustom(state);
+    let persisted = writeStorageArray(STORAGE_CUSTOM, nextCustomItems, { silent: true });
+    if (!persisted) {
+      const compact = compactCustomItemsForStorage(nextCustomItems);
+      nextCustomItems = compact.items;
+      persisted = writeStorageArray(STORAGE_CUSTOM, nextCustomItems, {
+        message: "No se pudo guardar el farmaco personalizado. Se limpio contenido pesado, intenta nuevamente si el navegador sigue sin espacio.",
+        replaceOnFail: true
+      });
+    }
+    if (!persisted) return { ok: false, reason: "storage" };
+
+    state.customItems = nextCustomItems;
+    toast(successMessage);
 
     if (state.freeLastHistoryId) {
       patchHistoryEntry(state, state.freeLastHistoryId, { guardadoPersonalizado: true });
@@ -2203,22 +2398,14 @@
     return { ok: true };
   }
 
-  function validateCustomMinimalData(data) {
-    const required = [
-      String(data.nombre || "").trim(),
-      String(data.especie || "").trim(),
-      Number(data.dosis) > 0,
-      String(data.unidadDosis || "").trim(),
-      Number(data.concentracion) > 0,
-      String(data.unidadConcentracion || "").trim(),
-      String(data.grupoKey || "").trim(),
-      String(data.viaAdministracion || "").trim(),
-      String(data.funcionTerapeutica || "").trim(),
-      String(data.descripcion || "").trim()
-    ];
-
-    if (required.some((value) => !value)) return false;
-
+  function getMissingCustomFields(data) {
+    const missing = [];
+    if (!String(data.nombre || "").trim()) missing.push("Nombre del farmaco");
+    if (!String(data.especie || "").trim()) missing.push("Especie");
+    if (!(Number(data.dosis) > 0)) missing.push("Dosis");
+    if (!String(data.unidadDosis || "").trim()) missing.push("Unidad de dosis");
+    if (!(Number(data.concentracion) > 0)) missing.push("Concentracion");
+    if (!String(data.unidadConcentracion || "").trim()) missing.push("Unidad de concentracion");
     const comps = Array.isArray(data.componentes) ? data.componentes : [];
     if (comps.length > 1) {
       const validComponents = comps.every((comp) =>
@@ -2229,10 +2416,14 @@
         Number(comp.dosis) > 0 &&
         String(comp.unidadDosis || "").trim()
       );
-      if (!validComponents) return false;
+      if (!validComponents) missing.push("Componentes activos completos");
     }
 
-    return true;
+    return missing;
+  }
+
+  function validateCustomMinimalData(data) {
+    return getMissingCustomFields(data).length === 0;
   }
 
   function buildRecipePayloadFromFree(state) {
@@ -2255,7 +2446,7 @@
       unidadFinal: result?.finalUnit,
       concentracion: parseNum(form.concentracion),
       unidadConcentracion: resolveUnit(form.unidadConcentracion, form.unidadConcentracionCustom),
-      viaAdministracion: advanced.viaAdministracion,
+      viaAdministracion: advanced.viaAdministracion || form.viaAdministracion || "",
       frecuencia: advanced.frecuencia,
       duracion: advanced.duracion,
       indicaciones: advanced.funcionTerapeutica,
@@ -2311,7 +2502,7 @@
       unidadFinal: parseResultUnit(entry.resultadoCalculado),
       concentracion: form.concentracion != null ? parseNum(form.concentracion) : parseNum(entry.concentracion),
       unidadConcentracion: form.unidadConcentracion || entry.unidadConcentracion,
-      viaAdministracion: advanced.viaAdministracion || "",
+      viaAdministracion: advanced.viaAdministracion || form.viaAdministracion || "",
       frecuencia: advanced.frecuencia || "",
       duracion: advanced.duracion || "",
       indicaciones: advanced.funcionTerapeutica || "",
@@ -2324,11 +2515,13 @@
   }
 
   function buildFreeSnapshot(state) {
+    const hasProductImage = Boolean(String(state.freeAdvanced.productImage || "").trim());
     return {
       source: "calculadora_libre",
       form: {
         nombre: state.freeForm.nombre,
         especie: state.freeForm.especie,
+        viaAdministracion: state.freeForm.viaAdministracion || "",
         pesoKg: parseNum(state.freeForm.pesoKg),
         dosis: parseNum(state.freeForm.dosis),
         unidadDosis: resolveUnit(state.freeForm.unidadDosis, state.freeForm.unidadDosisCustom),
@@ -2338,8 +2531,9 @@
       advanced: {
         ...state.freeAdvanced,
         speciesDoses: normalizedSpeciesDoses(state.freeAdvanced.speciesDoses || []),
-        productImage: state.freeAdvanced.productImage || "",
-        productImageSource: state.freeAdvanced.productImageSource || "",
+        // Evita inflar historial con imagenes base64 y reduce errores de cuota.
+        productImage: "",
+        productImageSource: state.freeAdvanced.productImageSource || (hasProductImage ? "upload" : ""),
         productImageName: state.freeAdvanced.productImageName || ""
       },
       components: normalizedComponents(state.freeComponents),
@@ -2386,6 +2580,81 @@
       .filter((row) => row.especie || row.dosis > 0 || row.unidadDosis || row.notas);
   }
 
+  function compactLegacyHistorySnapshots(items) {
+    let compacted = false;
+    const next = (Array.isArray(items) ? items : []).map((entry) => {
+      if (!entry || typeof entry !== "object") return entry;
+      const snapshot = entry.snapshot && typeof entry.snapshot === "object" ? entry.snapshot : null;
+      const advanced = snapshot?.advanced && typeof snapshot.advanced === "object" ? snapshot.advanced : null;
+      if (!advanced) return entry;
+
+      const image = String(advanced.productImage || "").trim();
+      if (!image) return entry;
+
+      compacted = true;
+      return {
+        ...entry,
+        snapshot: {
+          ...snapshot,
+          advanced: {
+            ...advanced,
+            productImage: "",
+            productImageSource: advanced.productImageSource || "upload",
+            productImageName: advanced.productImageName || "Imagen migrada"
+          }
+        }
+      };
+    });
+    return { items: next, compacted };
+  }
+
+  function compactCustomItemsForStorage(items) {
+    let compacted = false;
+    const next = (Array.isArray(items) ? items : []).map((item) => {
+      if (!item || typeof item !== "object") return item;
+
+      let nextItem = item;
+      if (String(item.productImage || "").startsWith("data:")) {
+        compacted = true;
+        nextItem = {
+          ...nextItem,
+          productImage: "",
+          productImageSource: item.productImageSource || "upload",
+          productImageName: item.productImageName || "Imagen cargada"
+        };
+      }
+
+      const snapshot = nextItem.snapshot && typeof nextItem.snapshot === "object" ? nextItem.snapshot : null;
+      const advanced = snapshot?.advanced && typeof snapshot.advanced === "object" ? snapshot.advanced : null;
+      if (advanced && String(advanced.productImage || "").trim()) {
+        compacted = true;
+        nextItem = {
+          ...nextItem,
+          snapshot: {
+            ...snapshot,
+            advanced: {
+              ...advanced,
+              productImage: "",
+              productImageSource: advanced.productImageSource || "upload",
+              productImageName: advanced.productImageName || "Imagen cargada"
+            }
+          }
+        };
+      }
+
+      return nextItem;
+    });
+
+    return { items: next, compacted };
+  }
+
+  function shouldStoreProductImage(image, source) {
+    const clean = String(image || "").trim();
+    if (!clean) return false;
+    if (String(source || "") === "upload") return false;
+    return !clean.startsWith("data:");
+  }
+
   function recalcSingleComponent(comp, sharedWeight) {
     const payload = {
       nombre: comp.nombre,
@@ -2402,11 +2671,11 @@
   }
 
   function persistCustom(state) {
-    writeStorageArray(STORAGE_CUSTOM, state.customItems);
+    return writeStorageArray(STORAGE_CUSTOM, state.customItems, { replaceOnFail: true });
   }
 
   function persistHistory(state) {
-    writeStorageArray(STORAGE_HISTORY, state.historyItems);
+    return writeStorageArray(STORAGE_HISTORY, state.historyItems, { silent: true, replaceOnFail: true });
   }
 
   function renderSubmoduleFromPanel(panel, state) {
@@ -2598,6 +2867,7 @@
     return {
       nombre: "",
       especie: "",
+      viaAdministracion: "",
       pesoKg: "",
       dosis: "",
       unidadDosis: "mg/kg",
@@ -2736,10 +3006,48 @@
     `;
   }
 
-  function buildGroupOptions(Cat, selected) {
-    if (!Cat) return "";
-    return Cat.list().map((group) => `
-      <option value="${escapeAttr(group.id)}" ${selected === group.id ? "selected" : ""}>${escapeHtml(group.label)}</option>
+  function routeField(label, selectId, customId, currentValue) {
+    const normalized = String(currentValue || "").trim();
+    const known = isKnownRoute(normalized);
+    const selectValue = !normalized ? "" : known ? normalized : "Otro";
+
+    return `
+      <label class="farma-field">
+        <span>${escapeHtml(label)}</span>
+        <select class="sv-select" id="${escapeAttr(selectId)}">
+          <option value="" ${!selectValue ? "selected" : ""}>Seleccionar via</option>
+          ${ROUTE_OPTIONS.map((route) => `<option value="${escapeAttr(route.value)}" ${selectValue === route.value ? "selected" : ""}>${escapeHtml(route.label)}</option>`).join("")}
+          <option value="Otro" ${selectValue === "Otro" ? "selected" : ""}>Otro</option>
+        </select>
+        ${selectValue === "Otro" ? `<input class="sv-input" id="${escapeAttr(customId)}" placeholder="Via personalizada" value="${escapeAttr(normalized)}" />` : ""}
+      </label>
+    `;
+  }
+
+  function isKnownRoute(value) {
+    const normalized = String(value || "").trim();
+    return ROUTE_OPTIONS.some((route) => route.value === normalized);
+  }
+
+  function buildGroupOptions(Cat, selected, fallbackFarmacos = []) {
+    if (Cat) {
+      const groups = Cat.list();
+      const options = groups.map((group) => `
+        <option value="${escapeAttr(group.id)}" ${selected === group.id ? "selected" : ""}>${escapeHtml(group.label)}</option>
+      `);
+      if (selected && !groups.some((group) => group.id === selected)) {
+        const fallbackLabel = Cat.get?.(selected)?.label || selected;
+        options.unshift(`<option value="${escapeAttr(selected)}" selected>${escapeHtml(fallbackLabel)}</option>`);
+      }
+      return options.join("");
+    }
+
+    const fallback = listUnique((Array.isArray(fallbackFarmacos) ? fallbackFarmacos : [])
+      .map((item) => String(item?.categoria || item?.grupoKey || item?.grupo || "").trim())
+      .filter(Boolean));
+
+    return fallback.map((groupKey) => `
+      <option value="${escapeAttr(groupKey)}" ${selected === groupKey ? "selected" : ""}>${escapeHtml(groupKey)}</option>
     `).join("");
   }
 
@@ -2754,6 +3062,133 @@
     scope.querySelector(selector)?.addEventListener("change", (event) => cb(event.target.value));
   }
 
+  function syncFreeStateFromPanel(panel, state) {
+    const form = state.freeForm;
+    const adv = state.freeAdvanced;
+
+    const previousName = form.nombre;
+    if (panel.querySelector("#farma-free-name")) form.nombre = fieldValue(panel, "#farma-free-name");
+    if (previousName !== form.nombre) clearEditingIfManualNameChange(state);
+
+    const speciesSelect = panel.querySelector("#farma-free-species-select");
+    if (speciesSelect) {
+      form.especie = speciesSelect.value === "Otro"
+        ? fieldValue(panel, "#farma-free-species-custom")
+        : speciesSelect.value;
+    }
+
+    const routeSelect = panel.querySelector("#farma-free-route-select");
+    if (routeSelect) {
+      form.viaAdministracion = routeSelect.value === "Otro"
+        ? fieldValue(panel, "#farma-free-route-custom")
+        : routeSelect.value;
+    }
+
+    if (panel.querySelector("#farma-free-weight")) form.pesoKg = fieldValue(panel, "#farma-free-weight");
+    if (panel.querySelector("#farma-free-dose")) form.dosis = fieldValue(panel, "#farma-free-dose");
+    if (panel.querySelector("#farma-free-conc")) form.concentracion = fieldValue(panel, "#farma-free-conc");
+
+    const doseUnit = panel.querySelector("#farma-free-dose-unit");
+    if (doseUnit) {
+      form.unidadDosis = doseUnit.value || "mg/kg";
+      form.unidadDosisCustom = form.unidadDosis === "Otro" ? fieldValue(panel, "#farma-free-dose-unit-custom") : "";
+    }
+
+    const concUnit = panel.querySelector("#farma-free-conc-unit");
+    if (concUnit) {
+      form.unidadConcentracion = concUnit.value || "mg/mL";
+      form.unidadConcentracionCustom = form.unidadConcentracion === "Otro" ? fieldValue(panel, "#farma-free-conc-unit-custom") : "";
+    }
+
+    if (panel.querySelector("#farma-adv-commercial")) adv.nombreComercial = fieldValue(panel, "#farma-adv-commercial");
+    if (panel.querySelector("#farma-adv-lab")) adv.laboratorio = fieldValue(panel, "#farma-adv-lab");
+    if (panel.querySelector("#farma-adv-group")) adv.grupoKey = fieldValue(panel, "#farma-adv-group");
+    if (panel.querySelector("#farma-adv-func")) adv.funcionTerapeutica = fieldValue(panel, "#farma-adv-func");
+    if (panel.querySelector("#farma-adv-description")) adv.descripcion = fieldValue(panel, "#farma-adv-description");
+
+    const advRoute = panel.querySelector("#farma-adv-via-select");
+    if (advRoute) {
+      adv.viaAdministracion = advRoute.value === "Otro"
+        ? fieldValue(panel, "#farma-adv-via-custom")
+        : advRoute.value;
+    }
+
+    if (panel.querySelector("#farma-adv-frequency")) adv.frecuencia = fieldValue(panel, "#farma-adv-frequency");
+    if (panel.querySelector("#farma-adv-duration")) adv.duracion = fieldValue(panel, "#farma-adv-duration");
+    if (panel.querySelector("#farma-adv-contra")) adv.contraindicaciones = fieldValue(panel, "#farma-adv-contra");
+    if (panel.querySelector("#farma-adv-precautions")) adv.precauciones = fieldValue(panel, "#farma-adv-precautions");
+    if (panel.querySelector("#farma-adv-adverse")) adv.efectosAdversos = fieldValue(panel, "#farma-adv-adverse");
+    if (panel.querySelector("#farma-adv-withdraw")) adv.tiempoRetiro = fieldValue(panel, "#farma-adv-withdraw");
+    if (panel.querySelector("#farma-adv-observations")) adv.observaciones = fieldValue(panel, "#farma-adv-observations");
+    if (panel.querySelector("#farma-adv-source")) adv.bibliografia = fieldValue(panel, "#farma-adv-source");
+    if (panel.querySelector("#farma-interaction-mode")) adv.interactionMode = fieldValue(panel, "#farma-interaction-mode");
+
+    const photoUrl = panel.querySelector("#farma-adv-photo-url");
+    if (photoUrl) {
+      const cleanUrl = String(photoUrl.value || "").trim();
+      if (cleanUrl) {
+        adv.productImage = cleanUrl;
+        adv.productImageSource = "url";
+        adv.productImageName = "URL de imagen";
+      } else if (adv.productImageSource === "url") {
+        adv.productImage = "";
+        adv.productImageSource = "";
+        adv.productImageName = "";
+      }
+    }
+
+    const speciesRows = panel.querySelectorAll("#farma-species-dose-list [data-dose-id]");
+    if (speciesRows.length) {
+      adv.speciesDoses = Array.from(speciesRows).map((row) => {
+        const speciesValue = namedValue(row, "dose-especie-select");
+        const unitValue = namedValue(row, "dose-unidadDosis") || "mg/kg";
+        return {
+          id: row.dataset.doseId || createId("sdose"),
+          especie: speciesValue === "Otro" ? namedValue(row, "dose-especie-custom") : speciesValue,
+          dosis: namedValue(row, "dose-dosis"),
+          unidadDosis: unitValue,
+          unidadDosisCustom: unitValue === "Otro" ? namedValue(row, "dose-unidadDosisCustom") : "",
+          notas: namedValue(row, "dose-notas")
+        };
+      });
+    }
+
+    const componentRows = panel.querySelectorAll("#farma-components-list [data-comp-id]");
+    if (componentRows.length) {
+      state.freeComponents = Array.from(componentRows).map((row) => {
+        const current = state.freeComponents.find((item) => item.id === row.dataset.compId) || {};
+        const doseUnitValue = namedValue(row, "comp-unidadDosis") || "mg/kg";
+        const concUnitValue = namedValue(row, "comp-unidadConcentracion") || "mg/mL";
+        const next = {
+          ...buildDefaultComponent(),
+          ...current,
+          id: row.dataset.compId || current.id || createId("comp"),
+          nombre: namedValue(row, "comp-nombre"),
+          grupoKey: namedValue(row, "comp-grupoKey"),
+          concentracion: namedValue(row, "comp-concentracion"),
+          unidadConcentracion: concUnitValue,
+          unidadConcentracionCustom: concUnitValue === "Otro" ? namedValue(row, "comp-unidadConcentracionCustom") : "",
+          dosis: namedValue(row, "comp-dosis"),
+          unidadDosis: doseUnitValue,
+          unidadDosisCustom: doseUnitValue === "Otro" ? namedValue(row, "comp-unidadDosisCustom") : "",
+          funcion: namedValue(row, "comp-funcion"),
+          observaciones: namedValue(row, "comp-observaciones"),
+          advertencias: namedValue(row, "comp-advertencias")
+        };
+        recalcSingleComponent(next, form.pesoKg);
+        return next;
+      });
+    }
+  }
+
+  function fieldValue(scope, selector) {
+    return scope.querySelector(selector)?.value || "";
+  }
+
+  function namedValue(scope, name) {
+    return scope.querySelector(`[name="${name}"]`)?.value || "";
+  }
+
   // ---------------------------------------------------------------------------
   // utils
   // ---------------------------------------------------------------------------
@@ -2766,11 +3201,37 @@
     }
   }
 
-  function writeStorageArray(key, value) {
+  function writeStorageArray(key, value, opts = {}) {
+    const serialized = JSON.stringify(Array.isArray(value) ? value : []);
     try {
-      localStorage.setItem(key, JSON.stringify(Array.isArray(value) ? value : []));
+      localStorage.setItem(key, serialized);
+      return true;
     } catch (error) {
       console.warn("[Farma] No se pudo guardar en localStorage:", error);
+
+      if (opts.replaceOnFail) {
+        let previous = null;
+        try {
+          previous = localStorage.getItem(key);
+          localStorage.removeItem(key);
+          localStorage.setItem(key, serialized);
+          return true;
+        } catch (replaceError) {
+          console.warn("[Farma] No se pudo reemplazar localStorage:", replaceError);
+          if (previous != null) {
+            try {
+              localStorage.setItem(key, previous);
+            } catch (restoreError) {
+              console.warn("[Farma] No se pudo restaurar localStorage previo:", restoreError);
+            }
+          }
+        }
+      }
+
+      if (!opts.silent) {
+        toast(opts.message || "No se pudo guardar la informacion localmente. Libera espacio del navegador e intenta de nuevo.");
+      }
+      return false;
     }
   }
 

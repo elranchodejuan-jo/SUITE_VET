@@ -57,7 +57,7 @@ const Recetario = {
     });
 
     this.inputDoctor?.addEventListener("input", () => {
-      localStorage.setItem(this.STORAGE_DOCTOR, this.inputDoctor.value.trim());
+      this._setStorageText(this.STORAGE_DOCTOR, this.inputDoctor.value.trim());
       this._guardarDraftFields();
     });
 
@@ -109,17 +109,81 @@ const Recetario = {
     }
   },
 
+  _setStorageJson(key, value, errorMessage = "") {
+    const serialized = JSON.stringify(value);
+    try {
+      localStorage.setItem(key, serialized);
+      return true;
+    } catch (error) {
+      console.warn("[Recetario] No se pudo guardar en localStorage:", key, error);
+      if (this._replaceStorageValue(key, serialized)) return true;
+      if (errorMessage) this._toast(errorMessage);
+      return false;
+    }
+  },
+
+  _setStorageText(key, value, errorMessage = "") {
+    const text = String(value ?? "");
+    try {
+      localStorage.setItem(key, text);
+      return true;
+    } catch (error) {
+      console.warn("[Recetario] No se pudo guardar texto en localStorage:", key, error);
+      if (this._replaceStorageValue(key, text)) return true;
+      if (errorMessage) this._toast(errorMessage);
+      return false;
+    }
+  },
+
+  _replaceStorageValue(key, serialized) {
+    let previous = null;
+    try {
+      previous = localStorage.getItem(key);
+      localStorage.removeItem(key);
+      localStorage.setItem(key, serialized);
+      return true;
+    } catch (error) {
+      console.warn("[Recetario] No se pudo reemplazar localStorage:", key, error);
+      if (previous != null) {
+        try {
+          localStorage.setItem(key, previous);
+        } catch (restoreError) {
+          console.warn("[Recetario] No se pudo restaurar localStorage previo:", key, restoreError);
+        }
+      }
+      return false;
+    }
+  },
+
+  _removeStorage(key) {
+    try {
+      localStorage.removeItem(key);
+      return true;
+    } catch (error) {
+      console.warn("[Recetario] No se pudo limpiar localStorage:", key, error);
+      return false;
+    }
+  },
+
   _guardar() {
-    localStorage.setItem(this.STORAGE_RECETA, JSON.stringify(this.items));
+    return this._setStorageJson(
+      this.STORAGE_RECETA,
+      this.items,
+      "No se pudo guardar el recetario. Libera espacio del navegador y vuelve a intentar."
+    );
   },
 
   _guardarRecetas() {
-    localStorage.setItem(this.STORAGE_RECETAS, JSON.stringify(this.recetasGuardadas));
+    return this._setStorageJson(
+      this.STORAGE_RECETAS,
+      this.recetasGuardadas,
+      "No se pudo guardar la receta. Libera espacio del navegador y vuelve a intentar."
+    );
   },
 
   _guardarDraftFields() {
     if (this.recetaActivaId) return;
-    localStorage.setItem(this.STORAGE_DRAFT_FIELDS, JSON.stringify(this._getFormData()));
+    this._setStorageJson(this.STORAGE_DRAFT_FIELDS, this._getFormData());
   },
 
   agregarItem(farmaco, dosisCalculada, via, especie, retiroInfo) {
@@ -136,10 +200,14 @@ const Recetario = {
     };
 
     this.items.push(item);
-    this._guardar();
+    if (!this._guardar()) {
+      this.items.pop();
+      return false;
+    }
     this._renderBadge();
     this._animarBadge();
-    this._toast(`✅ ${item.nombre} agregado a la receta`);
+    this._toast(`${item.nombre} agregado a la receta`);
+    return true;
   },
 
   agregarItemExtendido(payload = {}) {
@@ -241,16 +309,23 @@ const Recetario = {
     };
 
     this.items.push(item);
-    this._guardar();
+    if (!this._guardar()) {
+      this.items.pop();
+      return false;
+    }
     this._renderBadge();
     this._animarBadge();
-    this._toast(`✅ ${item.nombre} agregado a la receta`);
+    this._toast(`${item.nombre} agregado a la receta`);
     return true;
   },
 
   eliminarItem(id) {
+    const prevItems = this._clone(this.items);
     this.items = this.items.filter((i) => i.id !== id);
-    this._guardar();
+    if (!this._guardar()) {
+      this.items = prevItems;
+      return;
+    }
     this._renderBadge();
     this._renderLista();
   },
@@ -270,7 +345,7 @@ const Recetario = {
       receta.datos = datos;
       receta.items = items;
       receta.actualizadaEn = new Date().toISOString();
-      this._guardarRecetas();
+      if (!this._guardarRecetas()) return;
       this._renderRecetasGuardadas();
       this._toast(`Receta ${this._formatNumero(receta.numero)} actualizada.`);
       return;
@@ -287,7 +362,10 @@ const Recetario = {
     };
 
     this.recetasGuardadas.push(receta);
-    this._guardarRecetas();
+    if (!this._guardarRecetas()) {
+      this.recetasGuardadas = this.recetasGuardadas.filter((r) => r.id !== receta.id);
+      return;
+    }
     this._toast(`Receta ${this._formatNumero(numero)} guardada.`);
     this.nuevaReceta({ silent: true });
   },
@@ -298,7 +376,7 @@ const Recetario = {
     this.folioActual = this._siguienteNumero();
     this._setFormData({}, { keepDoctor: true });
     this._guardar();
-    localStorage.removeItem(this.STORAGE_DRAFT_FIELDS);
+    this._removeStorage(this.STORAGE_DRAFT_FIELDS);
     this._renderTodo();
     if (!opts.silent) this._toast("Nuevo recetario listo.");
   },
@@ -328,13 +406,16 @@ const Recetario = {
   _actualizarNota(id, valor) {
     const item = this.items.find((i) => i.id === id);
     if (!item) return;
+    const prev = item.instrucciones;
     item.instrucciones = valor;
-    this._guardar();
+    if (!this._guardar()) {
+      item.instrucciones = prev;
+    }
   },
 
   _getFormData() {
     const doctor = this.inputDoctor?.value.trim() || "";
-    localStorage.setItem(this.STORAGE_DOCTOR, doctor);
+    this._setStorageText(this.STORAGE_DOCTOR, doctor);
 
     return {
       doctor,
@@ -349,7 +430,7 @@ const Recetario = {
   _setFormData(data = {}, opts = {}) {
     if (!opts.keepDoctor && this.inputDoctor) {
       this.inputDoctor.value = data.doctor || localStorage.getItem(this.STORAGE_DOCTOR) || "";
-      localStorage.setItem(this.STORAGE_DOCTOR, this.inputDoctor.value.trim());
+      this._setStorageText(this.STORAGE_DOCTOR, this.inputDoctor.value.trim());
     }
 
     if (this.inputFecha) this.inputFecha.value = data.fecha || this._today();
@@ -530,3 +611,4 @@ document.addEventListener("DOMContentLoaded", () => {
   window.Recetario = Recetario;
   Recetario.init();
 });
+
