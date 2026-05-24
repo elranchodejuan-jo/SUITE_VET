@@ -14,6 +14,10 @@
     "ug/kg",
     "UI/kg",
     "mL/kg",
+    "mg/animal",
+    "ug/animal",
+    "UI/animal",
+    "mL/animal",
     "g/kg",
     "mg",
     "ug",
@@ -28,10 +32,19 @@
     "UI/mL",
     "mg/tableta",
     "UI/tableta",
+    "mg/g",
     "%",
     "g/100 mL",
     "mL/mL",
     "Otro"
+  ];
+
+  const WITHDRAWAL_TYPES = ["Carne", "Leche", "Huevos", "Miel", "General"];
+
+  const WITHDRAWAL_STATUS_OPTIONS = [
+    { value: "dias", label: "Indicar dias" },
+    { value: "no_aplica", label: "No aplica" },
+    { value: "no_especificado", label: "No especificado" }
   ];
 
   const INTERACTION_MESSAGES = {
@@ -123,15 +136,19 @@
       freeResult: null,
       freeAlerts: [],
       freeSaveMissing: [],
+      freeSaveNotice: null,
+      freePendingDuplicate: null,
       freeProcedureVisible: false,
       freeAdvancedVisible: false,
       freeLastHistoryId: "",
       editingPersonalizedId: "",
 
       customItems: readStorageArray(STORAGE_CUSTOM),
+      customCalcForms: {},
       customSearch: "",
       customFilterSpecies: "todas",
       customFilterGroup: "todas",
+      customNotice: null,
 
       historyItems: readStorageArray(STORAGE_HISTORY),
       historySearch: "",
@@ -604,8 +621,8 @@
         <section class="sv-card farma-free-card">
           <div class="sv-card-header">
             <div>
-              <span class="sv-card-title">Calculadora Libre</span>
-              <span class="sv-card-subtitle">Modo estudiante: calcula sin depender de la base oficial.</span>
+              <span class="sv-card-title">Datos base del calculo</span>
+              <span class="sv-card-subtitle">Completa solo lo necesario para calcular; los datos clinicos se agregan abajo si vas a guardar.</span>
             </div>
             ${state.editingPersonalizedId ? `<span class="sv-badge sv-badge-orange">Editando personalizado</span>` : `<span class="sv-badge sv-badge-blue">Modo estudiante</span>`}
           </div>
@@ -630,6 +647,9 @@
         ${state.freeAdvancedVisible ? renderAdvancedBlock(state) : ""}
 
         <div class="farma-free-save-end">
+          ${state.freeSaveNotice ? renderSaveNotice(state.freeSaveNotice) : ""}
+          ${renderFreeSaveReadiness(state)}
+          ${renderDuplicatePrompt(state)}
           <button class="sv-btn sv-btn-primary sv-btn-full" type="button" id="farma-free-save-custom-end">${state.editingPersonalizedId ? "Actualizar personalizado" : "Guardar como farmaco personalizado"}</button>
         </div>
       </div>
@@ -650,6 +670,98 @@
       ${numberField("Concentracion", "farma-free-conc", form.concentracion, "0", "any")}
       ${unitField("Unidad de concentracion", "farma-free-conc-unit", form.unidadConcentracion, FREE_CONC_UNIT_OPTIONS, form.unidadConcentracionCustom, "farma-free-conc-unit-custom")}
     `;
+  }
+
+  function renderFreeSaveReadiness(state) {
+    const draft = getCustomSaveDraft(state);
+    const checklist = buildCustomSaveChecklist(draft);
+    const ready = checklist.every((item) => item.ok);
+
+    return `
+      <section class="farma-save-checklist ${ready ? "is-ready" : "is-pending"}">
+        <div>
+          <strong>${ready ? "Listo para guardar" : "Antes de guardar revisa"}</strong>
+          <span>${ready ? "Los datos minimos clinicos estan completos." : "La calculadora puede funcionar, pero el personalizado requiere ficha clinica minima."}</span>
+        </div>
+        <ul class="farma-checklist-grid">
+          ${checklist.map((item) => `
+            <li class="${item.ok ? "is-ok" : "is-missing"}">
+              <span>${item.ok ? "Completo" : "Pendiente"}</span>
+              ${escapeHtml(item.label)}
+            </li>
+          `).join("")}
+        </ul>
+        ${ready ? `
+          <p>Al guardar se enviara automaticamente a Farmacos personalizados como ficha reutilizable.</p>
+        ` : ""}
+      </section>
+    `;
+  }
+
+  function renderDuplicatePrompt(state) {
+    const duplicate = state.freePendingDuplicate;
+    if (!duplicate) return "";
+    return `
+      <section class="farma-duplicate-box" role="alert">
+        <div>
+          <strong>Ya existe un farmaco similar</strong>
+          <span>Coincide con "${escapeHtml(duplicate.name || "farmaco similar")}". Decide antes de guardar para evitar duplicados accidentales.</span>
+        </div>
+        <div class="farma-duplicate-actions">
+          <button class="sv-btn sv-btn-sm sv-btn-primary" type="button" id="farma-duplicate-update">Actualizar existente</button>
+          <button class="sv-btn sv-btn-sm sv-btn-secondary" type="button" id="farma-duplicate-copy">Guardar como copia</button>
+          <button class="sv-btn sv-btn-sm sv-btn-ghost" type="button" id="farma-duplicate-cancel">Cancelar</button>
+        </div>
+      </section>
+    `;
+  }
+
+  function buildCustomSaveChecklist(draft) {
+    const speciesDoses = Array.isArray(draft.speciesDoses) ? draft.speciesDoses : [];
+    const routes = Array.isArray(draft.routes) ? draft.routes : [];
+    const presentations = Array.isArray(draft.presentations) ? draft.presentations : [];
+    const withdrawals = Array.isArray(draft.withdrawalItems) ? draft.withdrawalItems : [];
+    const components = Array.isArray(draft.componentes) ? draft.componentes : [];
+
+    const validSpeciesDose = speciesDoses.some((row) =>
+      String(row.especie || "").trim() && Number(row.dosis) > 0 && String(row.unidadDosis || "").trim()
+    );
+    const validPresentation = presentations.some((row) =>
+      Number(row.concentracion) > 0 && String(row.unidadConcentracion || "").trim()
+    );
+    const validWithdrawal = withdrawals.some(isValidWithdrawalItem);
+    const completeComponents = !components.length || components.every(isCompleteComponent);
+
+    return [
+      { label: "Nombre del producto", ok: Boolean(String(draft.nombre || "").trim()) },
+      { label: "Grupo farmacologico principal", ok: Boolean(String(draft.grupoKey || "").trim() && draft.grupoKey !== "default") },
+      { label: "Funcion terapeutica", ok: Boolean(String(draft.funcionTerapeutica || "").trim()) },
+      { label: "Descripcion u observacion", ok: Boolean(String(draft.descripcion || "").trim()) },
+      { label: "Especies y dosis", ok: validSpeciesDose },
+      { label: "Vias de administracion", ok: routes.length > 0 },
+      { label: "Concentracion o presentacion", ok: validPresentation },
+      { label: "Unidad de dosis", ok: Boolean(String(draft.unidadDosis || "").trim()) },
+      { label: "Tiempo de retiro", ok: validWithdrawal },
+      { label: "Componentes activos", ok: completeComponents }
+    ];
+  }
+
+  function isCompleteComponent(comp) {
+    return Boolean(
+      String(comp.nombre || "").trim() &&
+      String(comp.grupoKey || "").trim() &&
+      Number(comp.concentracion) > 0 &&
+      String(comp.unidadConcentracion || "").trim() &&
+      Number(comp.dosis) > 0 &&
+      String(comp.unidadDosis || "").trim()
+    );
+  }
+
+  function isValidWithdrawalItem(item) {
+    const status = String(item?.estado || "").trim();
+    if (status === "no_aplica" || status === "no_especificado") return true;
+    if (status === "dias") return Number(item?.dias) >= 0 && String(item?.tipo || "").trim();
+    return false;
   }
 
   function bindFreeCalculatorEvents(panel, state) {
@@ -706,6 +818,7 @@
       state.freeResult = result;
       state.freeAlerts = result.warnings || [];
       state.freeSaveMissing = [];
+      state.freeSaveNotice = null;
 
       if (result.ok) {
         const interactionAlerts = buildInteractionAlerts(state);
@@ -715,12 +828,16 @@
           peso: parseNum(state.freeForm.pesoKg),
           dosis: parseNum(state.freeForm.dosis),
           unidadDosis: resolveUnit(state.freeForm.unidadDosis, state.freeForm.unidadDosisCustom),
+          viaAdministracion: getEffectiveRoutesFromState(state)[0] || state.freeAdvanced.viaAdministracion || state.freeForm.viaAdministracion || "",
           concentracion: parseNum(state.freeForm.concentracion),
           unidadConcentracion: resolveUnit(state.freeForm.unidadConcentracion, state.freeForm.unidadConcentracionCustom),
+          presentacion: "Presentacion principal",
+          concentracionModificada: false,
           dosisTotal: result.doseTotalValue,
           dosisTotalUnidad: result.doseTotalUnit,
           resultadoCalculado: `${formatNum(result.finalValue)} ${result.finalUnit}`,
           tipoCalculo: state.freeAdvancedVisible ? "profesional" : "simple",
+          origen: "Calculadora Libre",
           enviadoRecetario: false,
           guardadoPersonalizado: false,
           contieneComponentes: normalizedComponents(state.freeComponents).length > 0,
@@ -750,21 +867,27 @@
       const result = calculateFreeDose(state.freeForm);
       state.freeResult = result;
       state.freeAlerts = result.warnings || [];
+      state.freeSaveNotice = null;
 
+      let historyId = "";
       if (result.ok) {
         const interactionAlerts = buildInteractionAlerts(state);
-        const historyId = appendHistoryEntry(state, {
+        historyId = appendHistoryEntry(state, {
           farmaco: state.freeForm.nombre,
           especie: state.freeForm.especie,
           peso: parseNum(state.freeForm.pesoKg),
           dosis: parseNum(state.freeForm.dosis),
           unidadDosis: resolveUnit(state.freeForm.unidadDosis, state.freeForm.unidadDosisCustom),
+          viaAdministracion: getEffectiveRoutesFromState(state)[0] || state.freeAdvanced.viaAdministracion || state.freeForm.viaAdministracion || "",
           concentracion: parseNum(state.freeForm.concentracion),
           unidadConcentracion: resolveUnit(state.freeForm.unidadConcentracion, state.freeForm.unidadConcentracionCustom),
+          presentacion: "Presentacion principal",
+          concentracionModificada: false,
           dosisTotal: result.doseTotalValue,
           dosisTotalUnidad: result.doseTotalUnit,
           resultadoCalculado: `${formatNum(result.finalValue)} ${result.finalUnit}`,
           tipoCalculo: state.freeAdvancedVisible ? "profesional" : "simple",
+          origen: "Calculadora Libre",
           enviadoRecetario: false,
           guardadoPersonalizado: false,
           contieneComponentes: normalizedComponents(state.freeComponents).length > 0,
@@ -776,52 +899,63 @@
       }
 
       if (!state.freeResult || !state.freeResult.ok) {
+        state.freeSaveNotice = {
+          level: "error",
+          title: "No se envio al recetario",
+          message: "No se pudo calcular una dosis valida. Revisa nombre, peso, dosis, concentracion y unidades."
+        };
         toast("No se pudo calcular una dosis valida para enviar al recetario.");
         renderFreeCalculatorSubmodule(panel, state);
         return;
       }
 
-      const payload = buildRecipePayloadFromFree(state);
+      const historyEntry = state.historyItems.find((entry) => entry.id === (historyId || state.freeLastHistoryId));
+      const payload = historyEntry ? buildRecipePayloadFromHistory(historyEntry) : buildRecipePayloadFromFree(state);
       const added = addPayloadToRecipe(payload);
-      if (added && state.freeLastHistoryId) {
-        patchHistoryEntry(state, state.freeLastHistoryId, { enviadoRecetario: true });
+      if (added) {
+        const targetHistoryId = historyEntry?.id || state.freeLastHistoryId;
+        if (targetHistoryId) patchHistoryEntry(state, targetHistoryId, { enviadoRecetario: true });
+        state.freeSaveNotice = {
+          level: "success",
+          title: "Agregado al recetario",
+          message: `${state.freeForm.nombre || "El farmaco"} se envio correctamente al recetario.`
+        };
+      } else {
+        state.freeSaveNotice = {
+          level: "error",
+          title: "No se envio al recetario",
+          message: "El recetario no pudo recibir este calculo. Intenta nuevamente o revisa el almacenamiento del navegador."
+        };
       }
+      renderFreeCalculatorSubmodule(panel, state);
     });
 
     const saveCustomBtn = panel.querySelector("#farma-free-save-custom-end")
       || panel.querySelector("#farma-free-save-custom");
     saveCustomBtn?.addEventListener("click", () => {
-      syncFreeStateFromPanel(panel, state);
-      const saveResult = saveFreeAsCustomDrug(state);
-      if (!saveResult.ok) {
-        if (saveResult.reason === "calc") {
-          state.freeSaveMissing = [];
-          toast("No se pudo calcular la dosis con los datos actuales. Revisa peso, dosis, concentracion y unidades.");
-        }
-        if (saveResult.reason === "minimal") {
-          state.freeAdvancedVisible = true;
-          state.freeSaveMissing = Array.isArray(saveResult.missingFields) ? saveResult.missingFields : [];
-          const joined = state.freeSaveMissing.join(", ");
-          toast(`Completa los datos clinicos minimos: ${joined || "campos obligatorios"}.`);
-        }
-        if (saveResult.reason !== "storage" && saveResult.reason !== "calc" && saveResult.reason !== "minimal") {
-          toast("Para guardar este farmaco personalizado, completa los datos clinicos minimos.");
-        }
-      }
+      handleFreeCustomSave(panel, state);
+    });
+
+    panel.querySelector("#farma-duplicate-update")?.addEventListener("click", () => {
+      handleFreeCustomSave(panel, state, "update");
+    });
+
+    panel.querySelector("#farma-duplicate-copy")?.addEventListener("click", () => {
+      handleFreeCustomSave(panel, state, "copy");
+    });
+
+    panel.querySelector("#farma-duplicate-cancel")?.addEventListener("click", () => {
+      state.freePendingDuplicate = null;
+      state.freeSaveNotice = {
+        level: "warning",
+        title: "Guardado cancelado",
+        message: "No se duplico ni actualizo el farmaco personalizado."
+      };
       renderFreeCalculatorSubmodule(panel, state);
     });
 
     panel.querySelector("#farma-free-reset")?.addEventListener("click", () => {
-      state.freeForm = buildDefaultFreeForm();
-      state.freeAdvanced = buildDefaultAdvancedForm();
-      state.freeComponents = [];
-      state.freeResult = null;
-      state.freeAlerts = [];
-      state.freeSaveMissing = [];
-      state.freeProcedureVisible = false;
-      state.freeAdvancedVisible = false;
-      state.editingPersonalizedId = "";
-      state.freeLastHistoryId = "";
+      resetFreeCalculatorState(state);
       renderFreeCalculatorSubmodule(panel, state);
     });
 
@@ -829,9 +963,111 @@
 
     bindAdvancedInputs(panel, state);
     bindSpeciesDoseEvents(panel, state);
+    bindRouteEvents(panel, state);
+    bindPresentationEvents(panel, state);
+    bindWithdrawalEvents(panel, state);
     bindPhotoEvents(panel, state);
     bindComponentsEvents(panel, state);
     bindInteractionMode(panel, state);
+  }
+
+  function handleFreeCustomSave(panel, state, duplicateMode = "") {
+    syncFreeStateFromPanel(panel, state);
+    state.freeSaveNotice = null;
+    state.customNotice = null;
+
+    let saveResult;
+    try {
+      saveResult = saveFreeAsCustomDrug(state, { duplicateMode });
+    } catch (error) {
+      console.warn("[Farma] Error inesperado al guardar personalizado:", error);
+      state.freePendingDuplicate = null;
+      state.freeSaveNotice = {
+        level: "error",
+        title: "No se guardo el farmaco",
+        message: "Ocurrio un error interno al guardar. El formulario sigue intacto para que puedas intentar nuevamente."
+      };
+      toast("No se pudo guardar el farmaco personalizado por un error interno.");
+      renderFreeCalculatorSubmodule(panel, state);
+      return;
+    }
+
+    if (!saveResult.ok) {
+      if (saveResult.reason === "calc") {
+        state.freePendingDuplicate = null;
+        state.freeSaveMissing = [];
+        state.freeSaveNotice = {
+          level: "error",
+          title: "No se guardo el farmaco",
+          message: "No se pudo calcular la dosis con los datos actuales. Revisa peso, dosis, concentracion y unidades."
+        };
+        toast("No se pudo calcular la dosis con los datos actuales. Revisa peso, dosis, concentracion y unidades.");
+      }
+
+      if (saveResult.reason === "minimal") {
+        state.freePendingDuplicate = null;
+        state.freeAdvancedVisible = true;
+        state.freeSaveMissing = Array.isArray(saveResult.missingFields) ? saveResult.missingFields : [];
+        const joined = state.freeSaveMissing.join(", ");
+        state.freeSaveNotice = {
+          level: "warning",
+          title: "Faltan datos clinicos minimos",
+          message: `Completa estos campos: ${joined || "campos obligatorios"}.`
+        };
+        toast(`Completa los datos clinicos minimos: ${joined || "campos obligatorios"}.`);
+      }
+
+      if (saveResult.reason === "duplicate") {
+        state.freeAdvancedVisible = true;
+        state.freePendingDuplicate = {
+          id: saveResult.duplicate?.id || "",
+          name: saveResult.duplicate?.nombre || saveResult.duplicate?.nombreComercial || "farmaco similar"
+        };
+        state.freeSaveNotice = {
+          level: "warning",
+          title: "Ya existe un farmaco similar",
+          message: "Elige si quieres actualizar el existente, guardar una copia o cancelar."
+        };
+      }
+
+      if (saveResult.reason === "storage") {
+        state.freePendingDuplicate = null;
+        state.freeSaveNotice = {
+          level: "error",
+          title: "No se guardo el farmaco",
+          message: "El navegador no pudo guardar la informacion local. Libera espacio, evita imagenes pesadas o intenta limpiar registros antiguos."
+        };
+        toast("No se pudo guardar el farmaco personalizado en el navegador. Libera espacio o intenta limpiar registros antiguos.");
+      }
+
+      if (!["storage", "calc", "minimal", "duplicate"].includes(saveResult.reason)) {
+        state.freePendingDuplicate = null;
+        state.freeSaveNotice = {
+          level: "error",
+          title: "No se guardo el farmaco",
+          message: "Para guardar este farmaco personalizado, completa los datos clinicos minimos."
+        };
+        toast("Para guardar este farmaco personalizado, completa los datos clinicos minimos.");
+      }
+
+      renderFreeCalculatorSubmodule(panel, state);
+      if (saveResult.reason === "minimal") {
+        focusFirstMissingCustomField(panel, state.freeSaveMissing);
+      }
+      return;
+    }
+
+    state.freePendingDuplicate = null;
+    state.customNotice = {
+      level: "success",
+      title: "Farmaco personalizado guardado",
+      message: `${saveResult.itemName || "El farmaco"} se agrego correctamente a Farmacos personalizados.`
+    };
+    state.customSearch = "";
+    state.customFilterSpecies = "todas";
+    state.customFilterGroup = "todas";
+    state.activeSubmodule = "personalizados";
+    renderSubmoduleFromPanel(panel, state);
   }
 
   function bindAdvancedInputs(panel, state) {
@@ -843,6 +1079,7 @@
       updateInteractionPanel(panel, state);
     });
     bindInput(panel, "#farma-adv-func", (value) => { adv.funcionTerapeutica = value; });
+    bindInput(panel, "#farma-adv-mechanism", (value) => { adv.mecanismoAccion = value; });
     bindInput(panel, "#farma-adv-description", (value) => { adv.descripcion = value; });
     bindSelect(panel, "#farma-adv-via-select", (value) => {
       if (!value) {
@@ -926,8 +1163,153 @@
       const name = event.target.name || "";
       if (name === "dose-especie-custom") row.especie = event.target.value;
       if (name === "dose-dosis") row.dosis = event.target.value;
-      if (name === "dose-notas") row.notas = event.target.value;
       if (name === "dose-unidadDosisCustom") row.unidadDosisCustom = event.target.value;
+      if (name === "dose-frecuencia") row.frecuencia = event.target.value;
+      if (name === "dose-duracion") row.duracion = event.target.value;
+      if (name === "dose-observaciones") row.observaciones = event.target.value;
+      if (name === "dose-notas") row.notas = event.target.value;
+    });
+  }
+
+  function bindRouteEvents(panel, state) {
+    if (!Array.isArray(state.freeAdvanced.routes)) state.freeAdvanced.routes = [];
+
+    panel.querySelector("#farma-add-route")?.addEventListener("click", () => {
+      syncFreeStateFromPanel(panel, state);
+      state.freeAdvanced.routes.push(buildDefaultRoute());
+      renderFreeCalculatorSubmodule(panel, state);
+    });
+
+    const list = panel.querySelector("#farma-routes-list");
+    if (!list) return;
+
+    list.addEventListener("click", (event) => {
+      const remove = event.target.closest("[data-route-remove]");
+      if (!remove) return;
+      syncFreeStateFromPanel(panel, state);
+      const id = remove.dataset.routeRemove;
+      state.freeAdvanced.routes = state.freeAdvanced.routes.filter((row) => row.id !== id);
+      renderFreeCalculatorSubmodule(panel, state);
+    });
+
+    list.addEventListener("change", (event) => {
+      const rowNode = event.target.closest("[data-route-id]");
+      if (!rowNode) return;
+      const row = state.freeAdvanced.routes.find((item) => item.id === rowNode.dataset.routeId);
+      if (!row) return;
+
+      if (event.target.name === "route-select") {
+        if (!event.target.value) {
+          row.via = "";
+        } else if (event.target.value === "Otro") {
+          if (isKnownRoute(row.via)) row.via = "";
+        } else {
+          row.via = event.target.value;
+        }
+        renderFreeCalculatorSubmodule(panel, state);
+      }
+    });
+
+    list.addEventListener("input", (event) => {
+      const rowNode = event.target.closest("[data-route-id]");
+      if (!rowNode) return;
+      const row = state.freeAdvanced.routes.find((item) => item.id === rowNode.dataset.routeId);
+      if (!row) return;
+      if (event.target.name === "route-custom") row.via = event.target.value;
+      if (event.target.name === "route-notas") row.notas = event.target.value;
+    });
+  }
+
+  function bindPresentationEvents(panel, state) {
+    if (!Array.isArray(state.freeAdvanced.presentations)) state.freeAdvanced.presentations = [];
+
+    panel.querySelector("#farma-add-presentation")?.addEventListener("click", () => {
+      syncFreeStateFromPanel(panel, state);
+      state.freeAdvanced.presentations.push(buildDefaultPresentation());
+      renderFreeCalculatorSubmodule(panel, state);
+    });
+
+    const list = panel.querySelector("#farma-presentations-list");
+    if (!list) return;
+
+    list.addEventListener("click", (event) => {
+      const remove = event.target.closest("[data-presentation-remove]");
+      if (!remove) return;
+      syncFreeStateFromPanel(panel, state);
+      const id = remove.dataset.presentationRemove;
+      state.freeAdvanced.presentations = state.freeAdvanced.presentations.filter((row) => row.id !== id);
+      renderFreeCalculatorSubmodule(panel, state);
+    });
+
+    list.addEventListener("change", (event) => {
+      const rowNode = event.target.closest("[data-presentation-id]");
+      if (!rowNode) return;
+      const row = state.freeAdvanced.presentations.find((item) => item.id === rowNode.dataset.presentationId);
+      if (!row) return;
+      if (event.target.name === "presentation-unidadConcentracion") {
+        row.unidadConcentracion = event.target.value;
+        if (row.unidadConcentracion !== "Otro") row.unidadConcentracionCustom = "";
+        renderFreeCalculatorSubmodule(panel, state);
+      }
+    });
+
+    list.addEventListener("input", (event) => {
+      const rowNode = event.target.closest("[data-presentation-id]");
+      if (!rowNode) return;
+      const row = state.freeAdvanced.presentations.find((item) => item.id === rowNode.dataset.presentationId);
+      if (!row) return;
+      const name = event.target.name || "";
+      if (name === "presentation-nombre") row.nombre = event.target.value;
+      if (name === "presentation-concentracion") row.concentracion = event.target.value;
+      if (name === "presentation-unidadConcentracionCustom") row.unidadConcentracionCustom = event.target.value;
+      if (name === "presentation-notas") row.notas = event.target.value;
+    });
+  }
+
+  function bindWithdrawalEvents(panel, state) {
+    if (!Array.isArray(state.freeAdvanced.withdrawalItems)) {
+      state.freeAdvanced.withdrawalItems = [buildDefaultWithdrawalItem()];
+    }
+
+    panel.querySelector("#farma-add-withdrawal")?.addEventListener("click", () => {
+      syncFreeStateFromPanel(panel, state);
+      state.freeAdvanced.withdrawalItems.push(buildDefaultWithdrawalItem("Carne", "dias"));
+      renderFreeCalculatorSubmodule(panel, state);
+    });
+
+    const list = panel.querySelector("#farma-withdrawal-list");
+    if (!list) return;
+
+    list.addEventListener("click", (event) => {
+      const remove = event.target.closest("[data-withdrawal-remove]");
+      if (!remove) return;
+      syncFreeStateFromPanel(panel, state);
+      const id = remove.dataset.withdrawalRemove;
+      state.freeAdvanced.withdrawalItems = state.freeAdvanced.withdrawalItems.filter((row) => row.id !== id);
+      if (!state.freeAdvanced.withdrawalItems.length) {
+        state.freeAdvanced.withdrawalItems.push(buildDefaultWithdrawalItem());
+      }
+      renderFreeCalculatorSubmodule(panel, state);
+    });
+
+    list.addEventListener("change", (event) => {
+      const rowNode = event.target.closest("[data-withdrawal-id]");
+      if (!rowNode) return;
+      const row = state.freeAdvanced.withdrawalItems.find((item) => item.id === rowNode.dataset.withdrawalId);
+      if (!row) return;
+      const name = event.target.name || "";
+      if (name === "withdrawal-tipo") row.tipo = event.target.value;
+      if (name === "withdrawal-estado") row.estado = event.target.value;
+      renderFreeCalculatorSubmodule(panel, state);
+    });
+
+    list.addEventListener("input", (event) => {
+      const rowNode = event.target.closest("[data-withdrawal-id]");
+      if (!rowNode) return;
+      const row = state.freeAdvanced.withdrawalItems.find((item) => item.id === rowNode.dataset.withdrawalId);
+      if (!row) return;
+      if (event.target.name === "withdrawal-dias") row.dias = event.target.value;
+      if (event.target.name === "withdrawal-notas") row.notas = event.target.value;
     });
   }
 
@@ -1062,13 +1444,57 @@
   function renderFreeAlerts(state) {
     const warnings = state.freeAlerts || [];
     const missing = state.freeSaveMissing || [];
-    if (!warnings.length && !missing.length) return "";
+    const notice = state.freeSaveNotice;
+    if (!warnings.length && !missing.length && !notice) return "";
     return `
       <div class="farma-free-warning">
+        ${notice ? renderSaveNotice(notice) : ""}
         ${warnings.map((w) => `<p>${escapeHtml(w)}</p>`).join("")}
         ${missing.length ? `<p><strong>Para guardar faltan:</strong> ${escapeHtml(missing.join(", "))}.</p>` : ""}
       </div>
     `;
+  }
+
+  function renderSaveNotice(notice) {
+    if (!notice) return "";
+    const level = ["success", "warning", "error"].includes(notice.level) ? notice.level : "info";
+    return `
+      <div class="farma-save-notice ${escapeAttr(level)}" role="status" aria-live="polite">
+        <strong>${escapeHtml(notice.title || "Aviso")}</strong>
+        <span>${escapeHtml(notice.message || "")}</span>
+      </div>
+    `;
+  }
+
+  function focusFirstMissingCustomField(panel, missingFields) {
+    const missing = Array.isArray(missingFields) ? missingFields : [];
+    const selectorsByMissing = {
+      "Nombre del farmaco": "#farma-free-name",
+      "Especie": "#farma-free-species-select",
+      "Dosis": "#farma-free-dose",
+      "Especies y dosis": "#farma-add-species-dose, #farma-free-species-select",
+      "Unidad de dosis": "#farma-free-dose-unit",
+      "Concentracion": "#farma-free-conc",
+      "Concentracion o presentacion": "#farma-free-conc, #farma-add-presentation",
+      "Unidad de concentracion": "#farma-free-conc-unit",
+      "Grupo farmacologico": "#farma-adv-group",
+      "Via de administracion": "#farma-adv-via-select, #farma-free-route-select",
+      "Vias de administracion": "#farma-adv-via-select, #farma-free-route-select, #farma-add-route",
+      "Funcion terapeutica": "#farma-adv-func",
+      "Descripcion u observacion": "#farma-adv-description, #farma-adv-observations",
+      "Tiempo de retiro": "#farma-withdrawal-list, #farma-add-withdrawal",
+      "Componentes activos completos": "#farma-components-list, #farma-add-component"
+    };
+
+    const firstSelector = selectorsByMissing[missing[0]] || "#farma-free-save-custom-end";
+    const target = panel.querySelector(firstSelector);
+    const field = target?.closest?.(".farma-field") || target;
+    if (!target) return;
+
+    field?.classList?.add("is-missing-focus");
+    target.scrollIntoView?.({ behavior: "smooth", block: "center" });
+    target.focus?.({ preventScroll: true });
+    window.setTimeout(() => field?.classList?.remove("is-missing-focus"), 2600);
   }
 
   function renderFreeResult(state) {
@@ -1125,6 +1551,11 @@
 
         <h4>Conversiones</h4>
         ${conversionList}
+
+        <div class="farma-edu-warning">
+          <strong>Recordatorio educativo:</strong>
+          <span>No confundas mg/kg con mg/mL. mg/kg indica dosis segun peso; mg/mL indica concentracion del producto. Verifica especie, via y concentracion antes de administrar.</span>
+        </div>
       </section>
     `;
   }
@@ -1155,25 +1586,58 @@
           </label>
 
           ${inputField("Funcion terapeutica", "farma-adv-func", state.freeAdvanced.funcionTerapeutica)}
+          ${inputField("Mecanismo de accion (opcional)", "farma-adv-mechanism", state.freeAdvanced.mecanismoAccion)}
           ${textareaField("Descripcion", "farma-adv-description", state.freeAdvanced.descripcion)}
-          ${routeField("Via de administracion", "farma-adv-via-select", "farma-adv-via-custom", state.freeAdvanced.viaAdministracion)}
+          ${routeField("Via principal", "farma-adv-via-select", "farma-adv-via-custom", state.freeAdvanced.viaAdministracion)}
           ${inputField("Frecuencia", "farma-adv-frequency", state.freeAdvanced.frecuencia)}
           ${inputField("Duracion del tratamiento", "farma-adv-duration", state.freeAdvanced.duracion)}
           ${textareaField("Contraindicaciones", "farma-adv-contra", state.freeAdvanced.contraindicaciones)}
           ${textareaField("Precauciones", "farma-adv-precautions", state.freeAdvanced.precauciones)}
           ${textareaField("Efectos adversos", "farma-adv-adverse", state.freeAdvanced.efectosAdversos)}
-          ${inputField("Tiempo de retiro (si aplica)", "farma-adv-withdraw", state.freeAdvanced.tiempoRetiro)}
+          ${inputField("Tiempo de retiro / notas", "farma-adv-withdraw", state.freeAdvanced.tiempoRetiro)}
           ${textareaField("Observaciones clinicas", "farma-adv-observations", state.freeAdvanced.observaciones)}
           ${inputField("Bibliografia / fuente (opcional)", "farma-adv-source", state.freeAdvanced.bibliografia)}
         </div>
 
+        <section class="farma-routes-block">
+          <div class="farma-components-header">
+            <h3>Vias de administracion adicionales</h3>
+            <button type="button" class="sv-btn sv-btn-secondary" id="farma-add-route">+ Agregar via</button>
+          </div>
+          <div id="farma-routes-list" class="farma-routes-list">
+            ${renderRouteList(state)}
+          </div>
+        </section>
+
         <section class="farma-dose-species-block">
           <div class="farma-components-header">
             <h3>Dosis por especies (profesional)</h3>
-            <button type="button" class="sv-btn sv-btn-secondary" id="farma-add-species-dose">+ Agregar especie</button>
+            <button type="button" class="sv-btn sv-btn-secondary" id="farma-add-species-dose">+ Agregar especie y dosis</button>
           </div>
           <div id="farma-species-dose-list" class="farma-species-dose-list">
             ${renderSpeciesDoseList(state)}
+          </div>
+        </section>
+
+        <section class="farma-presentations-block">
+          <div class="farma-components-header">
+            <h3>Presentaciones y concentraciones</h3>
+            <button type="button" class="sv-btn sv-btn-secondary" id="farma-add-presentation">+ Agregar presentacion</button>
+          </div>
+          <p class="farma-section-hint">La concentracion base de la calculadora queda como presentacion principal. Agrega otras solo si existen.</p>
+          <div id="farma-presentations-list" class="farma-presentations-list">
+            ${renderPresentationList(state)}
+          </div>
+        </section>
+
+        <section class="farma-withdrawal-block">
+          <div class="farma-components-header">
+            <h3>Tiempo de retiro</h3>
+            <button type="button" class="sv-btn sv-btn-secondary" id="farma-add-withdrawal">+ Agregar retiro</button>
+          </div>
+          <p class="farma-section-hint">Si no aplica o no esta especificado, dejalo marcado para que la ficha advierta al usuario.</p>
+          <div id="farma-withdrawal-list" class="farma-withdrawal-list">
+            ${renderWithdrawalList(state)}
           </div>
         </section>
 
@@ -1226,6 +1690,117 @@
         </section>
       </section>
     `;
+  }
+
+  function renderRouteList(state) {
+    const rows = Array.isArray(state.freeAdvanced.routes) ? state.freeAdvanced.routes : [];
+    if (!rows.length) {
+      return `
+        <div class="sv-empty">
+          <div class="sv-empty-icon">+</div>
+          Agrega vias adicionales si el producto puede usarse por mas de una ruta.
+        </div>
+      `;
+    }
+
+    return rows.map((row) => {
+      const value = String(row.via || "").trim();
+      const selectValue = !value ? "" : isKnownRoute(value) ? value : "Otro";
+      return `
+        <article class="sv-card farma-route-card" data-route-id="${escapeAttr(row.id)}">
+          <div class="farma-route-grid">
+            <label class="farma-field">
+              <span>Via</span>
+              <select class="sv-select" name="route-select">
+                <option value="" ${!selectValue ? "selected" : ""}>Seleccionar via</option>
+                ${ROUTE_OPTIONS.map((route) => `<option value="${escapeAttr(route.value)}" ${selectValue === route.value ? "selected" : ""}>${escapeHtml(route.label)}</option>`).join("")}
+                <option value="Otro" ${selectValue === "Otro" ? "selected" : ""}>Otra</option>
+              </select>
+              ${selectValue === "Otro" ? `<input class="sv-input" name="route-custom" value="${escapeAttr(value)}" placeholder="Via personalizada" />` : ""}
+            </label>
+            ${inputFieldWithName("Observacion", "route-notas", row.notas || "")}
+          </div>
+          <div class="farma-species-dose-actions">
+            <button type="button" class="sv-btn sv-btn-sm sv-btn-danger" data-route-remove="${escapeAttr(row.id)}">Eliminar</button>
+          </div>
+        </article>
+      `;
+    }).join("");
+  }
+
+  function renderPresentationList(state) {
+    const rows = Array.isArray(state.freeAdvanced.presentations) ? state.freeAdvanced.presentations : [];
+    if (!rows.length) {
+      return `
+        <div class="sv-empty">
+          <div class="sv-empty-icon">+</div>
+          Sin presentaciones extra. Se usara la concentracion base del calculo como principal.
+        </div>
+      `;
+    }
+
+    return rows.map((row) => {
+      const unit = row.unidadConcentracion || "mg/mL";
+      const unitOptions = FREE_CONC_UNIT_OPTIONS.map((opt) =>
+        `<option value="${escapeAttr(opt)}" ${unit === opt ? "selected" : ""}>${escapeHtml(opt)}</option>`
+      ).join("");
+
+      return `
+        <article class="sv-card farma-presentation-card" data-presentation-id="${escapeAttr(row.id)}">
+          <div class="farma-presentation-grid">
+            ${inputFieldWithName("Nombre de presentacion", "presentation-nombre", row.nombre || "")}
+            ${numberFieldWithName("Concentracion", "presentation-concentracion", row.concentracion, "0", "any")}
+            <label class="farma-field">
+              <span>Unidad de concentracion</span>
+              <select class="sv-select" name="presentation-unidadConcentracion">
+                ${unitOptions}
+              </select>
+              ${unit === "Otro" ? `<input class="sv-input" name="presentation-unidadConcentracionCustom" placeholder="Unidad personalizada" value="${escapeAttr(row.unidadConcentracionCustom || "")}" />` : ""}
+            </label>
+            ${inputFieldWithName("Observacion", "presentation-notas", row.notas || "")}
+          </div>
+          <div class="farma-species-dose-actions">
+            <button type="button" class="sv-btn sv-btn-sm sv-btn-danger" data-presentation-remove="${escapeAttr(row.id)}">Eliminar</button>
+          </div>
+        </article>
+      `;
+    }).join("");
+  }
+
+  function renderWithdrawalList(state) {
+    const rows = Array.isArray(state.freeAdvanced.withdrawalItems) && state.freeAdvanced.withdrawalItems.length
+      ? state.freeAdvanced.withdrawalItems
+      : [buildDefaultWithdrawalItem()];
+
+    return rows.map((row) => {
+      const status = row.estado || "no_especificado";
+      return `
+        <article class="sv-card farma-withdrawal-card" data-withdrawal-id="${escapeAttr(row.id)}">
+          <div class="farma-withdrawal-grid">
+            <label class="farma-field">
+              <span>Producto</span>
+              <select class="sv-select" name="withdrawal-tipo">
+                ${WITHDRAWAL_TYPES.map((type) => `<option value="${escapeAttr(type)}" ${String(row.tipo || "") === type ? "selected" : ""}>${escapeHtml(type)}</option>`).join("")}
+              </select>
+            </label>
+            <label class="farma-field">
+              <span>Estado</span>
+              <select class="sv-select" name="withdrawal-estado">
+                ${WITHDRAWAL_STATUS_OPTIONS.map((opt) => `<option value="${escapeAttr(opt.value)}" ${status === opt.value ? "selected" : ""}>${escapeHtml(opt.label)}</option>`).join("")}
+              </select>
+            </label>
+            ${status === "dias" ? numberFieldWithName("Dias", "withdrawal-dias", row.dias, "0", "1") : ""}
+            ${inputFieldWithName("Observacion", "withdrawal-notas", row.notas || "")}
+          </div>
+          ${status === "no_especificado" ? `
+            <p class="farma-withdrawal-warning">Tiempo de retiro no especificado. Verificar antes de usar en animales destinados a consumo humano.</p>
+          ` : ""}
+          <div class="farma-species-dose-actions">
+            <button type="button" class="sv-btn sv-btn-sm sv-btn-danger" data-withdrawal-remove="${escapeAttr(row.id)}">Eliminar</button>
+          </div>
+        </article>
+      `;
+    }).join("");
   }
 
   function renderComponentsList(state) {
@@ -1364,7 +1939,9 @@
               ${unit === "Otro" ? `<input class="sv-input" name="dose-unidadDosisCustom" placeholder="Unidad personalizada" value="${escapeAttr(row.unidadDosisCustom || "")}" />` : ""}
             </label>
 
-            ${inputFieldWithName("Nota", "dose-notas", row.notas || "")}
+            ${inputFieldWithName("Frecuencia sugerida", "dose-frecuencia", row.frecuencia || "")}
+            ${inputFieldWithName("Duracion sugerida", "dose-duracion", row.duracion || "")}
+            ${inputFieldWithName("Observacion por especie", "dose-observaciones", row.observaciones || row.notas || "")}
           </div>
           <div class="farma-species-dose-actions">
             <button type="button" class="sv-btn sv-btn-sm sv-btn-danger" data-dose-remove="${escapeAttr(row.id)}">Eliminar</button>
@@ -1487,11 +2064,16 @@
     }
 
     const conversions = [];
-    let doseTotalValue = parsedDose.isPerKg ? weight * dose : dose;
+    let doseTotalValue = parsedDose.referenceKg ? (weight * dose) / parsedDose.referenceKg : parsedDose.isPerKg ? weight * dose : dose;
     const doseTotalUnit = parsedDose.baseUnit;
+    const stepDoseText = parsedDose.referenceKg
+      ? `${formatNum(weight)} kg x ${formatNum(dose)} ${doseUnit} / ${formatNum(parsedDose.referenceKg)} kg = ${formatNum(doseTotalValue)} ${doseTotalUnit}`
+      : parsedDose.isPerKg
+        ? `${formatNum(weight)} kg x ${formatNum(dose)} ${doseUnit} = ${formatNum(doseTotalValue)} ${doseTotalUnit}`
+        : `Dosis fija por animal: ${formatNum(dose)} ${doseUnit} = ${formatNum(doseTotalValue)} ${doseTotalUnit}`;
 
     if (doseTotalUnit.toLowerCase() === parsedConc.denominatorUnit.toLowerCase()) {
-      const stepDoseDirect = `${formatNum(weight)} kg x ${formatNum(dose)} ${doseUnit} = ${formatNum(doseTotalValue)} ${doseTotalUnit}`;
+      const stepDoseDirect = stepDoseText;
       const stepDivisionDirect = `La dosis ya esta expresada en ${parsedConc.denominatorUnit}; no se requiere dividir por concentracion.`;
       const stepFinalDirect = `${formatNum(doseTotalValue)} ${parsedConc.denominatorUnit}`;
       warnings.push("Nota educativa: la dosis esta en volumen por kg, por lo que la concentracion no modifica el resultado final.");
@@ -1525,7 +2107,7 @@
       return { ok: false, warnings };
     }
 
-    const stepDose = `${formatNum(weight)} kg x ${formatNum(dose)} ${doseUnit} = ${formatNum(doseTotalValue)} ${doseTotalUnit}`;
+    const stepDose = stepDoseText;
     const stepDivision = `${formatNum(doseTotalValue)} ${doseTotalUnit} / ${formatNum(parsedConc.valuePerDenominator)} ${parsedConc.numeratorUnit}/${parsedConc.denominatorUnit}`;
     const stepFinal = `${formatNum(finalValue)} ${parsedConc.denominatorUnit}`;
 
@@ -1550,7 +2132,7 @@
   // SUBMODULO 3: FARMACOS PERSONALIZADOS
   // ---------------------------------------------------------------------------
   function renderCustomDrugsSubmodule(panel, state) {
-    const speciesOptions = listUnique(state.customItems.map((item) => item.especie).filter(Boolean));
+    const speciesOptions = listUnique(state.customItems.flatMap((item) => getCustomSpeciesDoses(item).map((row) => row.especie).filter(Boolean)));
     const groupOptions = listUnique(state.customItems.map((item) => item.grupoKey).filter(Boolean));
 
     panel.innerHTML = `
@@ -1573,6 +2155,8 @@
 
           <button type="button" class="sv-btn sv-btn-secondary" id="farma-custom-new">Nuevo desde Calculadora Libre</button>
         </div>
+
+        ${state.customNotice ? renderSaveNotice(state.customNotice) : ""}
 
         <div class="sv-grid" id="farma-custom-list"></div>
       </div>
@@ -1597,11 +2181,49 @@
     });
 
     panel.querySelector("#farma-custom-new")?.addEventListener("click", () => {
+      state.customNotice = null;
+      resetFreeCalculatorState(state, { professional: true });
       state.activeSubmodule = "libre";
       renderSubmoduleFromPanel(panel, state);
     });
 
     listRoot?.addEventListener("click", (event) => {
+      const emptyNew = event.target.closest("[data-custom-empty-new]");
+      if (emptyNew) {
+        state.customNotice = null;
+        resetFreeCalculatorState(state, { professional: true });
+        state.activeSubmodule = "libre";
+        renderSubmoduleFromPanel(panel, state);
+        return;
+      }
+
+      const calcAction = event.target.closest("[data-custom-calc-action]");
+      if (calcAction) {
+        const item = state.customItems.find((x) => x.id === calcAction.dataset.customId);
+        if (!item) return;
+        const actionType = calcAction.dataset.customCalcAction;
+
+        if (actionType === "toggle-override") {
+          const calc = getCustomCalcState(state, item);
+          calc.overrideOpen = !calc.overrideOpen;
+          renderCustomCards(listRoot, state);
+          return;
+        }
+
+        if (actionType === "calculate") {
+          calculateCustomCardDose(state, item);
+          renderCustomCards(listRoot, state);
+          return;
+        }
+
+        if (actionType === "save-presentation") {
+          const saved = saveCustomTemporaryPresentation(state, item);
+          if (saved) persistCustom(state);
+          renderCustomCards(listRoot, state);
+          return;
+        }
+      }
+
       const action = event.target.closest("[data-custom-action]");
       if (!action) return;
       const id = action.dataset.customId;
@@ -1624,29 +2246,20 @@
       }
 
       if (act === "recipe") {
-        const payload = buildRecipePayloadFromCustom(item);
+        const calc = calculateCustomCardDose(state, item, { silent: true });
+        if (!calc.ok) {
+          renderCustomCards(listRoot, state);
+          return;
+        }
+        const payload = buildRecipePayloadFromCustom(item, calc.calcState);
         const added = addPayloadToRecipe(payload);
         if (added) {
-          appendHistoryEntry(state, {
-            farmaco: item.nombre,
-            especie: item.especie,
-            peso: parseNum(item.pesoKg),
-            dosis: parseNum(item.dosis),
-            unidadDosis: item.unidadDosis,
-            concentracion: parseNum(item.concentracion),
-            unidadConcentracion: item.unidadConcentracion,
-            dosisTotal: parseNum(item.calculo?.dosisTotal),
-            dosisTotalUnidad: item.calculo?.dosisTotalUnidad || "",
-            resultadoCalculado: `${formatNum(parseNum(item.calculo?.resultadoFinal))} ${item.calculo?.unidadFinal || ""}`,
-            tipoCalculo: item.tipoCalculo || "profesional",
-            enviadoRecetario: true,
-            guardadoPersonalizado: true,
-            contieneComponentes: (item.componentes || []).length > 0,
-            advertencias: item.advertencias || [],
-            interacciones: (item.interacciones || []).map((x) => x.text || x),
-            snapshot: item.snapshot || {}
-          });
+          if (calc.calcState.lastHistoryId) patchHistoryEntry(state, calc.calcState.lastHistoryId, { enviadoRecetario: true });
+          calc.calcState.notice = { level: "success", text: "Agregado al recetario." };
+        } else {
+          calc.calcState.notice = { level: "error", text: "No se envio al recetario." };
         }
+        renderCustomCards(listRoot, state);
         return;
       }
 
@@ -1654,6 +2267,16 @@
         if (!confirm("Eliminar este farmaco personalizado?")) return;
         state.customItems = state.customItems.filter((x) => x.id !== item.id);
         persistCustom(state);
+        renderCustomCards(listRoot, state);
+      }
+    });
+
+    listRoot?.addEventListener("input", (event) => {
+      updateCustomCalcField(state, event.target);
+    });
+
+    listRoot?.addEventListener("change", (event) => {
+      if (updateCustomCalcField(state, event.target)) {
         renderCustomCards(listRoot, state);
       }
     });
@@ -1665,7 +2288,8 @@
     const query = (state.customSearch || "").trim().toLowerCase();
     const filtered = state.customItems.filter((item) => {
       const matchQuery = !query || `${item.nombre || ""} ${item.nombreComercial || ""} ${item.funcionTerapeutica || ""}`.toLowerCase().includes(query);
-      const matchSpecies = state.customFilterSpecies === "todas" || item.especie === state.customFilterSpecies;
+      const itemSpecies = getCustomSpeciesDoses(item).map((row) => row.especie);
+      const matchSpecies = state.customFilterSpecies === "todas" || itemSpecies.includes(state.customFilterSpecies);
       const matchGroup = state.customFilterGroup === "todas" || item.grupoKey === state.customFilterGroup;
       return matchQuery && matchSpecies && matchGroup;
     }).sort((a, b) => new Date(b.updatedAt || b.createdAt || 0) - new Date(a.updatedAt || a.createdAt || 0));
@@ -1674,7 +2298,8 @@
       container.innerHTML = `
         <div class="sv-empty">
           <div class="sv-empty-icon">+</div>
-          No hay farmacos personalizados con ese criterio.
+          <p>No hay farmacos personalizados con ese criterio.</p>
+          <button class="sv-btn sv-btn-secondary" type="button" data-custom-empty-new>Crear desde Calculadora Libre</button>
         </div>
       `;
       return;
@@ -1686,9 +2311,17 @@
       const card = document.createElement("article");
       const groupLabel = state.cat?.get?.(item.grupoKey)?.label || item.grupoKey || "Sin grupo";
       const groupIcon = state.cat?.get?.(item.grupoKey)?.icon || "?";
-      const components = Array.isArray(item.componentes) ? item.componentes : [];
+      const components = normalizedComponents(item.componentes || []);
       const interactions = Array.isArray(item.interacciones) ? item.interacciones : [];
-      const speciesDoses = Array.isArray(item.speciesDoses) ? item.speciesDoses : [];
+      const speciesDoses = getCustomSpeciesDoses(item);
+      const routes = getCustomRoutes(item);
+      const presentations = getCustomPresentations(item);
+      const withdrawalItems = normalizeWithdrawalItems(item.withdrawalItems || item.tiemposRetiro || [], item.tiempoRetiro);
+      const secondaryGroups = listUnique(components.map((comp) => comp.grupoKey).filter((group) => group && group !== item.grupoKey));
+      const calcState = getCustomCalcState(state, item);
+      const componentSummary = components.length
+        ? components.map((comp) => `${comp.nombre || "Componente"} ${formatComponentConcentration(comp)}`.trim()).join(" + ")
+        : "Sin componentes activos registrados";
 
       card.className = "cat-card sv-card sv-fade-in";
       card.setAttribute("data-categoria", item.grupoKey || "default");
@@ -1705,21 +2338,22 @@
             ${state.cat ? state.cat.iconCircle(item.grupoKey || "default") : `<span>${escapeHtml(groupIcon)}</span>`}
             <div>
               <span class="sv-card-title">${escapeHtml(item.nombre || "Farmaco")}</span>
-              <span class="sv-card-subtitle">${escapeHtml(item.nombreComercial || "Sin nombre comercial")}</span>
+              <span class="sv-card-subtitle">${escapeHtml(componentSummary)}</span>
             </div>
           </div>
           ${state.cat ? state.cat.badge(item.grupoKey || "default") : `<span class="sv-badge sv-badge-gray">${escapeHtml(groupLabel)}</span>`}
         </div>
 
         <div class="sv-card-body">
-          <p><strong>Especie:</strong> ${escapeHtml(item.especie || "N/D")}</p>
-          <p><strong>Dosis:</strong> ${formatNum(item.dosis)} ${escapeHtml(item.unidadDosis || "")}</p>
-          <p><strong>Concentracion:</strong> ${formatNum(item.concentracion)} ${escapeHtml(item.unidadConcentracion || "")}</p>
-          <p><strong>Via:</strong> ${escapeHtml(item.viaAdministracion || "N/D")}</p>
+          ${item.nombreComercial ? `<p><strong>Nombre comercial:</strong> ${escapeHtml(item.nombreComercial)}</p>` : ""}
+          <p><strong>Grupo principal:</strong> ${escapeHtml(groupLabel)}</p>
+          ${secondaryGroups.length ? `<p><strong>Tambien contiene:</strong> ${secondaryGroups.map((group) => state.cat ? state.cat.badgeMini(group) : `<span class="sv-badge sv-badge-gray">${escapeHtml(group)}</span>`).join(" ")}</p>` : ""}
           <p><strong>Funcion terapeutica:</strong> ${escapeHtml(item.funcionTerapeutica || "N/D")}</p>
+          ${item.mecanismoAccion ? `<p><strong>Mecanismo:</strong> ${escapeHtml(item.mecanismoAccion)}</p>` : ""}
           <p><strong>Descripcion:</strong> ${escapeHtml(item.descripcion || item.observaciones || "N/D")}</p>
-          ${item.calculo?.resultadoFinal ? `<p><strong>Resultado final:</strong> ${formatNum(item.calculo.resultadoFinal)} ${escapeHtml(item.calculo.unidadFinal || "")}</p>` : ""}
-          ${speciesDoses.length ? `<p><strong>Dosis por especies:</strong> ${speciesDoses.length}</p>` : ""}
+          <p><strong>Vias:</strong> ${escapeHtml(routes.map(formatRouteShort).join(" / ") || "N/D")}</p>
+          <p><strong>Concentracion principal:</strong> ${escapeHtml(formatPresentation(presentations[0]))}</p>
+          <p><strong>Retiro:</strong> ${escapeHtml(formatWithdrawalSummary(withdrawalItems, item.tiempoRetiro) || "No especificado")}</p>
           <p><strong>Creado:</strong> ${escapeHtml(formatDateTime(item.createdAt))}</p>
           <p><strong>Ultima edicion:</strong> ${escapeHtml(formatDateTime(item.updatedAt || item.createdAt))}</p>
         </div>
@@ -1734,17 +2368,24 @@
           <div class="farma-mini-box">
             <strong>Componentes activos:</strong>
             <ul>
-              ${components.map((comp) => `<li>${escapeHtml(comp.nombre || "Componente")} - ${escapeHtml(comp.grupoKey || "sin grupo")}</li>`).join("")}
+              ${components.map((comp) => `<li>${escapeHtml(comp.nombre || "Componente")} - ${escapeHtml(formatComponentConcentration(comp))}${comp.grupoKey ? ` - ${escapeHtml(state.cat?.get?.(comp.grupoKey)?.label || comp.grupoKey)}` : ""}</li>`).join("")}
             </ul>
           </div>
         ` : ""}
 
         ${speciesDoses.length ? `
           <div class="farma-mini-box">
-            <strong>Otras dosis por especie:</strong>
+            <strong>Dosis disponibles:</strong>
             <ul>
-              ${speciesDoses.map((row) => `<li>${escapeHtml(row.especie || "Especie")} - ${formatNum(row.dosis)} ${escapeHtml(row.unidadDosis || "")}${row.notas ? ` (${escapeHtml(row.notas)})` : ""}</li>`).join("")}
+              ${speciesDoses.map((row) => `<li>${escapeHtml(speciesDoseLabel(row))}</li>`).join("")}
             </ul>
+          </div>
+        ` : ""}
+
+        ${presentations.length > 1 ? `
+          <div class="farma-mini-box">
+            <strong>Presentaciones:</strong>
+            <ul>${presentations.map((row) => `<li>${escapeHtml(formatPresentation(row))}</li>`).join("")}</ul>
           </div>
         ` : ""}
 
@@ -1757,9 +2398,11 @@
           </div>
         ` : ""}
 
+        ${renderCustomCalculatorPanel(item, state, calcState, speciesDoses, routes, presentations)}
+
         <div class="sv-card-footer farma-custom-actions">
           <button class="sv-btn sv-btn-sm sv-btn-secondary" type="button" data-custom-action="reuse" data-custom-id="${escapeAttr(item.id)}">Reutilizar</button>
-          <button class="sv-btn sv-btn-sm sv-btn-secondary" type="button" data-custom-action="edit" data-custom-id="${escapeAttr(item.id)}">Editar</button>
+          <button class="sv-btn sv-btn-sm sv-btn-secondary" type="button" data-custom-action="edit" data-custom-id="${escapeAttr(item.id)}">Editar ficha</button>
           <button class="sv-btn sv-btn-sm sv-btn-primary" type="button" data-custom-action="recipe" data-custom-id="${escapeAttr(item.id)}">Agregar al recetario</button>
           <button class="sv-btn sv-btn-sm sv-btn-danger" type="button" data-custom-action="delete" data-custom-id="${escapeAttr(item.id)}">Eliminar</button>
         </div>
@@ -1769,6 +2412,410 @@
       container.appendChild(card);
     });
   }
+
+  function renderCustomCalculatorPanel(item, state, calcState, speciesDoses, routes, presentations) {
+    const selectedSpeciesIndex = clampIndex(calcState.speciesIndex, speciesDoses.length);
+    const selectedPresentationIndex = clampIndex(calcState.presentationIndex, presentations.length);
+    const selectedRoute = calcState.route || routes[0] || "";
+    const selectedPresentation = presentations[selectedPresentationIndex] || presentations[0] || null;
+    const result = calcState.result;
+    const notice = calcState.notice;
+    const tempUnit = calcState.tempUnit || selectedPresentation?.unidadConcentracion || item.unidadConcentracion || "mg/mL";
+    const tempUnitOptions = FREE_CONC_UNIT_OPTIONS.map((opt) =>
+      `<option value="${escapeAttr(opt)}" ${tempUnit === opt ? "selected" : ""}>${escapeHtml(opt)}</option>`
+    ).join("");
+
+    return `
+      <section class="farma-custom-calc" data-custom-calc-id="${escapeAttr(item.id)}">
+        <div class="farma-custom-calc-header">
+          <strong>Calculo rapido desde ficha</strong>
+          <span>Selecciona especie+dosis, via y peso.</span>
+        </div>
+
+        <div class="farma-custom-calc-grid">
+          <label class="farma-field">
+            <span>Especie + dosis</span>
+            <select class="sv-select" name="custom-species-dose">
+              ${speciesDoses.map((row, index) => `<option value="${index}" ${selectedSpeciesIndex === index ? "selected" : ""}>${escapeHtml(speciesDoseLabel(row))}</option>`).join("")}
+            </select>
+          </label>
+
+          <label class="farma-field">
+            <span>Via</span>
+            <select class="sv-select" name="custom-route">
+              ${routes.map((route) => `<option value="${escapeAttr(route)}" ${selectedRoute === route ? "selected" : ""}>${escapeHtml(formatRouteFull(route))}</option>`).join("")}
+            </select>
+          </label>
+
+          <label class="farma-field">
+            <span>Peso (kg)</span>
+            <input type="number" class="sv-input" name="custom-weight" min="0" step="0.01" value="${escapeAttr(calcState.weight || "")}" />
+          </label>
+
+          <label class="farma-field">
+            <span>Presentacion guardada</span>
+            <select class="sv-select" name="custom-presentation">
+              ${presentations.map((row, index) => `<option value="${index}" ${selectedPresentationIndex === index ? "selected" : ""}>${escapeHtml(formatPresentation(row))}</option>`).join("")}
+            </select>
+          </label>
+        </div>
+
+        <div class="farma-saved-concentration">
+          <span>Concentracion guardada del producto</span>
+          <strong>${escapeHtml(formatPresentation(selectedPresentation))}</strong>
+          <button class="sv-btn sv-btn-sm sv-btn-ghost" type="button" data-custom-calc-action="toggle-override" data-custom-id="${escapeAttr(item.id)}">
+            ${calcState.overrideOpen ? "Ocultar otra presentacion" : "Usar otra presentacion"}
+          </button>
+        </div>
+
+        ${calcState.overrideOpen ? `
+          <div class="farma-temp-presentation">
+            ${numberFieldWithName("Concentracion temporal", "custom-temp-concentration", calcState.tempConcentration || "", "0", "any")}
+            <label class="farma-field">
+              <span>Unidad temporal</span>
+              <select class="sv-select" name="custom-temp-unit">
+                ${tempUnitOptions}
+              </select>
+              ${tempUnit === "Otro" ? `<input class="sv-input" name="custom-temp-unit-custom" placeholder="Unidad personalizada" value="${escapeAttr(calcState.tempUnitCustom || "")}" />` : ""}
+            </label>
+            ${inputFieldWithName("Nombre si se guarda", "custom-temp-name", calcState.tempName || "")}
+            <div class="farma-temp-actions">
+              <span>Modificar solo para este calculo no altera la ficha original.</span>
+              <button class="sv-btn sv-btn-sm sv-btn-secondary" type="button" data-custom-calc-action="save-presentation" data-custom-id="${escapeAttr(item.id)}">Guardar como nueva presentacion</button>
+            </div>
+          </div>
+        ` : ""}
+
+        ${notice ? `<div class="farma-custom-calc-notice ${escapeAttr(notice.level || "info")}">${escapeHtml(notice.text || "")}</div>` : ""}
+
+        ${result && result.ok ? `
+          <div class="farma-custom-calc-result">
+            <span>Dosis total: <strong>${formatNum(result.doseTotalValue)} ${escapeHtml(result.doseTotalUnit)}</strong></span>
+            <span>Administrar: <strong>${formatNum(result.finalValue)} ${escapeHtml(result.finalUnit)}</strong></span>
+          </div>
+        ` : ""}
+
+        <div class="farma-custom-calc-actions">
+          <button class="sv-btn sv-btn-sm sv-btn-primary" type="button" data-custom-calc-action="calculate" data-custom-id="${escapeAttr(item.id)}">Calcular</button>
+        </div>
+      </section>
+    `;
+  }
+
+  function getCustomCalcState(state, item) {
+    state.customCalcForms = state.customCalcForms || {};
+    const id = item.id;
+    const speciesDoses = getCustomSpeciesDoses(item);
+    const routes = getCustomRoutes(item);
+    const presentations = getCustomPresentations(item);
+    const current = state.customCalcForms[id] || {};
+    const selectedPresentation = presentations[clampIndex(current.presentationIndex, presentations.length)] || presentations[0] || {};
+    const next = {
+      speciesIndex: clampIndex(current.speciesIndex, speciesDoses.length),
+      route: current.route || routes[0] || "",
+      weight: current.weight != null ? String(current.weight) : (item.pesoKg ? String(item.pesoKg) : ""),
+      presentationIndex: clampIndex(current.presentationIndex, presentations.length),
+      overrideOpen: Boolean(current.overrideOpen),
+      tempConcentration: current.tempConcentration || "",
+      tempUnit: current.tempUnit || selectedPresentation.unidadConcentracion || item.unidadConcentracion || "mg/mL",
+      tempUnitCustom: current.tempUnitCustom || "",
+      tempName: current.tempName || "",
+      result: current.result || null,
+      notice: current.notice || null,
+      lastHistoryId: current.lastHistoryId || ""
+    };
+    state.customCalcForms[id] = next;
+    return next;
+  }
+
+  function updateCustomCalcField(state, target) {
+    const root = target.closest?.("[data-custom-calc-id]");
+    if (!root) return false;
+    const item = state.customItems.find((x) => x.id === root.dataset.customCalcId);
+    if (!item) return false;
+    const calc = getCustomCalcState(state, item);
+    const name = target.name || "";
+    let rerender = false;
+
+    if (name === "custom-species-dose") {
+      calc.speciesIndex = parseNum(target.value);
+      calc.result = null;
+      rerender = true;
+    }
+    if (name === "custom-route") {
+      calc.route = target.value;
+      calc.result = null;
+    }
+    if (name === "custom-weight") {
+      calc.weight = target.value;
+      calc.result = null;
+    }
+    if (name === "custom-presentation") {
+      calc.presentationIndex = parseNum(target.value);
+      calc.result = null;
+      rerender = true;
+    }
+    if (name === "custom-temp-concentration") {
+      calc.tempConcentration = target.value;
+      calc.result = null;
+    }
+    if (name === "custom-temp-unit") {
+      calc.tempUnit = target.value;
+      calc.tempUnitCustom = target.value === "Otro" ? calc.tempUnitCustom : "";
+      calc.result = null;
+      rerender = true;
+    }
+    if (name === "custom-temp-unit-custom") {
+      calc.tempUnitCustom = target.value;
+      calc.result = null;
+    }
+    if (name === "custom-temp-name") {
+      calc.tempName = target.value;
+    }
+
+    calc.notice = null;
+    return rerender;
+  }
+
+  function calculateCustomCardDose(state, item, opts = {}) {
+    const calcState = getCustomCalcState(state, item);
+    const speciesDoses = getCustomSpeciesDoses(item);
+    const presentations = getCustomPresentations(item);
+    const doseRow = speciesDoses[clampIndex(calcState.speciesIndex, speciesDoses.length)];
+    const presentation = presentations[clampIndex(calcState.presentationIndex, presentations.length)] || presentations[0];
+    const overrideConc = parseNum(calcState.tempConcentration);
+    const useOverride = calcState.overrideOpen && overrideConc > 0;
+    const concentration = useOverride ? overrideConc : parseNum(presentation?.concentracion);
+    const concentrationUnit = useOverride
+      ? resolveUnit(calcState.tempUnit, calcState.tempUnitCustom)
+      : String(presentation?.unidadConcentracion || item.unidadConcentracion || "").trim();
+
+    const form = {
+      nombre: item.nombre || "",
+      especie: doseRow?.especie || item.especie || "",
+      viaAdministracion: calcState.route || getCustomRoutes(item)[0] || "",
+      pesoKg: calcState.weight,
+      dosis: doseRow?.dosis,
+      unidadDosis: doseRow?.unidadDosis || item.unidadDosis,
+      unidadDosisCustom: "",
+      concentracion: concentration,
+      unidadConcentracion: concentrationUnit,
+      unidadConcentracionCustom: ""
+    };
+
+    const result = calculateFreeDose(form);
+    calcState.result = result;
+    if (!result.ok) {
+      calcState.notice = {
+        level: "warning",
+        text: "No se pudo calcular. Revisa especie+dosis, peso, concentracion y unidad."
+      };
+      return { ok: false, calcState, result };
+    }
+
+    const presentationName = useOverride
+      ? (calcState.tempName || "Presentacion temporal")
+      : (presentation?.nombre || "Presentacion guardada");
+    const historyId = appendHistoryEntry(state, {
+      farmaco: item.nombre,
+      especie: form.especie,
+      peso: parseNum(form.pesoKg),
+      dosis: parseNum(form.dosis),
+      unidadDosis: form.unidadDosis,
+      viaAdministracion: form.viaAdministracion,
+      concentracion: concentration,
+      unidadConcentracion: concentrationUnit,
+      presentacion: presentationName,
+      concentracionModificada: useOverride,
+      dosisTotal: result.doseTotalValue,
+      dosisTotalUnidad: result.doseTotalUnit,
+      resultadoCalculado: `${formatNum(result.finalValue)} ${result.finalUnit}`,
+      tipoCalculo: "profesional",
+      origen: "Farmaco personalizado",
+      enviadoRecetario: false,
+      guardadoPersonalizado: true,
+      contieneComponentes: (item.componentes || []).length > 0,
+      advertencias: item.advertencias || [],
+      interacciones: (item.interacciones || []).map((x) => x.text || x),
+      snapshot: buildCustomCalcSnapshot(item, form, result, presentationName, useOverride)
+    }, { dedupeMs: opts.silent ? 2500 : 0 });
+
+    calcState.lastHistoryId = historyId;
+    calcState.notice = opts.silent ? null : { level: "success", text: "Calculo guardado en historial." };
+    return { ok: true, calcState, result };
+  }
+
+  function saveCustomTemporaryPresentation(state, item) {
+    const calc = getCustomCalcState(state, item);
+    const concentration = parseNum(calc.tempConcentration);
+    const unit = resolveUnit(calc.tempUnit, calc.tempUnitCustom);
+    if (!(concentration > 0) || !unit) {
+      calc.notice = { level: "warning", text: "Completa concentracion y unidad para guardar la presentacion." };
+      return false;
+    }
+    if (typeof confirm === "function" && !confirm("Guardar esta concentracion como nueva presentacion de la ficha?")) {
+      calc.notice = { level: "warning", text: "No se guardo la presentacion." };
+      return false;
+    }
+
+    const nextPresentation = {
+      id: createId("presentation"),
+      nombre: calc.tempName || "Nueva presentacion",
+      concentracion: concentration,
+      unidadConcentracion: unit,
+      notas: "Agregada desde tarjeta personalizada",
+      principal: false
+    };
+
+    state.customItems = state.customItems.map((current) => {
+      if (current.id !== item.id) return current;
+      const presentations = getCustomPresentations(current).concat(nextPresentation);
+      return {
+        ...current,
+        presentations: normalizedPresentations(presentations),
+        updatedAt: new Date().toISOString()
+      };
+    });
+
+    calc.presentationIndex = getCustomPresentations({ ...item, presentations: getCustomPresentations(item).concat(nextPresentation) }).length - 1;
+    calc.overrideOpen = false;
+    calc.tempConcentration = "";
+    calc.tempUnitCustom = "";
+    calc.tempName = "";
+    calc.notice = { level: "success", text: "Nueva presentacion guardada en la ficha." };
+    return true;
+  }
+
+  function buildCustomCalcSnapshot(item, form, result, presentationName, modified) {
+    return {
+      source: "farmaco_personalizado",
+      customId: item.id,
+      form: {
+        nombre: form.nombre,
+        especie: form.especie,
+        viaAdministracion: form.viaAdministracion,
+        pesoKg: parseNum(form.pesoKg),
+        dosis: parseNum(form.dosis),
+        unidadDosis: form.unidadDosis,
+        concentracion: parseNum(form.concentracion),
+        unidadConcentracion: form.unidadConcentracion
+      },
+      advanced: {
+        nombreComercial: item.nombreComercial || "",
+        laboratorio: item.laboratorio || "",
+        grupoKey: item.grupoKey || "",
+        funcionTerapeutica: item.funcionTerapeutica || "",
+        mecanismoAccion: item.mecanismoAccion || "",
+        descripcion: item.descripcion || "",
+        viaAdministracion: form.viaAdministracion || "",
+        routes: getCustomRoutes(item),
+        speciesDoses: getCustomSpeciesDoses(item),
+        presentations: getCustomPresentations(item),
+        withdrawalItems: normalizeWithdrawalItems(item.withdrawalItems || item.tiemposRetiro || [], item.tiempoRetiro),
+        frecuencia: item.frecuencia || "",
+        duracion: item.duracion || "",
+        observaciones: item.observaciones || "",
+        tiempoRetiro: item.tiempoRetiro || "",
+        presentacionUsada: presentationName,
+        concentracionModificada: Boolean(modified)
+      },
+      components: normalizedComponents(item.componentes || []),
+      result: {
+        doseTotalValue: result.doseTotalValue,
+        doseTotalUnit: result.doseTotalUnit,
+        finalValue: result.finalValue,
+        finalUnit: result.finalUnit
+      }
+    };
+  }
+
+  function getCustomSpeciesDoses(item) {
+    const rows = Array.isArray(item.speciesDoses) ? item.speciesDoses : [];
+    const fallback = {
+      especie: item.especie || "",
+      dosis: item.dosis,
+      unidadDosis: item.unidadDosis || "",
+      frecuencia: item.frecuencia || "",
+      duracion: item.duracion || "",
+      observaciones: item.observaciones || ""
+    };
+    return dedupeSpeciesDoses([fallback, ...rows]);
+  }
+
+  function getCustomRoutes(item) {
+    return normalizedRoutes([
+      item.viaAdministracion,
+      ...(Array.isArray(item.vias) ? item.vias : []),
+      ...(Array.isArray(item.routes) ? item.routes : [])
+    ]);
+  }
+
+  function getCustomPresentations(item) {
+    const main = {
+      id: "main",
+      nombre: "Presentacion principal",
+      concentracion: item.concentracion,
+      unidadConcentracion: item.unidadConcentracion,
+      notas: ""
+    };
+    return normalizedPresentations(item.presentations || item.presentaciones || [], main);
+  }
+
+  function speciesDoseLabel(row) {
+    const species = String(row?.especie || "Especie").trim();
+    const dose = Number(row?.dosis) > 0 ? formatNum(row.dosis) : "N/D";
+    const unit = String(row?.unidadDosis || "").trim();
+    const freq = String(row?.frecuencia || "").trim();
+    const dur = String(row?.duracion || "").trim();
+    const note = String(row?.observaciones || row?.notas || "").trim();
+    return [`${species} - ${dose} ${unit}`.trim(), freq, dur, note].filter(Boolean).join(" | ");
+  }
+
+  function formatRouteShort(route) {
+    const value = String(route || "").trim();
+    const found = ROUTE_OPTIONS.find((item) => item.value === value);
+    return found ? found.value : value;
+  }
+
+  function formatRouteFull(route) {
+    const value = String(route || "").trim();
+    const found = ROUTE_OPTIONS.find((item) => item.value === value);
+    return found ? found.label.replace("(", "- ").replace(")", "") : value;
+  }
+
+  function formatPresentation(row) {
+    if (!row) return "N/D";
+    const name = String(row.nombre || "Presentacion").trim();
+    const concentration = Number(row.concentracion) > 0
+      ? `${formatNum(row.concentracion)} ${row.unidadConcentracion || ""}`.trim()
+      : "sin concentracion";
+    return `${name}: ${concentration}`;
+  }
+
+  function formatComponentConcentration(comp) {
+    const value = Number(comp?.concentracion);
+    const unit = String(comp?.unidadConcentracion || "").trim();
+    if (!Number.isFinite(value) || value <= 0 || !unit) return "";
+    const equivalence = concentrationEquivalence(value, unit);
+    return equivalence ? `${formatNum(value)} ${unit} (${equivalence})` : `${formatNum(value)} ${unit}`;
+  }
+
+  function concentrationEquivalence(value, unit) {
+    const normalized = String(unit || "").replace(/\s+/g, "").toLowerCase();
+    if (normalized === "%") return `${formatNum(Number(value) * 10)} mg/mL`;
+    if (normalized === "g/100ml") return `${formatNum(Number(value) * 10)} mg/mL`;
+    return "";
+  }
+
+  function clampIndex(index, length) {
+    const size = Number(length) || 0;
+    if (size <= 0) return 0;
+    const n = Number(index);
+    if (!Number.isFinite(n) || n < 0) return 0;
+    if (n >= size) return size - 1;
+    return Math.floor(n);
+  }
+
 
   function loadCustomIntoCalculator(state, item, editingMode) {
     state.freeForm = {
@@ -1789,6 +2836,7 @@
       laboratorio: item.laboratorio || "",
       grupoKey: item.grupoKey || "",
       funcionTerapeutica: item.funcionTerapeutica || "",
+      mecanismoAccion: item.mecanismoAccion || "",
       descripcion: item.descripcion || "",
       viaAdministracion: item.viaAdministracion || "",
       frecuencia: item.frecuencia || "",
@@ -1806,8 +2854,34 @@
         dosis: row.dosis != null ? String(row.dosis) : "",
         unidadDosis: normalizeFreeUnit(row.unidadDosis, FREE_DOSE_UNIT_OPTIONS),
         unidadDosisCustom: needsCustomUnit(row.unidadDosis, FREE_DOSE_UNIT_OPTIONS) ? row.unidadDosis : "",
+        frecuencia: row.frecuencia || "",
+        duracion: row.duracion || "",
+        observaciones: row.observaciones || row.notas || "",
         notas: row.notas || ""
       })),
+      routes: (item.vias || item.routes || []).map((row) => ({
+        id: createId("route"),
+        via: typeof row === "string" ? row : (row.via || row.value || ""),
+        notas: typeof row === "string" ? "" : (row.notas || "")
+      })),
+      presentations: (item.presentations || item.presentaciones || [])
+        .filter((row) => String(row.id || "") !== "main")
+        .map((row) => ({
+          id: createId("presentation"),
+          nombre: row.nombre || row.name || "",
+          concentracion: row.concentracion != null ? String(row.concentracion) : "",
+          unidadConcentracion: normalizeFreeUnit(row.unidadConcentracion || row.unit, FREE_CONC_UNIT_OPTIONS),
+          unidadConcentracionCustom: needsCustomUnit(row.unidadConcentracion || row.unit, FREE_CONC_UNIT_OPTIONS) ? (row.unidadConcentracion || row.unit || "") : "",
+          notas: row.notas || ""
+        })),
+      withdrawalItems: normalizeWithdrawalItems(item.withdrawalItems || item.tiemposRetiro || [], item.tiempoRetiro)
+        .map((row) => ({
+          id: createId("withdrawal"),
+          tipo: row.tipo || "General",
+          estado: row.estado || "no_especificado",
+          dias: row.dias != null ? String(row.dias) : "",
+          notas: row.notas || ""
+        })),
       productImage: item.productImage || "",
       productImageSource: item.productImageSource || (item.productImage ? "url" : ""),
       productImageName: item.productImageName || ""
@@ -1833,6 +2907,8 @@
     state.freeResult = null;
     state.freeAlerts = [];
     state.freeSaveMissing = [];
+    state.freeSaveNotice = null;
+    state.freePendingDuplicate = null;
     state.freeProcedureVisible = false;
     state.editingPersonalizedId = editingMode ? item.id : "";
   }
@@ -1906,6 +2982,14 @@
     });
 
     listRoot?.addEventListener("click", (event) => {
+      const emptyNew = event.target.closest("[data-history-empty-new]");
+      if (emptyNew) {
+        resetFreeCalculatorState(state);
+        state.activeSubmodule = "libre";
+        renderSubmoduleFromPanel(panel, state);
+        return;
+      }
+
       const action = event.target.closest("[data-history-action]");
       if (!action) return;
       const id = action.dataset.historyId;
@@ -1986,7 +3070,8 @@
       container.innerHTML = `
         <div class="sv-empty">
           <div class="sv-empty-icon">+</div>
-          Aun no hay calculos registrados en historial.
+          <p>Aun no hay calculos registrados en historial.</p>
+          <button class="sv-btn sv-btn-secondary" type="button" data-history-empty-new>Ir a Calculadora Libre</button>
         </div>
       `;
       return;
@@ -2013,8 +3098,11 @@
           <div class="sv-card-body">
             <p><strong>Peso:</strong> ${formatNum(entry.peso)} kg</p>
             <p><strong>Dosis:</strong> ${formatNum(entry.dosis)} ${escapeHtml(entry.unidadDosis || "")}</p>
+            <p><strong>Via:</strong> ${escapeHtml(formatRouteFull(entry.viaAdministracion || entry.snapshot?.form?.viaAdministracion || "" ) || "N/D")}</p>
             <p><strong>Concentracion:</strong> ${formatNum(entry.concentracion)} ${escapeHtml(entry.unidadConcentracion || "")}</p>
+            ${entry.presentacion ? `<p><strong>Presentacion:</strong> ${escapeHtml(entry.presentacion)}${entry.concentracionModificada ? " (modificada solo para este calculo)" : ""}</p>` : ""}
             <p><strong>Resultado:</strong> ${escapeHtml(entry.resultadoCalculado || "N/D")}</p>
+            <p><strong>Origen:</strong> ${escapeHtml(entry.origen || "Calculadora Libre")}</p>
             ${entry.contieneComponentes ? `<p><strong>Componentes:</strong> Si</p>` : ""}
           </div>
 
@@ -2073,8 +3161,32 @@
         dosis: row.dosis != null ? String(row.dosis) : "",
         unidadDosis: normalizeFreeUnit(row.unidadDosis, FREE_DOSE_UNIT_OPTIONS),
         unidadDosisCustom: needsCustomUnit(row.unidadDosis, FREE_DOSE_UNIT_OPTIONS) ? row.unidadDosis : "",
+        frecuencia: row.frecuencia || "",
+        duracion: row.duracion || "",
+        observaciones: row.observaciones || row.notas || "",
         notas: row.notas || ""
       })),
+      routes: (advanced.routes || advanced.vias || []).map((row) => ({
+        id: createId("route"),
+        via: typeof row === "string" ? row : (row.via || row.value || ""),
+        notas: typeof row === "string" ? "" : (row.notas || "")
+      })),
+      presentations: (advanced.presentations || advanced.presentaciones || []).map((row) => ({
+        id: createId("presentation"),
+        nombre: row.nombre || row.name || "",
+        concentracion: row.concentracion != null ? String(row.concentracion) : "",
+        unidadConcentracion: normalizeFreeUnit(row.unidadConcentracion || row.unit, FREE_CONC_UNIT_OPTIONS),
+        unidadConcentracionCustom: needsCustomUnit(row.unidadConcentracion || row.unit, FREE_CONC_UNIT_OPTIONS) ? (row.unidadConcentracion || row.unit || "") : "",
+        notas: row.notas || ""
+      })),
+      withdrawalItems: normalizeWithdrawalItems(advanced.withdrawalItems || advanced.tiemposRetiro || [], advanced.tiempoRetiro)
+        .map((row) => ({
+          id: createId("withdrawal"),
+          tipo: row.tipo || "General",
+          estado: row.estado || "no_especificado",
+          dias: row.dias != null ? String(row.dias) : "",
+          notas: row.notas || ""
+        })),
       productImage: advanced.productImage || "",
       productImageSource: advanced.productImageSource || (advanced.productImage ? "url" : ""),
       productImageName: advanced.productImageName || ""
@@ -2100,6 +3212,8 @@
     state.freeResult = null;
     state.freeAlerts = [];
     state.freeSaveMissing = [];
+    state.freeSaveNotice = null;
+    state.freePendingDuplicate = null;
     state.freeProcedureVisible = false;
     state.editingPersonalizedId = "";
   }
@@ -2109,20 +3223,43 @@
     const form = snapshot.form || {};
     const advanced = snapshot.advanced || {};
     const components = normalizedComponents(snapshot.components || []);
+    const speciesDoses = dedupeSpeciesDoses([
+      {
+        especie: form.especie || entry.especie || "",
+        dosis: form.dosis != null ? form.dosis : entry.dosis,
+        unidadDosis: form.unidadDosis || entry.unidadDosis || "",
+        frecuencia: advanced.frecuencia || "",
+        duracion: advanced.duracion || "",
+        observaciones: advanced.observaciones || ""
+      },
+      ...(advanced.speciesDoses || [])
+    ]);
+    const routes = normalizedRoutes([entry.viaAdministracion, advanced.viaAdministracion, form.viaAdministracion, ...(advanced.routes || advanced.vias || [])]);
+    const presentations = normalizedPresentations(advanced.presentations || advanced.presentaciones || [], {
+      id: "main",
+      nombre: entry.presentacion || "Presentacion principal",
+      concentracion: form.concentracion != null ? form.concentracion : entry.concentracion,
+      unidadConcentracion: form.unidadConcentracion || entry.unidadConcentracion || "",
+      notas: entry.concentracionModificada ? "Concentracion modificada en el calculo original" : ""
+    });
+    const withdrawalItems = normalizeWithdrawalItems(advanced.withdrawalItems || advanced.tiemposRetiro || [], advanced.tiempoRetiro || "");
 
     const toSave = {
       nombre: form.nombre || entry.farmaco || "",
-      especie: form.especie || entry.especie || "",
-      dosis: parseNum(form.dosis != null ? form.dosis : entry.dosis),
-      unidadDosis: form.unidadDosis || entry.unidadDosis || "",
-      concentracion: parseNum(form.concentracion != null ? form.concentracion : entry.concentracion),
-      unidadConcentracion: form.unidadConcentracion || entry.unidadConcentracion || "",
-      grupoKey: advanced.grupoKey || "default",
-      viaAdministracion: advanced.viaAdministracion || form.viaAdministracion || "Dato pendiente",
-      funcionTerapeutica: advanced.funcionTerapeutica || "Dato pendiente",
-      descripcion: advanced.descripcion || advanced.observaciones || "Dato pendiente",
-      componentes,
-      speciesDoses: normalizedSpeciesDoses(advanced.speciesDoses || []),
+      especie: speciesDoses[0]?.especie || form.especie || entry.especie || "",
+      dosis: speciesDoses[0]?.dosis || parseNum(form.dosis != null ? form.dosis : entry.dosis),
+      unidadDosis: speciesDoses[0]?.unidadDosis || form.unidadDosis || entry.unidadDosis || "",
+      concentracion: presentations[0]?.concentracion || parseNum(form.concentracion != null ? form.concentracion : entry.concentracion),
+      unidadConcentracion: presentations[0]?.unidadConcentracion || form.unidadConcentracion || entry.unidadConcentracion || "",
+      grupoKey: advanced.grupoKey || "",
+      viaAdministracion: routes[0] || advanced.viaAdministracion || form.viaAdministracion || "",
+      routes,
+      funcionTerapeutica: advanced.funcionTerapeutica || "",
+      descripcion: advanced.descripcion || advanced.observaciones || "",
+      componentes: components,
+      speciesDoses,
+      presentations,
+      withdrawalItems,
       productImage: advanced.productImage || "",
       productImageSource: advanced.productImageSource || "",
       productImageName: advanced.productImageName || ""
@@ -2146,7 +3283,9 @@
       unidadConcentracion: toSave.unidadConcentracion,
       grupoKey: toSave.grupoKey,
       viaAdministracion: toSave.viaAdministracion,
+      vias: routes,
       funcionTerapeutica: toSave.funcionTerapeutica,
+      mecanismoAccion: advanced.mecanismoAccion || "",
       descripcion: toSave.descripcion,
       nombreComercial: advanced.nombreComercial || "",
       laboratorio: advanced.laboratorio || "",
@@ -2155,14 +3294,17 @@
       contraindicaciones: advanced.contraindicaciones || "",
       precauciones: advanced.precauciones || "",
       efectosAdversos: advanced.efectosAdversos || "",
-      tiempoRetiro: advanced.tiempoRetiro || "",
+      tiempoRetiro: formatWithdrawalSummary(withdrawalItems, advanced.tiempoRetiro || ""),
+      withdrawalItems,
+      tiemposRetiro: withdrawalItems,
       observaciones: advanced.observaciones || "",
       bibliografia: advanced.bibliografia || "",
       interactionMode: advanced.interactionMode || "auto",
       interacciones: (entry.interacciones || []).map((text) => ({ level: "precaucion", title: "Interaccion", text })),
       advertencias: entry.advertencias || [],
-      componentes,
+      componentes: components,
       speciesDoses: toSave.speciesDoses,
+      presentations,
       productImage: toSave.productImage,
       productImageSource: toSave.productImageSource,
       productImageName: toSave.productImageName,
@@ -2209,12 +3351,16 @@
       peso: parseNum(entry.peso),
       dosis: parseNum(entry.dosis),
       unidadDosis: entry.unidadDosis || "",
+      viaAdministracion: entry.viaAdministracion || "",
       concentracion: parseNum(entry.concentracion),
       unidadConcentracion: entry.unidadConcentracion || "",
+      presentacion: entry.presentacion || "",
+      concentracionModificada: Boolean(entry.concentracionModificada),
       dosisTotal: parseNum(entry.dosisTotal),
       dosisTotalUnidad: entry.dosisTotalUnidad || "",
       resultadoCalculado: entry.resultadoCalculado || "",
       tipoCalculo: entry.tipoCalculo || "simple",
+      origen: entry.origen || "Calculadora Libre",
       enviadoRecetario: Boolean(entry.enviadoRecetario),
       guardadoPersonalizado: Boolean(entry.guardadoPersonalizado),
       contieneComponentes: Boolean(entry.contieneComponentes),
@@ -2272,8 +3418,11 @@
       return false;
     }
 
+    const prepared = prepareRecipePayload(payload);
+    if (!prepared.ok) return false;
+
     try {
-      return Boolean(recetario.agregarItemExtendido(payload));
+      return Boolean(recetario.agregarItemExtendido(prepared.payload));
     } catch (error) {
       console.warn("[Farma] Error al enviar al recetario:", error);
       toast("No se pudo agregar al recetario. Revisa los datos e intenta nuevamente.");
@@ -2281,27 +3430,88 @@
     }
   }
 
-  function saveFreeAsCustomDrug(state) {
+  function prepareRecipePayload(payload) {
+    const base = { ...(payload || {}) };
+    const missing = [];
+    if (!String(base.nombre || base.farmaco || "").trim()) missing.push("nombre del farmaco");
+    if (!String(base.especie || "").trim()) missing.push("especie");
+    if (!String(base.viaAdministracion || base.via || "").trim()) missing.push("via");
+    if (!(Number(base.resultadoFinal) > 0) && !String(base.dosisTexto || "").trim()) missing.push("resultado calculado");
+
+    if (missing.length && typeof window.confirm === "function") {
+      const proceed = window.confirm(`El recetario recibira datos incompletos: ${missing.join(", ")}. Deseas continuar?`);
+      if (!proceed) return { ok: false, reason: "missing" };
+    }
+
+    const suggested = buildClinicalInstruction(base);
+    let edited = suggested;
+    if (typeof window.prompt === "function") {
+      const preview = buildRecipePreviewText(base, missing);
+      const answer = window.prompt(preview, suggested);
+      if (answer === null) return { ok: false, reason: "cancelled" };
+      edited = String(answer || "").trim() || suggested;
+    }
+
+    return {
+      ok: true,
+      payload: {
+        ...base,
+        indicaciones: edited || base.indicaciones || "",
+        observaciones: [base.observaciones, base.indicacionOriginal && base.indicacionOriginal !== edited ? `Indicacion base: ${base.indicacionOriginal}` : ""]
+          .filter(Boolean)
+          .join(" | ")
+      }
+    };
+  }
+
+  function buildClinicalInstruction(payload) {
+    const result = Number(payload.resultadoFinal);
+    const unit = String(payload.unidadFinal || "").trim();
+    const route = String(payload.viaAdministracion || payload.via || "").trim();
+    const frequency = String(payload.frecuencia || "").trim();
+    const duration = String(payload.duracion || "").trim();
+    const amount = Number.isFinite(result) && result > 0 ? `${formatNum(result)} ${unit}`.trim() : String(payload.dosisTexto || "").trim();
+    if (!amount) return String(payload.indicaciones || "").trim();
+    return [
+      `Administrar ${amount}`,
+      route ? `por via ${route}` : "",
+      frequency ? frequency : "",
+      duration ? `durante ${duration}` : ""
+    ].filter(Boolean).join(" ").replace(/\s+/g, " ").trim() + ".";
+  }
+
+  function buildRecipePreviewText(payload, missing = []) {
+    const lines = [
+      "Previsualizacion para recetario",
+      "",
+      `Producto: ${payload.nombre || payload.farmaco || "N/D"}`,
+      payload.nombreComercial ? `Comercial: ${payload.nombreComercial}` : "",
+      `Especie: ${payload.especie || "N/D"}`,
+      Number(payload.pesoKg) > 0 ? `Peso: ${formatNum(payload.pesoKg)} kg` : "",
+      Number(payload.dosis) > 0 ? `Dosis: ${formatNum(payload.dosis)} ${payload.unidadDosis || ""}` : "",
+      Number(payload.resultadoFinal) > 0 ? `Resultado: ${formatNum(payload.resultadoFinal)} ${payload.unidadFinal || ""}` : "",
+      `Via: ${payload.viaAdministracion || payload.via || "N/D"}`,
+      payload.tiempoRetiro ? `Retiro: ${payload.tiempoRetiro}` : "",
+      missing.length ? `Pendiente: ${missing.join(", ")}` : "",
+      "",
+      "Edita la indicacion clinica sugerida:"
+    ].filter((line) => line !== "");
+    return lines.join("\n");
+  }
+
+  function saveFreeAsCustomDrug(state, opts = {}) {
     const result = calculateFreeDose(state.freeForm);
     const form = state.freeForm;
     const advanced = state.freeAdvanced;
     const components = normalizedComponents(state.freeComponents);
-    const speciesDoses = normalizedSpeciesDoses(advanced.speciesDoses || []);
+    const speciesDoses = getEffectiveSpeciesDoses(state);
+    const routes = getEffectiveRoutesFromState(state);
+    const presentations = getEffectivePresentations(state);
+    const withdrawalItems = getEffectiveWithdrawalItems(state);
+    const data = getCustomSaveDraft(state);
 
-    const data = {
-      nombre: form.nombre,
-      especie: form.especie,
-      dosis: parseNum(form.dosis),
-      unidadDosis: resolveUnit(form.unidadDosis, form.unidadDosisCustom),
-      concentracion: parseNum(form.concentracion),
-      unidadConcentracion: resolveUnit(form.unidadConcentracion, form.unidadConcentracionCustom),
-      grupoKey: advanced.grupoKey || "default",
-      viaAdministracion: advanced.viaAdministracion || form.viaAdministracion || "Dato pendiente",
-      funcionTerapeutica: advanced.funcionTerapeutica || "Dato pendiente",
-      descripcion: advanced.descripcion || advanced.observaciones || "Dato pendiente",
-      componentes,
-      speciesDoses
-    };
+    state.freeResult = result;
+    state.freeAlerts = result?.warnings || [];
 
     if (!result || !result.ok) {
       return { ok: false, reason: "calc" };
@@ -2312,8 +3522,6 @@
       return { ok: false, reason: "minimal", missingFields };
     }
 
-    state.freeResult = result;
-    state.freeAlerts = result.warnings || [];
     state.freeSaveMissing = [];
 
     const now = new Date().toISOString();
@@ -2324,31 +3532,36 @@
       createdAt: now,
       updatedAt: now,
       nombre: String(form.nombre || "").trim(),
-      especie: String(form.especie || "").trim(),
+      especie: speciesDoses[0]?.especie || String(form.especie || "").trim(),
       pesoKg: parseNum(form.pesoKg),
-      dosis: parseNum(form.dosis),
-      unidadDosis: resolveUnit(form.unidadDosis, form.unidadDosisCustom),
-      concentracion: parseNum(form.concentracion),
-      unidadConcentracion: resolveUnit(form.unidadConcentracion, form.unidadConcentracionCustom),
+      dosis: speciesDoses[0]?.dosis || parseNum(form.dosis),
+      unidadDosis: speciesDoses[0]?.unidadDosis || resolveUnit(form.unidadDosis, form.unidadDosisCustom),
+      concentracion: presentations[0]?.concentracion || parseNum(form.concentracion),
+      unidadConcentracion: presentations[0]?.unidadConcentracion || resolveUnit(form.unidadConcentracion, form.unidadConcentracionCustom),
       nombreComercial: advanced.nombreComercial || "",
       laboratorio: advanced.laboratorio || "",
-      grupoKey: advanced.grupoKey || "default",
-      funcionTerapeutica: advanced.funcionTerapeutica || "Dato pendiente",
-      descripcion: advanced.descripcion || advanced.observaciones || "Dato pendiente",
-      viaAdministracion: advanced.viaAdministracion || form.viaAdministracion || "Dato pendiente",
+      grupoKey: data.grupoKey,
+      funcionTerapeutica: data.funcionTerapeutica,
+      mecanismoAccion: advanced.mecanismoAccion || "",
+      descripcion: data.descripcion,
+      viaAdministracion: routes[0] || data.viaAdministracion,
+      vias: routes,
       frecuencia: advanced.frecuencia || "",
       duracion: advanced.duracion || "",
       contraindicaciones: advanced.contraindicaciones || "",
       precauciones: advanced.precauciones || "",
       efectosAdversos: advanced.efectosAdversos || "",
-      tiempoRetiro: advanced.tiempoRetiro || "",
+      tiempoRetiro: formatWithdrawalSummary(withdrawalItems, advanced.tiempoRetiro),
+      withdrawalItems,
+      tiemposRetiro: withdrawalItems,
       observaciones: advanced.observaciones || "",
       bibliografia: advanced.bibliografia || "",
       interactionMode: advanced.interactionMode || "auto",
       interacciones: interactionAlerts,
       advertencias: state.freeAlerts || [],
-      componentes,
+      componentes: components,
       speciesDoses,
+      presentations,
       productImage: shouldStoreProductImage(advanced.productImage, advanced.productImageSource) ? advanced.productImage : "",
       productImageSource: advanced.productImageSource || "",
       productImageName: advanced.productImageName || "",
@@ -2364,16 +3577,30 @@
 
     let nextCustomItems = state.customItems.slice();
     let successMessage = "Farmaco personalizado guardado.";
+    const duplicate = !state.editingPersonalizedId
+      ? findSimilarCustomDrug(state.customItems, payload)
+      : null;
+    const updateTargetId = state.editingPersonalizedId || (duplicate && opts.duplicateMode === "update" ? duplicate.id : "");
 
-    if (state.editingPersonalizedId) {
-      const current = state.customItems.find((item) => item.id === state.editingPersonalizedId);
+    if (duplicate && !opts.duplicateMode) {
+      return { ok: false, reason: "duplicate", duplicate };
+    }
+
+    if (updateTargetId) {
+      const current = state.customItems.find((item) => item.id === updateTargetId);
+      payload.id = updateTargetId;
       payload.createdAt = current?.createdAt || now;
       nextCustomItems = state.customItems.map((item) =>
-        item.id === state.editingPersonalizedId ? { ...item, ...payload, updatedAt: now } : item
+        item.id === updateTargetId ? { ...item, ...payload, updatedAt: now } : item
       );
-      successMessage = "Farmaco personalizado actualizado.";
+      successMessage = duplicate && opts.duplicateMode === "update"
+        ? "Farmaco personalizado similar actualizado."
+        : "Farmaco personalizado actualizado.";
     } else {
       nextCustomItems.unshift(payload);
+      if (duplicate && opts.duplicateMode === "copy") {
+        successMessage = "Copia de farmaco personalizado guardada.";
+      }
     }
 
     let persisted = writeStorageArray(STORAGE_CUSTOM, nextCustomItems, { silent: true });
@@ -2395,27 +3622,100 @@
     }
 
     state.editingPersonalizedId = payload.id;
-    return { ok: true };
+    return { ok: true, itemName: payload.nombre, itemId: payload.id };
+  }
+
+  function findSimilarCustomDrug(items, payload, ignoreId = "") {
+    const targetName = normalizeComparable(payload.nombre);
+    const targetCommercial = normalizeComparable(payload.nombreComercial);
+    const targetGroup = normalizeComparable(payload.grupoKey);
+    const targetRoutes = normalizedRoutes(payload.vias || [payload.viaAdministracion]).map(normalizeComparable);
+    const targetSpecies = getCustomSpeciesDoses(payload).map((row) => normalizeComparable(row.especie));
+    const targetPresentation = getCustomPresentations(payload)[0] || {};
+    const targetConc = Number(targetPresentation.concentracion || payload.concentracion || 0);
+    const targetConcUnit = normalizeComparable(targetPresentation.unidadConcentracion || payload.unidadConcentracion);
+
+    return (Array.isArray(items) ? items : []).find((item) => {
+      if (!item || item.id === ignoreId) return false;
+      const sameName = normalizeComparable(item.nombre) === targetName;
+      const sameCommercial = !targetCommercial || !normalizeComparable(item.nombreComercial) || normalizeComparable(item.nombreComercial) === targetCommercial;
+      const sameGroup = normalizeComparable(item.grupoKey) === targetGroup;
+      const itemRoutes = getCustomRoutes(item).map(normalizeComparable);
+      const itemSpecies = getCustomSpeciesDoses(item).map((row) => normalizeComparable(row.especie));
+      const itemPresentation = getCustomPresentations(item)[0] || {};
+      const itemConc = Number(itemPresentation.concentracion || item.concentracion || 0);
+      const itemConcUnit = normalizeComparable(itemPresentation.unidadConcentracion || item.unidadConcentracion);
+      const routeOverlap = !targetRoutes.length || !itemRoutes.length || targetRoutes.some((route) => itemRoutes.includes(route));
+      const speciesOverlap = !targetSpecies.length || !itemSpecies.length || targetSpecies.some((species) => itemSpecies.includes(species));
+      const sameConcentration = Math.abs(itemConc - targetConc) < 0.000001 && itemConcUnit === targetConcUnit;
+      return sameName && sameCommercial && sameGroup && routeOverlap && speciesOverlap && sameConcentration;
+    }) || null;
+  }
+
+  function normalizeComparable(value) {
+    return String(value || "")
+      .trim()
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/\s+/g, " ");
+  }
+
+  function getCustomSaveDraft(state) {
+    const form = state.freeForm || {};
+    const advanced = state.freeAdvanced || {};
+    const components = normalizedComponents(state.freeComponents);
+    const description = String(advanced.descripcion || advanced.observaciones || "").trim();
+    const speciesDoses = getEffectiveSpeciesDoses(state);
+    const routes = getEffectiveRoutesFromState(state);
+    const presentations = getEffectivePresentations(state);
+    const withdrawalItems = getEffectiveWithdrawalItems(state);
+
+    return {
+      nombre: String(form.nombre || "").trim(),
+      especie: speciesDoses[0]?.especie || String(form.especie || "").trim(),
+      dosis: speciesDoses[0]?.dosis || parseNum(form.dosis),
+      unidadDosis: speciesDoses[0]?.unidadDosis || resolveUnit(form.unidadDosis, form.unidadDosisCustom),
+      concentracion: presentations[0]?.concentracion || parseNum(form.concentracion),
+      unidadConcentracion: presentations[0]?.unidadConcentracion || resolveUnit(form.unidadConcentracion, form.unidadConcentracionCustom),
+      grupoKey: String(advanced.grupoKey || "").trim(),
+      viaAdministracion: routes[0] || String(advanced.viaAdministracion || form.viaAdministracion || "").trim(),
+      routes,
+      funcionTerapeutica: String(advanced.funcionTerapeutica || "").trim(),
+      descripcion: description,
+      componentes: components,
+      speciesDoses,
+      presentations,
+      withdrawalItems
+    };
   }
 
   function getMissingCustomFields(data) {
     const missing = [];
+    const speciesDoses = Array.isArray(data.speciesDoses) ? data.speciesDoses : [];
+    const routes = Array.isArray(data.routes) ? data.routes : [];
+    const presentations = Array.isArray(data.presentations) ? data.presentations : [];
+    const withdrawals = Array.isArray(data.withdrawalItems) ? data.withdrawalItems : [];
+    const hasSpeciesDose = speciesDoses.some((row) =>
+      String(row.especie || "").trim() && Number(row.dosis) > 0 && String(row.unidadDosis || "").trim()
+    );
+    const hasPresentation = presentations.some((row) =>
+      Number(row.concentracion) > 0 && String(row.unidadConcentracion || "").trim()
+    );
+
     if (!String(data.nombre || "").trim()) missing.push("Nombre del farmaco");
-    if (!String(data.especie || "").trim()) missing.push("Especie");
-    if (!(Number(data.dosis) > 0)) missing.push("Dosis");
+    if (!hasSpeciesDose) missing.push("Especies y dosis");
     if (!String(data.unidadDosis || "").trim()) missing.push("Unidad de dosis");
-    if (!(Number(data.concentracion) > 0)) missing.push("Concentracion");
+    if (!hasPresentation) missing.push("Concentracion o presentacion");
     if (!String(data.unidadConcentracion || "").trim()) missing.push("Unidad de concentracion");
+    if (!String(data.grupoKey || "").trim() || data.grupoKey === "default") missing.push("Grupo farmacologico");
+    if (!routes.length && !String(data.viaAdministracion || "").trim()) missing.push("Vias de administracion");
+    if (!String(data.funcionTerapeutica || "").trim()) missing.push("Funcion terapeutica");
+    if (!String(data.descripcion || "").trim()) missing.push("Descripcion u observacion");
+    if (!withdrawals.some(isValidWithdrawalItem)) missing.push("Tiempo de retiro");
     const comps = Array.isArray(data.componentes) ? data.componentes : [];
-    if (comps.length > 1) {
-      const validComponents = comps.every((comp) =>
-        String(comp.nombre || "").trim() &&
-        String(comp.grupoKey || "").trim() &&
-        Number(comp.concentracion) > 0 &&
-        String(comp.unidadConcentracion || "").trim() &&
-        Number(comp.dosis) > 0 &&
-        String(comp.unidadDosis || "").trim()
-      );
+    if (comps.length) {
+      const validComponents = comps.every(isCompleteComponent);
       if (!validComponents) missing.push("Componentes activos completos");
     }
 
@@ -2446,41 +3746,55 @@
       unidadFinal: result?.finalUnit,
       concentracion: parseNum(form.concentracion),
       unidadConcentracion: resolveUnit(form.unidadConcentracion, form.unidadConcentracionCustom),
-      viaAdministracion: advanced.viaAdministracion || form.viaAdministracion || "",
+      viaAdministracion: getEffectiveRoutesFromState(state)[0] || advanced.viaAdministracion || form.viaAdministracion || "",
       frecuencia: advanced.frecuencia,
       duracion: advanced.duracion,
       indicaciones: advanced.funcionTerapeutica,
       advertencias: (state.freeAlerts || []).concat(interactions.map((x) => x.text)).filter(Boolean),
       observaciones: advanced.observaciones || advanced.descripcion,
-      componentes,
-      speciesDoses: normalizedSpeciesDoses(advanced.speciesDoses || []),
-      tiempoRetiro: advanced.tiempoRetiro
+      componentes: components,
+      speciesDoses: getEffectiveSpeciesDoses(state),
+      vias: getEffectiveRoutesFromState(state),
+      presentations: getEffectivePresentations(state),
+      tiempoRetiro: formatWithdrawalSummary(getEffectiveWithdrawalItems(state), advanced.tiempoRetiro)
     };
   }
 
-  function buildRecipePayloadFromCustom(item) {
+  function buildRecipePayloadFromCustom(item, calcState = null) {
+    const speciesDoses = getCustomSpeciesDoses(item);
+    const presentations = getCustomPresentations(item);
+    const routes = getCustomRoutes(item);
+    const selectedDose = speciesDoses[clampIndex(calcState?.speciesIndex, speciesDoses.length)] || speciesDoses[0] || {};
+    const selectedPresentation = presentations[clampIndex(calcState?.presentationIndex, presentations.length)] || presentations[0] || {};
+    const result = calcState?.result?.ok ? calcState.result : item.calculo || {};
+    const useOverride = Boolean(calcState?.overrideOpen && parseNum(calcState.tempConcentration) > 0);
+    const concentration = useOverride ? parseNum(calcState.tempConcentration) : (selectedPresentation.concentracion || item.concentracion);
+    const concentrationUnit = useOverride ? resolveUnit(calcState.tempUnit, calcState.tempUnitCustom) : (selectedPresentation.unidadConcentracion || item.unidadConcentracion);
+
     return {
       nombre: item.nombre,
       nombreComercial: item.nombreComercial,
-      especie: item.especie,
-      pesoKg: item.pesoKg,
-      dosis: item.dosis,
-      unidadDosis: item.unidadDosis,
-      dosisTotal: item.calculo?.dosisTotal,
-      dosisTotalUnidad: item.calculo?.dosisTotalUnidad,
-      resultadoFinal: item.calculo?.resultadoFinal,
-      unidadFinal: item.calculo?.unidadFinal,
-      concentracion: item.concentracion,
-      unidadConcentracion: item.unidadConcentracion,
-      viaAdministracion: item.viaAdministracion,
-      frecuencia: item.frecuencia,
-      duracion: item.duracion,
+      especie: selectedDose.especie || item.especie,
+      pesoKg: calcState?.weight || item.pesoKg,
+      dosis: selectedDose.dosis || item.dosis,
+      unidadDosis: selectedDose.unidadDosis || item.unidadDosis,
+      dosisTotal: result.doseTotalValue || result.dosisTotal,
+      dosisTotalUnidad: result.doseTotalUnit || result.dosisTotalUnidad,
+      resultadoFinal: result.finalValue || result.resultadoFinal,
+      unidadFinal: result.finalUnit || result.unidadFinal,
+      concentracion: concentration,
+      unidadConcentracion: concentrationUnit,
+      viaAdministracion: calcState?.route || routes[0] || item.viaAdministracion,
+      frecuencia: selectedDose.frecuencia || item.frecuencia,
+      duracion: selectedDose.duracion || item.duracion,
       indicaciones: item.funcionTerapeutica,
       advertencias: (item.advertencias || []).concat((item.interacciones || []).map((x) => x.text || x)).filter(Boolean),
       observaciones: item.observaciones || item.descripcion,
       componentes: item.componentes || [],
-      speciesDoses: item.speciesDoses || [],
-      tiempoRetiro: item.tiempoRetiro
+      speciesDoses,
+      vias: routes,
+      presentations,
+      tiempoRetiro: formatWithdrawalSummary(item.withdrawalItems || item.tiemposRetiro || [], item.tiempoRetiro)
     };
   }
 
@@ -2502,7 +3816,7 @@
       unidadFinal: parseResultUnit(entry.resultadoCalculado),
       concentracion: form.concentracion != null ? parseNum(form.concentracion) : parseNum(entry.concentracion),
       unidadConcentracion: form.unidadConcentracion || entry.unidadConcentracion,
-      viaAdministracion: advanced.viaAdministracion || form.viaAdministracion || "",
+      viaAdministracion: entry.viaAdministracion || advanced.viaAdministracion || form.viaAdministracion || "",
       frecuencia: advanced.frecuencia || "",
       duracion: advanced.duracion || "",
       indicaciones: advanced.funcionTerapeutica || "",
@@ -2510,7 +3824,9 @@
       observaciones: advanced.observaciones || advanced.descripcion || "",
       componentes: snapshot.components || [],
       speciesDoses: advanced.speciesDoses || [],
-      tiempoRetiro: advanced.tiempoRetiro || ""
+      presentations: advanced.presentations || [],
+      presentacion: entry.presentacion || advanced.presentacionUsada || "",
+      tiempoRetiro: formatWithdrawalSummary(advanced.withdrawalItems || advanced.tiemposRetiro || [], advanced.tiempoRetiro || "")
     };
   }
 
@@ -2530,7 +3846,10 @@
       },
       advanced: {
         ...state.freeAdvanced,
-        speciesDoses: normalizedSpeciesDoses(state.freeAdvanced.speciesDoses || []),
+        speciesDoses: getEffectiveSpeciesDoses(state),
+        routes: getEffectiveRoutesFromState(state),
+        presentations: getEffectivePresentations(state),
+        withdrawalItems: getEffectiveWithdrawalItems(state),
         // Evita inflar historial con imagenes base64 y reduce errores de cuota.
         productImage: "",
         productImageSource: state.freeAdvanced.productImageSource || (hasProductImage ? "upload" : ""),
@@ -2569,15 +3888,177 @@
       );
   }
 
+  function getEffectiveSpeciesDoses(state) {
+    const fromRows = normalizedSpeciesDoses(state.freeAdvanced?.speciesDoses || []);
+    const form = state.freeForm || {};
+    const base = {
+      especie: String(form.especie || "").trim(),
+      dosis: parseNum(form.dosis),
+      unidadDosis: resolveUnit(form.unidadDosis, form.unidadDosisCustom),
+      frecuencia: state.freeAdvanced?.frecuencia || "",
+      duracion: state.freeAdvanced?.duracion || "",
+      observaciones: ""
+    };
+
+    const combined = [];
+    if (base.especie || base.dosis > 0 || base.unidadDosis) combined.push(base);
+    fromRows.forEach((row) => combined.push(row));
+    return dedupeSpeciesDoses(combined);
+  }
+
+  function dedupeSpeciesDoses(items) {
+    const seen = new Set();
+    const result = [];
+    (Array.isArray(items) ? items : []).forEach((row) => {
+      const normalized = {
+        especie: String(row.especie || "").trim(),
+        dosis: parseNum(row.dosis),
+        unidadDosis: String(row.unidadDosis || "").trim(),
+        frecuencia: String(row.frecuencia || "").trim(),
+        duracion: String(row.duracion || "").trim(),
+        observaciones: String(row.observaciones || row.notas || "").trim(),
+        notas: String(row.notas || row.observaciones || "").trim()
+      };
+      const key = `${normalized.especie.toLowerCase()}|${normalized.dosis}|${normalized.unidadDosis.toLowerCase()}`;
+      if (!normalized.especie && !(normalized.dosis > 0) && !normalized.unidadDosis) return;
+      if (seen.has(key)) return;
+      seen.add(key);
+      result.push(normalized);
+    });
+    return result;
+  }
+
+  function getEffectiveRoutesFromState(state) {
+    const advanced = state.freeAdvanced || {};
+    const form = state.freeForm || {};
+    const raw = [
+      advanced.viaAdministracion,
+      form.viaAdministracion,
+      ...(Array.isArray(advanced.routes) ? advanced.routes.map((row) => row.via || row.value || row) : [])
+    ];
+    return normalizedRoutes(raw);
+  }
+
+  function normalizedRoutes(items) {
+    const seen = new Set();
+    const result = [];
+    (Array.isArray(items) ? items : []).forEach((item) => {
+      const value = String(typeof item === "string" ? item : (item?.via || item?.value || "")).trim();
+      if (!value) return;
+      const key = value.toLowerCase();
+      if (seen.has(key)) return;
+      seen.add(key);
+      result.push(value);
+    });
+    return result;
+  }
+
+  function getEffectivePresentations(state) {
+    const form = state.freeForm || {};
+    const main = {
+      id: "main",
+      nombre: "Presentacion principal",
+      concentracion: parseNum(form.concentracion),
+      unidadConcentracion: resolveUnit(form.unidadConcentracion, form.unidadConcentracionCustom),
+      notas: "Concentracion base registrada en Calculadora Libre"
+    };
+    return normalizedPresentations(state.freeAdvanced?.presentations || [], main);
+  }
+
+  function normalizedPresentations(items, mainPresentation = null) {
+    const result = [];
+    if (mainPresentation && (Number(mainPresentation.concentracion) > 0 || mainPresentation.unidadConcentracion)) {
+      result.push({
+        id: mainPresentation.id || "main",
+        nombre: mainPresentation.nombre || "Presentacion principal",
+        concentracion: parseNum(mainPresentation.concentracion),
+        unidadConcentracion: String(mainPresentation.unidadConcentracion || "").trim(),
+        notas: String(mainPresentation.notas || "").trim(),
+        principal: true
+      });
+    }
+
+    (Array.isArray(items) ? items : []).forEach((row) => {
+      const unit = resolveUnit(row.unidadConcentracion || row.unit, row.unidadConcentracionCustom);
+      const item = {
+        id: row.id || createId("presentation"),
+        nombre: String(row.nombre || row.name || "Presentacion").trim(),
+        concentracion: parseNum(row.concentracion),
+        unidadConcentracion: unit,
+        notas: String(row.notas || "").trim(),
+        principal: Boolean(row.principal)
+      };
+      if (item.concentracion > 0 || item.unidadConcentracion || item.nombre) result.push(item);
+    });
+
+    const seen = new Set();
+    return result.filter((row) => {
+      const key = `${row.nombre.toLowerCase()}|${row.concentracion}|${row.unidadConcentracion.toLowerCase()}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }
+
+  function getEffectiveWithdrawalItems(state) {
+    return normalizeWithdrawalItems(state.freeAdvanced?.withdrawalItems || [], state.freeAdvanced?.tiempoRetiro || "");
+  }
+
   function normalizedSpeciesDoses(items) {
     return (Array.isArray(items) ? items : [])
       .map((row) => ({
         especie: String(row.especie || "").trim(),
         dosis: parseNum(row.dosis),
         unidadDosis: resolveUnit(row.unidadDosis, row.unidadDosisCustom),
-        notas: String(row.notas || "").trim()
+        frecuencia: String(row.frecuencia || "").trim(),
+        duracion: String(row.duracion || "").trim(),
+        observaciones: String(row.observaciones || row.notas || "").trim(),
+        notas: String(row.notas || row.observaciones || "").trim()
       }))
-      .filter((row) => row.especie || row.dosis > 0 || row.unidadDosis || row.notas);
+      .filter((row) => row.especie || row.dosis > 0 || row.unidadDosis || row.notas || row.frecuencia || row.duracion || row.observaciones);
+  }
+
+  function normalizeWithdrawalItems(items, fallbackText = "") {
+    const normalized = (Array.isArray(items) ? items : [])
+      .map((row) => ({
+        id: row.id || createId("withdrawal"),
+        tipo: String(row.tipo || row.type || "General").trim(),
+        estado: String(row.estado || row.status || "no_especificado").trim(),
+        dias: parseNum(row.dias != null ? row.dias : row.days),
+        notas: String(row.notas || row.notes || "").trim()
+      }))
+      .filter((row) => row.tipo || row.estado || row.dias > 0 || row.notas);
+
+    if (normalized.length) return normalized;
+    const fallback = String(fallbackText || "").trim();
+    if (fallback) {
+      return [{
+        id: createId("withdrawal"),
+        tipo: "General",
+        estado: "no_especificado",
+        dias: 0,
+        notas: fallback
+      }];
+    }
+    return [buildDefaultWithdrawalItem()];
+  }
+
+  function formatWithdrawalSummary(items, fallback = "") {
+    const hasItems = Array.isArray(items) && items.length > 0;
+    if (!hasItems && String(fallback || "").trim()) return String(fallback || "").trim();
+    const normalized = normalizeWithdrawalItems(items, fallback).filter(isValidWithdrawalItem);
+    if (!normalized.length) return String(fallback || "").trim();
+    return normalized.map(formatWithdrawalItem).filter(Boolean).join("; ");
+  }
+
+  function formatWithdrawalItem(item) {
+    const type = String(item.tipo || "General").trim();
+    const status = String(item.estado || "").trim();
+    const notes = String(item.notas || "").trim();
+    if (status === "no_aplica") return `${type}: No aplica${notes ? ` (${notes})` : ""}`;
+    if (status === "no_especificado") return `${type}: No especificado${notes ? ` (${notes})` : ""}`;
+    if (status === "dias") return `${type}: ${formatNum(item.dias)} dias${notes ? ` (${notes})` : ""}`;
+    return notes || "";
   }
 
   function compactLegacyHistorySnapshots(items) {
@@ -2614,7 +4095,7 @@
       if (!item || typeof item !== "object") return item;
 
       let nextItem = item;
-      if (String(item.productImage || "").startsWith("data:")) {
+      if (String(item.productImage || "").startsWith("data:") && String(item.productImage || "").length > MAX_PRODUCT_IMAGE_SIZE) {
         compacted = true;
         nextItem = {
           ...nextItem,
@@ -2651,8 +4132,8 @@
   function shouldStoreProductImage(image, source) {
     const clean = String(image || "").trim();
     if (!clean) return false;
-    if (String(source || "") === "upload") return false;
-    return !clean.startsWith("data:");
+    if (clean.startsWith("data:")) return clean.length <= MAX_PRODUCT_IMAGE_SIZE;
+    return true;
   }
 
   function recalcSingleComponent(comp, sharedWeight) {
@@ -2729,6 +4210,21 @@
       const baseNormalized = normalizeMicro(base);
       if (!baseNormalized) return { ok: false, error: "Unidad de dosis no reconocida." };
       return { ok: true, isPerKg: true, baseUnit: baseNormalized };
+    }
+
+    const referenceMatch = normalized.match(/^(.+)\/(\d+(?:[\.,]\d+)?)kg$/);
+    if (referenceMatch) {
+      const baseNormalized = normalizeMicro(referenceMatch[1]);
+      const referenceKg = Number(referenceMatch[2].replace(",", "."));
+      if (!baseNormalized || !(referenceKg > 0)) return { ok: false, error: "Unidad de dosis no reconocida." };
+      return { ok: true, isPerKg: false, referenceKg, baseUnit: baseNormalized };
+    }
+
+    if (normalized.includes("/animal")) {
+      const base = raw.split("/")[0].trim();
+      const baseNormalized = normalizeMicro(base);
+      if (!baseNormalized) return { ok: false, error: "Unidad de dosis no reconocida." };
+      return { ok: true, isPerKg: false, baseUnit: baseNormalized };
     }
 
     const asBase = normalizeMicro(raw);
@@ -2884,6 +4380,7 @@
       laboratorio: "",
       grupoKey: "",
       funcionTerapeutica: "",
+      mecanismoAccion: "",
       descripcion: "",
       viaAdministracion: "",
       frecuencia: "",
@@ -2896,10 +4393,28 @@
       bibliografia: "",
       interactionMode: "auto",
       speciesDoses: [],
+      routes: [],
+      presentations: [],
+      withdrawalItems: [buildDefaultWithdrawalItem()],
       productImage: "",
       productImageSource: "",
       productImageName: ""
     };
+  }
+
+  function resetFreeCalculatorState(state, opts = {}) {
+    state.freeForm = buildDefaultFreeForm();
+    state.freeAdvanced = buildDefaultAdvancedForm();
+    state.freeComponents = [];
+    state.freeResult = null;
+    state.freeAlerts = [];
+    state.freeSaveMissing = [];
+    state.freeSaveNotice = null;
+    state.freePendingDuplicate = null;
+    state.freeProcedureVisible = false;
+    state.freeAdvancedVisible = Boolean(opts.professional);
+    state.editingPersonalizedId = "";
+    state.freeLastHistoryId = "";
   }
 
   function buildDefaultSpeciesDose() {
@@ -2909,6 +4424,38 @@
       dosis: "",
       unidadDosis: "mg/kg",
       unidadDosisCustom: "",
+      frecuencia: "",
+      duracion: "",
+      observaciones: "",
+      notas: ""
+    };
+  }
+
+  function buildDefaultRoute() {
+    return {
+      id: createId("route"),
+      via: "",
+      notas: ""
+    };
+  }
+
+  function buildDefaultPresentation() {
+    return {
+      id: createId("presentation"),
+      nombre: "",
+      concentracion: "",
+      unidadConcentracion: "mg/mL",
+      unidadConcentracionCustom: "",
+      notas: ""
+    };
+  }
+
+  function buildDefaultWithdrawalItem(tipo = "General", estado = "no_especificado") {
+    return {
+      id: createId("withdrawal"),
+      tipo,
+      estado,
+      dias: "",
       notas: ""
     };
   }
@@ -3104,6 +4651,7 @@
     if (panel.querySelector("#farma-adv-lab")) adv.laboratorio = fieldValue(panel, "#farma-adv-lab");
     if (panel.querySelector("#farma-adv-group")) adv.grupoKey = fieldValue(panel, "#farma-adv-group");
     if (panel.querySelector("#farma-adv-func")) adv.funcionTerapeutica = fieldValue(panel, "#farma-adv-func");
+    if (panel.querySelector("#farma-adv-mechanism")) adv.mecanismoAccion = fieldValue(panel, "#farma-adv-mechanism");
     if (panel.querySelector("#farma-adv-description")) adv.descripcion = fieldValue(panel, "#farma-adv-description");
 
     const advRoute = panel.querySelector("#farma-adv-via-select");
@@ -3148,9 +4696,50 @@
           dosis: namedValue(row, "dose-dosis"),
           unidadDosis: unitValue,
           unidadDosisCustom: unitValue === "Otro" ? namedValue(row, "dose-unidadDosisCustom") : "",
-          notas: namedValue(row, "dose-notas")
+          frecuencia: namedValue(row, "dose-frecuencia"),
+          duracion: namedValue(row, "dose-duracion"),
+          observaciones: namedValue(row, "dose-observaciones"),
+          notas: namedValue(row, "dose-observaciones") || namedValue(row, "dose-notas")
         };
       });
+    }
+
+    const routeRows = panel.querySelectorAll("#farma-routes-list [data-route-id]");
+    if (routeRows.length) {
+      adv.routes = Array.from(routeRows).map((row) => {
+        const routeValue = namedValue(row, "route-select");
+        return {
+          id: row.dataset.routeId || createId("route"),
+          via: routeValue === "Otro" ? namedValue(row, "route-custom") : routeValue,
+          notas: namedValue(row, "route-notas")
+        };
+      });
+    }
+
+    const presentationRows = panel.querySelectorAll("#farma-presentations-list [data-presentation-id]");
+    if (presentationRows.length) {
+      adv.presentations = Array.from(presentationRows).map((row) => {
+        const unitValue = namedValue(row, "presentation-unidadConcentracion") || "mg/mL";
+        return {
+          id: row.dataset.presentationId || createId("presentation"),
+          nombre: namedValue(row, "presentation-nombre"),
+          concentracion: namedValue(row, "presentation-concentracion"),
+          unidadConcentracion: unitValue,
+          unidadConcentracionCustom: unitValue === "Otro" ? namedValue(row, "presentation-unidadConcentracionCustom") : "",
+          notas: namedValue(row, "presentation-notas")
+        };
+      });
+    }
+
+    const withdrawalRows = panel.querySelectorAll("#farma-withdrawal-list [data-withdrawal-id]");
+    if (withdrawalRows.length) {
+      adv.withdrawalItems = Array.from(withdrawalRows).map((row) => ({
+        id: row.dataset.withdrawalId || createId("withdrawal"),
+        tipo: namedValue(row, "withdrawal-tipo") || "General",
+        estado: namedValue(row, "withdrawal-estado") || "no_especificado",
+        dias: namedValue(row, "withdrawal-dias"),
+        notas: namedValue(row, "withdrawal-notas")
+      }));
     }
 
     const componentRows = panel.querySelectorAll("#farma-components-list [data-comp-id]");

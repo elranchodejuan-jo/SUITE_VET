@@ -221,6 +221,18 @@
   grid-column: 1 / -1;
 }
 
+.farma-field.is-missing-focus {
+  border-radius: 0.8rem;
+  outline: 2px solid rgba(234, 179, 8, 0.85);
+  outline-offset: 4px;
+}
+
+.farma-field.is-missing-focus .sv-input,
+.farma-field.is-missing-focus .sv-select {
+  border-color: rgba(234, 179, 8, 0.9);
+  box-shadow: 0 0 0 3px rgba(234, 179, 8, 0.16);
+}
+
 .farma-free-actions {
   display: flex;
   flex-wrap: wrap;
@@ -230,6 +242,85 @@
 
 .farma-free-save-end {
   margin-top: 0.15rem;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.farma-save-checklist {
+  border: 1px solid var(--sv-border);
+  border-radius: 0.85rem;
+  background: var(--sv-bg-elevated);
+  padding: 0.75rem 0.85rem;
+  display: grid;
+  gap: 0.45rem;
+}
+
+.farma-save-checklist > div {
+  display: grid;
+  gap: 0.12rem;
+}
+
+.farma-save-checklist strong {
+  color: var(--sv-text-primary);
+}
+
+.farma-save-checklist span,
+.farma-save-checklist p {
+  color: var(--sv-text-muted);
+  font-size: 0.84rem;
+  margin: 0;
+}
+
+.farma-save-checklist ul {
+  margin: 0;
+  padding-left: 1.05rem;
+  display: grid;
+  gap: 0.16rem;
+  color: #facc15;
+  font-size: 0.82rem;
+}
+
+.farma-checklist-grid {
+  list-style: none;
+  padding-left: 0 !important;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+}
+
+.farma-checklist-grid li {
+  border: 1px solid var(--sv-border-subtle);
+  border-radius: 0.62rem;
+  background: rgba(255, 255, 255, 0.035);
+  padding: 0.48rem 0.55rem;
+  color: var(--sv-text-secondary);
+  display: grid;
+  gap: 0.12rem;
+}
+
+.farma-checklist-grid li > span {
+  font-size: 0.64rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.farma-checklist-grid li.is-ok {
+  border-color: rgba(34, 197, 94, 0.35);
+  color: var(--sv-success);
+}
+
+.farma-checklist-grid li.is-missing {
+  border-color: rgba(234, 179, 8, 0.42);
+  color: #facc15;
+}
+
+.farma-save-checklist.is-ready {
+  border-color: rgba(34, 197, 94, 0.45);
+  background: rgba(34, 197, 94, 0.1);
+}
+
+.farma-save-checklist.is-pending {
+  border-color: rgba(234, 179, 8, 0.38);
+  background: rgba(234, 179, 8, 0.08);
 }
 
 .farma-free-warning {
@@ -244,6 +335,68 @@
 
 .farma-free-warning p {
   font-size: 0.82rem;
+}
+
+.farma-save-notice {
+  border: 1px solid var(--sv-border);
+  border-radius: 0.7rem;
+  padding: 0.65rem 0.75rem;
+  display: grid;
+  gap: 0.15rem;
+  font-size: 0.86rem;
+  color: var(--sv-text-primary);
+  background: var(--sv-bg-elevated);
+}
+
+.farma-save-notice strong {
+  font-size: 0.88rem;
+}
+
+.farma-save-notice.success {
+  border-color: rgba(34, 197, 94, 0.45);
+  background: rgba(34, 197, 94, 0.12);
+  color: var(--sv-success);
+}
+
+.farma-save-notice.warning {
+  border-color: rgba(234, 179, 8, 0.45);
+  background: rgba(234, 179, 8, 0.12);
+  color: #facc15;
+}
+
+.farma-save-notice.error {
+  border-color: rgba(239, 68, 68, 0.45);
+  background: rgba(239, 68, 68, 0.12);
+  color: var(--sv-danger);
+}
+
+.farma-duplicate-box {
+  border: 1px solid rgba(234, 179, 8, 0.42);
+  background: rgba(234, 179, 8, 0.1);
+  border-radius: 0.85rem;
+  padding: 0.75rem;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.farma-duplicate-box > div:first-child {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.farma-duplicate-box strong {
+  color: #facc15;
+}
+
+.farma-duplicate-box span {
+  color: var(--sv-text-secondary);
+  font-size: 0.84rem;
+}
+
+.farma-duplicate-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
 }
 
 .farma-free-result {
@@ -293,6 +446,17 @@
   font-family: var(--sv-font-mono);
 }
 
+.farma-edu-warning {
+  border: 1px solid rgba(59, 130, 246, 0.35);
+  background: rgba(59, 130, 246, 0.1);
+  border-radius: 0.65rem;
+  padding: 0.58rem 0.68rem;
+  display: grid;
+  gap: 0.12rem;
+  color: var(--sv-text-secondary);
+  font-size: 0.84rem;
+}
+
 /* -----------------------------------------------------------------------------
    MODO PROFESIONAL
    ----------------------------------------------------------------------------- */
@@ -304,7 +468,10 @@
 .farma-components-block,
 .farma-interactions-block,
 .farma-dose-species-block,
-.farma-product-photo-block {
+.farma-product-photo-block,
+.farma-routes-block,
+.farma-presentations-block,
+.farma-withdrawal-block {
   display: grid;
   gap: 0.65rem;
   border: 1px solid var(--sv-border);
@@ -340,11 +507,17 @@
   gap: 0.6rem;
 }
 
-.farma-species-dose-card {
+.farma-species-dose-card,
+.farma-route-card,
+.farma-presentation-card,
+.farma-withdrawal-card {
   border: 1px solid var(--sv-border-subtle);
 }
 
-.farma-species-dose-grid {
+.farma-species-dose-grid,
+.farma-route-grid,
+.farma-presentation-grid,
+.farma-withdrawal-grid {
   display: grid;
   gap: 0.65rem;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -407,6 +580,25 @@
 .farma-product-photo-actions {
   display: flex;
   justify-content: flex-end;
+}
+
+.farma-routes-list,
+.farma-presentations-list,
+.farma-withdrawal-list {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.farma-section-hint {
+  margin: 0;
+  color: var(--sv-text-muted);
+  font-size: 0.82rem;
+}
+
+.farma-withdrawal-warning {
+  margin: 0.45rem 0 0;
+  color: #facc15;
+  font-size: 0.8rem;
 }
 
 .farma-interaction-results {
@@ -495,12 +687,129 @@
   border-radius: 0.5rem;
 }
 
+.farma-custom-calc {
+  border: 1px solid var(--sv-border);
+  background: var(--sv-bg-elevated);
+  border-radius: 0.85rem;
+  padding: 0.75rem;
+  display: grid;
+  gap: 0.65rem;
+}
+
+.farma-custom-calc-header {
+  display: grid;
+  gap: 0.12rem;
+}
+
+.farma-custom-calc-header strong {
+  color: var(--sv-text-primary);
+}
+
+.farma-custom-calc-header span,
+.farma-saved-concentration span,
+.farma-temp-actions span {
+  color: var(--sv-text-muted);
+  font-size: 0.82rem;
+}
+
+.farma-custom-calc-grid,
+.farma-temp-presentation {
+  display: grid;
+  gap: 0.65rem;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+}
+
+.farma-saved-concentration {
+  border: 1px dashed var(--sv-border);
+  border-radius: 0.7rem;
+  padding: 0.58rem 0.65rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.farma-saved-concentration strong {
+  color: var(--sv-text-primary);
+  font-size: 0.88rem;
+}
+
+.farma-temp-presentation {
+  border: 1px solid var(--sv-border-subtle);
+  border-radius: 0.72rem;
+  padding: 0.62rem;
+  background: var(--sv-bg-surface);
+}
+
+.farma-temp-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.farma-custom-calc-result {
+  border: 1px solid rgba(34, 197, 94, 0.38);
+  background: rgba(34, 197, 94, 0.1);
+  border-radius: 0.7rem;
+  padding: 0.62rem 0.7rem;
+  display: grid;
+  gap: 0.18rem;
+  color: var(--sv-text-secondary);
+}
+
+.farma-custom-calc-result strong {
+  color: var(--sv-success);
+}
+
+.farma-custom-calc-notice {
+  border-radius: 0.65rem;
+  padding: 0.55rem 0.65rem;
+  font-size: 0.82rem;
+  border: 1px solid var(--sv-border-subtle);
+  background: var(--sv-bg-surface);
+  color: var(--sv-text-secondary);
+}
+
+.farma-custom-calc-notice.success {
+  border-color: rgba(34, 197, 94, 0.38);
+  color: var(--sv-success);
+}
+
+.farma-custom-calc-notice.warning {
+  border-color: rgba(234, 179, 8, 0.42);
+  color: #facc15;
+}
+
+.farma-custom-calc-notice.error {
+  border-color: rgba(239, 68, 68, 0.42);
+  color: var(--sv-danger);
+}
+
+.farma-custom-calc-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
 @media (max-width: 900px) {
   .farma-free-grid,
   .farma-advanced-grid,
   .farma-component-grid,
   .farma-species-dose-grid,
-  .farma-product-photo-grid {
+  .farma-product-photo-grid,
+  .farma-route-grid,
+  .farma-presentation-grid,
+  .farma-withdrawal-grid,
+  .farma-custom-calc-grid,
+  .farma-temp-presentation {
     grid-template-columns: 1fr;
+  }
+
+  .farma-saved-concentration,
+  .farma-temp-actions {
+    align-items: stretch;
   }
 }
