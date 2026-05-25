@@ -494,6 +494,10 @@
     grid-template-columns: 1fr;
   }
 
+  .sv-about-avatar {
+    width: clamp(132px, 24vw, 170px);
+  }
+
   .sv-legal-footer {
     grid-template-columns: 1fr;
     text-align: center;
@@ -514,6 +518,7 @@
   }
 
   .sv-about-avatar {
+    width: clamp(148px, 44vw, 184px);
     font-size: 2.15rem;
   }
 
