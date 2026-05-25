@@ -47,6 +47,75 @@
     { value: "no_especificado", label: "No especificado" }
   ];
 
+  const CLINICAL_OBSERVATION_TEMPLATES = {
+    contraindicaciones: [
+      "Contraindicado en pacientes con hipersensibilidad al principio activo.",
+      "Evitar en pacientes con dano hepatico severo.",
+      "Evitar en pacientes con dano renal severo.",
+      "No administrar en pacientes con insuficiencia cardiaca grave.",
+      "No administrar en pacientes con ulceras gastrointestinales activas.",
+      "No administrar en animales deshidratados severamente.",
+      "No administrar durante la gestacion.",
+      "No administrar durante la lactancia.",
+      "No usar en neonatos.",
+      "No usar en geriatricos sin evaluacion clinica previa.",
+      "No aplicar en perros.",
+      "No aplicar en gatos.",
+      "No aplicar en bovinos.",
+      "No aplicar en caprinos.",
+      "No aplicar en ovinos.",
+      "No aplicar en porcinos.",
+      "No aplicar en equinos.",
+      "No aplicar en aves.",
+      "No combinar con AINEs.",
+      "No combinar con corticoides.",
+      "No combinar con otros farmacos nefrotoxicos.",
+      "No combinar con otros farmacos hepatotoxicos.",
+      "No usar en animales destinados a consumo humano sin establecer tiempo de retiro.",
+      "Contraindicado si existe reaccion adversa previa al medicamento."
+    ],
+    precauciones: [
+      "Usar con precaucion en pacientes con dano renal.",
+      "Usar con precaucion en pacientes con dano hepatico.",
+      "Usar con precaucion en pacientes con problemas cardiacos.",
+      "Usar con precaucion en pacientes con problemas gastrointestinales.",
+      "Usar con precaucion en animales deshidratados.",
+      "Usar con precaucion en gestantes.",
+      "Usar con precaucion durante la lactancia.",
+      "Usar con precaucion en neonatos.",
+      "Usar con precaucion en geriatricos.",
+      "Ajustar dosis segun condicion clinica del paciente.",
+      "Evaluar funcion renal antes de administrar.",
+      "Evaluar funcion hepatica antes de administrar.",
+      "Vigilar signos de toxicidad.",
+      "Vigilar vomito, diarrea, anorexia o decaimiento.",
+      "Puede requerir ajuste del intervalo de administracion.",
+      "Mantener hidratacion adecuada durante el tratamiento.",
+      "Verificar compatibilidad con otros medicamentos.",
+      "Verificar tiempo de retiro en animales de produccion.",
+      "Evitar sobredosificacion.",
+      "Supervisar respuesta clinica durante el tratamiento.",
+      "Suspender y reevaluar si aparecen reacciones adversas.",
+      "Confirmar que la via de administracion seleccionada sea adecuada.",
+      "Confirmar que la especie seleccionada sea compatible con el medicamento."
+    ]
+  };
+
+  const CLINICAL_CONDITION_OPTIONS = [
+    { key: "renal", label: "Dano renal", terms: ["dano renal", "renal", "nefrotoxico", "nefrotoxicos", "funcion renal", "insuficiencia renal"] },
+    { key: "hepatico", label: "Dano hepatico", terms: ["dano hepatico", "hepatico", "hepatica", "hepatotoxico", "hepatotoxicos", "funcion hepatica", "insuficiencia hepatica"] },
+    { key: "cardiaco", label: "Problemas cardiacos", terms: ["cardiaco", "cardiaca", "cardiacos", "cardiacas", "insuficiencia cardiaca", "corazon"] },
+    { key: "gastrointestinal", label: "Problemas gastrointestinales", terms: ["gastrointestinal", "ulcera", "ulceras", "vomito", "diarrea", "anorexia"] },
+    { key: "gestacion", label: "Gestacion", terms: ["gestacion", "gestante", "gestantes", "prenada", "prenez"] },
+    { key: "lactancia", label: "Lactancia", terms: ["lactancia", "lactante", "lactantes"] },
+    { key: "neonato", label: "Neonato", terms: ["neonato", "neonatos", "recien nacido"] },
+    { key: "geriatrico", label: "Geriatrico", terms: ["geriatrico", "geriatricos", "edad avanzada"] },
+    { key: "deshidratacion", label: "Deshidratacion", terms: ["deshidratado", "deshidratados", "deshidratacion", "hidratacion"] },
+    { key: "condicion_baja", label: "Condicion corporal baja", terms: ["condicion corporal baja", "baja condicion", "caquexia", "debilitado"] },
+    { key: "condicion_alta", label: "Condicion corporal alta", terms: ["condicion corporal alta", "obesidad", "sobrepeso"] },
+    { key: "otra", label: "Otra condicion clinica", terms: [] }
+  ];
+
   const INTERACTION_MESSAGES = {
     sinergismo:
       "Posible sinergismo: revise si la combinacion potencia el efecto terapeutico o la toxicidad.",
@@ -135,12 +204,15 @@
       freeComponents: [],
       freeResult: null,
       freeAlerts: [],
+      freeClinical: buildDefaultClinicalAnimalData(),
+      freeClinicalAlerts: [],
       freeSaveMissing: [],
       freeSaveNotice: null,
       freePendingDuplicate: null,
       freeProcedureVisible: false,
       freeAdvancedVisible: false,
       freeLastHistoryId: "",
+      clinicalObservationTarget: "",
       editingPersonalizedId: "",
 
       customItems: readStorageArray(STORAGE_CUSTOM),
@@ -765,7 +837,10 @@
   }
 
   function bindFreeCalculatorEvents(panel, state) {
-    bindInput(panel, "#farma-free-name", (value) => { state.freeForm.nombre = value; clearEditingIfManualNameChange(state); });
+    bindInput(panel, "#farma-free-name", (value) => {
+      state.freeForm.nombre = value;
+      clearEditingIfManualNameChange(state);
+    });
     bindSelect(panel, "#farma-free-species-select", (value) => {
       if (!value) {
         state.freeForm.especie = "";
@@ -780,7 +855,9 @@
       state.freeForm.especie = value;
       renderFreeCalculatorSubmodule(panel, state);
     });
-    bindInput(panel, "#farma-free-species-custom", (value) => { state.freeForm.especie = value; });
+    bindInput(panel, "#farma-free-species-custom", (value) => {
+      state.freeForm.especie = value;
+    });
     bindSelect(panel, "#farma-free-route-select", (value) => {
       if (!value) {
         state.freeForm.viaAdministracion = "";
@@ -795,33 +872,53 @@
       state.freeForm.viaAdministracion = value;
       renderFreeCalculatorSubmodule(panel, state);
     });
-    bindInput(panel, "#farma-free-route-custom", (value) => { state.freeForm.viaAdministracion = value; });
-    bindInput(panel, "#farma-free-weight", (value) => { state.freeForm.pesoKg = value; });
-    bindInput(panel, "#farma-free-dose", (value) => { state.freeForm.dosis = value; });
-    bindInput(panel, "#farma-free-conc", (value) => { state.freeForm.concentracion = value; });
+    bindInput(panel, "#farma-free-route-custom", (value) => {
+      state.freeForm.viaAdministracion = value;
+    });
+    bindInput(panel, "#farma-free-weight", (value) => {
+      state.freeForm.pesoKg = value;
+    });
+    bindInput(panel, "#farma-free-dose", (value) => {
+      state.freeForm.dosis = value;
+    });
+    bindInput(panel, "#farma-free-conc", (value) => {
+      state.freeForm.concentracion = value;
+    });
 
     bindSelect(panel, "#farma-free-dose-unit", (value) => {
       state.freeForm.unidadDosis = value;
       renderFreeCalculatorSubmodule(panel, state);
     });
-    bindInput(panel, "#farma-free-dose-unit-custom", (value) => { state.freeForm.unidadDosisCustom = value; });
+    bindInput(panel, "#farma-free-dose-unit-custom", (value) => {
+      state.freeForm.unidadDosisCustom = value;
+    });
 
     bindSelect(panel, "#farma-free-conc-unit", (value) => {
       state.freeForm.unidadConcentracion = value;
       renderFreeCalculatorSubmodule(panel, state);
     });
-    bindInput(panel, "#farma-free-conc-unit-custom", (value) => { state.freeForm.unidadConcentracionCustom = value; });
+    bindInput(panel, "#farma-free-conc-unit-custom", (value) => {
+      state.freeForm.unidadConcentracionCustom = value;
+    });
 
     panel.querySelector("#farma-free-calc")?.addEventListener("click", () => {
       syncFreeStateFromPanel(panel, state);
       const result = calculateFreeDose(state.freeForm);
       state.freeResult = result;
       state.freeAlerts = result.warnings || [];
+      state.freeClinicalAlerts = [];
       state.freeSaveMissing = [];
       state.freeSaveNotice = null;
 
       if (result.ok) {
         const interactionAlerts = buildInteractionAlerts(state);
+        const clinicalData = normalizeClinicalAnimalData(state.freeClinical);
+        const clinicalAlerts = evaluateClinicalSafety({
+          clinical: clinicalData,
+          contraindicaciones: state.freeAdvanced.contraindicaciones,
+          precauciones: state.freeAdvanced.precauciones
+        });
+        state.freeClinicalAlerts = clinicalAlerts;
         const historyId = appendHistoryEntry(state, {
           farmaco: state.freeForm.nombre,
           especie: state.freeForm.especie,
@@ -842,6 +939,8 @@
           guardadoPersonalizado: false,
           contieneComponentes: normalizedComponents(state.freeComponents).length > 0,
           advertencias: state.freeAlerts,
+          datosClinicos: clinicalData,
+          alertasClinicas: clinicalAlerts,
           interacciones: interactionAlerts.map((x) => x.text),
           snapshot: buildFreeSnapshot(state)
         });
@@ -867,11 +966,19 @@
       const result = calculateFreeDose(state.freeForm);
       state.freeResult = result;
       state.freeAlerts = result.warnings || [];
+      state.freeClinicalAlerts = [];
       state.freeSaveNotice = null;
 
       let historyId = "";
       if (result.ok) {
         const interactionAlerts = buildInteractionAlerts(state);
+        const clinicalData = normalizeClinicalAnimalData(state.freeClinical);
+        const clinicalAlerts = evaluateClinicalSafety({
+          clinical: clinicalData,
+          contraindicaciones: state.freeAdvanced.contraindicaciones,
+          precauciones: state.freeAdvanced.precauciones
+        });
+        state.freeClinicalAlerts = clinicalAlerts;
         historyId = appendHistoryEntry(state, {
           farmaco: state.freeForm.nombre,
           especie: state.freeForm.especie,
@@ -892,6 +999,8 @@
           guardadoPersonalizado: false,
           contieneComponentes: normalizedComponents(state.freeComponents).length > 0,
           advertencias: state.freeAlerts,
+          datosClinicos: clinicalData,
+          alertasClinicas: clinicalAlerts,
           interacciones: interactionAlerts.map((x) => x.text),
           snapshot: buildFreeSnapshot(state)
         }, { dedupeMs: 2000 });
@@ -962,6 +1071,7 @@
     if (!state.freeAdvancedVisible) return;
 
     bindAdvancedInputs(panel, state);
+    bindClinicalObservationEvents(panel, state);
     bindSpeciesDoseEvents(panel, state);
     bindRouteEvents(panel, state);
     bindPresentationEvents(panel, state);
@@ -1104,6 +1214,73 @@
     bindInput(panel, "#farma-adv-withdraw", (value) => { adv.tiempoRetiro = value; });
     bindInput(panel, "#farma-adv-observations", (value) => { adv.observaciones = value; });
     bindInput(panel, "#farma-adv-source", (value) => { adv.bibliografia = value; });
+  }
+
+  function bindClinicalObservationEvents(panel, state) {
+    panel.querySelectorAll("[data-clinical-observation-toggle]").forEach((button) => {
+      button.addEventListener("click", () => {
+        syncFreeStateFromPanel(panel, state);
+        const target = button.dataset.clinicalObservationToggle || "";
+        state.clinicalObservationTarget = state.clinicalObservationTarget === target ? "" : target;
+        renderFreeCalculatorSubmodule(panel, state);
+      });
+    });
+
+    panel.querySelector("[data-clinical-observation-close]")?.addEventListener("click", () => {
+      syncFreeStateFromPanel(panel, state);
+      state.clinicalObservationTarget = "";
+      renderFreeCalculatorSubmodule(panel, state);
+    });
+
+    panel.querySelectorAll("[data-clinical-template-select]").forEach((select) => {
+      select.addEventListener("change", () => {
+        const value = String(select.value || "").trim();
+        if (!value) return;
+        syncFreeStateFromPanel(panel, state);
+        const target = select.dataset.clinicalTemplateSelect || "";
+        applyClinicalObservationSelection(panel, state, target, { selected: [value], includeCustom: false });
+        renderFreeCalculatorSubmodule(panel, state);
+      });
+    });
+
+    panel.querySelectorAll("[data-clinical-observation-apply]").forEach((button) => {
+      button.addEventListener("click", () => {
+        syncFreeStateFromPanel(panel, state);
+        const target = button.dataset.clinicalObservationApply || "";
+        applyClinicalObservationSelection(panel, state, target, { includeCustom: true });
+        renderFreeCalculatorSubmodule(panel, state);
+      });
+    });
+  }
+
+  function bindFreeClinicalAnimalEvents(panel, state) {
+    const root = panel.querySelector("[data-clinical-animal-panel='free']");
+    if (!root) return;
+    root.addEventListener("change", () => syncFreeClinicalFromPanel(panel, state));
+    root.addEventListener("input", () => syncFreeClinicalFromPanel(panel, state));
+  }
+
+  function applyClinicalObservationSelection(panel, state, target, opts = {}) {
+    if (!["contraindicaciones", "precauciones"].includes(target)) return;
+    const root = panel.querySelector(`[data-clinical-picker-panel="${target}"]`);
+    if (!root) return;
+    const selected = (Array.isArray(opts.selected) ? opts.selected : [])
+      .map((item) => String(item || "").trim())
+      .filter(Boolean);
+    const custom = opts.includeCustom === false ? "" : String(root.querySelector("[data-clinical-custom-text]")?.value || "").trim();
+    const additions = custom ? selected.concat(custom) : selected;
+    if (!additions.length) {
+      state.clinicalObservationTarget = "";
+      return;
+    }
+
+    const adv = state.freeAdvanced;
+    adv.clinicalObservations = normalizeClinicalObservations(adv.clinicalObservations);
+    adv[target] = appendClinicalText(adv[target], additions);
+    adv.clinicalObservations[target] = listUnique((adv.clinicalObservations[target] || []).concat(selected));
+    const customKey = `${target}Personalizadas`;
+    if (custom) adv.clinicalObservations[customKey] = listUnique((adv.clinicalObservations[customKey] || []).concat(custom));
+    state.clinicalObservationTarget = "";
   }
 
   function bindSpeciesDoseEvents(panel, state) {
@@ -1443,13 +1620,15 @@
 
   function renderFreeAlerts(state) {
     const warnings = state.freeAlerts || [];
+    const clinicalAlerts = state.freeClinicalAlerts || [];
     const missing = state.freeSaveMissing || [];
     const notice = state.freeSaveNotice;
-    if (!warnings.length && !missing.length && !notice) return "";
+    if (!warnings.length && !clinicalAlerts.length && !missing.length && !notice) return "";
     return `
       <div class="farma-free-warning">
         ${notice ? renderSaveNotice(notice) : ""}
         ${warnings.map((w) => `<p>${escapeHtml(w)}</p>`).join("")}
+        ${renderClinicalAlerts(clinicalAlerts)}
         ${missing.length ? `<p><strong>Para guardar faltan:</strong> ${escapeHtml(missing.join(", "))}.</p>` : ""}
       </div>
     `;
@@ -1513,6 +1692,99 @@
         <p>Dosis total requerida</p>
         <div class="farma-free-result-main farma-free-result-final">${formatNum(res.finalValue)} ${escapeHtml(res.finalUnit)}</div>
         <p>Resultado final a administrar</p>
+      </div>
+    `;
+  }
+
+  function clinicalObservationTextField(label, id, value, target, state) {
+    const isOpen = state.clinicalObservationTarget === target;
+    return `
+      <div class="farma-field farma-field-wide farma-clinical-observation-field">
+        <label>
+          <span>${escapeHtml(label)}</span>
+          <textarea class="sv-input" id="${escapeAttr(id)}">${escapeHtml(value || "")}</textarea>
+        </label>
+        <div class="farma-clinical-toolbar">
+          <button class="sv-btn sv-btn-sm sv-btn-secondary" type="button" data-clinical-observation-toggle="${escapeAttr(target)}">Observaciones clinicas</button>
+          <span>Plantillas rapidas; el texto final queda editable.</span>
+        </div>
+        ${isOpen ? renderClinicalObservationPicker(target) : ""}
+      </div>
+    `;
+  }
+
+  function renderClinicalObservationPicker(target) {
+    const templates = CLINICAL_OBSERVATION_TEMPLATES[target] || [];
+    return `
+      <div class="farma-clinical-picker" data-clinical-picker-panel="${escapeAttr(target)}">
+        <div class="farma-clinical-picker-head">
+          <strong>Observaciones clinicas</strong>
+          <span>Selecciona una observacion y se agregara automaticamente al campo editable.</span>
+        </div>
+        <label class="farma-field farma-field-wide">
+          <span>Lista de observaciones</span>
+          <select class="sv-select" data-clinical-template-select="${escapeAttr(target)}">
+            <option value="">Seleccionar observacion clinica...</option>
+            ${templates.map((text) => `<option value="${escapeAttr(text)}">${escapeHtml(text)}</option>`).join("")}
+          </select>
+        </label>
+        <label class="farma-field farma-field-wide">
+          <span>+ Agregar observacion personalizada</span>
+          <textarea class="sv-input" data-clinical-custom-text placeholder="Ej. Evitar en pacientes con antecedentes de convulsiones."></textarea>
+        </label>
+        <div class="farma-clinical-picker-actions">
+          <button class="sv-btn sv-btn-sm sv-btn-primary" type="button" data-clinical-observation-apply="${escapeAttr(target)}">Agregar observacion personalizada</button>
+          <button class="sv-btn sv-btn-sm sv-btn-ghost" type="button" data-clinical-observation-close>Cancelar</button>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderClinicalAnimalSection(prefix, clinicalData = {}) {
+    const data = normalizeClinicalAnimalData(clinicalData);
+    const isOpen = Boolean(data.open);
+    const name = `${prefix}-clinical-condition`;
+    const customId = prefix.startsWith("custom-") ? prefix.slice(7) : "";
+    const toggleAttrs = customId
+      ? `data-custom-calc-action="toggle-clinical" data-custom-id="${escapeAttr(customId)}"`
+      : `data-clinical-animal-toggle="${escapeAttr(prefix)}"`;
+    return `
+      <section class="farma-clinical-animal ${isOpen ? "is-open" : ""}">
+        <button class="farma-clinical-toggle" type="button" ${toggleAttrs}>
+          <span>Datos clinicos del animal</span>
+          <strong>${isOpen ? "Ocultar" : "Opcional"}</strong>
+        </button>
+        ${isOpen ? `
+          <div class="farma-clinical-animal-panel" data-clinical-animal-panel="${escapeAttr(prefix)}">
+            <p>Estos datos se comparan con contraindicaciones y precauciones guardadas. No bloquean el calculo.</p>
+            <div class="farma-clinical-condition-grid">
+              ${CLINICAL_CONDITION_OPTIONS.map((condition) => `
+                <label class="farma-clinical-chip">
+                  <input type="checkbox" name="${escapeAttr(name)}" value="${escapeAttr(condition.key)}" ${data.conditions.includes(condition.key) ? "checked" : ""} />
+                  <span>${escapeHtml(condition.label)}</span>
+                </label>
+              `).join("")}
+            </div>
+            <label class="farma-field farma-field-wide">
+              <span>+ Agregar condicion personalizada</span>
+              <input class="sv-input" name="${escapeAttr(prefix)}-clinical-custom" value="${escapeAttr(data.custom || "")}" placeholder="Ej. Antecedente de convulsiones" />
+            </label>
+          </div>
+        ` : ""}
+      </section>
+    `;
+  }
+
+  function renderClinicalAlerts(alerts = []) {
+    const list = Array.isArray(alerts) ? alerts : [];
+    if (!list.length) return "";
+    return `
+      <div class="farma-clinical-alerts" role="alert">
+        <strong>Alertas clinicas detectadas</strong>
+        <ul>
+          ${list.map((alert) => `<li class="${escapeAttr(alert.level || "precaucion")}">${escapeHtml(alert.message || alert.text || "")}</li>`).join("")}
+        </ul>
+        <p>Esta alerta no reemplaza el criterio profesional. Revise la condicion clinica del paciente antes de administrar.</p>
       </div>
     `;
   }
@@ -1591,8 +1863,8 @@
           ${routeField("Via principal", "farma-adv-via-select", "farma-adv-via-custom", state.freeAdvanced.viaAdministracion)}
           ${inputField("Frecuencia", "farma-adv-frequency", state.freeAdvanced.frecuencia)}
           ${inputField("Duracion del tratamiento", "farma-adv-duration", state.freeAdvanced.duracion)}
-          ${textareaField("Contraindicaciones", "farma-adv-contra", state.freeAdvanced.contraindicaciones)}
-          ${textareaField("Precauciones", "farma-adv-precautions", state.freeAdvanced.precauciones)}
+          ${clinicalObservationTextField("Contraindicaciones", "farma-adv-contra", state.freeAdvanced.contraindicaciones, "contraindicaciones", state)}
+          ${clinicalObservationTextField("Precauciones", "farma-adv-precautions", state.freeAdvanced.precauciones, "precauciones", state)}
           ${textareaField("Efectos adversos", "farma-adv-adverse", state.freeAdvanced.efectosAdversos)}
           ${inputField("Tiempo de retiro / notas", "farma-adv-withdraw", state.freeAdvanced.tiempoRetiro)}
           ${textareaField("Observaciones clinicas", "farma-adv-observations", state.freeAdvanced.observaciones)}
@@ -2210,6 +2482,13 @@
           return;
         }
 
+        if (actionType === "toggle-clinical") {
+          const calc = getCustomCalcState(state, item);
+          calc.clinicalOpen = !calc.clinicalOpen;
+          renderCustomCards(listRoot, state);
+          return;
+        }
+
         if (actionType === "calculate") {
           calculateCustomCardDose(state, item);
           renderCustomCards(listRoot, state);
@@ -2319,6 +2598,8 @@
       const withdrawalItems = normalizeWithdrawalItems(item.withdrawalItems || item.tiemposRetiro || [], item.tiempoRetiro);
       const secondaryGroups = listUnique(components.map((comp) => comp.grupoKey).filter((group) => group && group !== item.grupoKey));
       const calcState = getCustomCalcState(state, item);
+      const hasContra = Boolean(String(item.contraindicaciones || "").trim());
+      const hasPrecautions = Boolean(String(item.precauciones || "").trim());
       const componentSummary = components.length
         ? components.map((comp) => `${comp.nombre || "Componente"} ${formatComponentConcentration(comp)}`.trim()).join(" + ")
         : "Sin componentes activos registrados";
@@ -2357,6 +2638,19 @@
           <p><strong>Creado:</strong> ${escapeHtml(formatDateTime(item.createdAt))}</p>
           <p><strong>Ultima edicion:</strong> ${escapeHtml(formatDateTime(item.updatedAt || item.createdAt))}</p>
         </div>
+
+        ${(hasContra || hasPrecautions) ? `
+          <details class="farma-clinical-summary">
+            <summary>
+              ${hasContra ? `<span class="sv-badge sv-badge-red">Contraindicaciones registradas</span>` : ""}
+              ${hasPrecautions ? `<span class="sv-badge sv-badge-orange">Precauciones clinicas</span>` : ""}
+            </summary>
+            <div>
+              ${hasContra ? `<p><strong>Contraindicaciones:</strong> ${escapeHtml(item.contraindicaciones)}</p>` : ""}
+              ${hasPrecautions ? `<p><strong>Precauciones:</strong> ${escapeHtml(item.precauciones)}</p>` : ""}
+            </div>
+          </details>
+        ` : ""}
 
         ${item.productImage ? `
           <div class="farma-product-thumb-wrap">
@@ -2486,7 +2780,14 @@
           </div>
         ` : ""}
 
+        ${renderClinicalAnimalSection(`custom-${item.id}`, {
+          open: calcState.clinicalOpen,
+          conditions: calcState.clinicalConditions,
+          custom: calcState.clinicalCustom
+        })}
+
         ${notice ? `<div class="farma-custom-calc-notice ${escapeAttr(notice.level || "info")}">${escapeHtml(notice.text || "")}</div>` : ""}
+        ${renderClinicalAlerts(calcState.clinicalAlerts)}
 
         ${result && result.ok ? `
           <div class="farma-custom-calc-result">
@@ -2520,6 +2821,10 @@
       tempUnit: current.tempUnit || selectedPresentation.unidadConcentracion || item.unidadConcentracion || "mg/mL",
       tempUnitCustom: current.tempUnitCustom || "",
       tempName: current.tempName || "",
+      clinicalOpen: Boolean(current.clinicalOpen),
+      clinicalConditions: Array.isArray(current.clinicalConditions) ? current.clinicalConditions.slice() : [],
+      clinicalCustom: current.clinicalCustom || "",
+      clinicalAlerts: Array.isArray(current.clinicalAlerts) ? current.clinicalAlerts : [],
       result: current.result || null,
       notice: current.notice || null,
       lastHistoryId: current.lastHistoryId || ""
@@ -2572,6 +2877,17 @@
     if (name === "custom-temp-name") {
       calc.tempName = target.value;
     }
+    if (name.endsWith("-clinical-condition")) {
+      calc.clinicalConditions = Array.from(root.querySelectorAll("input[type='checkbox']:checked"))
+        .filter((input) => input.name === name)
+        .map((input) => input.value)
+        .filter(Boolean);
+      calc.clinicalAlerts = [];
+    }
+    if (name.endsWith("-clinical-custom")) {
+      calc.clinicalCustom = target.value;
+      calc.clinicalAlerts = [];
+    }
 
     calc.notice = null;
     return rerender;
@@ -2606,6 +2922,7 @@
     const result = calculateFreeDose(form);
     calcState.result = result;
     if (!result.ok) {
+      calcState.clinicalAlerts = [];
       calcState.notice = {
         level: "warning",
         text: "No se pudo calcular. Revisa especie+dosis, peso, concentracion y unidad."
@@ -2616,6 +2933,17 @@
     const presentationName = useOverride
       ? (calcState.tempName || "Presentacion temporal")
       : (presentation?.nombre || "Presentacion guardada");
+    const clinicalData = normalizeClinicalAnimalData({
+      open: calcState.clinicalOpen,
+      conditions: calcState.clinicalConditions,
+      custom: calcState.clinicalCustom
+    });
+    const clinicalAlerts = evaluateClinicalSafety({
+      clinical: clinicalData,
+      contraindicaciones: item.contraindicaciones,
+      precauciones: item.precauciones
+    });
+    calcState.clinicalAlerts = clinicalAlerts;
     const historyId = appendHistoryEntry(state, {
       farmaco: item.nombre,
       especie: form.especie,
@@ -2636,12 +2964,17 @@
       guardadoPersonalizado: true,
       contieneComponentes: (item.componentes || []).length > 0,
       advertencias: item.advertencias || [],
+      datosClinicos: clinicalData,
+      alertasClinicas: clinicalAlerts,
       interacciones: (item.interacciones || []).map((x) => x.text || x),
-      snapshot: buildCustomCalcSnapshot(item, form, result, presentationName, useOverride)
+      snapshot: buildCustomCalcSnapshot(item, form, result, presentationName, useOverride, clinicalData, clinicalAlerts)
     }, { dedupeMs: opts.silent ? 2500 : 0 });
 
     calcState.lastHistoryId = historyId;
-    calcState.notice = opts.silent ? null : { level: "success", text: "Calculo guardado en historial." };
+    calcState.notice = opts.silent ? null : {
+      level: clinicalAlerts.length ? "warning" : "success",
+      text: clinicalAlerts.length ? `Calculo guardado con ${clinicalAlerts.length} alerta(s) clinica(s).` : "Calculo guardado en historial."
+    };
     return { ok: true, calcState, result };
   }
 
@@ -2686,7 +3019,7 @@
     return true;
   }
 
-  function buildCustomCalcSnapshot(item, form, result, presentationName, modified) {
+  function buildCustomCalcSnapshot(item, form, result, presentationName, modified, clinicalData = null, clinicalAlerts = []) {
     return {
       source: "farmaco_personalizado",
       customId: item.id,
@@ -2714,11 +3047,16 @@
         withdrawalItems: normalizeWithdrawalItems(item.withdrawalItems || item.tiemposRetiro || [], item.tiempoRetiro),
         frecuencia: item.frecuencia || "",
         duracion: item.duracion || "",
+        contraindicaciones: item.contraindicaciones || "",
+        precauciones: item.precauciones || "",
+        clinicalObservations: normalizeClinicalObservations(item.clinicalObservations || item.observacionesClinicas),
         observaciones: item.observaciones || "",
         tiempoRetiro: item.tiempoRetiro || "",
         presentacionUsada: presentationName,
         concentracionModificada: Boolean(modified)
       },
+      clinicalAnimal: normalizeClinicalAnimalData(clinicalData),
+      clinicalAlerts: Array.isArray(clinicalAlerts) ? clinicalAlerts : [],
       components: normalizedComponents(item.componentes || []),
       result: {
         doseTotalValue: result.doseTotalValue,
@@ -2843,6 +3181,7 @@
       duracion: item.duracion || "",
       contraindicaciones: item.contraindicaciones || "",
       precauciones: item.precauciones || "",
+      clinicalObservations: normalizeClinicalObservations(item.clinicalObservations || item.observacionesClinicas),
       efectosAdversos: item.efectosAdversos || "",
       tiempoRetiro: item.tiempoRetiro || "",
       observaciones: item.observaciones || "",
@@ -2906,10 +3245,13 @@
     state.freeAdvancedVisible = true;
     state.freeResult = null;
     state.freeAlerts = [];
+    state.freeClinical = buildDefaultClinicalAnimalData();
+    state.freeClinicalAlerts = [];
     state.freeSaveMissing = [];
     state.freeSaveNotice = null;
     state.freePendingDuplicate = null;
     state.freeProcedureVisible = false;
+    state.clinicalObservationTarget = "";
     state.editingPersonalizedId = editingMode ? item.id : "";
   }
 
@@ -3080,6 +3422,7 @@
     container.innerHTML = filtered.map((entry) => {
       const warningList = Array.isArray(entry.advertencias) ? entry.advertencias : [];
       const interactionList = Array.isArray(entry.interacciones) ? entry.interacciones : [];
+      const clinicalAlerts = Array.isArray(entry.alertasClinicas) ? entry.alertasClinicas : [];
 
       return `
         <article class="sv-card farma-history-card sv-fade-in">
@@ -3092,6 +3435,7 @@
               <span class="sv-badge ${entry.tipoCalculo === "profesional" ? "sv-badge-purple" : "sv-badge-blue"}">${escapeHtml(entry.tipoCalculo || "simple")}</span>
               ${entry.enviadoRecetario ? `<span class="sv-badge sv-badge-green">En recetario</span>` : ""}
               ${entry.guardadoPersonalizado ? `<span class="sv-badge sv-badge-orange">Personalizado</span>` : ""}
+              ${clinicalAlerts.length ? `<span class="sv-badge sv-badge-orange">${clinicalAlerts.length} alerta(s) clinica(s)</span>` : ""}
             </div>
           </div>
 
@@ -3117,6 +3461,13 @@
             <div class="farma-mini-box">
               <strong>Interacciones:</strong>
               <ul>${interactionList.map((w) => `<li>${escapeHtml(w)}</li>`).join("")}</ul>
+            </div>
+          ` : ""}
+
+          ${clinicalAlerts.length ? `
+            <div class="farma-mini-box farma-clinical-history-box">
+              <strong>Este calculo tuvo ${clinicalAlerts.length} alerta(s) clinica(s):</strong>
+              <ul>${clinicalAlerts.map((alert) => `<li>${escapeHtml(alert.message || alert.text || "")}</li>`).join("")}</ul>
             </div>
           ` : ""}
 
@@ -3154,6 +3505,7 @@
     state.freeAdvanced = {
       ...buildDefaultAdvancedForm(),
       ...advanced,
+      clinicalObservations: normalizeClinicalObservations(advanced.clinicalObservations),
       interactionMode: advanced.interactionMode || "auto",
       speciesDoses: (advanced.speciesDoses || []).map((row) => ({
         id: createId("sdose"),
@@ -3211,10 +3563,13 @@
     state.freeAdvancedVisible = entry.tipoCalculo === "profesional" || Boolean(state.freeComponents.length) || editMode;
     state.freeResult = null;
     state.freeAlerts = [];
+    state.freeClinical = normalizeClinicalAnimalData(entry.datosClinicos || snapshot.clinicalAnimal);
+    state.freeClinicalAlerts = Array.isArray(entry.alertasClinicas) ? entry.alertasClinicas : (snapshot.clinicalAlerts || []);
     state.freeSaveMissing = [];
     state.freeSaveNotice = null;
     state.freePendingDuplicate = null;
     state.freeProcedureVisible = false;
+    state.clinicalObservationTarget = "";
     state.editingPersonalizedId = "";
   }
 
@@ -3293,6 +3648,8 @@
       duracion: advanced.duracion || "",
       contraindicaciones: advanced.contraindicaciones || "",
       precauciones: advanced.precauciones || "",
+      clinicalObservations: normalizeClinicalObservations(advanced.clinicalObservations),
+      observacionesClinicas: normalizeClinicalObservations(advanced.clinicalObservations),
       efectosAdversos: advanced.efectosAdversos || "",
       tiempoRetiro: formatWithdrawalSummary(withdrawalItems, advanced.tiempoRetiro || ""),
       withdrawalItems,
@@ -3365,6 +3722,8 @@
       guardadoPersonalizado: Boolean(entry.guardadoPersonalizado),
       contieneComponentes: Boolean(entry.contieneComponentes),
       advertencias: Array.isArray(entry.advertencias) ? entry.advertencias.filter(Boolean) : [],
+      datosClinicos: normalizeClinicalAnimalData(entry.datosClinicos),
+      alertasClinicas: Array.isArray(entry.alertasClinicas) ? entry.alertasClinicas.filter((item) => item && (item.message || item.text)) : [],
       interacciones: Array.isArray(entry.interacciones) ? entry.interacciones.filter(Boolean) : [],
       snapshot: entry.snapshot && typeof entry.snapshot === "object" ? entry.snapshot : {}
     };
@@ -3481,6 +3840,7 @@
   }
 
   function buildRecipePreviewText(payload, missing = []) {
+    const clinicalAlerts = clinicalAlertTexts(payload.alertasClinicas);
     const lines = [
       "Previsualizacion para recetario",
       "",
@@ -3492,6 +3852,7 @@
       Number(payload.resultadoFinal) > 0 ? `Resultado: ${formatNum(payload.resultadoFinal)} ${payload.unidadFinal || ""}` : "",
       `Via: ${payload.viaAdministracion || payload.via || "N/D"}`,
       payload.tiempoRetiro ? `Retiro: ${payload.tiempoRetiro}` : "",
+      clinicalAlerts.length ? `Advertencias clinicas detectadas: ${clinicalAlerts.join(" | ")}` : "",
       missing.length ? `Pendiente: ${missing.join(", ")}` : "",
       "",
       "Edita la indicacion clinica sugerida:"
@@ -3750,7 +4111,9 @@
       frecuencia: advanced.frecuencia,
       duracion: advanced.duracion,
       indicaciones: advanced.funcionTerapeutica,
-      advertencias: (state.freeAlerts || []).concat(interactions.map((x) => x.text)).filter(Boolean),
+      advertencias: (state.freeAlerts || []).concat(interactions.map((x) => x.text), clinicalAlertTexts(state.freeClinicalAlerts)).filter(Boolean),
+      alertasClinicas: state.freeClinicalAlerts || [],
+      datosClinicos: normalizeClinicalAnimalData(state.freeClinical),
       observaciones: advanced.observaciones || advanced.descripcion,
       componentes: components,
       speciesDoses: getEffectiveSpeciesDoses(state),
@@ -3788,7 +4151,13 @@
       frecuencia: selectedDose.frecuencia || item.frecuencia,
       duracion: selectedDose.duracion || item.duracion,
       indicaciones: item.funcionTerapeutica,
-      advertencias: (item.advertencias || []).concat((item.interacciones || []).map((x) => x.text || x)).filter(Boolean),
+      advertencias: (item.advertencias || []).concat((item.interacciones || []).map((x) => x.text || x), clinicalAlertTexts(calcState?.clinicalAlerts)).filter(Boolean),
+      alertasClinicas: calcState?.clinicalAlerts || [],
+      datosClinicos: normalizeClinicalAnimalData({
+        open: calcState?.clinicalOpen,
+        conditions: calcState?.clinicalConditions,
+        custom: calcState?.clinicalCustom
+      }),
       observaciones: item.observaciones || item.descripcion,
       componentes: item.componentes || [],
       speciesDoses,
@@ -3820,7 +4189,9 @@
       frecuencia: advanced.frecuencia || "",
       duracion: advanced.duracion || "",
       indicaciones: advanced.funcionTerapeutica || "",
-      advertencias: (entry.advertencias || []).concat(entry.interacciones || []).filter(Boolean),
+      advertencias: (entry.advertencias || []).concat(entry.interacciones || [], clinicalAlertTexts(entry.alertasClinicas)).filter(Boolean),
+      alertasClinicas: entry.alertasClinicas || snapshot.clinicalAlerts || [],
+      datosClinicos: normalizeClinicalAnimalData(entry.datosClinicos || snapshot.clinicalAnimal),
       observaciones: advanced.observaciones || advanced.descripcion || "",
       componentes: snapshot.components || [],
       speciesDoses: advanced.speciesDoses || [],
@@ -3832,6 +4203,7 @@
 
   function buildFreeSnapshot(state) {
     const hasProductImage = Boolean(String(state.freeAdvanced.productImage || "").trim());
+    const clinicalData = normalizeClinicalAnimalData(state.freeClinical);
     return {
       source: "calculadora_libre",
       form: {
@@ -3846,6 +4218,7 @@
       },
       advanced: {
         ...state.freeAdvanced,
+        clinicalObservations: normalizeClinicalObservations(state.freeAdvanced.clinicalObservations),
         speciesDoses: getEffectiveSpeciesDoses(state),
         routes: getEffectiveRoutesFromState(state),
         presentations: getEffectivePresentations(state),
@@ -3855,6 +4228,8 @@
         productImageSource: state.freeAdvanced.productImageSource || (hasProductImage ? "upload" : ""),
         productImageName: state.freeAdvanced.productImageName || ""
       },
+      clinicalAnimal: clinicalData,
+      clinicalAlerts: state.freeClinicalAlerts || [],
       components: normalizedComponents(state.freeComponents),
       result: state.freeResult ? {
         doseTotalValue: state.freeResult.doseTotalValue,
@@ -3863,6 +4238,134 @@
         finalUnit: state.freeResult.finalUnit
       } : null
     };
+  }
+
+  function normalizeClinicalObservations(value) {
+    const source = value && typeof value === "object" ? value : {};
+    return {
+      contraindicaciones: listUnique(Array.isArray(source.contraindicaciones) ? source.contraindicaciones.filter(Boolean) : []),
+      precauciones: listUnique(Array.isArray(source.precauciones) ? source.precauciones.filter(Boolean) : []),
+      contraindicacionesPersonalizadas: listUnique(Array.isArray(source.contraindicacionesPersonalizadas) ? source.contraindicacionesPersonalizadas.filter(Boolean) : []),
+      precaucionesPersonalizadas: listUnique(Array.isArray(source.precaucionesPersonalizadas) ? source.precaucionesPersonalizadas.filter(Boolean) : [])
+    };
+  }
+
+  function normalizeClinicalAnimalData(data) {
+    const source = data && typeof data === "object" ? data : {};
+    const allowed = new Set(CLINICAL_CONDITION_OPTIONS.map((item) => item.key));
+    return {
+      open: Boolean(source.open),
+      conditions: listUnique((Array.isArray(source.conditions) ? source.conditions : []).filter((key) => allowed.has(key))),
+      custom: String(source.custom || "").trim()
+    };
+  }
+
+  function syncFreeClinicalFromPanel(panel, state) {
+    const root = panel.querySelector("[data-clinical-animal-panel='free']");
+    const current = normalizeClinicalAnimalData(state.freeClinical);
+    if (!root) {
+      state.freeClinical = current;
+      return current;
+    }
+    const checked = Array.from(root.querySelectorAll("input[name='free-clinical-condition']:checked"))
+      .map((input) => input.value)
+      .filter(Boolean);
+    state.freeClinical = {
+      ...current,
+      conditions: listUnique(checked),
+      custom: namedValue(root, "free-clinical-custom")
+    };
+    return state.freeClinical;
+  }
+
+  function appendClinicalText(existing, additions) {
+    const current = String(existing || "").trim();
+    const next = (Array.isArray(additions) ? additions : [additions])
+      .map((item) => normalizeClinicalSentence(item))
+      .filter(Boolean)
+      .filter((item) => !normalizeTextForMatch(current).includes(normalizeTextForMatch(item)));
+    if (!next.length) return current;
+    return [current, ...next].filter(Boolean).join(current ? " " : "");
+  }
+
+  function normalizeClinicalSentence(text) {
+    const clean = String(text || "").replace(/\s+/g, " ").trim();
+    if (!clean) return "";
+    return /[.!?]$/.test(clean) ? clean : `${clean}.`;
+  }
+
+  function evaluateClinicalSafety({ clinical, contraindicaciones, precauciones }) {
+    const data = normalizeClinicalAnimalData(clinical);
+    const selected = data.conditions
+      .map((key) => CLINICAL_CONDITION_OPTIONS.find((item) => item.key === key))
+      .filter(Boolean);
+    if (data.custom) {
+      selected.push({
+        key: "custom",
+        label: data.custom,
+        terms: buildCustomClinicalTerms(data.custom)
+      });
+    }
+
+    const contraText = normalizeTextForMatch(contraindicaciones);
+    const precautionText = normalizeTextForMatch(precauciones);
+    const alerts = [];
+
+    selected.forEach((condition) => {
+      const terms = (condition.terms || []).map(normalizeTextForMatch).filter(Boolean);
+      const hasContra = terms.some((term) => contraText.includes(term));
+      const hasPrecaution = terms.some((term) => precautionText.includes(term));
+
+      if (hasContra) {
+        alerts.push({
+          level: "contraindicacion",
+          type: "contraindicacion",
+          condition: condition.label,
+          message: `Alerta clinica: este farmaco tiene una contraindicacion registrada relacionada con ${condition.label.toLowerCase()}. Verifique antes de administrar.`
+        });
+      }
+
+      if (hasPrecaution) {
+        const highRisk = /sever|toxic|nefrotox|hepatotox|sobredos/.test(precautionText);
+        alerts.push({
+          level: highRisk ? "alto_riesgo" : "precaucion",
+          type: highRisk ? "alto_riesgo" : "precaucion",
+          condition: condition.label,
+          message: `${highRisk ? "Alto riesgo clinico" : "Precaucion clinica"}: este farmaco tiene una advertencia registrada para pacientes con ${condition.label.toLowerCase()}. Revise dosis, intervalo o alternativa terapeutica.`
+        });
+      }
+    });
+
+    return dedupeClinicalAlerts(alerts);
+  }
+
+  function dedupeClinicalAlerts(alerts) {
+    const seen = new Set();
+    return (Array.isArray(alerts) ? alerts : []).filter((alert) => {
+      const key = `${alert.type || ""}|${alert.condition || ""}|${alert.message || ""}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return Boolean(alert.message);
+    });
+  }
+
+  function buildCustomClinicalTerms(text) {
+    const clean = normalizeTextForMatch(text);
+    const words = clean.split(/\s+/).filter((word) => word.length >= 4);
+    return listUnique([clean, ...words]);
+  }
+
+  function normalizeTextForMatch(text) {
+    return String(text || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function clinicalAlertTexts(alerts) {
+    return (Array.isArray(alerts) ? alerts : []).map((alert) => alert.message || alert.text || "").filter(Boolean);
   }
 
   function normalizedComponents(items) {
@@ -4387,6 +4890,7 @@
       duracion: "",
       contraindicaciones: "",
       precauciones: "",
+      clinicalObservations: buildDefaultClinicalObservations(),
       efectosAdversos: "",
       tiempoRetiro: "",
       observaciones: "",
@@ -4402,17 +4906,37 @@
     };
   }
 
+  function buildDefaultClinicalObservations() {
+    return {
+      contraindicaciones: [],
+      precauciones: [],
+      contraindicacionesPersonalizadas: [],
+      precaucionesPersonalizadas: []
+    };
+  }
+
+  function buildDefaultClinicalAnimalData() {
+    return {
+      open: false,
+      conditions: [],
+      custom: ""
+    };
+  }
+
   function resetFreeCalculatorState(state, opts = {}) {
     state.freeForm = buildDefaultFreeForm();
     state.freeAdvanced = buildDefaultAdvancedForm();
     state.freeComponents = [];
     state.freeResult = null;
     state.freeAlerts = [];
+    state.freeClinical = buildDefaultClinicalAnimalData();
+    state.freeClinicalAlerts = [];
     state.freeSaveMissing = [];
     state.freeSaveNotice = null;
     state.freePendingDuplicate = null;
     state.freeProcedureVisible = false;
     state.freeAdvancedVisible = Boolean(opts.professional);
+    state.clinicalObservationTarget = "";
     state.editingPersonalizedId = "";
     state.freeLastHistoryId = "";
   }
@@ -4647,6 +5171,8 @@
       form.unidadConcentracionCustom = form.unidadConcentracion === "Otro" ? fieldValue(panel, "#farma-free-conc-unit-custom") : "";
     }
 
+    syncFreeClinicalFromPanel(panel, state);
+
     if (panel.querySelector("#farma-adv-commercial")) adv.nombreComercial = fieldValue(panel, "#farma-adv-commercial");
     if (panel.querySelector("#farma-adv-lab")) adv.laboratorio = fieldValue(panel, "#farma-adv-lab");
     if (panel.querySelector("#farma-adv-group")) adv.grupoKey = fieldValue(panel, "#farma-adv-group");
@@ -4670,6 +5196,7 @@
     if (panel.querySelector("#farma-adv-observations")) adv.observaciones = fieldValue(panel, "#farma-adv-observations");
     if (panel.querySelector("#farma-adv-source")) adv.bibliografia = fieldValue(panel, "#farma-adv-source");
     if (panel.querySelector("#farma-interaction-mode")) adv.interactionMode = fieldValue(panel, "#farma-interaction-mode");
+    adv.clinicalObservations = normalizeClinicalObservations(adv.clinicalObservations);
 
     const photoUrl = panel.querySelector("#farma-adv-photo-url");
     if (photoUrl) {

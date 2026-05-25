@@ -79,6 +79,8 @@ const Recetario = {
     document.addEventListener("suitevet:viewchange", (e) => {
       this._actualizarVisibilidad(e.detail?.view || "");
     });
+
+    window.addEventListener("afterprint", () => this._limpiarImpresion());
   },
 
   _cargarLocalStorage() {
@@ -563,7 +565,38 @@ const Recetario = {
 
   _imprimir() {
     this._guardarDraftFields();
+    this._prepararImpresion();
     window.print();
+  },
+
+  _prepararImpresion() {
+    const area = document.getElementById("sv-area-impresion-receta");
+    const main = area?.querySelector(".sv-receta-main");
+    const list = area?.querySelector("#sv-lista-receta");
+    const footer = area?.querySelector(".sv-receta-footer");
+    if (!area || !main || !list || !footer) return;
+
+    const estimatedItemsHeight = Array.from(list.querySelectorAll(".sv-receta-item")).reduce((total, item) => {
+      const note = item.querySelector(".sv-receta-nota")?.value || "";
+      const text = item.textContent || "";
+      const base = 68;
+      const extra = Math.ceil((text.length + note.length) / 135) * 12;
+      return total + base + extra;
+    }, 0);
+
+    const pageHeight = 794; // A4 horizontal a 96 dpi, coincide con @page landscape.
+    const fixedBlocks = 310; // encabezado, Rp/, separaciones, margen y pie.
+    const printableHeight = Math.max(420, pageHeight - fixedBlocks);
+    const pages = Math.max(1, Math.ceil(estimatedItemsHeight / printableHeight));
+
+    area.style.setProperty("--sv-print-pages", String(pages));
+  },
+
+  _limpiarImpresion() {
+    document
+      .getElementById("sv-area-impresion-receta")
+      ?.style
+      ?.removeProperty("--sv-print-pages");
   },
 
   _siguienteNumero() {

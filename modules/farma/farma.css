@@ -337,6 +337,148 @@
   font-size: 0.82rem;
 }
 
+.farma-clinical-animal,
+.farma-clinical-picker,
+.farma-clinical-summary {
+  border: 1px solid var(--sv-border-subtle);
+  border-radius: 0.85rem;
+  background: var(--sv-bg-elevated);
+}
+
+.farma-clinical-animal {
+  overflow: hidden;
+}
+
+.farma-clinical-toggle {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  color: var(--sv-text-primary);
+  cursor: pointer;
+  display: flex;
+  font: inherit;
+  justify-content: space-between;
+  padding: 0.75rem 0.85rem;
+  text-align: left;
+  width: 100%;
+}
+
+.farma-clinical-toggle strong {
+  color: var(--sv-accent);
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.farma-clinical-animal-panel {
+  border-top: 1px solid var(--sv-border-subtle);
+  display: grid;
+  gap: 0.7rem;
+  padding: 0.75rem 0.85rem;
+}
+
+.farma-clinical-animal-panel > p,
+.farma-clinical-toolbar span,
+.farma-clinical-picker-head span {
+  color: var(--sv-text-muted);
+  font-size: 0.82rem;
+}
+
+.farma-clinical-condition-grid {
+  display: grid;
+  gap: 0.45rem;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+}
+
+.farma-clinical-chip {
+  align-items: flex-start;
+  border: 1px solid var(--sv-border-subtle);
+  border-radius: 0.72rem;
+  color: var(--sv-text-secondary);
+  display: flex;
+  gap: 0.45rem;
+  padding: 0.55rem 0.65rem;
+}
+
+.farma-clinical-chip input {
+  margin-top: 0.15rem;
+}
+
+.farma-clinical-observation-field {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.farma-clinical-observation-field label {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.farma-clinical-toolbar,
+.farma-clinical-picker-actions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.farma-clinical-picker {
+  display: grid;
+  gap: 0.7rem;
+  padding: 0.75rem;
+}
+
+.farma-clinical-picker-head {
+  display: grid;
+  gap: 0.12rem;
+}
+
+.farma-clinical-alerts {
+  border: 1px solid rgba(234, 179, 8, 0.45);
+  background: rgba(234, 179, 8, 0.1);
+  border-radius: 0.75rem;
+  color: var(--sv-text-primary);
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.65rem 0.75rem;
+}
+
+.farma-clinical-alerts ul {
+  margin: 0;
+  padding-left: 1rem;
+}
+
+.farma-clinical-alerts li.contraindicacion {
+  color: var(--sv-danger);
+}
+
+.farma-clinical-alerts li.alto_riesgo {
+  color: #fb923c;
+}
+
+.farma-clinical-alerts li.precaucion,
+.farma-clinical-alerts p {
+  color: #facc15;
+}
+
+.farma-clinical-summary {
+  padding: 0.6rem 0.7rem;
+}
+
+.farma-clinical-summary summary {
+  cursor: pointer;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.farma-clinical-summary > div {
+  color: var(--sv-text-secondary);
+  display: grid;
+  gap: 0.35rem;
+  padding-top: 0.55rem;
+}
+
 .farma-save-notice {
   border: 1px solid var(--sv-border);
   border-radius: 0.7rem;
@@ -677,13 +819,18 @@
   border: 1px solid var(--sv-border-subtle);
   border-radius: 0.75rem;
   background: var(--sv-bg-elevated);
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
   padding: 0.45rem;
 }
 
 .farma-product-thumb {
+  height: 100%;
   width: 100%;
-  max-height: 180px;
-  object-fit: cover;
+  object-fit: contain;
   border-radius: 0.5rem;
 }
 
