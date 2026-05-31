@@ -134,6 +134,15 @@
   background: var(--sv-bg-elevated);
 }
 
+.sv-about-avatar-clickable {
+  cursor: zoom-in;
+}
+
+.sv-about-avatar-clickable:focus-visible {
+  outline: 2px solid var(--sv-accent);
+  outline-offset: 3px;
+}
+
 .sv-about-photo-btn {
   position: absolute;
   top: 50%;
@@ -379,6 +388,17 @@
   font-size: 0.86rem;
 }
 
+.sv-about-contact-list a {
+  color: var(--sv-info);
+  text-decoration: none;
+  word-break: break-word;
+}
+
+.sv-about-contact-list a:hover {
+  color: var(--sv-accent);
+  text-decoration: underline;
+}
+
 .sv-about-manifesto {
   border: 1px solid rgba(59, 130, 246, 0.35);
   border-radius: 1rem;
@@ -395,6 +415,118 @@
   font-family: var(--sv-font-heading);
   font-size: 1.35rem;
   line-height: 1.45;
+}
+
+body.sv-about-lightbox-open {
+  overflow: hidden;
+}
+
+.sv-about-photo-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 3200;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.16s ease;
+}
+
+.sv-about-photo-lightbox.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.sv-about-photo-lightbox-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(2, 6, 23, 0.86);
+  backdrop-filter: blur(6px);
+}
+
+.sv-about-photo-lightbox-dialog {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  width: min(94vw, 860px);
+  max-height: calc(100vh - 2rem);
+  display: grid;
+  justify-items: center;
+  gap: 0.6rem;
+}
+
+.sv-about-photo-lightbox-dialog img {
+  width: 100%;
+  max-height: calc(100vh - 7rem);
+  object-fit: contain;
+  border-radius: 1rem;
+  border: 1px solid rgba(148, 163, 184, 0.42);
+  box-shadow: var(--sv-shadow-lg);
+  background: rgba(15, 23, 42, 0.5);
+}
+
+.sv-about-photo-lightbox-close,
+.sv-about-photo-lightbox-nav {
+  position: absolute;
+  border: 1px solid rgba(148, 163, 184, 0.42);
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.82);
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.16s ease, background 0.16s ease, transform 0.12s ease;
+}
+
+.sv-about-photo-lightbox-close:hover,
+.sv-about-photo-lightbox-nav:hover {
+  border-color: var(--sv-accent);
+  background: rgba(15, 23, 42, 0.95);
+}
+
+.sv-about-photo-lightbox-close:hover {
+  transform: translateY(-1px);
+}
+
+.sv-about-photo-lightbox-nav:hover {
+  transform: translateY(-50%) scale(1.04);
+}
+
+.sv-about-photo-lightbox-close {
+  top: 0.45rem;
+  right: 0.45rem;
+  width: 36px;
+  height: 36px;
+  font-size: 1.3rem;
+  line-height: 1;
+}
+
+.sv-about-photo-lightbox-nav {
+  top: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 1.5rem;
+  transform: translateY(-50%);
+}
+
+.sv-about-photo-lightbox-prev {
+  left: 0.55rem;
+}
+
+.sv-about-photo-lightbox-next {
+  right: 0.55rem;
+}
+
+.sv-about-photo-lightbox-nav[hidden] {
+  display: none !important;
+}
+
+#sv-about-photo-lightbox-caption {
+  color: #dbeafe;
+  text-align: center;
+  font-size: 0.85rem;
 }
 
 .sv-legal-footer {
@@ -561,6 +693,39 @@
   .sv-about-contact-list div {
     grid-template-columns: 1fr;
     gap: 0.05rem;
+  }
+
+  .sv-about-photo-lightbox {
+    padding: 0.55rem;
+  }
+
+  .sv-about-photo-lightbox-dialog {
+    width: 100%;
+  }
+
+  .sv-about-photo-lightbox-dialog img {
+    max-height: calc(100vh - 5.8rem);
+    border-radius: 0.8rem;
+  }
+
+  .sv-about-photo-lightbox-close,
+  .sv-about-photo-lightbox-nav {
+    width: 34px;
+    height: 34px;
+    font-size: 1.2rem;
+  }
+
+  .sv-about-photo-lightbox-close {
+    top: 0.25rem;
+    right: 0.25rem;
+  }
+
+  .sv-about-photo-lightbox-prev {
+    left: 0.3rem;
+  }
+
+  .sv-about-photo-lightbox-next {
+    right: 0.3rem;
   }
 
   .sv-legal-footer {

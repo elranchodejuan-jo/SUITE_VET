@@ -205,13 +205,14 @@
           <article class="sv-card sv-about-card">
             <span class="sv-about-card-label">Contacto</span>
             <h3>Contacto</h3>
-            <p>Esta secci&oacute;n estar&aacute; destinada a informaci&oacute;n de contacto, redes, correo o canales oficiales del proyecto.</p>
+            <p>Canales de contacto oficiales del proyecto.</p>
             <dl class="sv-about-contact-list">
-              <div><dt>Correo</dt><dd>Pendiente</dd></div>
-              <div><dt>Instagram</dt><dd>Pendiente</dd></div>
+              <div><dt>Tel&eacute;fono / WhatsApp</dt><dd><a href="https://wa.me/593988048481" target="_blank" rel="noopener noreferrer">0988048481</a></dd></div>
+              <div><dt>Correo</dt><dd><a href="mailto:bajanajua710@gmail.com">bajanajua710@gmail.com</a></dd></div>
+              <div><dt>Instagram</dt><dd><a href="https://www.instagram.com/elranchodejuan_jo/?hl=es" target="_blank" rel="noopener noreferrer">@elranchodejuan_jo</a></dd></div>
               <div><dt>GitHub</dt><dd>Pendiente</dd></div>
               <div><dt>Sitio web</dt><dd>Pendiente</dd></div>
-              <div><dt>Ubicaci&oacute;n</dt><dd>Ecuador</dd></div>
+              <div><dt>Ubicaci&oacute;n</dt><dd>Balao Grande - Guayas - Ecuador</dd></div>
             </dl>
           </article>
         </div>
@@ -220,6 +221,17 @@
           <p>&ldquo;SUITE VET nace del sue&ntilde;o de transformar la Medicina Veterinaria con herramientas simples, pr&aacute;cticas y humanas; hechas para aprender mejor, trabajar mejor y cuidar mejor a los animales.&rdquo;</p>
         </aside>
       </section>
+
+      <div class="sv-about-photo-lightbox" id="sv-about-photo-lightbox" aria-hidden="true" hidden>
+        <div class="sv-about-photo-lightbox-backdrop" data-creator-lightbox-close></div>
+        <figure class="sv-about-photo-lightbox-dialog" role="dialog" aria-modal="true" aria-label="Vista previa de foto del creador">
+          <button class="sv-about-photo-lightbox-close" type="button" data-creator-lightbox-close aria-label="Cerrar vista previa">&times;</button>
+          <button class="sv-about-photo-lightbox-nav sv-about-photo-lightbox-prev" type="button" data-creator-lightbox-prev aria-label="Foto anterior" hidden>&#8249;</button>
+          <img id="sv-about-photo-lightbox-image" alt="" />
+          <button class="sv-about-photo-lightbox-nav sv-about-photo-lightbox-next" type="button" data-creator-lightbox-next aria-label="Foto siguiente" hidden>&#8250;</button>
+          <figcaption id="sv-about-photo-lightbox-caption"></figcaption>
+        </figure>
+      </div>
     `;
   }
 
@@ -252,6 +264,11 @@
     const dots = document.getElementById("sv-about-creator-dots");
     const prevButton = carousel?.querySelector("[data-creator-prev]");
     const nextButton = carousel?.querySelector("[data-creator-next]");
+    const lightbox = document.getElementById("sv-about-photo-lightbox");
+    const lightboxImage = document.getElementById("sv-about-photo-lightbox-image");
+    const lightboxCaption = document.getElementById("sv-about-photo-lightbox-caption");
+    const lightboxPrev = lightbox?.querySelector("[data-creator-lightbox-prev]");
+    const lightboxNext = lightbox?.querySelector("[data-creator-lightbox-next]");
     if (!carousel || !avatar || !dots || !prevButton || !nextButton) return;
 
     const photos = await preloadCreatorPhotos();
@@ -262,6 +279,50 @@
 
     let activeIndex = 0;
     let pointerStartX = null;
+    let isLightboxOpen = false;
+    let lastFocusBeforeLightbox = null;
+
+    function renderLightboxPhoto() {
+      if (!lightbox || !lightboxImage) return;
+      const photo = photos[activeIndex];
+      lightboxImage.src = photo.src;
+      lightboxImage.alt = photo.alt;
+      if (lightboxCaption) {
+        lightboxCaption.textContent = photo.alt || `Foto ${activeIndex + 1}`;
+      }
+    }
+
+    function openLightbox() {
+      if (!lightbox || !lightboxImage) return;
+      if (isLightboxOpen) return;
+      isLightboxOpen = true;
+      lastFocusBeforeLightbox = document.activeElement instanceof HTMLElement ? document.activeElement : avatar;
+      renderLightboxPhoto();
+      lightbox.hidden = false;
+      lightbox.setAttribute("aria-hidden", "false");
+      document.body.classList.add("sv-about-lightbox-open");
+      window.requestAnimationFrame(() => lightbox.classList.add("is-open"));
+      const closeBtn = lightbox.querySelector("[data-creator-lightbox-close]");
+      closeBtn?.focus();
+    }
+
+    function closeLightbox() {
+      if (!lightbox) return;
+      if (!isLightboxOpen) return;
+      isLightboxOpen = false;
+      lightbox.classList.remove("is-open");
+      lightbox.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("sv-about-lightbox-open");
+      window.setTimeout(() => {
+        if (!isLightboxOpen) lightbox.hidden = true;
+      }, 170);
+
+      if (lastFocusBeforeLightbox && typeof lastFocusBeforeLightbox.focus === "function") {
+        lastFocusBeforeLightbox.focus();
+      } else {
+        avatar.focus();
+      }
+    }
 
     function renderPhoto(nextIndex) {
       activeIndex = (nextIndex + photos.length) % photos.length;
@@ -273,6 +334,8 @@
       avatar.innerHTML = "";
       avatar.appendChild(image);
       avatar.classList.add("sv-about-avatar-has-image");
+      avatar.dataset.previewSrc = photo.src;
+      avatar.dataset.previewAlt = photo.alt;
 
       dots.querySelectorAll("button").forEach((dot, dotIndex) => {
         const isActive = dotIndex === activeIndex;
@@ -284,6 +347,7 @@
     function goToPhoto(nextIndex) {
       if (photos.length <= 1) return;
       renderPhoto(nextIndex);
+      if (isLightboxOpen) renderLightboxPhoto();
     }
 
     dots.innerHTML = photos
@@ -296,6 +360,21 @@
     prevButton.hidden = !hasManyPhotos;
     nextButton.hidden = !hasManyPhotos;
     dots.hidden = !hasManyPhotos;
+    if (lightboxPrev) lightboxPrev.hidden = !hasManyPhotos;
+    if (lightboxNext) lightboxNext.hidden = !hasManyPhotos;
+
+    avatar.classList.add("sv-about-avatar-clickable");
+    avatar.setAttribute("role", "button");
+    avatar.setAttribute("tabindex", "0");
+    avatar.setAttribute("aria-label", "Abrir foto del creador en vista previa");
+    avatar.setAttribute("title", "Abrir vista previa");
+
+    avatar.addEventListener("click", () => openLightbox());
+    avatar.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      event.preventDefault();
+      openLightbox();
+    });
 
     prevButton.addEventListener("click", () => goToPhoto(activeIndex - 1));
     nextButton.addEventListener("click", () => goToPhoto(activeIndex + 1));
@@ -331,6 +410,33 @@
 
     carousel.addEventListener("pointercancel", () => {
       pointerStartX = null;
+    });
+
+    lightbox?.addEventListener("click", (event) => {
+      if (event.target.closest("[data-creator-lightbox-close]")) {
+        closeLightbox();
+      }
+    });
+
+    lightboxPrev?.addEventListener("click", () => goToPhoto(activeIndex - 1));
+    lightboxNext?.addEventListener("click", () => goToPhoto(activeIndex + 1));
+
+    document.addEventListener("keydown", (event) => {
+      if (!isLightboxOpen) return;
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeLightbox();
+        return;
+      }
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        goToPhoto(activeIndex - 1);
+        return;
+      }
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        goToPhoto(activeIndex + 1);
+      }
     });
 
     renderPhoto(0);
