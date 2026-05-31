@@ -346,7 +346,7 @@
           />
         </div>
 
-        <div class="cat-chip-grid sv-module-subnav" id="farma-chips"></div>
+        <div class="cat-chip-grid farma-chip-strip" id="farma-chips"></div>
         <div class="sv-grid" id="farma-lista"></div>
       </div>
     `;
@@ -5422,3 +5422,4 @@
     window.setTimeout(() => node.remove(), 2400);
   }
 })();
+
