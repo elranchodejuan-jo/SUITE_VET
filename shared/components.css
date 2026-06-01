@@ -73,6 +73,8 @@ p { color: var(--sv-text-secondary); font-size: 0.9rem; }
 .sv-card[data-module="farma"]  { border-left: 4px solid var(--sv-farma-color); }
 .sv-card[data-module="micro"]  { border-left: 4px solid var(--sv-micro-color); }
 .sv-card[data-module="pato"]   { border-left: 4px solid var(--sv-pato-color);  }
+.sv-card[data-module="clinica"]{ border-left: 4px solid var(--sv-clinica-color); }
+.sv-card[data-module="semiologia"]{ border-left: 4px solid var(--sv-semiologia-color, var(--sv-clinica-color)); }
 
 /* Cabecera de tarjeta */
 .sv-card-header {

@@ -301,6 +301,8 @@
 .sv-home-card-micro::before { border-color: var(--sv-micro-color); }
 .sv-home-card-pato::before  { border-color: var(--sv-pato-color);  }
 .sv-home-card-nutri::before { border-color: var(--sv-nutri-color); }
+.sv-home-card-clinica::before { border-color: var(--sv-clinica-color); }
+.sv-home-card-semiologia::before { border-color: var(--sv-semiologia-color, var(--sv-clinica-color)); }
 
 .sv-home-card:hover {
   transform: translateY(-3px);
@@ -308,6 +310,10 @@
   border-color: var(--sv-border);
 }
 .sv-home-card-icon  { font-size: 2.2rem; }
+.sv-home-card-icon-nutri {
+  font-size: 1.45rem;
+  letter-spacing: 0.03em;
+}
 .sv-home-card-title { font-family: var(--sv-font-heading); font-size: 1.15rem; font-weight: 700; }
 .sv-home-card-text  { font-size: 0.82rem; color: var(--sv-text-muted); }
 
@@ -603,6 +609,12 @@
 .sv-menu-icon-micro { color: var(--sv-micro-color); border-color: rgba(34, 211, 238, 0.55); }
 .sv-menu-icon-pato { color: var(--sv-pato-color); border-color: rgba(249, 115, 22, 0.55); }
 .sv-menu-icon-nutri { color: var(--sv-nutri-color); border-color: rgba(16, 185, 129, 0.55); }
+.sv-menu-icon-clinica { color: var(--sv-clinica-color); border-color: rgba(16, 112, 210, 0.55); }
+.sv-menu-icon-semiologia { color: var(--sv-semiologia-color, var(--sv-clinica-color)); border-color: rgba(46, 122, 214, 0.55); }
+.sv-menu-icon-nutri {
+  font-size: 0.58rem;
+  letter-spacing: 0.01em;
+}
 
 @media print {
   .sv-topbar, .sv-nav, .sv-fab, .sv-menu-panel, #sv-theme-toggle { display: none !important; }

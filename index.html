@@ -19,6 +19,8 @@
   <link rel="stylesheet" href="modules/micro/micro.css" />
   <link rel="stylesheet" href="modules/patologia/patologia.css" />
   <link rel="stylesheet" href="modules/nutricion/nutricion.css" />
+  <link rel="stylesheet" href="modules/clinica-integrada/clinica.css" />
+  <link rel="stylesheet" href="modules/semiologia-anamnesis/semiologia.css" />
   <link rel="stylesheet" href="shared/styles/theme.css" />
   <link rel="stylesheet" href="shared/styles/module-layout.css" />
   <link rel="stylesheet" href="shared/styles/cards.css" />
@@ -86,6 +88,8 @@
     <button class="sv-nav-btn" data-view="microbiologia">Microbiología</button>
     <button class="sv-nav-btn" data-view="patologia">Patología</button>
     <button class="sv-nav-btn" data-view="nutricion">Nutrición Animal</button>
+    <button class="sv-nav-btn" data-view="clinica">Clínica Integrada</button>
+    <button class="sv-nav-btn" data-view="semiologia">Semiología &amp; Anamnesis Pro</button>
   </nav>
 
   <!-- ════════════════════════════════════════
@@ -123,10 +127,22 @@
           <span class="sv-coming-tag">Nuevo módulo</span>
         </button>
         <button class="sv-home-card sv-home-card-nutri" data-go-view="nutricion" type="button">
-          <div class="sv-home-card-icon">NA</div>
+          <div class="sv-home-card-icon sv-home-card-icon-nutri">🐷🐔🐮</div>
           <div class="sv-home-card-title">Nutrición Animal</div>
           <div class="sv-home-card-text">Nutrientes, Weende, agua, raciones, ingredientes y clínica nutricional.</div>
           <span class="sv-coming-tag">Lab</span>
+        </button>
+        <button class="sv-home-card sv-home-card-clinica" data-go-view="clinica" type="button">
+          <div class="sv-home-card-icon">🩺</div>
+          <div class="sv-home-card-title">Clínica Integrada</div>
+          <div class="sv-home-card-text">Casos clínicos guiados para aprender a razonar como médico veterinario.</div>
+          <span class="sv-coming-tag">Nuevo</span>
+        </button>
+        <button class="sv-home-card sv-home-card-semiologia" data-go-view="semiologia" type="button">
+          <div class="sv-home-card-icon">👁️</div>
+          <div class="sv-home-card-title">Semiología &amp; Anamnesis Pro</div>
+          <div class="sv-home-card-text">Entrenador clínico para anamnesis, examen físico, OSCE, logbook y reporte profesional.</div>
+          <span class="sv-coming-tag">Pro</span>
         </button>
         <button class="sv-home-card sv-home-card-coming sv-disabled" type="button" disabled>
           <div class="sv-home-card-icon">🐄</div>
@@ -170,6 +186,16 @@
     <!-- NUTRICIÓN ANIMAL -->
     <section id="view-nutricion" class="sv-view">
       <div id="nutricion-root"></div>
+    </section>
+
+    <!-- CLINICA INTEGRADA -->
+    <section id="view-clinica" class="sv-view">
+      <div id="clinica-root"></div>
+    </section>
+
+    <!-- SEMIOLOGIA & ANAMNESIS PRO -->
+    <section id="view-semiologia" class="sv-view">
+      <div id="semiologia-root"></div>
     </section>
 
   </main>
@@ -337,6 +363,16 @@
   <script src="modules/nutricion/data/etiquetasBalanceadoData.js" defer></script>
   <script src="modules/nutricion/data/nutricionIndexData.js" defer></script>
   <script src="modules/nutricion/nutricion.js" defer></script>
+
+  <!-- Clinica Integrada -->
+  <script src="modules/clinica-integrada/clinica-data.js" defer></script>
+  <script src="modules/clinica-integrada/clinica-pdf.js" defer></script>
+  <script src="modules/clinica-integrada/clinica.js" defer></script>
+
+  <!-- Semiologia & Anamnesis Pro -->
+  <script src="modules/semiologia-anamnesis/semiologia-data.js" defer></script>
+  <script src="modules/semiologia-anamnesis/semiologia-pdf.js" defer></script>
+  <script src="modules/semiologia-anamnesis/semiologia.js" defer></script>
 
 </body>
 </html>

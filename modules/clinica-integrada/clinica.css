@@ -1,0 +1,674 @@
+/* ==========================================================================
+   SUITE VET - Clinica Integrada
+   ========================================================================== */
+
+.clinica-shell {
+  gap: 0.9rem;
+}
+
+.clinica-header {
+  border-left: 4px solid var(--sv-clinica-color);
+}
+
+.clinica-kicker {
+  color: var(--sv-text-muted);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.clinica-tabs {
+  border-bottom: 1px solid var(--sv-border);
+  padding-bottom: 0.55rem;
+}
+
+.clinica-home-grid {
+  display: grid;
+  gap: 0.8rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.clinica-home-card {
+  align-items: flex-start;
+  background: linear-gradient(150deg, rgba(16, 112, 210, 0.16), rgba(17, 24, 39, 0.32)), var(--sv-bg-surface);
+  border: 1px solid var(--sv-border);
+  border-radius: 1rem;
+  color: var(--sv-text-primary);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 1rem;
+  text-align: left;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+.clinica-home-card:hover {
+  border-color: var(--sv-clinica-color);
+  box-shadow: var(--sv-shadow-md);
+  transform: translateY(-2px);
+}
+
+.clinica-home-card strong {
+  font-size: 0.95rem;
+}
+
+.clinica-home-card span {
+  color: var(--sv-text-secondary);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.clinica-module-card {
+  background: var(--sv-bg-surface);
+  border: 1px solid var(--sv-border);
+  border-radius: 1rem;
+  box-shadow: var(--sv-shadow-sm);
+  padding: 0.9rem;
+}
+
+.clinica-chip-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.clinica-action-strip {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.clinica-load-inline {
+  align-items: center;
+  display: grid;
+  gap: 0.4rem;
+  grid-template-columns: minmax(220px, 1fr) auto;
+  margin-left: auto;
+}
+
+.clinica-editor {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.clinica-section {
+  background: var(--sv-bg-surface);
+  border: 1px solid var(--sv-border);
+  border-radius: 0.95rem;
+  box-shadow: var(--sv-shadow-sm);
+  overflow: hidden;
+}
+
+.clinica-section > summary {
+  background: linear-gradient(150deg, rgba(16, 112, 210, 0.16), transparent);
+  cursor: pointer;
+  font-weight: 700;
+  list-style: none;
+  padding: 0.78rem 0.9rem;
+}
+
+.clinica-section > summary::-webkit-details-marker {
+  display: none;
+}
+
+.clinica-section > *:not(summary) {
+  margin: 0.75rem 0.9rem 0.9rem;
+}
+
+.clinica-form-grid {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.clinica-form-grid-2 {
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.clinica-form-grid-3 {
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+}
+
+.clinica-form-grid-4 {
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.clinica-field {
+  display: grid;
+  gap: 0.24rem;
+}
+
+.clinica-field > span {
+  color: var(--sv-text-secondary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.clinica-field-text {
+  margin-top: 0.65rem;
+}
+
+.clinica-textarea {
+  min-height: 88px;
+  resize: vertical;
+}
+
+.clinica-inline-actions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.clinica-note {
+  background: var(--sv-bg-elevated);
+  border: 1px solid var(--sv-border-subtle);
+  border-radius: 0.75rem;
+  color: var(--sv-text-secondary);
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.65rem 0.75rem;
+}
+
+.clinica-note.is-ready {
+  border-color: rgba(34, 197, 94, 0.35);
+}
+
+.clinica-note strong {
+  color: var(--sv-text-primary);
+}
+
+.clinica-problems-grid {
+  display: grid;
+  gap: 0.35rem;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+}
+
+.clinica-check {
+  align-items: center;
+  background: var(--sv-bg-elevated);
+  border: 1px solid var(--sv-border-subtle);
+  border-radius: 0.7rem;
+  cursor: pointer;
+  display: flex;
+  gap: 0.45rem;
+  padding: 0.5rem 0.62rem;
+}
+
+.clinica-check input {
+  accent-color: var(--sv-clinica-color);
+}
+
+.clinica-check span {
+  color: var(--sv-text-secondary);
+  font-size: 0.82rem;
+}
+
+.clinica-chip-selected {
+  margin-top: 0.45rem;
+}
+
+.clinica-muted {
+  color: var(--sv-text-muted);
+  font-size: 0.84rem;
+}
+
+.clinica-grid-diff {
+  display: grid;
+  gap: 0.65rem;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+}
+
+.clinica-diff-card {
+  border-left: 4px solid var(--sv-clinica-color);
+}
+
+.clinica-selected-block {
+  background: var(--sv-bg-elevated);
+  border: 1px solid var(--sv-border-subtle);
+  border-radius: 0.75rem;
+  margin-top: 0.75rem;
+  padding: 0.7rem;
+}
+
+.clinica-selected-block h4 {
+  font-size: 0.86rem;
+  margin: 0 0 0.5rem;
+}
+
+.clinica-chip-button {
+  background: rgba(16, 112, 210, 0.14);
+  border: 1px solid rgba(16, 112, 210, 0.3);
+  border-radius: 999px;
+  color: var(--sv-text-primary);
+  cursor: pointer;
+  font-size: 0.76rem;
+  padding: 0.2rem 0.58rem;
+}
+
+.clinica-exam-group {
+  margin-top: 0.7rem;
+}
+
+.clinica-exam-group h4 {
+  font-size: 0.85rem;
+  margin: 0 0 0.5rem;
+}
+
+.clinica-exam-list {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.clinica-exam-row {
+  align-items: center;
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: minmax(220px, 1fr) minmax(180px, 1fr) minmax(180px, 1fr);
+}
+
+.clinica-summary-box {
+  background: var(--sv-bg-elevated);
+  border: 1px solid var(--sv-border-subtle);
+  border-radius: 0.75rem;
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.7rem;
+}
+
+.clinica-summary-box p {
+  font-size: 0.83rem;
+}
+
+.clinica-action-row,
+.clinica-card-actions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.clinica-saved-toolbar {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: minmax(220px, 2fr) repeat(4, minmax(130px, 1fr));
+}
+
+.clinica-saved-grid,
+.clinica-library-grid,
+.clinica-templates-grid {
+  margin-top: 0.5rem;
+}
+
+.clinica-case-card,
+.clinica-practice-card,
+.clinica-template-card {
+  border-left: 4px solid var(--sv-clinica-color);
+}
+
+.clinica-guide {
+  background: var(--sv-bg-elevated);
+  border: 1px dashed var(--sv-border);
+  border-radius: 0.65rem;
+  color: var(--sv-text-secondary);
+  font-size: 0.82rem;
+  padding: 0.6rem;
+}
+
+.clinica-template-editor {
+  background: var(--sv-bg-elevated);
+  border: 1px solid var(--sv-border);
+  border-radius: 0.75rem;
+  color: var(--sv-text-primary);
+  font-family: var(--sv-font-body);
+  font-size: 0.83rem;
+  min-height: 220px;
+  padding: 0.65rem;
+  resize: vertical;
+  width: 100%;
+}
+
+.clinica-badge-soft-rose {
+  background: rgba(244, 114, 182, 0.16);
+  border: 1px solid rgba(244, 114, 182, 0.26);
+  color: #f9a8d4;
+}
+
+.clinica-badge-soft-amber {
+  background: rgba(245, 158, 11, 0.14);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  color: #fbbf24;
+}
+
+.clinica-print-area {
+  display: none;
+}
+
+.clinica-print-area.is-open {
+  display: block;
+}
+
+.clinica-print-sheet {
+  background: #ffffff;
+  border: 1px solid #d6e0ef;
+  border-radius: 2mm;
+  box-sizing: border-box;
+  color: #0f172a;
+  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.38;
+  margin: 0 auto;
+  max-width: 192mm;
+  padding: 4mm 4.5mm 5mm;
+}
+
+.clinica-print-header {
+  align-items: flex-start;
+  border-bottom: 1px solid #b8c9e1;
+  display: flex;
+  gap: 4mm;
+  justify-content: space-between;
+  padding-bottom: 2.8mm;
+}
+
+.clinica-print-brand h1 {
+  color: #0f4f95;
+  font-size: 12.6pt;
+  letter-spacing: 0.02em;
+  margin: 0;
+}
+
+.clinica-print-brand p {
+  color: #334155;
+  font-size: 8.3pt;
+  margin: 1mm 0 0;
+}
+
+.clinica-print-meta-grid {
+  display: grid;
+  gap: 1.6mm;
+  grid-template-columns: 1fr;
+  min-width: 50mm;
+}
+
+.clinica-print-meta-card {
+  align-items: flex-start;
+  border: 1px solid #d5dfef;
+  border-radius: 1.4mm;
+  display: grid;
+  gap: 0.45mm;
+  padding: 1.4mm 1.8mm;
+}
+
+.clinica-print-meta-card span {
+  color: #475569;
+  font-size: 7.1pt;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.clinica-print-meta-card strong {
+  color: #0f172a;
+  font-size: 8.4pt;
+  font-weight: 700;
+}
+
+.clinica-print-header h1 {
+  color: #0f4f95;
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+.clinica-print-header p,
+.clinica-print-meta p,
+.clinica-print-block p,
+.clinica-print-note {
+  color: #0f172a;
+  font-size: 8.3pt;
+}
+
+.clinica-print-block {
+  break-inside: avoid;
+  margin-top: 3.4mm;
+  page-break-inside: avoid;
+}
+
+.clinica-print-block h3 {
+  border-bottom: 1px solid #d8e1ef;
+  color: #0f4f95;
+  font-size: 8.3pt;
+  letter-spacing: 0.04em;
+  margin: 0 0 1.8mm;
+  padding-bottom: 1.1mm;
+  text-transform: uppercase;
+}
+
+.clinica-print-kv-grid {
+  display: grid;
+  gap: 1.7mm 2.4mm;
+}
+
+.clinica-print-kv-grid.cols-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.clinica-print-kv-grid.cols-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.clinica-print-kv-item {
+  border: 1px solid #e2e8f0;
+  border-radius: 1.2mm;
+  display: grid;
+  gap: 0.5mm;
+  min-height: 11mm;
+  padding: 1.5mm 1.9mm;
+}
+
+.clinica-print-kv-item.is-full {
+  grid-column: 1 / -1;
+  min-height: 13.5mm;
+}
+
+.clinica-print-kv-item .k {
+  color: #475569;
+  font-size: 6.9pt;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.clinica-print-kv-item .v {
+  color: #0f172a;
+  font-size: 8.2pt;
+  line-height: 1.38;
+}
+
+.clinica-print-note-line {
+  border: 1px solid #dce6f3;
+  border-left: 2px solid #0f4f95;
+  border-radius: 1.2mm;
+  color: #0f172a;
+  font-size: 8.2pt;
+  margin-top: 1.8mm;
+  padding: 1.8mm 2.1mm;
+}
+
+.clinica-print-note-box {
+  border: 1px solid #d8e1ef;
+  border-radius: 1.6mm;
+  color: #0f172a;
+  font-size: 8.4pt;
+  line-height: 1.45;
+  min-height: 14mm;
+  padding: 2.1mm 2.3mm;
+}
+
+.clinica-print-list-compact {
+  column-count: 2;
+  column-gap: 9mm;
+  margin: 0;
+  padding-left: 4.4mm;
+}
+
+.clinica-print-list-compact li {
+  break-inside: avoid;
+  color: #0f172a;
+  font-size: 8.1pt;
+  margin: 0 0 0.8mm;
+  page-break-inside: avoid;
+}
+
+.clinica-print-table-wrap {
+  border: 1px solid #d7e0ee;
+  border-radius: 1.4mm;
+  overflow: hidden;
+}
+
+.clinica-print-table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: 100%;
+}
+
+.clinica-print-table th,
+.clinica-print-table td {
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 7.9pt;
+  padding: 1.55mm 1.85mm;
+  text-align: left;
+  vertical-align: top;
+  word-break: break-word;
+}
+
+.clinica-print-table thead th {
+  background: #f6f9fd;
+  color: #0f4f95;
+  font-size: 7.4pt;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.clinica-print-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.clinica-print-soap-grid {
+  display: grid;
+  gap: 1.6mm 2.2mm;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.clinica-print-soap {
+  border: 1px solid #d8e1ef;
+  border-radius: 1.5mm;
+  font-size: 8.1pt;
+  margin-top: 2mm;
+  min-height: 16mm;
+  padding: 2mm 2.2mm;
+  white-space: pre-wrap;
+}
+
+.clinica-print-footer {
+  border-top: 1px solid #d7e1ef;
+  margin-top: 4mm;
+  padding-top: 2.3mm;
+}
+
+.clinica-print-note {
+  color: #334155;
+  font-size: 7.4pt;
+  font-style: italic;
+  margin-top: 1.4mm;
+}
+
+.clinica-print-empty {
+  color: #374151;
+  font-size: 8pt;
+  font-style: italic;
+}
+
+@media (max-width: 980px) {
+  .clinica-saved-toolbar {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .clinica-load-inline {
+    grid-template-columns: 1fr;
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .clinica-exam-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .clinica-saved-toolbar,
+  .clinica-form-grid-2,
+  .clinica-form-grid-3,
+  .clinica-form-grid-4 {
+    grid-template-columns: 1fr;
+  }
+
+  .clinica-action-strip .sv-btn,
+  .clinica-card-actions .sv-btn {
+    flex: 1 1 160px;
+  }
+}
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 14mm 12mm;
+  }
+
+  html,
+  body,
+  body.clinica-printing {
+    background: #fff !important;
+  }
+
+  body.clinica-printing > *:not(#clinica-print-area) {
+    display: none !important;
+  }
+
+  body.clinica-printing #clinica-print-area,
+  body.clinica-printing #clinica-print-area * {
+    visibility: visible !important;
+  }
+
+  body.clinica-printing #clinica-print-area {
+    background: #fff !important;
+    display: block !important;
+    inset: auto !important;
+    left: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    padding: 0 !important;
+    position: static !important;
+    top: auto !important;
+    width: 100% !important;
+  }
+
+  body.clinica-printing .clinica-print-sheet {
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    margin: 0 !important;
+    max-width: none;
+    padding: 0.6mm 0 1mm !important;
+  }
+
+  body.clinica-printing .clinica-print-table thead th {
+    background: #eef4fc !important;
+  }
+
+  body.clinica-printing .clinica-print-list-compact {
+    column-count: 2;
+  }
+}

@@ -1,7 +1,7 @@
-// =============================================================================
-// SUITE VET — shared/router.js
-// Navegación global, toggle de tema dark/light y buscador global.
-// TODOS los módulos se comunican a través de window.SuiteVet.
+﻿// =============================================================================
+// SUITE VET â€” shared/router.js
+// NavegaciÃ³n global, toggle de tema dark/light y buscador global.
+// TODOS los mÃ³dulos se comunican a travÃ©s de window.SuiteVet.
 // =============================================================================
 
 (function () {
@@ -42,7 +42,7 @@
   applyTheme(getTheme());
 
   // ---------------------------------------------------------------------------
-  // 3. NAVEGACIÓN DE VISTAS
+  // 3. NAVEGACIÃ“N DE VISTAS
   // ---------------------------------------------------------------------------
   function showView(viewName) {
     const views   = document.querySelectorAll(".sv-view");
@@ -61,7 +61,7 @@
     closeMenu();
     closeSearch(false);
 
-    // Emitir evento para que los módulos sepan cuándo se activan
+    // Emitir evento para que los mÃ³dulos sepan cuÃ¡ndo se activan
     document.dispatchEvent(
       new CustomEvent("suitevet:viewchange", { detail: { view: viewName } })
     );
@@ -71,7 +71,7 @@
   window.SuiteVet.currentView = "home";
 
   // ---------------------------------------------------------------------------
-  // 4. MENÚ HAMBURGUESA
+  // 4. MENÃš HAMBURGUESA
   // ---------------------------------------------------------------------------
   function openMenu() {
     const panel  = document.getElementById("sv-menu-panel");
@@ -137,10 +137,24 @@
         </span>
       </button>
       <button class="sv-menu-item sv-menu-route" data-view="nutricion" type="button">
-        <span class="sv-menu-icon sv-menu-icon-nutri">NA</span>
+        <span class="sv-menu-icon sv-menu-icon-nutri">🐷🐔🐮</span>
         <span>
           <strong>Nutrici&oacute;n Animal</strong>
           <small>Nutrientes, raciones y cl&iacute;nica nutricional</small>
+        </span>
+      </button>
+      <button class="sv-menu-item sv-menu-route" data-view="clinica" type="button">
+        <span class="sv-menu-icon sv-menu-icon-clinica">CI</span>
+        <span>
+          <strong>Clinica Integrada</strong>
+          <small>Casos clinicos guiados para razonamiento veterinario</small>
+        </span>
+      </button>
+      <button class="sv-menu-item sv-menu-route" data-view="semiologia" type="button">
+        <span class="sv-menu-icon sv-menu-icon-semiologia">SA</span>
+        <span>
+          <strong>Semiologia &amp; Anamnesis Pro</strong>
+          <small>Entrenador de anamnesis, examen fisico y OSCE</small>
         </span>
       </button>
       <button class="sv-menu-item sv-menu-route" data-view="favoritos" type="button">
@@ -220,8 +234,8 @@
   // ---------------------------------------------------------------------------
   // 5. BUSCADOR GLOBAL
   // ---------------------------------------------------------------------------
-  // Cada módulo se registra con: SuiteVet.registerSearch(moduleId, searchFn)
-  // searchFn(query) → array de resultados: [{title, subtitle, moduleId, action}]
+  // Cada mÃ³dulo se registra con: SuiteVet.registerSearch(moduleId, searchFn)
+  // searchFn(query) â†’ array de resultados: [{title, subtitle, moduleId, action}]
 
   const _searchRegistry = {};
 
@@ -249,23 +263,23 @@
   window.SuiteVet.globalSearch   = globalSearch;
 
   // ---------------------------------------------------------------------------
-  // 6. DOMContentLoaded — conectar eventos
+  // 6. DOMContentLoaded â€” conectar eventos
   // ---------------------------------------------------------------------------
   document.addEventListener("DOMContentLoaded", () => {
     const menuPanel = document.getElementById("sv-menu-panel");
     hydrateModuleMenu(menuPanel);
 
-    // — Botones de nav principal —
+    // â€” Botones de nav principal â€”
     document.querySelectorAll(".sv-nav-btn[data-view], .sv-menu-route[data-view]").forEach((btn) => {
       btn.addEventListener("click", () => showView(btn.dataset.view));
     });
 
-    // — Tarjetas de inicio (data-go-view) —
+    // â€” Tarjetas de inicio (data-go-view) â€”
     document.querySelectorAll("[data-go-view]").forEach((card) => {
       card.addEventListener("click", () => showView(card.dataset.goView));
     });
 
-    // — Menú hamburguesa —
+    // â€” MenÃº hamburguesa â€”
     const menuToggle = document.getElementById("sv-menu-toggle");
 
     if (menuToggle) {
@@ -290,13 +304,13 @@
       }
     });
 
-    // — Toggle de tema —
+    // â€” Toggle de tema â€”
     const themeBtn = document.getElementById("sv-theme-toggle");
     if (themeBtn) {
       themeBtn.addEventListener("click", toggleTheme);
     }
 
-    // — Buscador global —
+    // â€” Buscador global â€”
     const globalInput   = document.getElementById("sv-search-global");
     const globalResults = document.getElementById("sv-search-results");
 
@@ -347,7 +361,7 @@
       return;
     }
 
-    // Agrupar por módulo
+    // Agrupar por mÃ³dulo
     const grupos = {};
     results.forEach((r) => {
       if (!grupos[r.moduleId]) grupos[r.moduleId] = [];
@@ -360,6 +374,8 @@
       micro: "🧫 Microbiología",
       pato:  "🔬 Patología",
       nutricion: "Nutrición Animal",
+      clinica: "Clinica Integrada",
+      semiologia: "Semiologia & Anamnesis Pro",
     };
 
     for (const [moduleId, items] of Object.entries(grupos)) {
@@ -390,3 +406,4 @@
   }
 
 })();
+

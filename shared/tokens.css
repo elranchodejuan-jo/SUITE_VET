@@ -46,6 +46,8 @@
   --sv-micro-color:   #22d3ee;
   --sv-pato-color:    #f97316;
   --sv-nutri-color:   #10b981;
+  --sv-clinica-color: #1070d2;
+  --sv-semiologia-color: #2e7ad6;
 
   /* Semánticos */
   --sv-success:       #22c55e;
@@ -91,6 +93,8 @@
   --sv-accent:        #2563eb;
   --sv-accent-hover:  #1d4ed8;
   --sv-accent-shadow: rgba(37, 99, 235, 0.3);
+  --sv-clinica-color: #0b67c3;
+  --sv-semiologia-color: #1f6cc7;
 
   /* Semánticos (un poco más intensos para contraste) */
   --sv-success:       #16a34a;
