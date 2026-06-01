@@ -8,11 +8,16 @@
 }
 
 .semi-header {
+  background:
+    linear-gradient(135deg, rgba(46, 122, 214, 0.2), rgba(56, 189, 248, 0.06)),
+    var(--sv-bg-surface);
+  border: 1px solid rgba(46, 122, 214, 0.28);
   border-left: 4px solid var(--sv-semiologia-color, var(--sv-clinica-color));
+  box-shadow: 0 14px 40px rgba(16, 112, 210, 0.12);
 }
 
 .semi-kicker {
-  color: var(--sv-text-muted);
+  color: var(--sv-semiologia-color, var(--sv-clinica-color));
   font-size: 0.72rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -23,62 +28,40 @@
   padding-bottom: 0.6rem;
 }
 
-.semi-home-grid {
-  display: grid;
-  gap: 0.8rem;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+.semi-tabs .sv-module-tab,
+.semi-vital-subnav .semi-vital-pill {
+  background:
+    linear-gradient(150deg, rgba(46, 122, 214, 0.15), rgba(56, 189, 248, 0.04)),
+    var(--sv-bg-elevated);
+  border-color: rgba(46, 122, 214, 0.28);
 }
 
-.semi-home-card {
-  align-items: flex-start;
-  background: linear-gradient(150deg, rgba(16, 112, 210, 0.2), rgba(42, 168, 121, 0.08)), var(--sv-bg-surface);
-  border: 1px solid var(--sv-border);
-  border-radius: 1rem;
-  color: var(--sv-text-primary);
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  gap: 0.28rem;
-  min-height: 126px;
-  padding: 1rem;
-  text-align: left;
-  transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+.semi-tabs .sv-module-tab:hover,
+.semi-tabs .sv-module-tab.is-active,
+.semi-vital-subnav .semi-vital-pill:hover,
+.semi-vital-subnav .semi-vital-pill.is-active {
+  background: linear-gradient(135deg, rgba(46, 122, 214, 0.28), rgba(56, 189, 248, 0.12));
+  border-color: rgba(56, 189, 248, 0.78);
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
 }
 
-.semi-home-card:hover {
-  border-color: var(--sv-semiologia-color, var(--sv-clinica-color));
-  box-shadow: var(--sv-shadow-md);
-  transform: translateY(-2px);
+.semi-vital-subnav {
+  border-bottom: 1px solid var(--sv-border);
+  padding-bottom: 0.7rem;
 }
 
-.semi-home-card strong {
-  font-size: 0.94rem;
+.semi-vital-pill {
+  font-weight: 600;
 }
 
-.semi-home-card span {
-  color: var(--sv-text-secondary);
-  font-size: 0.81rem;
-  line-height: 1.45;
-}
-
-.semi-home-card em {
-  align-items: center;
-  background: rgba(59, 130, 246, 0.16);
-  border: 1px solid rgba(59, 130, 246, 0.34);
-  border-radius: 999px;
-  color: var(--sv-text-primary);
-  display: inline-flex;
-  font-size: 0.66rem;
-  font-style: normal;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  min-width: 1.8rem;
-  justify-content: center;
-  padding: 0.16rem 0.4rem;
+.semi-vital-pill strong {
+  font-weight: 600;
 }
 
 .semi-card {
-  background: var(--sv-bg-surface);
+  background:
+    radial-gradient(circle at 18% 0%, rgba(46, 122, 214, 0.12), transparent 36%),
+    var(--sv-bg-surface);
   border: 1px solid var(--sv-border);
   border-radius: 1rem;
   box-shadow: var(--sv-shadow-sm);

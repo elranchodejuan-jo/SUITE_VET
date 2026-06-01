@@ -89,28 +89,14 @@
     function renderHome() {
       return `
         <section class="clinica-home">
-          <div class="clinica-home-grid">
-            ${renderHomeButton("nuevo", "Nuevo caso clinico", "Crea un caso desde cero con razonamiento guiado.")} 
-            ${renderHomeButton("guardados", "Casos guardados", "Revisa, edita, duplica o imprime los casos almacenados.")} 
-            ${renderHomeButton("biblioteca", "Biblioteca de casos de practica", "Entrena con escenarios listos para resolver.")} 
-            ${renderHomeButton("plantillas", "Plantillas SOAP", "Usa formatos listos para consulta rapida.")} 
-          </div>
           <section class="clinica-module-card">
-            <h3>Que entrenas con este modulo?</h3>
+            <h3>Navegacion simplificada</h3>
+            <p class="clinica-subtitle">Usa las capsulas superiores para abrir cada seccion de Clinica Integrada.</p>
             <div class="clinica-chip-grid">
               ${(D.trainingTags || []).map((tag) => `<span class="sv-badge sv-badge-blue">${escapeHtml(tag)}</span>`).join("")}
             </div>
           </section>
         </section>
-      `;
-    }
-
-    function renderHomeButton(page, title, text) {
-      return `
-        <button type="button" class="clinica-home-card" data-cl-page="${page}">
-          <strong>${escapeHtml(title)}</strong>
-          <span>${escapeHtml(text)}</span>
-        </button>
       `;
     }
 

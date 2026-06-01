@@ -200,11 +200,80 @@
     `;
   }
 
+  function buildSignosVitales(data) {
+    const d = data || {};
+    const v = d.values || {};
+    const ranges = d.ranges || {};
+    const interpretationLines = (d.interpretations || []).map((row) => {
+      const causes = (row.causes || []).join(", ");
+      return `${row.label}: ${row.valueLabel} | Rango ${row.rangeLabel} | ${row.statusLabel}. ${row.message}${causes ? ` Causas: ${causes}.` : ""}`;
+    });
+    return `
+      <article class="semi-print-sheet">
+        <header class="semi-print-header">
+          <div>
+            <h1>SUITE VET - Signos Vitales Pro</h1>
+            <p>Registro clinico academico de signos vitales</p>
+          </div>
+          <div class="semi-print-meta">
+            <span>Fecha</span>
+            <strong>${esc(dateLabel(d.updatedAt))}</strong>
+            <strong>Signos Vitales Pro</strong>
+          </div>
+        </header>
+        ${section("Datos del paciente", `
+          <div class="semi-print-kv-grid cols-3">
+            ${kv("Paciente/ID", d.patientId)}
+            ${kv("Especie", d.speciesLabel || d.species)}
+            ${kv("Fecha", d.date)}
+            ${kv("Hora", d.time)}
+            ${kv("Responsable", d.responsable)}
+            ${kv("Peso (kg)", v.weightKg)}
+          </div>
+        `)}
+        ${section("Valores registrados", `
+          <div class="semi-print-kv-grid cols-3">
+            ${kv("Temperatura", v.temperatura)}
+            ${kv("FC", v.fc)}
+            ${kv("Pulso", `${v.pulso || ""} ${v.pulsoCalidad ? `(${v.pulsoCalidad})` : ""}`)}
+            ${kv("FR", v.fr)}
+            ${kv("Patron respiratorio", v.patronRespiratorio)}
+            ${kv("Mucosas", v.mucosas)}
+            ${kv("TLLC", v.tllc)}
+            ${kv("Hidratacion", v.hidratacion)}
+            ${kv("Condicion corporal", v.condicionCorporal)}
+            ${kv("Dolor", v.dolor)}
+            ${kv("Estado mental", v.estadoMental)}
+            ${kv("Movimientos ruminales", v.movimientosRuminales)}
+            ${kv("Motilidad intestinal", v.motilidadIntestinal)}
+            ${kv("Lote", v.lote)}
+          </div>
+        `)}
+        ${section("Rangos normales por especie", `
+          <div class="semi-print-kv-grid cols-3">
+            ${kv("Temperatura", Array.isArray(ranges.temperatura) ? `${ranges.temperatura[0]} - ${ranges.temperatura[1]}` : "Dato pendiente")}
+            ${kv("FC", Array.isArray(ranges.fc) ? `${ranges.fc[0]} - ${ranges.fc[1]}` : "Dato pendiente")}
+            ${kv("FR", Array.isArray(ranges.fr) ? `${ranges.fr[0]} - ${ranges.fr[1]}` : "Dato pendiente")}
+            ${kv("TLLC", ranges.tllc)}
+            ${kv("Mov. ruminales", ranges.movimientosRuminales)}
+            ${kv("Motilidad equino", ranges.motilidadIntestinal)}
+            ${kv("Notas", ranges.notas)}
+          </div>
+        `)}
+        ${section("Interpretacion automatica", listBlock(interpretationLines))}
+        ${section("Red flags", listBlock((d.redFlags || []).map((flag) => `${flag.title}: ${flag.message}`)))}
+        ${section("Observaciones", `<p class="semi-print-note">${nl(d.observations || "Sin observaciones adicionales.")}</p>`)}
+        ${footer()}
+      </article>
+    `;
+  }
+
   function buildDocument(type, data) {
     if (type === "anamnesis") return buildAnamnesis(data);
     if (type === "examen") return buildExam(data);
     if (type === "osce") return buildOsce(data);
     if (type === "progreso") return buildProgress(data);
+    if (type === "signos-vitales") return buildSignosVitales(data);
     return `
       <article class="semi-print-sheet">
         ${header("Documento", "Salida generada por Semiologia & Anamnesis Pro", Date.now())}
