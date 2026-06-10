@@ -1,6 +1,6 @@
 // =============================================================================
 // SUITE VET 2.0 — modules/casos-360/casos-data.js
-// Semillas y Estructura de Datos para Casos 360 (142 Casos Clínicos en Total)
+// Semillas y Estructura de Datos para Casos 360 (262 Casos Clínicos en Total)
 // =============================================================================
 
 (function () {
@@ -442,89 +442,676 @@
     { id: "bovino-fasciola", title: "Fasciolasis Crónica e Hipoproteinemia Bovina", species: "bovino", system: "Digestivo", diff: "Media", cover: "🐄" }
   ];
 
-  // Rellenar los 38 casos intermedios en el catálogo de perfiles
+  // =============================================================================
+  // CLINICAL EXPERT METADATA & GENERATOR
+  // =============================================================================
+
+  const SPECIES_REFERENCES = {
+    canino: {
+      name: "Canino",
+      temp: [37.5, 39.2], tempUnit: "°C",
+      fc: [70, 120], fcUnit: "lpm",
+      fr: [10, 30], frUnit: "rpm",
+      wbc: [6.0, 17.0], wbcUnit: "x10^3/µL",
+      hct: [37, 55], hctUnit: "%",
+      bun: [7, 27], bunUnit: "mg/dL",
+      creat: [0.5, 1.8], creatUnit: "mg/dL",
+      k: [3.5, 5.8], kUnit: "mEq/L",
+      na: [140, 154], naUnit: "mEq/L",
+      bg_po2: [85, 100], bg_po2Unit: "mmHg",
+      bg_pco2: [35, 45], bg_pco2Unit: "mmHg",
+      bg_ph: [7.35, 7.45], bg_phUnit: ""
+    },
+    felino: {
+      name: "Felino",
+      temp: [38.0, 39.2], tempUnit: "°C",
+      fc: [140, 220], fcUnit: "lpm",
+      fr: [20, 42], frUnit: "rpm",
+      wbc: [5.5, 19.5], wbcUnit: "x10^3/µL",
+      hct: [24, 45], hctUnit: "%",
+      bun: [16, 36], bunUnit: "mg/dL",
+      creat: [0.8, 2.4], creatUnit: "mg/dL",
+      k: [3.5, 5.8], kUnit: "mEq/L",
+      na: [145, 158], naUnit: "mEq/L",
+      bg_po2: [85, 100], bg_po2Unit: "mmHg",
+      bg_pco2: [32, 45], bg_pco2Unit: "mmHg",
+      bg_ph: [7.28, 7.41], bg_phUnit: ""
+    },
+    equino: {
+      name: "Equino",
+      temp: [37.2, 38.5], tempUnit: "°C",
+      fc: [28, 40], fcUnit: "lpm",
+      fr: [8, 16], frUnit: "rpm",
+      wbc: [5.4, 14.3], wbcUnit: "x10^3/µL",
+      hct: [32, 47], hctUnit: "%",
+      bun: [10, 24], bunUnit: "mg/dL",
+      creat: [1.2, 1.9], creatUnit: "mg/dL",
+      k: [3.0, 4.5], kUnit: "mEq/L",
+      na: [132, 146], naUnit: "mEq/L",
+      bg_po2: [90, 100], bg_po2Unit: "mmHg",
+      bg_pco2: [40, 48], bg_pco2Unit: "mmHg",
+      bg_ph: [7.35, 7.45], bg_phUnit: ""
+    },
+    bovino: {
+      name: "Bovino",
+      temp: [38.0, 39.3], tempUnit: "°C",
+      fc: [40, 80], fcUnit: "lpm",
+      fr: [12, 36], frUnit: "rpm",
+      wbc: [4.0, 12.0], wbcUnit: "x10^3/µL",
+      hct: [24, 46], hctUnit: "%",
+      bun: [10, 25], bunUnit: "mg/dL",
+      creat: [0.5, 2.2], creatUnit: "mg/dL",
+      k: [3.9, 5.8], kUnit: "mEq/L",
+      na: [132, 152], naUnit: "mEq/L",
+      bg_po2: [85, 95], bg_po2Unit: "mmHg",
+      bg_pco2: [35, 44], bg_pco2Unit: "mmHg",
+      bg_ph: [7.35, 7.50], bg_phUnit: ""
+    },
+    porcino: {
+      name: "Porcino",
+      temp: [38.7, 39.8], tempUnit: "°C",
+      fc: [60, 90], fcUnit: "lpm",
+      fr: [8, 18], frUnit: "rpm",
+      wbc: [11.0, 22.0], wbcUnit: "x10^3/µL",
+      hct: [32, 50], hctUnit: "%",
+      bun: [10, 30], bunUnit: "mg/dL",
+      creat: [1.0, 2.7], creatUnit: "mg/dL",
+      k: [4.0, 6.5], kUnit: "mEq/L",
+      na: [135, 150], naUnit: "mEq/L",
+      bg_po2: [85, 95], bg_po2Unit: "mmHg",
+      bg_pco2: [38, 48], bg_pco2Unit: "mmHg",
+      bg_ph: [7.35, 7.45], bg_phUnit: ""
+    },
+    ovino: {
+      name: "Ovino",
+      temp: [38.3, 39.9], tempUnit: "°C",
+      fc: [70, 90], fcUnit: "lpm",
+      fr: [12, 20], frUnit: "rpm",
+      wbc: [4.0, 12.0], wbcUnit: "x10^3/µL",
+      hct: [27, 45], hctUnit: "%",
+      bun: [8, 20], bunUnit: "mg/dL",
+      creat: [1.2, 1.9], creatUnit: "mg/dL",
+      k: [3.9, 5.4], kUnit: "mEq/L",
+      na: [136, 150], naUnit: "mEq/L",
+      bg_po2: [85, 95], bg_po2Unit: "mmHg",
+      bg_pco2: [35, 45], bg_pco2Unit: "mmHg",
+      bg_ph: [7.35, 7.48], bg_phUnit: ""
+    },
+    caprino: {
+      name: "Caprino",
+      temp: [38.5, 39.7], tempUnit: "°C",
+      fc: [70, 90], fcUnit: "lpm",
+      fr: [12, 20], frUnit: "rpm",
+      wbc: [4.0, 13.0], wbcUnit: "x10^3/µL",
+      hct: [22, 38], hctUnit: "%",
+      bun: [10, 26], bunUnit: "mg/dL",
+      creat: [1.0, 1.8], creatUnit: "mg/dL",
+      k: [3.5, 5.5], kUnit: "mEq/L",
+      na: [135, 148], naUnit: "mEq/L",
+      bg_po2: [85, 95], bg_po2Unit: "mmHg",
+      bg_pco2: [35, 45], bg_pco2Unit: "mmHg",
+      bg_ph: [7.35, 7.48], bg_phUnit: ""
+    },
+    ave: {
+      name: "Ave",
+      temp: [40.0, 42.0], tempUnit: "°C",
+      fc: [220, 360], fcUnit: "lpm",
+      fr: [15, 30], frUnit: "rpm",
+      wbc: [12.0, 30.0], wbcUnit: "x10^3/µL",
+      hct: [22, 35], hctUnit: "%",
+      bun: [2, 10], bunUnit: "mg/dL",
+      creat: [0.1, 0.4], creatUnit: "mg/dL",
+      k: [3.0, 5.0], kUnit: "mEq/L",
+      na: [135, 145], naUnit: "mEq/L",
+      bg_po2: [90, 105], bg_po2Unit: "mmHg",
+      bg_pco2: [25, 35], bg_pco2Unit: "mmHg",
+      bg_ph: [7.40, 7.50], bg_phUnit: ""
+    }
+  };
+
+  const INTERMEDIATE_CLINICAL_MAP = {
+    "porcino-app": {
+      diseaseName: "Actinobacilosis Porcina Aguda (APP)",
+      diseaseDesc: "bronconeumonía fibrinosa hemorrágica con disnea severa, fiebre alta, cianosis y postración.",
+      tx: "Florfenicol (20 mg/kg IM, 2 dosis cada 48h) o Ceftiofur Sódico (3 mg/kg IM cada 24h)",
+      SC: "Omitir el tratamiento antimicrobiano de urgencia en animales con disnea aguda"
+    },
+    "ovino-enterotoxemia": {
+      diseaseName: "Enterotoxemia Clostridial por C. perfringens Tipo D",
+      diseaseDesc: "toxemia entérica aguda en corderos caracterizada por diarrea profusa, signos neurológicos y muerte súbita.",
+      tx: "Vacunación preventiva del lote, antitoxina clostridial de urgencia y Penicilina G Sódica (22,000 UI/kg IV)",
+      SC: "Administrar raciones concentradas ricas en carbohidratos de fácil fermentación en animales sospechosos"
+    },
+    "caprino-mastitis": {
+      diseaseName: "Mastitis Gangrenosa Caprina por Staphylococcus aureus",
+      diseaseDesc: "infección mamaria necrotizante con glándula fría y cianótica con secreción sanguinolenta fétida.",
+      tx: "Flunixin Meglumine (2.2 mg/kg IV cada 24h), Ceftiofur Sódico y fluidoterapia intravenosa de soporte",
+      SC: "Realizar ordeños agresivos en tejido necrótico o suspender la fluidoterapia de soporte"
+    },
+    "ave-newcastle": {
+      diseaseName: "Newcastle Aviar (Sospecha Oficial)",
+      diseaseDesc: "enfermedad viral altamente contagiosa con signos respiratorios, digestivos y neurológicos graves.",
+      tx: "Reporte obligatorio inmediato a las autoridades sanitarias y cuarentena estricta del predio",
+      SC: "Tratar individualmente con antibióticos y ocultar el caso sin reportar a las autoridades"
+    },
+    "canino-otitis": {
+      diseaseName: "Otitis Externa Bilateral por Malassezia",
+      diseaseDesc: "eritema en pabellón auricular con abundante exudado ceruminoso marrón de olor rancio.",
+      tx: "Suspensión ótica compuesta (Miconazol, Gentamicina y Dexametasona) tras limpieza previa",
+      SC: "Instilar gotas con aminoglucósidos sin confirmar la integridad de la membrana timpánica"
+    },
+    "felino-flutd": {
+      diseaseName: "Síndrome Urinario Felino Obstructivo (FLUTD)",
+      diseaseDesc: "incapacidad de micción, disuria, estranguria y vejiga distendida pétrea dolorosa.",
+      tx: "Cateterismo uretral bajo sedación profunda, Ringer Lactato y monitoreo de potasio sérico",
+      SC: "Administrar diuréticos de asa (Furosemida) con la uretra totalmente obstruida"
+    },
+    "equino-laminitis": {
+      diseaseName: "Laminitis Aguda por Sobrecarga de Carbohidratos",
+      diseaseDesc: "dolor podal severo, postura antiálgica de apoyo en talones y aumento de pulso digital.",
+      tx: "Flunixin Meglumine (1.1 mg/kg IV cada 12h) y crioterapia continua de cascos en fase aguda",
+      SC: "Forzar el ejercicio o marcha del caballo sobre superficies duras"
+    },
+    "bovino-hipocalcemia": {
+      diseaseName: "Hipocalcemia Posparto (Fiebre de Leche)",
+      diseaseDesc: "paresia puerperal con decúbito esternal, cabeza girada hacia el flanco y midriasis.",
+      tx: "Infusión IV lenta de Borogluconato de Calcio al 20% (500 mL) bajo auscultación cardíaca",
+      SC: "Administrar calcio intravenoso rápido sin auscultación (riesgo de parada cardíaca en sístole)"
+    },
+    "porcino-sdrp": {
+      diseaseName: "Síndrome Respiratorio y Reproductivo Porcino (PRRS)",
+      diseaseDesc: "fallas reproductivas (abortos tardíos, lechones débiles) y neumonía intersticial en recría.",
+      tx: "Aislamiento estricto de naves, antipiréticos colectivos y metafilaxia antimicrobiana",
+      SC: "Mezclar lechones destetados de flujos positivos con negativos durante el brote"
+    },
+    "canino-moquillo": {
+      diseaseName: "Moquillo Canino con Signos Neurológicos",
+      diseaseDesc: "mioclonías, convulsiones epileptiformes de tipo 'masticar chicle', hiperqueratosis y secreción oculonasal.",
+      tx: "Fenobarbital (3 mg/kg VO cada 12h), Dexametasona (0.5 mg/kg IV) y antibiótico de barrera",
+      SC: "Administrar vacunas con virus vivo modificado a animales con signología activa"
+    },
+    "felino-leucemia": {
+      diseaseName: "Anemia Arregenerativa por ViLeF",
+      diseaseDesc: "anemia severa por supresión medular, palidez de mucosas, letargo y linfadenomegalia.",
+      tx: "Transfusión de sangre entera fresca compatible y terapia de soporte con eritropoyetina",
+      SC: "Administrar fármacos inmunosupresores mielotóxicos sin cobertura antibiótica de barrera"
+    },
+    "bovino-tuberculosis": {
+      diseaseName: "Tuberculosis Bovina (Reacción Tuberculínica)",
+      diseaseDesc: "reacción positiva a la prueba intradérmica de tuberculina en el pliegue anocaudal.",
+      tx: "Aislamiento inmediato del animal reactor y notificación oficial para sacrificio sanitario",
+      SC: "Prescribir antimicrobianos (Isoniazida/Rifampicina) para ocultar la positividad a la prueba oficial"
+    },
+    "equino-tetanos": {
+      diseaseName: "Tétanos Equino Secundario a Herida Punzante",
+      diseaseDesc: "rigidez muscular generalizada, tercer párpado prolapsado, postura en 'caballete' e hiperexcitabilidad.",
+      tx: "Antitoxina tetánica (30,000 UI IV/IM), Penicilina G Sódica y sedación en ambiente oscuro",
+      SC: "Alojar al paciente en boxes ruidosos o con alta iluminación que exacerben los espasmos"
+    },
+    "canino-piometra": {
+      diseaseName: "Piometra de Cuello Cerrado",
+      diseaseDesc: "sepsis de origen uterino, colecta purulenta confirmada por ecografía, letargo, poliuria y polidipsia.",
+      tx: "Ovariohisterectomía de urgencia y antibioterapia parenteral con Cefalotina o Cefazolina IV",
+      SC: "Administrar uterotónicos (Oxitocina o prostaglandinas) con el cuello uterino cerrado"
+    },
+    "felino-irc": {
+      diseaseName: "Falla Renal Crónica Agudizada",
+      diseaseDesc: "gato geriátrico deshidratado con anorexia, vómitos, halitosis urémica y úlceras orales.",
+      tx: "Fluidoterapia intravenosa con solución salina al 0.9% o Ringer Lactato al doble de mantenimiento",
+      SC: "Administrar AINEs (Flunixin o Meloxicam) a dosis estándar a un paciente azoémico deshidratado"
+    },
+    "bovino-mastitis-sub": {
+      diseaseName: "Mastitis Subclínica por Streptococcus uberis",
+      diseaseDesc: "conteo de células somáticas superior a 400,000 cel/mL sin alteraciones visibles en la leche.",
+      tx: "Terapia antibiótica intramamaria de secado, desinfección posordeño y rutina de higiene",
+      SC: "Tratar con antibióticos de lactancia sin realizar cultivo bacteriológico previo"
+    },
+    "porcino-colibacilosis": {
+      diseaseName: "Colibacilosis Neonatal por E. coli ETEC",
+      diseaseDesc: "diarrea amarillenta acuosa profusa en lechones menores de 5 días con deshidratación.",
+      tx: "Terapia de soporte electrolítico oral templado y Apramicina oral colectiva",
+      SC: "Omitir el soporte térmico o la rehidratación en lechones neonatos postrados"
+    },
+    "ave-coccidiosis": {
+      diseaseName: "Coccidiosis Cecal por Eimeria tenella",
+      diseaseDesc: "diarrea con sangre (heces hemorrágicas), palidez, erizamiento de plumas y mortalidad en lote.",
+      tx: "Amprolio (0.024% en agua de bebida por 5 días) y desinfección química de camas",
+      SC: "Tratar únicamente a las aves caídas y omitir la medicación colectiva del lote expuesto"
+    },
+    "canino-cushing": {
+      diseaseName: "Hiperadrenocorticismo Canino (Síndrome de Cushing)",
+      diseaseDesc: "poliuria, polidipsia, alopecia simétrica bilateral, abdomen péndulo y atrofia cutánea.",
+      tx: "Trilostano (2 mg/kg VO cada 24h) y control periódico con estimulación de ACTH",
+      SC: "Administrar corticoides de depósito (Triamcinolona) a un paciente con cushing sospechoso"
+    },
+    "felino-hiper": {
+      diseaseName: "Hipertiroidismo Felino y Cardiopatía Secundaria",
+      diseaseDesc: "gato viejo con pérdida de peso severa a pesar de polifagia, taquicardia y soplo cardíaco.",
+      tx: "Metimazol (2.5 mg/gato VO cada 12h) y control de la frecuencia cardíaca con Atenolol",
+      SC: "Suministrar fluidos IV con alta concentración de sodio en un paciente con miocardiopatía congestiva"
+    },
+    "equino-influenza": {
+      diseaseName: "Brote de Influenza Equina",
+      diseaseDesc: "tos seca paroxística, fiebre alta, descarga nasal serosa y letargia generalizada en establo.",
+      tx: "Aislamiento de caballos febriles, reposo absoluto prolongado y Flunixin Meglumine",
+      SC: "Forzar el ejercicio físico o entrenamiento deportivo con signos de hipertermia activa"
+    },
+    "bovino-anaplasmosis": {
+      diseaseName: "Anaplasmosis Bovina (Anaplasma marginale)",
+      diseaseDesc: "fiebre, anemia severa con mucosas amarillas (ictericia), estreñimiento y agresividad por hipoxia.",
+      tx: "Oxitetraciclina de larga acción (20 mg/kg IM) e hidratación de soporte",
+      SC: "Realizar arreos prolongados o movilización física intensa en animales con anemia grave"
+    },
+    "porcino-erisipela": {
+      diseaseName: "Erisipela Porcina Aguda (Erysipelothrix rhusiopathiae)",
+      diseaseDesc: "fiebre alta, postración, y lesiones cutáneas eritematosas en forma de rombo o 'diamante'.",
+      tx: "Penicilina G Sódica (20,000 UI/kg IM cada 12h) o Amoxicilina en el agua de bebida",
+      SC: "Ignorar las lesiones cutáneas y retrasar el inicio de la terapia antibiótica sistémica"
+    },
+    "canino-dermatofito": {
+      diseaseName: "Dermatofitosis por Microsporum canis",
+      diseaseDesc: "lesiones alopécicas circulares con descamación y costras finas, fluorescencia con lámpara de Wood.",
+      tx: "Itraconazol (5 mg/kg VO cada 24h) y baños de Clorhexidina con Ketoconazol",
+      SC: "Administrar glucocorticoides inyectables de larga acción para calmar el prurito"
+    },
+    "felino-pif": {
+      diseaseName: "Peritonitis Infecciosa Felina (PIF) Efusiva",
+      diseaseDesc: "fiebre fluctuante, ascitis con líquido filante amarillo paja, letargo y pérdida de peso.",
+      tx: "Tratamiento antiviral con GS-441524 (10 mg/kg SC cada 24h) y soporte con Prednisolona",
+      SC: "Drenar completamente el líquido ascítico repetidamente sin soporte de albúmina o proteínas"
+    },
+    "equino-babesiosis": {
+      diseaseName: "Babesiosis Equina (Piroplasmosis)",
+      diseaseDesc: "fiebre, ictericia, hemoglobinuria (orina oscura), petequias en mucosas y debilidad.",
+      tx: "Dipropionato de Imidocarb (2.4 mg/kg IM, dos dosis espaciadas 72 horas) y terapia de soporte",
+      SC: "Administrar Imidocarb por vía intravenosa rápida (provoca shock colinérgico severo)"
+    },
+    "bovino-carbunco": {
+      diseaseName: "Carbunco Bacteridiano (Antrax por Bacillus anthracis)",
+      diseaseDesc: "muerte súbita con salida de sangre oscura no coagulable por orificios naturales y meteorismo rápido.",
+      tx: "Notificación oficial urgente, no realizar necropsia, y Penicilina G al resto del lote",
+      SC: "Abrir el cadáver del animal sospechoso para realizar necropsia de campo (espora el bacilo)"
+    },
+    "ave-coriza": {
+      diseaseName: "Coriza Infecciosa Aviar (Avibacterium paragallinarum)",
+      diseaseDesc: "inflamación infraorbitaria severa (cara hinchada), secreción nasal mucosa y estornudos.",
+      tx: "Sulfadiazina-Trimetoprim o Enrofloxacina en el agua de bebida y limpieza de bebederos",
+      SC: "Introducir aves de reemplazo en un lote recuperado sin previa vacunación de control"
+    },
+    "canino-lepto": {
+      diseaseName: "Leptospirosis Aguda con Insuficiencia Renal y Hepática",
+      diseaseDesc: "fiebre, ictericia, dolor renal a la palpación, hematuria y uremia de evolución aguda.",
+      tx: "Penicilina G Sódica IV (fase viremia) seguida de Doxiciclina oral por 14 días",
+      SC: "Manipular fluidos corporales del paciente sin guantes (alto riesgo de zoonosis)"
+    },
+    "felino-toxo": {
+      diseaseName: "Toxoplasmosis Ocular e Intersticial",
+      diseaseDesc: "uveítis anterior bilateral, disnea por neumonía intersticial y fiebre refractaria.",
+      tx: "Clindamicina (12.5 mg/kg VO cada 12h por 28 días) y colirios antiinflamatorios",
+      SC: "Administrar dosis altas de inmunosupresores sistémicos sin cobertura antiparasitaria"
+    },
+    "equino-rinoneumonitis": {
+      diseaseName: "Aborto por Herpesvirus Equino Tipo 1 (EHV-1)",
+      diseaseDesc: "aborto tardío súbito en yeguas gestantes sin signos premonitorios, feto con ictericia.",
+      tx: "Aislamiento estricto de yeguas abortadas, desinfección del área y vacunación sistemática",
+      SC: "Mantener a las hembras que abortaron en contacto con el resto de yeguas gestantes"
+    },
+    "bovino-digital": {
+      diseaseName: "Dermatitis Digital Bovina (Treponema spp.)",
+      diseaseDesc: "claudicación severa, lesiones ulcerativas con apariencia de 'fresa' en la región supracoronaria.",
+      tx: "Limpieza y desbridamiento local, Oxitetraciclina tópica en spray y vendaje podal",
+      SC: "Aplicar compuestos cáusticos corrosivos sin retirar el barro ni proteger el lecho ulcerado"
+    },
+    "porcino-parvo": {
+      diseaseName: "Falla Reproductiva por Parvovirus Porcino (PPV)",
+      diseaseDesc: "aumento de fetos momificados de diferentes tamaños, camadas pequeñas e infertilidad.",
+      tx: "Vacunación preventiva obligatoria de hembras de reemplazo antes del primer servicio",
+      SC: "Introducir reproductoras jóvenes al plantel de cría sin esquema de vacunación contra PPV"
+    },
+    "ave-micoplasmosis": {
+      diseaseName: "Micoplasmosis Respiratoria (Mycoplasma gallisepticum)",
+      diseaseDesc: "estertores traqueales, secreción nasal y conjuntivitis en pollos de engorde, aerosaculitis severa.",
+      tx: "Tilosina o Tiamulina en el agua de bebida del lote durante 3-5 días",
+      SC: "Recolectar huevos incubables de lotes con signología respiratoria activa"
+    },
+    "canino-erliquia": {
+      diseaseName: "Ehrlichiosis Canina Aguda por Ehrlichia canis",
+      diseaseDesc: "fiebre, petequias, epistaxis (sangrado nasal), trombocitopenia severa y linfadenomegalia.",
+      tx: "Doxiciclina (10 mg/kg VO cada 24h por 28 días) e hidratación de soporte",
+      SC: "Suspender el tratamiento antibiótico al cesar la fiebre (riesgo de cronicidad subclínica)"
+    },
+    "felino-sarna": {
+      diseaseName: "Sarna Notoédrica Felina Crónica (Notoedres cati)",
+      diseaseDesc: "prurito intenso cefálico, costras gruesas en bordes auriculares, cara y cuello con alopecia.",
+      tx: "Selamectina (spot-on) o Ivermectina (0.3 mg/kg SC, repetir a los 14 días)",
+      SC: "Aplicar baños acaricidas con Amitraz o Permetrinas formuladas para caninos"
+    },
+    "equino-encefalitis": {
+      diseaseName: "Encefalomielitis Equina del Oeste (Sospecha Oficial)",
+      diseaseDesc: "ataxia, ceguera cortical, presión de cabeza contra objetos, somnolencia, parálisis y postración.",
+      tx: "Notificación oficial inmediata, terapia de soporte antiinflamatorio con Flunixin y DMSO IV",
+      SC: "Intentar trasladar al caballo febril fuera del predio sospechoso sin aviso oficial"
+    },
+    "bovino-fasciola": {
+      diseaseName: "Fasciolasis Crónica por Fasciola hepatica",
+      diseaseDesc: "pérdida de peso progresiva, edema submandibular ('mandíbula de botella') y diarrea intermitente.",
+      tx: "Triclabendazol (12 mg/kg VO) o Nitroxinil (10 mg/kg SC) y soporte nutricional",
+      SC: "Tratar con fasciolicidas de espectro reducido sin rotación de potreros inundables"
+    }
+  };
+
+  function generateThesisCase({ id, title, species, system, difficulty, coverImage, diseaseName, diseaseDesc, tx, SC, estimatedMinutes, shortDescription, motive, intro }) {
+    const ref = SPECIES_REFERENCES[species] || SPECIES_REFERENCES.canino;
+
+    // Calcular constantes vitales patológicas basadas en el sistema y severidad (dificultad)
+    let pTemp, pFc, pFr, pWbc, pHct, pBun, pCreat, pK, pNa;
+    const isHigh = difficulty === "Alta";
+    const isMed = difficulty === "Media";
+
+    // Valores fisiológicos normales medios de base
+    pTemp = (ref.temp[0] + ref.temp[1]) / 2;
+    pFc = (ref.fc[0] + ref.fc[1]) / 2;
+    pFr = (ref.fr[0] + ref.fr[1]) / 2;
+    pWbc = (ref.wbc[0] + ref.wbc[1]) / 2;
+    pHct = (ref.hct[0] + ref.hct[1]) / 2;
+    pBun = (ref.bun[0] + ref.bun[1]) / 2;
+    pCreat = (ref.creat[0] + ref.creat[1]) / 2;
+    pK = (ref.k[0] + ref.k[1]) / 2;
+    pNa = (ref.na[0] + ref.na[1]) / 2;
+
+    // Aplicar alteraciones específicas según sistema orgánico
+    if (system === "Respiratorio") {
+      pTemp = ref.temp[1] + (isHigh ? 1.5 : isMed ? 0.9 : 0.4); // Fiebre
+      pFc = ref.fc[1] * (isHigh ? 1.35 : isMed ? 1.15 : 1.05);  // Taquicardia
+      pFr = ref.fr[1] * (isHigh ? 2.5 : isMed ? 1.8 : 1.3);    // Taquipnea
+      pWbc = ref.wbc[1] * (isHigh ? 1.7 : isMed ? 1.3 : 1.1);  // Leucocitosis
+    } else if (system === "Urinario") {
+      pTemp = ref.temp[0] - (isHigh ? 0.8 : 0.3); // Tendencia a hipotermia uremia
+      pFc = ref.fc[1] * (isHigh ? 1.25 : 1.1);
+      pFr = ref.fr[1] * (isHigh ? 1.6 : 1.25); // Acidosis hiperventilando
+      pBun = ref.bun[1] * (isHigh ? 4.5 : isMed ? 2.5 : 1.5); // Uremia severa
+      pCreat = ref.creat[1] * (isHigh ? 5.0 : isMed ? 3.0 : 1.6); // Azotemia renal
+      pK = ref.k[1] + (isHigh ? 1.8 : 0.8); // Hiperpotasemia
+    } else if (system === "Digestivo") {
+      pTemp = ref.temp[1] + (isHigh ? 1.2 : 0.6);
+      pFc = ref.fc[1] * (isHigh ? 1.4 : 1.2);
+      pFr = ref.fr[1] * (isHigh ? 1.5 : 1.2);
+      pHct = ref.hct[1] * (isHigh ? 1.25 : 1.12); // Hemoconcentración
+      pWbc = ref.wbc[1] * (isHigh ? 1.5 : 1.2);
+    } else if (system === "Cardiovascular") {
+      pTemp = ref.temp[0] - (isHigh ? 0.6 : 0.2); // Hipotermia relativa
+      pFc = ref.fc[1] * (isHigh ? 1.5 : 1.25); // Taquicardia compensatoria
+      pFr = ref.fr[1] * (isHigh ? 2.0 : 1.5); // Taquipnea cardiogénica
+      pHct = ref.hct[0] - (isHigh ? 5 : 2);
+    } else if (system === "Nervioso") {
+      pTemp = ref.temp[1] + (isHigh ? 1.0 : 0.5); // Fiebre neurogénica
+      pFc = ref.fc[1] * (isHigh ? 1.25 : 1.1);
+      pFr = ref.fr[1] * (isHigh ? 1.4 : 1.15);
+    } else if (system === "Hematologico") {
+      pHct = ref.hct[0] * (isHigh ? 0.45 : isMed ? 0.65 : 0.8); // Anemia severa
+      pFc = ref.fc[1] * (isHigh ? 1.5 : 1.25); // Compensación hipoxia
+      pFr = ref.fr[1] * (isHigh ? 1.8 : 1.35);
+      pWbc = ref.wbc[1] * (isHigh ? 1.8 : 1.3);
+    } else { // Multisistemico o general
+      pTemp = ref.temp[1] + (isHigh ? 1.6 : 1.0);
+      pFc = ref.fc[1] * (isHigh ? 1.4 : 1.2);
+      pFr = ref.fr[1] * (isHigh ? 1.8 : 1.4);
+      pWbc = ref.wbc[1] * (isHigh ? 1.6 : 1.25);
+    }
+
+    // Redondear para estética clínica real
+    pTemp = Math.round(pTemp * 10) / 10;
+    pFc = Math.round(pFc);
+    pFr = Math.round(pFr);
+    pWbc = Math.round(pWbc * 10) / 10;
+    pHct = Math.round(pHct);
+    pBun = Math.round(pBun * 10) / 10;
+    pCreat = Math.round(pCreat * 100) / 100;
+    pK = Math.round(pK * 10) / 10;
+    pNa = Math.round(pNa);
+
+    const vitalSignsStr = `Tº: ${pTemp} ${ref.tempUnit} | FC: ${pFc} ${ref.fcUnit} | FR: ${pFr} ${ref.frUnit}`;
+
+    // Anamnesis
+    const anamnesisChoices = [
+      {
+        id: `ac-${id}-an1`,
+        text: "¿Cuál es el curso temporal del cuadro clínico y si se observan otros animales afectados en el mismo lote/hogar?",
+        correct: true,
+        feedback: "Excelente. El análisis epidemiológico espacial y la tasa de ataque orientan la sospecha hacia un brote infeccioso, intoxicación común o patología de manejo.",
+        score: 10
+      },
+      {
+        id: `ac-${id}-an2`,
+        text: "¿Cuáles son las fuentes específicas de alimentación, procedencia del agua de bebida y los protocolos de profilaxis activa (vacunas/desparasitaciones)?",
+        correct: true,
+        feedback: "Correcto. El historial de inmunización de base define la susceptibilidad del hospedador y descarta fallas críticas en la medicina poblacional.",
+        score: 10
+      },
+      {
+        id: `ac-${id}-an3`,
+        text: "¿Qué color tiene el envase de la marca de alimento balanceado que utiliza y si es importado?",
+        correct: false,
+        feedback: "Incorrecto. Es un dato comercial irrelevante que no aporta valor fisiopatológico ni semiológico en el triaje.",
+        score: -5,
+        penalty: true
+      }
+    ];
+
+    // Examen Físico
+    const examenFisicoChoices = [
+      {
+        id: `ac-${id}-ef1`,
+        text: `Realizar evaluación detallada de constantes fisiológicas (${vitalSignsStr}), tiempo de llenado capilar, color de mucosas y estado de hidratación.`,
+        correct: true,
+        feedback: `Correcto. Se constata: ${vitalSignsStr}. Mucosas ${system === "Hematologico" ? "extremadamente pálidas" : system === "Digestivo" ? "congestivas y secas" : "rosadas pegajosas"}. Deshidratación estimada del ${isHigh ? "8-10%" : "5%"}.`,
+        score: 15
+      },
+      {
+        id: `ac-${id}-ef2`,
+        text: `Realizar una exploración física profunda del sistema afectado mediante ${system === "Respiratorio" ? "percusión torácica y auscultación pulmonar metódica" : system === "Digestivo" ? "palpación abdominal profunda, auscultación ruminal o percusión de cuadrantes" : system === "Nervioso" ? "mapeo de pares craneales, reflejos medulares y estado mental" : "evaluación semiológica sistémica"}.`,
+        correct: true,
+        feedback: `Correcto. Se detecta: ${system === "Respiratorio" ? "estertores crepitantes bilaterales y roces pleurales craneoventrales" : system === "Digestivo" ? "dolor a la palpación profunda y borborigmos marcadamente disminuidos" : system === "Nervioso" ? "ataxia propioceptiva generalizada y reflejo pupilar lento" : "alteraciones semiológicas locales consistentes con la sospecha clínica"}.`,
+        score: 10
+      },
+      {
+        id: `ac-${id}-ef3`,
+        text: "Realizar una inspección otoscópica bilateral minuciosa con espéculo de teflón.",
+        correct: false,
+        feedback: "Poco prioritario en este escenario clínico agudo, a menos que existan signos otológicos específicos.",
+        score: 0
+      }
+    ];
+
+    // Pruebas e interpretación
+    let labTestContent = [
+      ["Analito", "Valor de Paciente", "Rangos de Referencia"],
+      ["Leucocitos (WBC)", `${pWbc} x10^3/µL`, `${ref.wbc[0]} - ${ref.wbc[1]}`],
+      ["Hematocrito (HCT)", `${pHct} %`, `${ref.hct[0]} - ${ref.hct[1]}`]
+    ];
+
+    if (system === "Urinario") {
+      labTestContent.push(["Nitrógeno Uréico (BUN)", `${pBun} mg/dL`, `${ref.bun[0]} - ${ref.bun[1]}`]);
+      labTestContent.push(["Creatinina Sérica", `${pCreat} mg/dL`, `${ref.creat[0]} - ${ref.creat[1]}`]);
+      labTestContent.push(["Potasio (K+)", `${pK} mEq/L`, `${ref.k[0]} - ${ref.k[1]}`]);
+    } else if (system === "Digestivo") {
+      labTestContent.push(["Proteínas Totales", `${isHigh ? "8.5" : "7.2"} g/dL`, "6.0 - 7.8"]);
+      labTestContent.push(["Potasio (K+)", `${isHigh ? "2.9" : "3.6"} mEq/L`, `${ref.k[0]} - ${ref.k[1]}`]);
+    }
+
+    let specificTestTitle = "Gasometría Arterial";
+    let specificTestContent = "Presión parcial de Oxígeno (pO2): 72 mmHg (Hipoxemia moderada). pH: 7.31 (Acidosis metabólica leve parcialmente compensada).";
+    
+    if (system === "Respiratorio") {
+      specificTestTitle = "Gasometría Arterial y Lavado Broncoalveolar";
+      specificTestContent = `Gasometría: pO2 de ${Math.round(ref.bg_po2[0] - 18)} mmHg (Hipoxemia restrictiva). pCO2 de ${Math.round(ref.bg_pco2[1] + 8)} mmHg. pH de ${Math.round((ref.bg_ph[0] - 0.08)*100)/100} (Acidosis respiratoria aguda). LBA: Predominio de neutrófilos segmentados degenerados con bacterias fagocitadas.`;
+    } else if (system === "Urinario") {
+      specificTestTitle = "Densidad Urinaria y Sedimento (Uroanálisis)";
+      specificTestContent = "Densidad Urinaria por refractometría: 1.010 (Isostenuria refractaria). Presencia de cilindros granulosos abundantes, células epiteliales de descamación y proteinuria (2+). Diagnóstico de necrosis tubular aguda.";
+    } else if (system === "Nervioso") {
+      specificTestTitle = "Análisis de Líquido Cefalorraquídeo (LCR)";
+      specificTestContent = "Líquido de aspecto turbio con proteinorraquia elevada (85 mg/dL) y pleocitosis neutrofílica severa. Sugiere etiología bacteriana o viral aguda.";
+    } else if (system === "Cardiovascular") {
+      specificTestTitle = "Ecocardiografía Doppler de Flujo y ECG";
+      specificTestContent = "Ecocardiografía: Engrosamiento de paredes ventriculares, reducción de la fracción de eyección al 42%. Presencia de reflujo valvular severo. ECG: Complejos ventriculares prematuros y taquicardia sostenida.";
+    } else if (system === "Digestivo") {
+      specificTestTitle = "Punción de Líquido Ruminal / Abdominocentesis";
+      specificTestContent = species === "bovino" || species === "ovino" || species === "caprino"
+        ? "pH de líquido ruminal: 4.8 (Acidosis ruminal severa). Microflora ruminal con motilidad del 0% y predominio de bacilos Gram positivos (Lactobacilos)."
+        : "Abdominocentesis: Líquido peritoneal turbio, proteínas de 3.2 g/dL y recuento celular elevado (>5,000/µL), descartando estrangulación vascular simple, sugiriendo peritonitis reactiva.";
+    } else if (system === "Hematologico") {
+      specificTestTitle = "Frotis de Sangre y Tipificación Sanguínea";
+      specificTestContent = "Presencia de esferocitos abundantes, autoaglutinación macroscópica en placa y policromasia marcada. Inclusiones intraeritrocitarias compatibles con hemoparásitos vectoriales.";
+    }
+
+    const pruebasChoices = [
+      {
+        id: `ac-${id}-pr1`,
+        text: `Solicitar Hemograma Completo y Bioquímica Sérica Básica específica para ${ref.name}.`,
+        correct: true,
+        feedback: `Correcto. Aporta el estado metabólico y hematológico del paciente.`,
+        score: 10,
+        asset: {
+          type: "lab_table",
+          title: `Perfil Hematológico y Bioquímico - Especie: ${ref.name}`,
+          content: labTestContent
+        }
+      },
+      {
+        id: `ac-${id}-pr2`,
+        text: `Realizar ${specificTestTitle} para evaluar la severidad fisiopatológica de la lesión del órgano blanco.`,
+        correct: true,
+        feedback: `Correcto. Los resultados confirman los desequilibrios funcionales del paciente.`,
+        score: 10,
+        asset: {
+          type: "timeline_event",
+          title: `Resultado de ${specificTestTitle}`,
+          content: specificTestContent
+        }
+      }
+    ];
+
+    // Diagnósticos diferenciales
+    const differentialsChoices = [
+      {
+        id: `ac-${id}-df1`,
+        text: `${diseaseName} (Diagnóstico primario de base fisiopatológica)`,
+        priority: 1,
+        feedback: `Correcto. La combinación de signos cardinales de ${system}, constantes alteradas e indicaciones diagnósticas sustentan plenamente a ${diseaseName} como diagnóstico definitivo.`
+      },
+      {
+        id: `ac-${id}-df2`,
+        text: `Proceso inflamatorio reactivo secundario con síndrome de respuesta inflamatoria sistémica (SIRS)`,
+        priority: 2,
+        feedback: "Muy común. Representa el cuadro reactivo general del organismo ante el insulto primario."
+      },
+      {
+        id: `ac-${id}-df3`,
+        text: `Intoxicación o sobredosificación por xenobióticos o toxinas ambientales afines al sistema`,
+        priority: 3,
+        feedback: "Diagnóstico diferencial por exclusión. Se descarta ante la falta de antecedentes epidemiológicos específicos."
+      },
+      {
+        id: `ac-${id}-df4`,
+        text: "Proceso neoplásico infiltrativo agudo o anomalía del desarrollo congénita",
+        priority: 4,
+        feedback: "Poco probable. El curso agudo y la afectación concomitante del lote o historial previo sugieren un origen metabólico o infeccioso directo."
+      }
+    ];
+
+    // Plan Terapéutico
+    const terapeuticoChoices = [
+      {
+        id: `ac-${id}-tx1`,
+        text: `Instaurar de urgencia: ${tx}.`,
+        correct: true,
+        feedback: `Excelente. Permite el control del agente etiológico y estabiliza las constantes hemodinámicas.`,
+        score: 15
+      },
+      {
+        id: `ac-${id}-tx2`,
+        text: `Realizar la siguiente acción de alto riesgo clínico: ${SC}.`,
+        correct: false,
+        feedback: `¡RIESGO CRÍTICO! ${SC} agrava severamente el cuadro, comprometiendo la viabilidad del paciente y violando los principios de la terapia segura de nivel de especialidad.`,
+        score: -20,
+        safetyCritical: true
+      }
+    ];
+
+    // Recomendaciones del tutor
+    const tutorRecsChoices = [
+      {
+        id: `ac-${id}-rec1`,
+        text: "Monitoreo constante de constantes fisiológicas en el hogar, control estricto del plan analgésico y reevaluación laboratorial en 72 horas.",
+        correct: true,
+        feedback: "Correcto. Permite la detección oportuna de recaídas y vigila los potenciales efectos nefrotóxicos o hepatotóxicos de la terapia prescrita.",
+        score: 10
+      },
+      {
+        id: `ac-${id}-rec2`,
+        text: "Implementar desinfección total del ambiente con amonio cuaternario o cloro diluido, mejorar la ventilación del galpón o establo, y cuarentenar a los expuestos.",
+        correct: true,
+        feedback: "Correcto. Control epidemiológico de primer orden para disminuir la tasa de transmisión y reinfestación ambiental de patógenos.",
+        score: 10
+      }
+    ];
+
+    return {
+      id: id,
+      title: title,
+      species: species,
+      system: system,
+      difficulty: difficulty,
+      estimatedMinutes: estimatedMinutes || (difficulty === "Alta" ? 25 : difficulty === "Media" ? 20 : 15),
+      shortDescription: shortDescription || `Análisis clínico avanzado de ${diseaseName} en la especie ${capitalize(species)}. Evaluación diagnóstica por competencias de nivel de especialidad y postgrado.`,
+      coverImage: coverImage || "📋",
+      motive: motive || `Paciente de especie ${capitalize(species)} ingresa con signología del sistema ${system} compatible con la sospecha clínica de ${diseaseName}.`,
+      intro: intro || `Se presenta un paciente de especie ${capitalize(species)} a la clínica de especialidades. El motivo de consulta describe un curso fisiopatológico agudo caracterizado por ${diseaseDesc} Se requiere una aproximación diagnóstica secuencial de nivel académico para su contención y resolución.`,
+      objectives: [
+        `Analizar la fisiopatología sistémica de ${diseaseName}`,
+        `Interpretar pruebas complejas (${specificTestTitle} y Hemograma) con rangos específicos de la especie`,
+        `Diseñar una terapia etiológica farmacológica rigurosa, evitando errores de bioseguridad: ${SC}`
+      ],
+      anamnesis: anamnesisChoices,
+      examenFisico: examenFisicoChoices,
+      pruebas: pruebasChoices,
+      differentials: differentialsChoices,
+      terapeutico: terapeuticoChoices,
+      tutorRecs: tutorRecsChoices
+    };
+  }
+
+  // Rellenar los 38 casos intermedios en el catálogo de perfiles utilizando la base clínica experta
   extraProfilesData.forEach((ep) => {
-    scenarioProfiles.push({
+    const map = INTERMEDIATE_CLINICAL_MAP[ep.id] || {
+      diseaseName: ep.title,
+      diseaseDesc: `trastorno agudo del sistema ${ep.system} en ${ep.species}.`,
+      tx: "Tratamiento antibiótico o antiparasitario específico de elección y terapia de fluidos",
+      SC: "Administrar dosificación doble sin monitoreo o retardar la terapia crítica"
+    };
+
+    scenarioProfiles.push(generateThesisCase({
       id: ep.id,
       title: ep.title,
       species: ep.species,
       system: ep.system,
       difficulty: ep.diff,
-      estimatedMinutes: ep.diff === "Alta" ? 25 : ep.diff === "Media" ? 20 : 15,
-      shortDescription: `Caso clínico de complejidad ${ep.diff}. Diagnostica y trata esta alteración del sistema ${ep.system} en ${ep.species}.`,
       coverImage: ep.cover,
-      motive: `Se presenta un paciente de especie ${ep.species} con signos compatibles con trastorno del sistema ${ep.system}.`,
-      intro: `Paciente es ingresado a consulta. Manifiesta signos clínicos focales del sistema ${ep.system} de evolución aguda. Se sospecha de ${ep.title}.`,
-      objectives: [
-        `Identificar signos clave en ${ep.system}`,
-        `Prescribir tratamiento adaptado en ${ep.species}`,
-        `Evitar complicaciones iatrogénicas en la terapia`
-      ],
-      anamnesis: [
-        { text: "¿Cuál ha sido la duración y severidad de los signos?", correct: true, feedback: "Correcto. Permite valorar el curso fisiopatológico.", score: 10 },
-        { text: "¿Se han aplicado tratamientos previos en el hogar?", correct: true, feedback: "Correcto. Evita interacciones de riesgo.", score: 10 },
-        { text: "¿Qué color tiene el comedero o el bebedero?", correct: false, feedback: "Irrelevante para el diagnóstico clínico.", score: -5 }
-      ],
-      examenFisico: [
-        { text: "Tomar temperatura, frecuencia cardíaca y respiratoria", correct: true, feedback: "Correcto. Permite el triaje básico del paciente.", score: 10 },
-        { text: "Inspección visual del aparato afectado", correct: true, feedback: "Correcto. Revela congestión y debilidad local.", score: 10 },
-        { text: "Revisar reflejos medulares completos", correct: false, feedback: "Solo relevante si sospechas de trauma espinal focal.", score: 0 }
-      ],
-      pruebas: [
-        {
-          text: "Hemograma completo y perfil básico",
-          correct: true,
-          feedback: "Correcto. Muestra leucocitosis reactiva y desequilibrio electrolítico leve.",
-          score: 10,
-          asset: {
-            type: "lab_table",
-            title: "Laboratorio Clínico",
-            content: [
-              ["Parámetro", "Valor", "Rango Ref"],
-              ["Leucocitos", "15.2 x10^3/uL", "Especie Dependiente"],
-              ["Proteínas", "7.8 g/dL", "Normal"]
-            ]
-          }
-        },
-        {
-          text: "Ecografía o Radiografía diagnóstica",
-          correct: true,
-          feedback: "Correcto. Revela cambios compatibles con inflamación del órgano afectado.",
-          score: 10,
-          asset: {
-            type: "image",
-            title: "Estudio de Imagenología",
-            fileUrl: "https://images.unsplash.com/photo-1579684389782-64d84b5e902a?w=500&q=80"
-          }
-        }
-      ],
-      differentials: [
-        { text: ep.title, priority: 1, feedback: "Es la sospecha diagnóstica más probable por la epidemiología y clínica." },
-        { text: "Proceso infeccioso secundario inespecífico", priority: 2, feedback: "Puede ocurrir como complicación pero no es el origen primario." },
-        { text: "Intoxicación por toxinas ambientales", priority: 3, feedback: "Diferencial de descarte ante falta de respuesta terapéutica inicial." },
-        { text: "Neoplasia local infiltrativa", priority: 4, feedback: "Menos probable debido al curso agudo." }
-      ],
-      terapeutico: [
-        { text: "Tratamiento antibiótico o antiparasitario de elección y fluidos de soporte", correct: true, feedback: "Correcto. Combate la etiología y estabiliza al paciente.", score: 15 },
-        { text: "Administrar dosificación doble sin monitoreo renal", correct: false, feedback: "¡Riesgo crítico! Exceso de dosis puede inducir toxicidad o falla orgánica severa.", score: -20, safetyCritical: true }
-      ],
-      tutorRecs: [
-        { text: "Monitoreo diario de signos clínicos y control estricto de dosis", correct: true, feedback: "Correcto. Asegura la efectividad del alta.", score: 10 },
-        { text: "Desinfectar y ventilar el espacio habitual del animal", correct: true, feedback: "Correcto. Minimiza recargas y contagios en lote/hogar.", score: 10 }
-      ]
-    });
+      diseaseName: map.diseaseName,
+      diseaseDesc: map.diseaseDesc,
+      tx: map.tx,
+      SC: map.SC
+    }));
   });
 
-  // ---------------------------------------------------------------------------
-  // 3. GENERACIÓN SISTEMÁTICA DE 100 CASOS ADICIONALES (COMBINATORIA)
-  // ---------------------------------------------------------------------------
+  // Generación sistemática de 220 casos adicionales combinatorios de nivel de tesis
   const speciesList = ["canino", "felino", "equino", "bovino", "porcino", "ovino", "caprino", "ave"];
   const systemsList = ["Digestivo", "Respiratorio", "Reproductor", "Urinario", "Nervioso", "Musculoesqueletico", "Tegumentario", "Cardiovascular", "Hematologico", "Multisistemico"];
   const difficulties = ["Fácil", "Media", "Alta"];
 
   const diseasesTemplates = {
     Digestivo: [
-      { name: "Coccidiosis Entérica", desc: "diarrea acuosa/hemorrágica en animales jóvenes.", tx: "Toltrazurilo o Sulfas", SC: "Deshidratación desatendida" },
+      { name: "Coccidiosis Entérica", desc: "enteritis hemorrágica con deshidratación grave, borborigmos aumentados y dolor abdominal.", tx: "Toltrazurilo (20 mg/kg VO dosis única) o Sulfadiazina-Trimetoprim (15 mg/kg IV cada 12h) y fluidoterapia", SC: "Omitir la fluidoterapia de soporte en shock hipovolémico severo" },
       { name: "Acidosis Ruminal / Indigestión Aguda", desc: "sobrecarga alimentaria con parálisis del rumen.", tx: "Bicarbonato de Sodio y fluidoterapia", SC: "Uso de laxantes oleosos forzados" },
       { name: "Gastroenteritis Infecciosa Aguda", desc: "cuadro entérico agudo severo con pérdidas de electrolitos.", tx: "Fluidoterapia IV y protectores de mucosa", SC: "Alimentación oral forzada durante vómitos" },
       { name: "Toxemia Digestiva", desc: "absorción de toxinas intestinales con postración.", tx: "Antitoxina y fluidos intravenosos", SC: "Administrar sedantes depresores cardíacos" }
@@ -567,7 +1154,7 @@
     ],
     Cardiovascular: [
       { name: "Insuficiencia Cardíaca Congestiva", desc: "intolerancia al ejercicio, disnea, tos nocturna y soplo.", tx: "Furosemida, Pimobendán e IECA", SC: "Fluidoterapia IV agresiva con soluciones salinas" },
-      { name: "Derrame Pericárdico / Taponamiento", desc: "ruidos cardíacos apagados, pulso paradójico e ingurgitación.", tx: "Pericardiocentesis ecoguiada de urgencia", SC: "Administrar diuréticos masivos antes de drenar el derrame" },
+      { name: "Derrame Pericárdico / Taponamiento", desc: "ruidos cardíacos apagados, pulso paradójico e ingurgitación.", tx: "Pericardiocentesis ecoguiada de urgencia", SC: "Administrar diuréticos de asa antes de drenar el derrame" },
       { name: "Dirofilariosis Cardiopulmonar", desc: "tos, letargia y presencia de microfilarias en sangre.", tx: "Adulticida controlado y lactonas macrocíclicas", SC: "Forzar ejercicio intenso durante el tratamiento adulticida" },
       { name: "Miocarditis Aguda Bacteriana/Viral", desc: "arritmias ventriculares, debilidad y fiebre.", tx: "Antiarrítmicos y soporte de perfusión", SC: "Administrar bloqueadores de calcio inotrópicos negativos" }
     ],
@@ -585,86 +1172,25 @@
     ]
   };
 
-  // 100 Casos programáticos combinatorios
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 220; i++) {
     const spec = speciesList[i % speciesList.length];
     const sys = systemsList[i % systemsList.length];
     const templates = diseasesTemplates[sys] || diseasesTemplates["Multisistemico"];
     const tpl = templates[i % templates.length];
     const diff = difficulties[i % difficulties.length];
 
-    const caseId = `auto-case-${i + 5}`;
-    const title = `${tpl.name} en ${capitalize(spec)}`;
-
-    scenarioProfiles.push({
-      id: caseId,
-      title: title,
+    scenarioProfiles.push(generateThesisCase({
+      id: `auto-case-${i + 5}`,
+      title: `${tpl.name} en ${capitalize(spec)}`,
       species: spec,
       system: sys,
       difficulty: diff,
-      estimatedMinutes: diff === "Alta" ? 25 : diff === "Media" ? 20 : 15,
-      shortDescription: `Caso clínico nº ${i + 5} de complejidad ${diff}. Evalúa el historial, interpreta análisis y trata esta afección del sistema ${sys} en ${spec}.`,
       coverImage: getEmojiBySpecies(spec),
-      motive: `Se sospecha de ${tpl.name} debido a signos del sistema ${sys}.`,
-      intro: `Se presenta un paciente de especie ${spec} a consulta. Presenta una signología compatible con ${tpl.name}: ${tpl.desc} Se requiere diagnóstico de urgencia.`,
-      objectives: [
-        `Reconocer signos patognomónicos de ${tpl.name}`,
-        `Solicitar e interpretar la analítica clínica adecuada`,
-        `Prescribir terapia analgésica o etiológica, evitando: ${tpl.SC}`
-      ],
-      anamnesis: [
-        { text: "¿Cuál es el curso clínico y evolución temporal de los signos?", correct: true, feedback: "Correcto. Permite categorizar el cuadro como sobreagudo, agudo o crónico.", score: 10 },
-        { text: "¿El paciente tiene acceso libre a agua fresca y qué dieta consume?", correct: true, feedback: "Correcto. Valora la hidratación de base y posibles transgresiones alimentarias.", score: 10 },
-        { text: "¿Qué tipo de desinfectante de pisos utiliza la familia?", correct: false, feedback: "Poco relevante en esta fase inicial de triaje clínico.", score: -5 }
-      ],
-      examenFisico: [
-        { text: "Evaluar constantes vitales (temperatura rectal, FC, FR) y mucosas", correct: true, feedback: "Correcto. Parámetros basales esenciales para detectar shock o fiebre alta.", score: 15 },
-        { text: "Exploración física profunda del sistema afectado", correct: true, feedback: "Correcto. Revela cambios compatibles con la inflamación del sistema.", score: 10 },
-        { text: "Examen de reflejos flexores en extremidades posteriores", correct: false, feedback: "No es prioritario a menos que se sospeche lesión medular activa.", score: 0 }
-      ],
-      pruebas: [
-        {
-          text: "Hemograma completo y bioquímica sérica básica",
-          correct: true,
-          feedback: `Correcto. Muestra leucocitosis reactiva e indicaciones compatibles con ${tpl.name}.`,
-          score: 10,
-          asset: {
-            type: "lab_table",
-            title: "Resultados de Laboratorio",
-            content: [
-              ["Parámetro", "Valor", "Rango Ref"],
-              ["Leucocitos", "16.8 x10^3/uL", "Especie Dependiente"],
-              ["Hematocrito", "38 %", "Normal"]
-            ]
-          }
-        },
-        {
-          text: "Ecografía o Radiografía focalizada de diagnóstico",
-          correct: true,
-          feedback: "Correcto. Aporta datos de imagen compatibles con lesión orgánica local.",
-          score: 10,
-          asset: {
-            type: "image",
-            title: "Imagen Diagnóstica",
-            fileUrl: "https://images.unsplash.com/photo-1579684389782-64d84b5e902a?w=500&q=80"
-          }
-        }
-      ],
-      differentials: [
-        { text: tpl.name, priority: 1, feedback: "Diagnóstico presuntivo principal respaldado por el curso clínico." },
-        { text: "Infección secundaria oportunista", priority: 2, feedback: "Complicación común que puede agravar la signología de base." },
-        { text: "Toxemia o inflamación inespecífica", priority: 3, feedback: "Considerar en base a la fisiopatología general." },
-        { text: "Proceso neoplásico infiltrativo local", priority: 4, feedback: "Menos probable debido a la evolución temporal." }
-      ],
-      terapeutico: [
-        { text: `Aplicar: ${tpl.tx}`, correct: true, feedback: "Correcto. Terapia etiológica de elección y soporte clínico.", score: 15 },
-        { text: `Acción insegura: ${tpl.SC}`, correct: false, feedback: `¡RIESGO CRÍTICO! ${tpl.SC} es un error grave de seguridad en este cuadro clínico.`, score: -20, safetyCritical: true }
-      ],
-      tutorRecs: [
-        { text: "Monitorear la evolución clínica del paciente y completar dosis indicadas", correct: true, feedback: "Correcto. Garantiza que no se generen resistencias bacterianas.", score: 10 },
-        { text: "Desinfectar y ventilar adecuadamente el alojamiento del animal", correct: true, feedback: "Correcto. Disminuye la carga patógena en el ambiente.", score: 10 }
-      ]
-    });
+      diseaseName: tpl.name,
+      diseaseDesc: tpl.desc,
+      tx: tpl.tx,
+      SC: tpl.SC
+    }));
   }
 
   // Helper para capitalizar textos
