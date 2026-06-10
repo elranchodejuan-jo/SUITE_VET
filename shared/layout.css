@@ -1,18 +1,51 @@
 /* =============================================================================
    SUITE VET — shared/layout.css
-   Estructura: topbar, nav, menú, home, buscador global, modal.
+   Estructura: variables de rejilla, cabecera esmerilada, barra lateral, 
+   contenido principal y pie de página en rejilla.
    ============================================================================= */
+
+:root {
+  --sv-sidebar-width: 280px;
+  --sv-bg-surface-glass: rgba(10, 22, 40, 0.72);
+  --sv-border-glass: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="light"] {
+  --sv-bg-surface-glass: rgba(255, 255, 255, 0.72);
+  --sv-border-glass: rgba(0, 0, 0, 0.08);
+}
+
+/* ──────────────────────────────────────────────
+   CONTENEDOR DE LA APLICACIÓN (CSS GRID)
+   ────────────────────────────────────────────── */
+.sv-app-container {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  grid-template-columns: auto 1fr;
+  grid-template-areas:
+    "header header"
+    "sidebar main"
+    "sidebar footer";
+  min-height: 100vh;
+}
+
+.sv-app-container.sv-sidebar-collapsed {
+  --sv-sidebar-width: 72px;
+}
 
 /* ──────────────────────────────────────────────
    TOPBAR
-────────────────────────────────────────────── */
+   ────────────────────────────────────────────── */
 .sv-topbar {
+  grid-area: header;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0.75rem 1.25rem;
-  background: var(--sv-bg-surface);
-  border-bottom: 1px solid var(--sv-border);
+  background: var(--sv-bg-surface-glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--sv-border-glass);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -133,44 +166,15 @@
 #sv-theme-toggle:hover { border-color: var(--sv-accent); }
 
 /* ──────────────────────────────────────────────
-   NAV PRINCIPAL
-────────────────────────────────────────────── */
+   NAV PRINCIPAL (Oculto en favor de la barra lateral)
+   ────────────────────────────────────────────── */
 .sv-nav {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.5rem 1.25rem;
-  border-bottom: 1px solid var(--sv-border);
-  background: var(--sv-bg-surface);
-  overflow-x: auto;
-  position: sticky;
-  top: 57px;   /* altura de la topbar */
-  z-index: 90;
-}
-
-.sv-nav-btn {
-  padding: 0.4rem 1rem;
-  border-radius: 999px;
-  border: 1px solid transparent;
-  cursor: pointer;
-  background: transparent;
-  color: var(--sv-text-muted);
-  font-size: 0.85rem;
-  font-family: var(--sv-font-body);
-  white-space: nowrap;
-  transition: all 0.18s ease;
-}
-.sv-nav-btn:hover  { background: var(--sv-bg-elevated); color: var(--sv-text-primary); }
-.sv-nav-active     {
-  background: var(--sv-accent) !important;
-  color: #fff !important;
-  box-shadow: var(--sv-shadow-accent);
-  transform: translateY(-1px);
+  display: none !important;
 }
 
 /* ──────────────────────────────────────────────
-   MENÚ HAMBURGUESA
-────────────────────────────────────────────── */
+   MENÚ HAMBURGUESA / COLAPSADOR
+   ────────────────────────────────────────────── */
 .sv-menu-toggle {
   position: relative;
   width: 36px;
@@ -202,49 +206,216 @@
 .sv-menu-toggle.is-open span:nth-child(2) { opacity: 0; }
 .sv-menu-toggle.is-open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
 
-.sv-menu-panel {
-  position: absolute;
-  top: 56px;
-  left: 1.25rem;
-  width: 220px;
-  background: var(--sv-bg-overlay);
-  border: 1px solid var(--sv-border);
-  border-radius: 0.9rem;
-  box-shadow: var(--sv-shadow-lg);
-  padding: 0.6rem 0.75rem;
-  display: none;
-  z-index: 150;
+/* Morfosis a flechas del colapsador en desktop */
+.sv-menu-toggle.is-collapsed span:nth-child(1) { transform: translateY(4px) scaleX(0.7); }
+.sv-menu-toggle.is-collapsed span:nth-child(2) { transform: scaleX(0.9); }
+.sv-menu-toggle.is-collapsed span:nth-child(3) { transform: translateY(-4px) scaleX(0.7); }
+
+/* ──────────────────────────────────────────────
+   TELÓN DE FONDO (BACKDROP PARA MÓVIL)
+   ────────────────────────────────────────────── */
+.sv-sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 6, 23, 0.62);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 190;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.sv-menu-panel.sv-menu-open { display: block; }
+.sv-sidebar-backdrop.sv-backdrop-active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ──────────────────────────────────────────────
+   BARRA LATERAL ESTRUCTURAL (SIDEBAR)
+   ────────────────────────────────────────────── */
+.sv-sidebar {
+  grid-area: sidebar;
+  position: sticky;
+  top: 57px;
+  height: calc(100vh - 57px);
+  width: var(--sv-sidebar-width);
+  background: var(--sv-bg-surface-glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-right: 1px solid var(--sv-border-glass);
+  padding: 1rem 0.5rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  z-index: 95;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.25s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.sv-sidebar::-webkit-scrollbar {
+  width: 4px;
+}
+.sv-sidebar::-webkit-scrollbar-thumb {
+  background: var(--sv-border-glass);
+  border-radius: 4px;
+}
 
 .sv-menu-title {
   font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--sv-text-muted);
-  margin-bottom: 0.3rem;
-  padding: 0 0.3rem;
+  margin-bottom: 0.5rem;
+  padding: 0 0.5rem;
+  transition: opacity 0.2s, height 0.2s, margin 0.2s;
+  white-space: nowrap;
 }
+.sv-sidebar-collapsed .sv-menu-title {
+  opacity: 0;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
 .sv-menu-item {
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.5rem;
+  margin-top: 0.25rem;
   width: 100%;
   text-align: left;
-  padding: 0.4rem 0.5rem;
-  border-radius: 0.5rem;
-  border: none;
+  border-radius: 0.6rem;
+  border: 1px solid transparent;
   background: transparent;
   color: var(--sv-text-secondary);
   font-size: 0.85rem;
   font-family: var(--sv-font-body);
   cursor: pointer;
-  transition: background 0.15s ease;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  white-space: nowrap;
 }
-.sv-menu-item:hover:not(.sv-disabled) { background: var(--sv-bg-elevated); color: var(--sv-text-primary); }
-.sv-menu-item.sv-disabled { opacity: 0.5; cursor: default; }
-.sv-menu-note { font-size: 0.72rem; color: var(--sv-text-muted); padding: 0.3rem 0.5rem 0; }
+.sv-sidebar-collapsed .sv-menu-item {
+  grid-template-columns: 36px 0fr;
+  gap: 0;
+  padding-left: calc((72px - 36px) / 2);
+}
+
+.sv-menu-item span:not(.sv-menu-icon) {
+  opacity: 1;
+  transition: opacity 0.15s ease;
+  display: flex;
+  flex-direction: column;
+}
+.sv-sidebar-collapsed .sv-menu-item span:not(.sv-menu-icon) {
+  opacity: 0;
+  width: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.sv-menu-item strong {
+  color: var(--sv-text-primary);
+  font-size: 0.9rem;
+  line-height: 1.25;
+}
+.sv-menu-item small {
+  color: var(--sv-text-muted);
+  font-size: 0.75rem;
+  line-height: 1.25;
+  margin-top: 0.1rem;
+}
+
+.sv-menu-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  border: 1px solid var(--sv-border);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--sv-text-muted);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  background: var(--sv-bg-elevated);
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+/* Colores personalizados por módulo */
+.sv-menu-item[data-view="home"] { --module-color: var(--sv-accent); }
+.sv-menu-item[data-view="fisiologia"] { --module-color: var(--sv-fisio-color); }
+.sv-menu-item[data-view="farmacologia"] { --module-color: var(--sv-farma-color); }
+.sv-menu-item[data-view="microbiologia"] { --module-color: var(--sv-micro-color); }
+.sv-menu-item[data-view="patologia"] { --module-color: var(--sv-pato-color); }
+.sv-menu-item[data-view="nutricion"] { --module-color: var(--sv-nutri-color); }
+.sv-menu-item[data-view="clinica"] { --module-color: var(--sv-clinica-color); }
+.sv-menu-item[data-view="semiologia"] { --module-color: var(--sv-semiologia-color); }
+.sv-menu-item[data-view="casos360"] { --module-color: var(--sv-casos360-color, #8b5cf6); }
+.sv-menu-item[data-view="bibliografia"] { --module-color: var(--sv-accent); }
+.sv-menu-item[data-view="favoritos"] { --module-color: var(--sv-accent); }
+.sv-menu-item[data-view="about"] { --module-color: var(--sv-text-muted); }
+
+.sv-menu-item:hover:not(.sv-disabled) {
+  background: rgba(255, 255, 255, 0.035);
+  color: var(--sv-text-primary);
+  border-color: rgba(255, 255, 255, 0.05);
+  box-shadow: inset 4px 0 0 var(--module-color);
+  transform: translateX(2px);
+}
+[data-theme="light"] .sv-menu-item:hover:not(.sv-disabled) {
+  background: rgba(0, 0, 0, 0.025);
+  border-color: rgba(0, 0, 0, 0.03);
+}
+.sv-sidebar-collapsed .sv-menu-item:hover:not(.sv-disabled) {
+  transform: none; /* No desplazar lateralmente si está colapsado */
+}
+
+.sv-menu-item.sv-menu-active {
+  background: var(--sv-bg-elevated) !important;
+  color: var(--sv-text-primary) !important;
+  border-color: var(--sv-border) !important;
+  box-shadow: inset 4px 0 0 var(--module-color);
+  font-weight: 600;
+}
+
+.sv-menu-icon-fisio { color: var(--sv-fisio-color); border-color: rgba(244, 63, 94, 0.4); }
+.sv-menu-icon-farma { color: var(--sv-farma-color); border-color: rgba(163, 230, 53, 0.4); }
+.sv-menu-icon-micro { color: var(--sv-micro-color); border-color: rgba(34, 211, 238, 0.4); }
+.sv-menu-icon-pato { color: var(--sv-pato-color); border-color: rgba(249, 115, 22, 0.4); }
+.sv-menu-icon-nutri { color: var(--sv-nutri-color); border-color: rgba(16, 185, 129, 0.4); }
+.sv-menu-icon-clinica { color: var(--sv-clinica-color); border-color: rgba(16, 112, 210, 0.4); }
+.sv-menu-icon-semiologia { color: var(--sv-semiologia-color, var(--sv-clinica-color)); border-color: rgba(46, 122, 214, 0.4); }
+.sv-menu-icon-casos360 { color: #fff; border-color: rgba(139, 92, 246, 0.4); }
+.sv-menu-icon-bib { color: var(--sv-accent); border-color: rgba(59, 130, 246, 0.4); }
+.sv-menu-icon-fav { color: var(--sv-warning); border-color: rgba(234, 179, 8, 0.4); }
+.sv-menu-icon-about { color: var(--sv-info); border-color: rgba(56, 189, 248, 0.4); font-style: italic; font-family: var(--sv-font-heading); font-size: 1rem; }
+
+.sv-menu-item.sv-disabled { opacity: 0.4; cursor: default; }
+.sv-menu-note { 
+  font-size: 0.72rem; 
+  color: var(--sv-text-muted); 
+  padding: 0.3rem 0.5rem 0; 
+  transition: opacity 0.2s, height 0.2s, margin 0.2s;
+  white-space: nowrap;
+}
+.sv-sidebar-collapsed .sv-menu-note {
+  opacity: 0;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
 
 /* ──────────────────────────────────────────────
    MAIN / VISTAS
-────────────────────────────────────────────── */
+   ────────────────────────────────────────────── */
 .sv-main {
   flex: 1 0 auto;
   max-width: 1240px;
@@ -468,7 +639,7 @@
 /* Header compacto: menu, inicio y busqueda desplegable */
 .sv-topbar {
   display: grid;
-  grid-template-columns: auto auto auto auto 1fr auto;
+  grid-template-columns: auto auto auto auto auto 1fr auto;
 }
 
 .sv-menu-toggle.sv-topbar-actions {
@@ -491,14 +662,19 @@
   grid-row: 1;
 }
 
-.sv-topbar-brand {
+.sv-bibliografia-toggle {
   grid-column: 5;
+  grid-row: 1;
+}
+
+.sv-topbar-brand {
+  grid-column: 6;
   grid-row: 1;
   justify-self: center;
 }
 
 .sv-topbar > div.sv-topbar-actions {
-  grid-column: 6;
+  grid-column: 7;
   grid-row: 1;
   justify-self: end;
 }
@@ -545,75 +721,7 @@
 }
 
 .sv-nav {
-  display: none;
-}
-
-.sv-menu-panel {
-  width: min(330px, calc(100vw - 2rem));
-  padding: 0.75rem;
-}
-
-.sv-menu-item {
-  display: grid;
-  grid-template-columns: 38px 1fr;
-  align-items: center;
-  gap: 0.7rem;
-  padding: 0.65rem;
-  margin-top: 0.25rem;
-}
-
-.sv-menu-item strong,
-.sv-menu-item small {
-  display: block;
-}
-
-.sv-menu-item strong {
-  color: var(--sv-text-primary);
-  font-size: 0.9rem;
-  line-height: 1.25;
-}
-
-.sv-menu-item small {
-  color: var(--sv-text-muted);
-  font-size: 0.75rem;
-  line-height: 1.25;
-  margin-top: 0.1rem;
-}
-
-.sv-menu-route.sv-menu-active,
-.sv-menu-route:hover {
-  background: var(--sv-bg-elevated);
-}
-
-.sv-menu-route.sv-menu-active {
-  border: 1px solid var(--sv-accent);
-  box-shadow: 0 0 0 3px var(--sv-accent-shadow);
-}
-
-.sv-menu-icon {
-  width: 34px;
-  height: 34px;
-  border-radius: 999px;
-  border: 1px solid var(--sv-border);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--sv-text-muted);
-  font-size: 0.76rem;
-  font-weight: 800;
-  letter-spacing: 0.02em;
-}
-
-.sv-menu-icon-fisio { color: var(--sv-fisio-color); border-color: rgba(244, 63, 94, 0.55); }
-.sv-menu-icon-farma { color: var(--sv-farma-color); border-color: rgba(163, 230, 53, 0.55); }
-.sv-menu-icon-micro { color: var(--sv-micro-color); border-color: rgba(34, 211, 238, 0.55); }
-.sv-menu-icon-pato { color: var(--sv-pato-color); border-color: rgba(249, 115, 22, 0.55); }
-.sv-menu-icon-nutri { color: var(--sv-nutri-color); border-color: rgba(16, 185, 129, 0.55); }
-.sv-menu-icon-clinica { color: var(--sv-clinica-color); border-color: rgba(16, 112, 210, 0.55); }
-.sv-menu-icon-semiologia { color: var(--sv-semiologia-color, var(--sv-clinica-color)); border-color: rgba(46, 122, 214, 0.55); }
-.sv-menu-icon-nutri {
-  font-size: 0.58rem;
-  letter-spacing: 0.01em;
+  display: none !important;
 }
 
 @media print {

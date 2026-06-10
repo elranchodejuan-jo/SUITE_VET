@@ -1,4 +1,4 @@
-﻿// =============================================================================
+// =============================================================================
 // SUITE VET â€” shared/router.js
 // NavegaciÃ³n global, toggle de tema dark/light y buscador global.
 // TODOS los mÃ³dulos se comunican a travÃ©s de window.SuiteVet.
@@ -58,7 +58,9 @@
     });
 
     window.SuiteVet.currentView = viewName;
-    closeMenu();
+    if (window.innerWidth < 900) {
+      closeMenu();
+    }
     closeSearch(false);
 
     // Emitir evento para que los mÃ³dulos sepan cuÃ¡ndo se activan
@@ -76,23 +78,41 @@
   function openMenu() {
     const panel  = document.getElementById("sv-menu-panel");
     const toggle = document.getElementById("sv-menu-toggle");
+    const backdrop = document.getElementById("sv-sidebar-backdrop");
     if (panel)  panel.classList.add("sv-menu-open");
     if (toggle) toggle.classList.add("is-open");
     if (toggle) toggle.setAttribute("aria-expanded", "true");
+    if (backdrop) backdrop.classList.add("sv-backdrop-active");
   }
 
   function closeMenu() {
     const panel  = document.getElementById("sv-menu-panel");
     const toggle = document.getElementById("sv-menu-toggle");
+    const backdrop = document.getElementById("sv-sidebar-backdrop");
     if (panel)  panel.classList.remove("sv-menu-open");
     if (toggle) toggle.classList.remove("is-open");
     if (toggle) toggle.setAttribute("aria-expanded", "false");
+    if (backdrop) backdrop.classList.remove("sv-backdrop-active");
   }
 
   function toggleMenu() {
     const panel = document.getElementById("sv-menu-panel");
     if (!panel) return;
-    panel.classList.contains("sv-menu-open") ? closeMenu() : openMenu();
+    
+    const isDesktop = window.innerWidth >= 900;
+    if (isDesktop) {
+      const container = document.querySelector(".sv-app-container");
+      const toggle = document.getElementById("sv-menu-toggle");
+      if (container) {
+        const isCollapsed = container.classList.toggle("sv-sidebar-collapsed");
+        localStorage.setItem("suitevet_sidebar_collapsed", isCollapsed ? "true" : "false");
+        if (toggle) {
+          toggle.classList.toggle("is-collapsed", isCollapsed);
+        }
+      }
+    } else {
+      panel.classList.contains("sv-menu-open") ? closeMenu() : openMenu();
+    }
   }
 
   window.SuiteVet.closeMenu = closeMenu;
@@ -155,6 +175,20 @@
         <span>
           <strong>Semiologia &amp; Anamnesis Pro</strong>
           <small>Entrenador de anamnesis, examen fisico y OSCE</small>
+        </span>
+      </button>
+      <button class="sv-menu-item sv-menu-route" data-view="casos360" type="button">
+        <span class="sv-menu-icon sv-menu-icon-casos360" style="background:var(--sv-casos360-color, #8b5cf6); color:#fff;">360</span>
+        <span>
+          <strong>Casos 360</strong>
+          <small>Casos cl&iacute;nicos con evaluaci&oacute;n por competencias</small>
+        </span>
+      </button>
+      <button class="sv-menu-item sv-menu-route" data-view="bibliografia" type="button">
+        <span class="sv-menu-icon sv-menu-icon-bib">📚</span>
+        <span>
+          <strong>Bibliograf&iacute;a</strong>
+          <small>Referencias y biblioteca de libros</small>
         </span>
       </button>
       <button class="sv-menu-item sv-menu-route" data-view="favoritos" type="button">
@@ -298,11 +332,27 @@
     }
 
     document.addEventListener("click", (e) => {
+      if (window.innerWidth >= 900) return; // No cerrar en escritorio
       if (!menuPanel) return;
       if (!menuPanel.contains(e.target) && e.target !== menuToggle) {
         closeMenu();
       }
     });
+
+    const backdrop = document.getElementById("sv-sidebar-backdrop");
+    if (backdrop) {
+      backdrop.addEventListener("click", () => {
+        closeMenu();
+      });
+    }
+
+    // Inicializar estado colapsado en escritorio
+    const isCollapsed = localStorage.getItem("suitevet_sidebar_collapsed") === "true";
+    const container = document.querySelector(".sv-app-container");
+    if (isCollapsed && container && window.innerWidth >= 900) {
+      container.classList.add("sv-sidebar-collapsed");
+      if (menuToggle) menuToggle.classList.add("is-collapsed");
+    }
 
     // â€” Toggle de tema â€”
     const themeBtn = document.getElementById("sv-theme-toggle");
@@ -376,6 +426,8 @@
       nutricion: "Nutrición Animal",
       clinica: "Clinica Integrada",
       semiologia: "Semiologia & Anamnesis Pro",
+      casos360: "🧬 Casos 360",
+      bibliografia: "📚 Bibliografía & Biblioteca",
     };
 
     for (const [moduleId, items] of Object.entries(grupos)) {

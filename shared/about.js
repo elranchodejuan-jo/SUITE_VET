@@ -61,10 +61,14 @@
 
   const SITE_LINKS = [
     { label: "Inicio", view: "home" },
+    { label: "Fisiolog&iacute;a", view: "fisiologia" },
     { label: "Farmacolog&iacute;a", view: "farmacologia" },
     { label: "Microbiolog&iacute;a", view: "microbiologia" },
-    { label: "Fisiolog&iacute;a", view: "fisiologia" },
     { label: "Patolog&iacute;a", view: "patologia" },
+    { label: "Nutrici&oacute;n Animal", view: "nutricion" },
+    { label: "Cl&iacute;nica Integrada", view: "clinica" },
+    { label: "Semiolog&iacute;a &amp; Anamnesis Pro", view: "semiologia" },
+    { label: "Casos 360", view: "casos360" },
     { label: "Favoritos", view: "favoritos" },
     { label: "Sobre SUITE VET", view: "about" },
   ];
