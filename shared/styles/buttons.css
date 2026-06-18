@@ -1,0 +1,95 @@
+/* ==========================================================================
+   SUITE VET - buttons and actions system
+   Unified action patterns, including print/PDF related controls.
+   ========================================================================== */
+
+.nutri-action-row,
+.micro-modal-actions,
+.sv-receta-actions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.micro-calc-actions {
+  align-items: stretch;
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.micro-card-actions {
+  gap: 0.5rem;
+}
+
+.nutri-print-pill {
+  align-items: center;
+  background: transparent;
+  border: 1px solid var(--sv-accent);
+  border-radius: 999px;
+  color: var(--sv-accent);
+  cursor: pointer;
+  display: inline-flex;
+  font-family: var(--sv-font-body);
+  font-size: 0.8rem;
+  font-weight: 700;
+  gap: 0.34rem;
+  min-height: 2rem;
+  padding: 0.35rem 0.8rem;
+  transition: border-color 0.18s ease, background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease, transform 0.12s ease;
+}
+
+.nutri-print-pill:hover {
+  background: var(--sv-accent);
+  border-color: var(--sv-accent-hover);
+  box-shadow: var(--sv-shadow-accent);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.micro-fab-lab {
+  background: var(--sv-clinic-blue);
+  box-shadow: 0 12px 28px rgba(47, 125, 225, 0.28);
+}
+
+.micro-fab-lab:hover {
+  background: var(--sv-accent-hover);
+}
+
+.nutricion-fab {
+  background: var(--sv-vet-green);
+  box-shadow: 0 12px 28px rgba(42, 168, 121, 0.28);
+}
+
+.nutricion-fab:hover {
+  background: #20835f;
+}
+
+.micro-print-actions .sv-btn-primary,
+.nutri-print-actions .sv-btn-primary,
+#sv-receta-imprimir {
+  box-shadow: var(--sv-shadow-accent);
+}
+
+@media (max-width: 900px) {
+  .micro-calc-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .nutri-action-row .sv-btn,
+  .micro-modal-actions .sv-btn {
+    flex: 1 1 150px;
+  }
+
+  .micro-card-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .nutri-print-pill {
+    justify-content: center;
+    width: 100%;
+  }
+}

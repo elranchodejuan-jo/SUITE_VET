@@ -1,0 +1,1007 @@
+/* =============================================================================
+   SUITE VET — modules/farma/farma.css
+   Estilos específicos del módulo de Farmacología.
+   ============================================================================= */
+
+.farma-card {
+  border-left: 4px solid var(--sv-farma-color);
+}
+
+/* Área de cálculo de dosis */
+.farma-calc-area {
+  background: var(--sv-bg-elevated);
+  border: 1px solid var(--sv-border-subtle);
+  border-radius: 0.75rem;
+  padding: 0.85rem;
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.farma-calc-row {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.farma-calc-row > div {
+  flex: 1;
+  min-width: 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.farma-calc-label {
+  font-size: 0.72rem;
+  color: var(--sv-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Resultado del cálculo */
+.farma-resultado {
+  background: var(--sv-bg-surface);
+  border: 1px solid var(--sv-border);
+  border-radius: 0.6rem;
+  padding: 0.7rem 0.85rem;
+  display: none;
+  flex-direction: column;
+  gap: 0.4rem;
+  animation: sv-fadeIn 0.25s ease;
+}
+.farma-resultado.visible { display: flex; }
+
+.farma-dosis-valor {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--sv-success);
+  font-family: var(--sv-font-heading);
+}
+
+.farma-retiro-box {
+  font-size: 0.75rem;
+  background: rgba(239,68,68,0.08);
+  color: var(--sv-danger);
+  border: 1px solid rgba(239,68,68,0.2);
+  border-radius: 6px;
+  padding: 0.3rem 0.55rem;
+  font-weight: 600;
+}
+
+.farma-nota-especie {
+  font-size: 0.75rem;
+  color: var(--sv-text-muted);
+  font-style: italic;
+}
+
+/* Badges de grupo */
+.farma-badge-grupo {
+  font-size: 0.68rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  background: rgba(163, 230, 53, 0.1);
+  color: #86efac;
+  border: 1px solid rgba(163, 230, 53, 0.2);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Comerciales */
+.farma-comerciales {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-top: 0.15rem;
+}
+.farma-comercial-tag {
+  font-size: 0.7rem;
+  background: var(--sv-bg-elevated);
+  border: 1px solid var(--sv-border);
+  color: var(--sv-text-muted);
+  border-radius: 999px;
+  padding: 0.1rem 0.5rem;
+}
+
+/* ── PRESENTACIÓN DISPONIBLE ────────────────────────────────────────────────── */
+/* Wrapper input + unidad en la misma fila */
+.farma-conc-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.farma-conc-wrap .sv-input {
+  flex: 1;
+  min-width: 0;
+}
+
+.farma-conc-unit {
+  font-size: 0.78rem;
+  color: var(--sv-text-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+  padding-right: 0.2rem;
+}
+
+/* Info de dosis por especie seleccionada */
+.farma-dosis-esp-info {
+  font-size: 0.88rem;
+  color: var(--sv-text-muted);
+  padding: 0.5rem 0.2rem;
+  min-height: 2.4rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* ── PASOS DEL CÁLCULO ──────────────────────────────────────────────────────── */
+.farma-calc-pasos {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  font-size: 0.78rem;
+  color: var(--sv-text-muted);
+  margin-top: 0.2rem;
+  padding: 0.4rem 0.6rem;
+  background: var(--sv-bg-elevated);
+  border-radius: 0.5rem;
+  font-family: var(--sv-font-mono);
+}
+
+.farma-calc-paso-igual {
+  color: var(--sv-text-disabled);
+  font-weight: 500;
+}
+
+.farma-calc-pasos strong {
+  color: var(--sv-text-primary);
+  font-weight: 600;
+}
+
+/* -----------------------------------------------------------------------------
+   SUBMODULOS FARMACOLOGIA
+   ----------------------------------------------------------------------------- */
+.farma-shell {
+  gap: 0.95rem;
+}
+
+.farma-subnav {
+  border-bottom: 1px solid var(--sv-border);
+  padding-bottom: 0.7rem;
+}
+
+.farma-subtab {
+  font-weight: 600;
+}
+
+.farma-panel {
+  display: grid;
+  gap: 0.85rem;
+}
+
+/* -----------------------------------------------------------------------------
+   CALCULADORA LIBRE
+   ----------------------------------------------------------------------------- */
+.farma-free-shell {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.farma-free-grid,
+.farma-advanced-grid,
+.farma-component-grid {
+  display: grid;
+  gap: 0.7rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.farma-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.28rem;
+}
+
+.farma-field > span {
+  font-size: 0.73rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--sv-text-muted);
+}
+
+.farma-field textarea.sv-input {
+  min-height: 84px;
+  resize: vertical;
+}
+
+.farma-field-wide {
+  grid-column: 1 / -1;
+}
+
+.farma-field.is-missing-focus {
+  border-radius: 0.8rem;
+  outline: 2px solid rgba(234, 179, 8, 0.85);
+  outline-offset: 4px;
+}
+
+.farma-field.is-missing-focus .sv-input,
+.farma-field.is-missing-focus .sv-select {
+  border-color: rgba(234, 179, 8, 0.9);
+  box-shadow: 0 0 0 3px rgba(234, 179, 8, 0.16);
+}
+
+.farma-free-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.4rem;
+}
+
+.farma-free-save-end {
+  margin-top: 0.15rem;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.farma-save-checklist {
+  border: 1px solid var(--sv-border);
+  border-radius: 0.85rem;
+  background: var(--sv-bg-elevated);
+  padding: 0.75rem 0.85rem;
+  display: grid;
+  gap: 0.45rem;
+}
+
+.farma-save-checklist > div {
+  display: grid;
+  gap: 0.12rem;
+}
+
+.farma-save-checklist strong {
+  color: var(--sv-text-primary);
+}
+
+.farma-save-checklist span,
+.farma-save-checklist p {
+  color: var(--sv-text-muted);
+  font-size: 0.84rem;
+  margin: 0;
+}
+
+.farma-save-checklist ul {
+  margin: 0;
+  padding-left: 1.05rem;
+  display: grid;
+  gap: 0.16rem;
+  color: #facc15;
+  font-size: 0.82rem;
+}
+
+.farma-checklist-grid {
+  list-style: none;
+  padding-left: 0 !important;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+}
+
+.farma-checklist-grid li {
+  border: 1px solid var(--sv-border-subtle);
+  border-radius: 0.62rem;
+  background: rgba(255, 255, 255, 0.035);
+  padding: 0.48rem 0.55rem;
+  color: var(--sv-text-secondary);
+  display: grid;
+  gap: 0.12rem;
+}
+
+.farma-checklist-grid li > span {
+  font-size: 0.64rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.farma-checklist-grid li.is-ok {
+  border-color: rgba(34, 197, 94, 0.35);
+  color: var(--sv-success);
+}
+
+.farma-checklist-grid li.is-missing {
+  border-color: rgba(234, 179, 8, 0.42);
+  color: #facc15;
+}
+
+.farma-save-checklist.is-ready {
+  border-color: rgba(34, 197, 94, 0.45);
+  background: rgba(34, 197, 94, 0.1);
+}
+
+.farma-save-checklist.is-pending {
+  border-color: rgba(234, 179, 8, 0.38);
+  background: rgba(234, 179, 8, 0.08);
+}
+
+.farma-free-warning {
+  border: 1px solid rgba(234, 179, 8, 0.45);
+  background: rgba(234, 179, 8, 0.12);
+  color: #facc15;
+  border-radius: 0.7rem;
+  padding: 0.65rem 0.8rem;
+  display: grid;
+  gap: 0.25rem;
+}
+
+.farma-free-warning p {
+  font-size: 0.82rem;
+}
+
+.farma-clinical-animal,
+.farma-clinical-picker,
+.farma-clinical-summary {
+  border: 1px solid var(--sv-border-subtle);
+  border-radius: 0.85rem;
+  background: var(--sv-bg-elevated);
+}
+
+.farma-clinical-animal {
+  overflow: hidden;
+}
+
+.farma-clinical-toggle {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  color: var(--sv-text-primary);
+  cursor: pointer;
+  display: flex;
+  font: inherit;
+  justify-content: space-between;
+  padding: 0.75rem 0.85rem;
+  text-align: left;
+  width: 100%;
+}
+
+.farma-clinical-toggle strong {
+  color: var(--sv-accent);
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.farma-clinical-animal-panel {
+  border-top: 1px solid var(--sv-border-subtle);
+  display: grid;
+  gap: 0.7rem;
+  padding: 0.75rem 0.85rem;
+}
+
+.farma-clinical-animal-panel > p,
+.farma-clinical-toolbar span,
+.farma-clinical-picker-head span {
+  color: var(--sv-text-muted);
+  font-size: 0.82rem;
+}
+
+.farma-clinical-condition-grid {
+  display: grid;
+  gap: 0.45rem;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+}
+
+.farma-clinical-chip {
+  align-items: flex-start;
+  border: 1px solid var(--sv-border-subtle);
+  border-radius: 0.72rem;
+  color: var(--sv-text-secondary);
+  display: flex;
+  gap: 0.45rem;
+  padding: 0.55rem 0.65rem;
+}
+
+.farma-clinical-chip input {
+  margin-top: 0.15rem;
+}
+
+.farma-clinical-observation-field {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.farma-clinical-observation-field label {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.farma-clinical-toolbar,
+.farma-clinical-picker-actions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.farma-clinical-picker {
+  display: grid;
+  gap: 0.7rem;
+  padding: 0.75rem;
+}
+
+.farma-clinical-picker-head {
+  display: grid;
+  gap: 0.12rem;
+}
+
+.farma-clinical-alerts {
+  border: 1px solid rgba(234, 179, 8, 0.45);
+  background: rgba(234, 179, 8, 0.1);
+  border-radius: 0.75rem;
+  color: var(--sv-text-primary);
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.65rem 0.75rem;
+}
+
+.farma-clinical-alerts ul {
+  margin: 0;
+  padding-left: 1rem;
+}
+
+.farma-clinical-alerts li.contraindicacion {
+  color: var(--sv-danger);
+}
+
+.farma-clinical-alerts li.alto_riesgo {
+  color: #fb923c;
+}
+
+.farma-clinical-alerts li.precaucion,
+.farma-clinical-alerts p {
+  color: #facc15;
+}
+
+.farma-clinical-summary {
+  padding: 0.6rem 0.7rem;
+}
+
+.farma-clinical-summary summary {
+  cursor: pointer;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.farma-clinical-summary > div {
+  color: var(--sv-text-secondary);
+  display: grid;
+  gap: 0.35rem;
+  padding-top: 0.55rem;
+}
+
+.farma-save-notice {
+  border: 1px solid var(--sv-border);
+  border-radius: 0.7rem;
+  padding: 0.65rem 0.75rem;
+  display: grid;
+  gap: 0.15rem;
+  font-size: 0.86rem;
+  color: var(--sv-text-primary);
+  background: var(--sv-bg-elevated);
+}
+
+.farma-save-notice strong {
+  font-size: 0.88rem;
+}
+
+.farma-save-notice.success {
+  border-color: rgba(34, 197, 94, 0.45);
+  background: rgba(34, 197, 94, 0.12);
+  color: var(--sv-success);
+}
+
+.farma-save-notice.warning {
+  border-color: rgba(234, 179, 8, 0.45);
+  background: rgba(234, 179, 8, 0.12);
+  color: #facc15;
+}
+
+.farma-save-notice.error {
+  border-color: rgba(239, 68, 68, 0.45);
+  background: rgba(239, 68, 68, 0.12);
+  color: var(--sv-danger);
+}
+
+.farma-duplicate-box {
+  border: 1px solid rgba(234, 179, 8, 0.42);
+  background: rgba(234, 179, 8, 0.1);
+  border-radius: 0.85rem;
+  padding: 0.75rem;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.farma-duplicate-box > div:first-child {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.farma-duplicate-box strong {
+  color: #facc15;
+}
+
+.farma-duplicate-box span {
+  color: var(--sv-text-secondary);
+  font-size: 0.84rem;
+}
+
+.farma-duplicate-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.farma-free-result {
+  border: 1px solid var(--sv-border);
+  background: var(--sv-bg-elevated);
+  border-radius: 0.8rem;
+  padding: 0.8rem 0.9rem;
+  display: grid;
+  gap: 0.15rem;
+}
+
+.farma-free-result.muted {
+  opacity: 0.75;
+}
+
+.farma-free-result-main {
+  font-size: 1.14rem;
+  font-weight: 700;
+  color: var(--sv-text-primary);
+}
+
+.farma-free-result-final {
+  color: var(--sv-success);
+}
+
+.farma-procedure-box {
+  border: 1px solid var(--sv-border-subtle);
+  background: var(--sv-bg-elevated);
+  border-radius: 0.8rem;
+  padding: 0.75rem 0.85rem;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.farma-procedure-box h3,
+.farma-procedure-box h4 {
+  margin: 0;
+}
+
+.farma-procedure-steps {
+  background: var(--sv-bg-surface);
+  border: 1px solid var(--sv-border);
+  border-radius: 0.65rem;
+  padding: 0.5rem 0.65rem;
+  display: grid;
+  gap: 0.2rem;
+  font-family: var(--sv-font-mono);
+}
+
+.farma-edu-warning {
+  border: 1px solid rgba(59, 130, 246, 0.35);
+  background: rgba(59, 130, 246, 0.1);
+  border-radius: 0.65rem;
+  padding: 0.58rem 0.68rem;
+  display: grid;
+  gap: 0.12rem;
+  color: var(--sv-text-secondary);
+  font-size: 0.84rem;
+}
+
+/* -----------------------------------------------------------------------------
+   MODO PROFESIONAL
+   ----------------------------------------------------------------------------- */
+.farma-advanced-card {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.farma-components-block,
+.farma-interactions-block,
+.farma-dose-species-block,
+.farma-product-photo-block,
+.farma-routes-block,
+.farma-presentations-block,
+.farma-withdrawal-block {
+  display: grid;
+  gap: 0.65rem;
+  border: 1px solid var(--sv-border);
+  border-radius: 0.85rem;
+  padding: 0.8rem;
+  background: var(--sv-bg-elevated);
+}
+
+.farma-components-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.farma-components-header h3 {
+  margin: 0;
+  font-size: 0.98rem;
+}
+
+.farma-components-list {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.farma-component-card {
+  border: 1px solid var(--sv-border-subtle);
+}
+
+.farma-species-dose-list {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.farma-species-dose-card,
+.farma-route-card,
+.farma-presentation-card,
+.farma-withdrawal-card {
+  border: 1px solid var(--sv-border-subtle);
+}
+
+.farma-species-dose-grid,
+.farma-route-grid,
+.farma-presentation-grid,
+.farma-withdrawal-grid {
+  display: grid;
+  gap: 0.65rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.farma-species-dose-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.farma-component-result {
+  border: 1px dashed var(--sv-border);
+  border-radius: 0.55rem;
+  padding: 0.55rem 0.7rem;
+  background: var(--sv-bg-surface);
+  font-size: 0.85rem;
+  color: var(--sv-text-secondary);
+}
+
+.farma-product-photo-grid {
+  display: grid;
+  gap: 0.65rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.farma-file-input {
+  padding: 0.35rem 0.45rem;
+}
+
+.farma-product-photo-preview {
+  border: 1px dashed var(--sv-border);
+  background: var(--sv-bg-surface);
+  border-radius: 0.75rem;
+  padding: 0.65rem;
+  min-height: 82px;
+  display: grid;
+  place-items: center;
+  gap: 0.35rem;
+}
+
+.farma-photo-empty {
+  color: var(--sv-text-muted);
+  font-size: 0.83rem;
+}
+
+.farma-photo-preview-image {
+  width: 100%;
+  max-height: 220px;
+  object-fit: contain;
+  border-radius: 0.6rem;
+  border: 1px solid var(--sv-border-subtle);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.farma-photo-name {
+  font-size: 0.75rem;
+  color: var(--sv-text-muted);
+}
+
+.farma-product-photo-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.farma-routes-list,
+.farma-presentations-list,
+.farma-withdrawal-list {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.farma-section-hint {
+  margin: 0;
+  color: var(--sv-text-muted);
+  font-size: 0.82rem;
+}
+
+.farma-withdrawal-warning {
+  margin: 0.45rem 0 0;
+  color: #facc15;
+  font-size: 0.8rem;
+}
+
+.farma-interaction-results {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.farma-interaction-alert {
+  border-radius: 0.65rem;
+  padding: 0.6rem 0.72rem;
+  border: 1px solid var(--sv-border-subtle);
+  background: var(--sv-bg-surface);
+  display: grid;
+  gap: 0.15rem;
+  font-size: 0.83rem;
+}
+
+.farma-interaction-alert.sinergismo {
+  border-color: rgba(59, 130, 246, 0.5);
+  background: rgba(59, 130, 246, 0.12);
+}
+
+.farma-interaction-alert.antagonismo {
+  border-color: rgba(239, 68, 68, 0.48);
+  background: rgba(239, 68, 68, 0.13);
+}
+
+.farma-interaction-alert.precaucion {
+  border-color: rgba(234, 179, 8, 0.48);
+  background: rgba(234, 179, 8, 0.13);
+}
+
+.farma-interaction-alert.sin_alertas {
+  border-color: rgba(34, 197, 94, 0.45);
+  background: rgba(34, 197, 94, 0.13);
+}
+
+/* -----------------------------------------------------------------------------
+   PERSONALIZADOS / HISTORIAL
+   ----------------------------------------------------------------------------- */
+.farma-custom-shell,
+.farma-history-shell {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.farma-custom-actions,
+.farma-history-actions {
+  gap: 0.38rem;
+}
+
+.farma-mini-box {
+  border: 1px solid var(--sv-border-subtle);
+  border-radius: 0.72rem;
+  padding: 0.58rem 0.65rem;
+  background: var(--sv-bg-elevated);
+  display: grid;
+  gap: 0.2rem;
+}
+
+.farma-mini-box strong {
+  color: var(--sv-text-primary);
+  font-size: 0.82rem;
+}
+
+.farma-mini-box ul {
+  margin: 0;
+  padding-left: 1rem;
+  display: grid;
+  gap: 0.14rem;
+  font-size: 0.8rem;
+  color: var(--sv-text-secondary);
+}
+
+.farma-product-thumb-wrap {
+  border: 1px solid var(--sv-border-subtle);
+  border-radius: 0.75rem;
+  background: var(--sv-bg-elevated);
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 0.45rem;
+}
+
+.farma-product-thumb {
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+  border-radius: 0.5rem;
+}
+
+.farma-custom-calc {
+  border: 1px solid var(--sv-border);
+  background: var(--sv-bg-elevated);
+  border-radius: 0.85rem;
+  padding: 0.75rem;
+  display: grid;
+  gap: 0.65rem;
+}
+
+.farma-custom-calc-header {
+  display: grid;
+  gap: 0.12rem;
+}
+
+.farma-custom-calc-header strong {
+  color: var(--sv-text-primary);
+}
+
+.farma-custom-calc-header span,
+.farma-saved-concentration span,
+.farma-temp-actions span {
+  color: var(--sv-text-muted);
+  font-size: 0.82rem;
+}
+
+.farma-custom-calc-grid,
+.farma-temp-presentation {
+  display: grid;
+  gap: 0.65rem;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+}
+
+.farma-saved-concentration {
+  border: 1px dashed var(--sv-border);
+  border-radius: 0.7rem;
+  padding: 0.58rem 0.65rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.farma-saved-concentration strong {
+  color: var(--sv-text-primary);
+  font-size: 0.88rem;
+}
+
+.farma-temp-presentation {
+  border: 1px solid var(--sv-border-subtle);
+  border-radius: 0.72rem;
+  padding: 0.62rem;
+  background: var(--sv-bg-surface);
+}
+
+.farma-temp-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.farma-custom-calc-result {
+  border: 1px solid rgba(34, 197, 94, 0.38);
+  background: rgba(34, 197, 94, 0.1);
+  border-radius: 0.7rem;
+  padding: 0.62rem 0.7rem;
+  display: grid;
+  gap: 0.18rem;
+  color: var(--sv-text-secondary);
+}
+
+.farma-custom-calc-result strong {
+  color: var(--sv-success);
+}
+
+.farma-custom-calc-notice {
+  border-radius: 0.65rem;
+  padding: 0.55rem 0.65rem;
+  font-size: 0.82rem;
+  border: 1px solid var(--sv-border-subtle);
+  background: var(--sv-bg-surface);
+  color: var(--sv-text-secondary);
+}
+
+.farma-custom-calc-notice.success {
+  border-color: rgba(34, 197, 94, 0.38);
+  color: var(--sv-success);
+}
+
+.farma-custom-calc-notice.warning {
+  border-color: rgba(234, 179, 8, 0.42);
+  color: #facc15;
+}
+
+.farma-custom-calc-notice.error {
+  border-color: rgba(239, 68, 68, 0.42);
+  color: var(--sv-danger);
+}
+
+.farma-custom-calc-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+@media (max-width: 900px) {
+  .farma-free-grid,
+  .farma-advanced-grid,
+  .farma-component-grid,
+  .farma-species-dose-grid,
+  .farma-product-photo-grid,
+  .farma-route-grid,
+  .farma-presentation-grid,
+  .farma-withdrawal-grid,
+  .farma-custom-calc-grid,
+  .farma-temp-presentation {
+    grid-template-columns: 1fr;
+  }
+
+  .farma-saved-concentration,
+  .farma-temp-actions {
+    align-items: stretch;
+  }
+}
+
+/* Ajustes responsive especificos para F�rmacos cargados en m�vil */
+.farma-loaded-shell {
+  display: grid;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.farma-loaded-shell .sv-toolbar {
+  margin-bottom: 0;
+}
+
+.farma-chip-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  padding: 0.15rem 0 0.35rem;
+  margin-bottom: 0.2rem;
+  min-width: 0;
+}
+
+.farma-chip-strip .cat-chip {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .farma-chip-strip {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-right: 0.15rem;
+  }
+
+  .farma-loaded-shell .farma-calc-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .farma-loaded-shell .farma-calc-row > div {
+    min-width: 0 !important;
+    width: 100%;
+    flex: 1 1 auto !important;
+  }
+}

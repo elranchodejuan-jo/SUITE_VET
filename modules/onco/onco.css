@@ -1,0 +1,290 @@
+/* ==========================================================================
+   SUITE VET - VetOnco / Oncologia
+   ========================================================================== */
+
+:root {
+  --sv-onco-color: #c026d3;
+  --sv-onco-soft: rgba(192, 38, 211, 0.14);
+  --sv-onco-border: rgba(192, 38, 211, 0.34);
+}
+
+.onco-shell {
+  gap: 0.9rem;
+}
+
+.onco-header {
+  background:
+    linear-gradient(135deg, rgba(192, 38, 211, 0.18), rgba(14, 165, 233, 0.06)),
+    var(--sv-bg-surface);
+  border-left: 4px solid var(--sv-onco-color);
+  border-color: var(--sv-onco-border);
+}
+
+.onco-kicker {
+  color: var(--sv-onco-color);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  margin: 0 0 0.2rem;
+  text-transform: uppercase;
+}
+
+.onco-header-meta,
+.onco-action-row,
+.onco-detail-header,
+.onco-result-lines,
+.onco-credit-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.onco-header-meta span,
+.onco-badge {
+  background: var(--sv-bg-elevated);
+  border: 1px solid var(--sv-border-subtle);
+  border-radius: 999px;
+  color: var(--sv-text-secondary);
+  font-size: 0.76rem;
+  padding: 0.25rem 0.6rem;
+}
+
+.onco-tabs {
+  border-bottom: 1px solid var(--sv-border);
+  padding-bottom: 0.55rem;
+}
+
+.onco-tabs .sv-module-tab {
+  background:
+    linear-gradient(150deg, rgba(192, 38, 211, 0.13), rgba(14, 165, 233, 0.04)),
+    var(--sv-bg-elevated);
+  border-color: var(--sv-onco-border);
+}
+
+.onco-tabs .sv-module-tab:hover,
+.onco-tabs .sv-module-tab.is-active {
+  background: linear-gradient(135deg, rgba(192, 38, 211, 0.24), rgba(14, 165, 233, 0.1));
+  border-color: rgba(217, 70, 239, 0.75);
+  box-shadow: 0 0 0 3px rgba(192, 38, 211, 0.15);
+}
+
+.onco-home-grid,
+.onco-calculator-grid {
+  display: grid;
+  gap: 0.8rem;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.onco-card {
+  background: var(--sv-bg-surface);
+  border: 1px solid var(--sv-border);
+  border-radius: 0.85rem;
+  box-shadow: var(--sv-shadow-sm);
+  padding: 0.9rem;
+}
+
+.onco-card h3 {
+  margin: 0 0 0.45rem;
+}
+
+.onco-card p {
+  color: var(--sv-text-secondary);
+  line-height: 1.55;
+  margin: 0 0 0.8rem;
+}
+
+.onco-hero-card {
+  border-left: 4px solid var(--sv-onco-color);
+}
+
+.onco-warning {
+  background:
+    linear-gradient(135deg, rgba(245, 158, 11, 0.12), transparent),
+    var(--sv-bg-surface);
+  border-color: rgba(245, 158, 11, 0.32);
+}
+
+.onco-chip-grid,
+.onco-section-grid,
+.onco-form-grid {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.onco-chip-grid {
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.onco-chip,
+.onco-protocol-card {
+  background: var(--sv-bg-elevated);
+  border: 1px solid var(--sv-border-subtle);
+  border-radius: 0.7rem;
+  color: var(--sv-text-primary);
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+
+.onco-chip {
+  padding: 0.65rem 0.75rem;
+}
+
+.onco-chip:hover,
+.onco-protocol-card:hover,
+.onco-protocol-card.is-active {
+  border-color: var(--sv-onco-color);
+  box-shadow: 0 0 0 3px rgba(192, 38, 211, 0.12);
+}
+
+.onco-protocol-layout {
+  display: grid;
+  gap: 0.8rem;
+  grid-template-columns: minmax(220px, 320px) minmax(0, 1fr);
+}
+
+.onco-protocol-list {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.onco-protocol-card {
+  position: relative;
+}
+
+.onco-protocol-main {
+  background: transparent;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  display: grid;
+  font: inherit;
+  gap: 0.25rem;
+  padding: 0.65rem 0.75rem;
+  text-align: left;
+  width: 100%;
+}
+
+.onco-protocol-card .sv-favorite-star {
+  position: absolute;
+  right: 0.55rem;
+  top: 0.45rem;
+}
+
+.onco-protocol-system,
+.onco-muted {
+  color: var(--sv-text-muted);
+  font-size: 0.8rem;
+}
+
+.onco-protocol-card strong {
+  padding-right: 1.6rem;
+}
+
+.onco-protocol-card small {
+  color: var(--sv-text-secondary);
+}
+
+.onco-protocol-detail h3 {
+  margin-top: 0.6rem;
+}
+
+.onco-badge {
+  background: var(--sv-onco-soft);
+  border-color: var(--sv-onco-border);
+  color: var(--sv-text-primary);
+}
+
+.onco-badge-soft {
+  background: var(--sv-bg-elevated);
+}
+
+.onco-section-grid {
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  margin-top: 0.85rem;
+}
+
+.onco-section-slot,
+.onco-empty {
+  background: var(--sv-bg-elevated);
+  border: 1px solid var(--sv-border-subtle);
+  border-radius: 0.75rem;
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.7rem;
+}
+
+.onco-section-slot span,
+.onco-empty {
+  color: var(--sv-text-secondary);
+  font-size: 0.84rem;
+}
+
+.onco-field {
+  display: grid;
+  gap: 0.24rem;
+}
+
+.onco-field span {
+  color: var(--sv-text-secondary);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.onco-field input,
+.onco-field select {
+  background: var(--sv-bg-elevated);
+  border: 1px solid var(--sv-border);
+  border-radius: 0.65rem;
+  color: var(--sv-text-primary);
+  font: inherit;
+  min-height: var(--sv-control-height);
+  padding: 0.45rem 0.65rem;
+}
+
+.onco-result-card {
+  align-content: start;
+}
+
+.onco-result-number {
+  color: var(--sv-onco-color);
+  font-size: clamp(2rem, 5vw, 3.6rem);
+  font-weight: 900;
+  line-height: 1;
+  margin: 0.4rem 0 0.65rem;
+}
+
+.onco-result-lines {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.onco-result-lines span {
+  background: var(--sv-bg-elevated);
+  border: 1px solid var(--sv-border-subtle);
+  border-radius: 0.65rem;
+  padding: 0.5rem 0.6rem;
+}
+
+.onco-calculator-note {
+  grid-column: 1 / -1;
+}
+
+.onco-credit-list span {
+  background: var(--sv-bg-elevated);
+  border: 1px solid var(--sv-border-subtle);
+  border-radius: 999px;
+  padding: 0.4rem 0.7rem;
+}
+
+.sv-home-card-onco {
+  border-left: 4px solid var(--sv-onco-color);
+}
+
+@media (max-width: 820px) {
+  .onco-protocol-layout {
+    grid-template-columns: 1fr;
+  }
+}

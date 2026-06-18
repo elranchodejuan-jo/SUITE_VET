@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SUITE VET</title>
+
+  <!-- ── SHARED: Sistema de diseño ── -->
+  <link rel="stylesheet" href="shared/tokens.css" />
+  <link rel="stylesheet" href="shared/components.css" />
+  <link rel="stylesheet" href="shared/categorias.css" />
+  <link rel="stylesheet" href="shared/layout.css" />
+  <link rel="stylesheet" href="shared/about.css?v=20260520-photo-carousel" />
+  <link rel="stylesheet" href="shared/favoritos.css" />
+
+  <!-- ── MÓDULOS CSS ── -->
+  <link rel="stylesheet" href="modules/fisio/fisio.css" />
+  <link rel="stylesheet" href="modules/farma/farma.css" />
+  <link rel="stylesheet" href="modules/micro/micro.css" />
+  <link rel="stylesheet" href="modules/patologia/patologia.css" />
+  <link rel="stylesheet" href="modules/nutricion/nutricion.css" />
+  <link rel="stylesheet" href="modules/clinica-integrada/clinica.css" />
+  <link rel="stylesheet" href="modules/semiologia-anamnesis/semiologia.css" />
+  <link rel="stylesheet" href="modules/casos-360/casos.css" />
+  <link rel="stylesheet" href="modules/onco/onco.css" />
+  <link rel="stylesheet" href="modules/bibliografia/bibliografia.css" />
+  <link rel="stylesheet" href="shared/styles/theme.css" />
+  <link rel="stylesheet" href="shared/styles/module-layout.css" />
+  <link rel="stylesheet" href="shared/styles/cards.css" />
+  <link rel="stylesheet" href="shared/styles/forms.css" />
+  <link rel="stylesheet" href="shared/styles/buttons.css" />
+
+  <!-- ── RECETARIO CSS ── -->
+  <link rel="stylesheet" href="shared/recetario.css" />
+
+  <!-- ── RESPONSIVE CSS ── -->
+  <link rel="stylesheet" href="shared/responsive.css" />
+
+  <!-- QR para guías/receta -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" async></script>
+
+  <!-- ── SHARED: Router + Categorías (cargan primero, aplican tema antes del render) ── -->
+  <script src="shared/router.js"></script>
+  <script src="shared/categorias.js"></script>
+</head>
+<body>
+  <div class="sv-sidebar-backdrop" id="sv-sidebar-backdrop" aria-hidden="true"></div>
+  <div class="sv-app-container">
+
+  <!-- ════════════════════════════════════════
+       TOPBAR
+  ════════════════════════════════════════ -->
+  <header class="sv-topbar">
+    <button class="sv-menu-toggle sv-topbar-actions" id="sv-menu-toggle" aria-label="Menú proyectos">
+      <span></span><span></span><span></span>
+    </button>
+    <button class="sv-icon-btn sv-home-toggle" id="sv-home-toggle" type="button" data-go-view="home" aria-label="Ir al inicio" title="Inicio">
+      &#8962;
+    </button>
+    <button class="sv-icon-btn sv-search-toggle" id="sv-search-toggle" type="button" aria-label="Abrir busqueda global" aria-expanded="false" title="Buscar">
+      &#128269;
+    </button>
+    <button class="sv-icon-btn sv-favorites-toggle" id="sv-favorites-toggle" type="button" data-go-view="favoritos" aria-label="Abrir favoritos" title="Favoritos">
+      &#9733;
+      <span id="sv-favorites-count" class="sv-favorites-count" hidden>0</span>
+    </button>
+    <button class="sv-icon-btn sv-bibliografia-toggle" id="sv-bibliografia-toggle" type="button" data-go-view="bibliografia" aria-label="Abrir bibliografía" title="Bibliografía & Biblioteca">
+      📚
+    </button>
+    <span class="sv-topbar-brand">SUITE VET</span>
+    <div class="sv-search-wrap">
+      <span class="sv-search-icon">🔍</span>
+      <input type="text" id="sv-search-global" class="sv-search-global" placeholder="Buscar en todos los módulos…" autocomplete="off" />
+      <div id="sv-search-results" class="sv-search-results"></div>
+    </div>
+    <div class="sv-topbar-actions">
+      <button id="sv-theme-toggle" title="Cambiar tema">☀️</button>
+    </div>
+  </header>
+
+  <!-- Menú lateral proyectos -->
+  <aside class="sv-sidebar" id="sv-menu-panel">
+    <p class="sv-menu-title">Modulos SUITE VET</p>
+    <button class="sv-menu-item sv-disabled">CD — Cartilla Digital</button>
+    <button class="sv-menu-item sv-disabled">CATTLE — Bovinos</button>
+    <p class="sv-menu-note">En desarrollo, pronto más info…</p>
+  </aside>
+
+  <!-- ════════════════════════════════════════
+       NAV PRINCIPAL
+  ════════════════════════════════════════ -->
+  <nav class="sv-nav">
+    <button class="sv-nav-btn sv-nav-active" data-view="home">Inicio</button>
+    <button class="sv-nav-btn" data-view="fisiologia">Fisiología</button>
+    <button class="sv-nav-btn" data-view="farmacologia">Farmacología</button>
+    <button class="sv-nav-btn" data-view="microbiologia">Microbiología</button>
+    <button class="sv-nav-btn" data-view="patologia">Patología</button>
+    <button class="sv-nav-btn" data-view="nutricion">Nutrición Animal</button>
+    <button class="sv-nav-btn" data-view="clinica">Clínica Integrada</button>
+    <button class="sv-nav-btn" data-view="semiologia">Semiología &amp; Anamnesis Pro</button>
+    <button class="sv-nav-btn" data-view="casos360">Casos 360</button>
+    <button class="sv-nav-btn" data-view="oncologia">Oncología</button>
+  </nav>
+
+  <!-- ════════════════════════════════════════
+       CONTENIDO PRINCIPAL
+  ════════════════════════════════════════ -->
+  <main class="sv-main">
+
+    <!-- ── INICIO ── -->
+    <section id="view-home" class="sv-view sv-view-active">
+      <h2>Bienvenido a SUITE VET</h2>
+      <p class="sv-view-intro">
+        Plataforma de estudio y consulta para medicina veterinaria y zootecnia.
+        Elige el módulo con el que quieres trabajar:
+      </p>
+      <div class="sv-home-grid">
+        <button class="sv-home-card sv-home-card-fisio" data-go-view="fisiologia" type="button">
+          <div class="sv-home-card-icon">💗</div>
+          <div class="sv-home-card-title">Fisiología</div>
+          <div class="sv-home-card-text">Hormonas, vitaminas y glosario clínico por sistema.</div>
+        </button>
+        <button class="sv-home-card sv-home-card-farma" data-go-view="farmacologia" type="button">
+          <div class="sv-home-card-icon">💉</div>
+          <div class="sv-home-card-title">Farmacología</div>
+          <div class="sv-home-card-text">Vademécum, dosis por especie y tiempos de retiro.</div>
+        </button>
+        <button class="sv-home-card sv-home-card-micro" data-go-view="microbiologia" type="button">
+          <div class="sv-home-card-icon">🧫</div>
+          <div class="sv-home-card-title">Microbiología</div>
+          <div class="sv-home-card-text">Agares, pruebas bioquímicas, antibiogramas y atlas bacteriano.</div>
+        </button>
+        <button class="sv-home-card sv-home-card-pato" data-go-view="patologia" type="button">
+          <div class="sv-home-card-icon">🔬</div>
+          <div class="sv-home-card-title">Patología</div>
+          <div class="sv-home-card-text">Lesiones, hallazgos y diagnóstico diferencial.</div>
+          <span class="sv-coming-tag">Nuevo módulo</span>
+        </button>
+        <button class="sv-home-card sv-home-card-nutri" data-go-view="nutricion" type="button">
+          <div class="sv-home-card-icon sv-home-card-icon-nutri">🐷🐔🐮</div>
+          <div class="sv-home-card-title">Nutrición Animal</div>
+          <div class="sv-home-card-text">Nutrientes, Weende, agua, raciones, ingredientes y clínica nutricional.</div>
+          <span class="sv-coming-tag">Lab</span>
+        </button>
+        <button class="sv-home-card sv-home-card-clinica" data-go-view="clinica" type="button">
+          <div class="sv-home-card-icon">🩺</div>
+          <div class="sv-home-card-title">Clínica Integrada</div>
+          <div class="sv-home-card-text">Casos clínicos guiados para aprender a razonar como médico veterinario.</div>
+          <span class="sv-coming-tag">Nuevo</span>
+        </button>
+        <button class="sv-home-card sv-home-card-semiologia" data-go-view="semiologia" type="button">
+          <div class="sv-home-card-icon">👁️</div>
+          <div class="sv-home-card-title">Semiología &amp; Anamnesis Pro</div>
+          <div class="sv-home-card-text">Entrenador clínico para anamnesis, examen físico, OSCE, logbook y reporte profesional.</div>
+          <span class="sv-coming-tag">Pro</span>
+        </button>
+        <button class="sv-home-card sv-home-card-casos360" data-go-view="casos360" type="button" style="border-left: 4px solid var(--sv-casos360-color, #8b5cf6);">
+          <div class="sv-home-card-icon">🧬</div>
+          <div class="sv-home-card-title">Casos 360</div>
+          <div class="sv-home-card-text">Casos clínicos multimodales con evaluación objetiva por competencias.</div>
+          <span class="sv-coming-tag" style="background: var(--sv-casos360-color, #8b5cf6); color: #fff;">Nuevo</span>
+        </button>
+        <button class="sv-home-card sv-home-card-onco" data-go-view="oncologia" type="button">
+          <div class="sv-home-card-icon">ON</div>
+          <div class="sv-home-card-title">Oncología</div>
+          <div class="sv-home-card-text">VetOnco: protocolos base y calculadora de superficie corporal.</div>
+          <span class="sv-coming-tag">VetOnco</span>
+        </button>
+        <button class="sv-home-card sv-home-card-coming sv-disabled" type="button" disabled>
+          <div class="sv-home-card-icon">🐄</div>
+          <div class="sv-home-card-title">CATTLE</div>
+          <div class="sv-home-card-text">Manejo bovino, retiros y protocolos.</div>
+          <span class="sv-coming-tag">Próximamente</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- FAVORITOS -->
+    <section id="view-favoritos" class="sv-view">
+      <div id="favoritos-root"></div>
+    </section>
+
+    <!-- SOBRE SUITE VET -->
+    <section id="view-about" class="sv-view">
+      <div id="about-suite-vet-root"></div>
+    </section>
+
+    <!-- ── FISIOLOGÍA ── -->
+    <section id="view-fisiologia" class="sv-view">
+      <div id="fisio-root"></div>
+    </section>
+
+    <!-- ── FARMACOLOGÍA ── -->
+    <section id="view-farmacologia" class="sv-view">
+      <div id="farma-root"></div>
+    </section>
+
+    <!-- ── MICROBIOLOGÍA ── -->
+    <section id="view-microbiologia" class="sv-view">
+      <div id="micro-root"></div>
+    </section>
+
+    <!-- ── PATOLOGÍA ── -->
+    <section id="view-patologia" class="sv-view">
+      <div id="patologia-root"></div>
+    </section>
+
+    <!-- NUTRICIÓN ANIMAL -->
+    <section id="view-nutricion" class="sv-view">
+      <div id="nutricion-root"></div>
+    </section>
+
+    <!-- CLINICA INTEGRADA -->
+    <section id="view-clinica" class="sv-view">
+      <div id="clinica-root"></div>
+    </section>
+
+    <!-- SEMIOLOGIA & ANAMNESIS PRO -->
+    <section id="view-semiologia" class="sv-view">
+      <div id="semiologia-root"></div>
+    </section>
+
+    <!-- CASOS 360 -->
+    <section id="view-casos360" class="sv-view">
+      <div id="casos360-root"></div>
+    </section>
+
+    <!-- ONCOLOGIA / VETONCO -->
+    <section id="view-oncologia" class="sv-view">
+      <div id="onco-root"></div>
+    </section>
+
+    <!-- BIBLIOGRAFÍA Y BIBLIOTECA -->
+    <section id="view-bibliografia" class="sv-view">
+      <div id="bibliografia-root"></div>
+    </section>
+
+  </main>
+
+  <footer class="sv-legal-footer" aria-label="Informaci&oacute;n institucional de SUITE VET">
+    <div class="sv-legal-footer-copy">
+      <strong>SUITE VET</strong>
+      <span>Copyright &copy; 2026 SUITE VET. Todos los derechos reservados.</span>
+    </div>
+    <nav class="sv-legal-footer-links" aria-label="Enlaces institucionales">
+      <button type="button" data-legal-link="privacy">Pol&iacute;tica de privacidad</button>
+      <button type="button" data-legal-link="legal">Aviso legal</button>
+      <button type="button" data-legal-link="terms">T&eacute;rminos de uso</button>
+      <button type="button" data-legal-link="sitemap">Mapa del sitio</button>
+      <button type="button" data-suite-view="about">Sobre SUITE VET</button>
+    </nav>
+    <div class="sv-legal-footer-meta">
+      <span>Creado por Juan Baja&ntilde;a</span>
+      <span>Ecuador | Espa&ntilde;ol</span>
+      <span>Versi&oacute;n 2.0</span>
+    </div>
+  </footer>
+  </div>
+
+  <!-- ════════════════════════════════════════
+       FAB — RECETARIO
+  ════════════════════════════════════════ -->
+  <button id="sv-fab-receta" class="sv-fab sv-fab-hidden" title="Ver recetario">
+    📝 Receta
+    <span id="sv-fab-badge" class="sv-fab-badge" data-count="0">0</span>
+  </button>
+
+  <div id="sv-legal-modal" class="sv-modal-overlay" aria-hidden="true">
+    <div class="sv-modal sv-legal-modal" role="dialog" aria-modal="true" aria-labelledby="sv-legal-modal-title">
+      <div class="sv-modal-header">
+        <h3 id="sv-legal-modal-title">SUITE VET</h3>
+        <button class="sv-icon-btn" type="button" data-legal-close aria-label="Cerrar">&times;</button>
+      </div>
+      <div class="sv-modal-body" id="sv-legal-modal-body"></div>
+      <div class="sv-modal-footer">
+        <button class="sv-btn sv-btn-ghost" type="button" data-legal-close>Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════
+       MODAL RECETARIO
+  ════════════════════════════════════════ -->
+  <div id="sv-modal-receta" class="sv-modal-overlay">
+    <div class="sv-receta-container">
+      <div class="sv-receta-controls no-print">
+        <h3 id="sv-receta-titulo">📋 Borrador de Receta</h3>
+        <div class="sv-receta-actions">
+          <button id="sv-receta-cerrar"   class="sv-btn sv-btn-ghost">Seguir editando</button>
+          <button id="sv-receta-limpiar"  class="sv-btn sv-btn-danger">Borrar todo</button>
+          <button id="sv-receta-guardar"  class="sv-btn sv-btn-secondary">Guardar receta</button>
+          <button id="sv-receta-imprimir" class="sv-btn sv-btn-primary">🖨️ Imprimir / PDF</button>
+        </div>
+      </div>
+      <div class="sv-recetas-guardadas no-print">
+        <div class="sv-recetas-guardadas-head">
+          <span>Recetas guardadas</span>
+          <strong id="sv-recetas-total">0</strong>
+        </div>
+        <div id="sv-recetas-lista" class="sv-recetas-lista"></div>
+      </div>
+      <div class="sv-hoja-papel" id="sv-area-impresion-receta">
+        <aside class="sv-receta-sidebar">
+          <div class="sv-brand-area">
+            <h1>SUITE VET</h1>
+            <p>Medicina Veterinaria &amp; Zootecnia</p>
+            <label class="sv-dr-label" for="sv-receta-doctor">Dr.</label>
+            <input type="text" id="sv-receta-doctor" class="sv-receta-input sv-receta-doctor-input" placeholder="Nombre del Dr." />
+            <p class="sv-receta-meta">Cédula Prof: XXXXXXXX</p>
+          </div>
+          <div class="sv-receta-numero-lateral">
+            <span>Receta</span>
+            <strong id="sv-receta-numero">#0001</strong>
+          </div>
+          <div class="sv-datos-form">
+            <label>Fecha:</label>
+            <input type="date" id="sv-receta-fecha" class="sv-receta-input" />
+            <label>Propietario:</label>
+            <input type="text" id="sv-receta-propietario" class="sv-receta-input" placeholder="Nombre del dueño" />
+            <label>Paciente / ID:</label>
+            <input type="text" id="sv-receta-paciente" class="sv-receta-input" placeholder="Ej. Vaca 408 / Firulais" />
+            <label>Especie / Peso:</label>
+            <input type="text" id="sv-receta-peso" class="sv-receta-input" placeholder="Ej. Bovino, 450 kg" />
+          </div>
+          <div class="sv-qr-area">
+            <div id="sv-receta-qr" class="sv-qr-box"></div>
+          </div>
+        </aside>
+        <main class="sv-receta-main">
+          <div class="sv-receta-header-main">
+            <h2>RECETARIO MÉDICO VETERINARIO</h2>
+            <span id="sv-receta-folio" class="sv-receta-folio">Folio: #0001</span>
+          </div>
+          <div class="sv-rp-body">
+            <h3>Rp/</h3>
+            <ul id="sv-lista-receta" class="sv-lista-receta"></ul>
+          </div>
+          <div class="sv-receta-footer">
+            <div class="sv-notas-adicionales">
+              <label>Indicaciones generales / Próxima cita:</label>
+              <textarea id="sv-receta-indicaciones" class="sv-receta-textarea" placeholder="Ej. Mantener en reposo. Retiro en leche: 4 días."></textarea>
+            </div>
+            <div class="sv-firma-area">
+              <div class="sv-linea-firma"></div>
+              <p>Firma y Sello</p>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </div>
+
+  <div id="sv-print-area" style="display:none"></div>
+  <div id="micro-print-area" class="micro-print-area" aria-hidden="true"></div>
+
+  <!-- ════════════════════════════════════════
+       SCRIPTS — orden de carga correcto
+  ════════════════════════════════════════ -->
+  <!-- Shared -->
+  <script src="shared/favoritos.js" defer></script>
+  <script src="shared/recetario.js" defer></script>
+  <script src="shared/about.js?v=20260520-photo-carousel" defer></script>
+
+  <!-- Fisiología -->
+  <script src="modules/fisio/data/hormonasvitaminasdata.js" defer></script>
+  <script src="modules/fisio/data/glosariodata.js" defer></script>
+  <script src="modules/fisio/data.js"  defer></script>
+  <script src="modules/fisio/fisio.js" defer></script>
+
+  <!-- Farmacología -->
+  <script src="modules/farma/data.js"  defer></script>
+  <script src="modules/farma/farma.js" defer></script>
+
+  <!-- Microbiología -->
+  <script src="modules/micro/data/perfilesdata.js" defer></script>
+  <script src="modules/micro/data/agardata.js" defer></script>
+  <script src="modules/micro/data/caldodata.js" defer></script>
+  <script src="modules/micro/data/pruebasdata.js" defer></script>
+  <script src="modules/micro/data/antibioticosdata.js" defer></script>
+  <script src="modules/micro/data/atlasdata.js" defer></script>
+  <script src="modules/micro/data.js" defer></script>
+  <script src="modules/micro/micro.js" defer></script>
+
+  <!-- Patología -->
+  <script src="modules/patologia/data.js"      defer></script>
+  <script src="modules/patologia/patologia.js" defer></script>
+
+  <!-- Nutrición Animal -->
+  <script src="modules/nutricion/data/submodulosNutricion.js" defer></script>
+  <script src="modules/nutricion/data/aminoacidosData.js" defer></script>
+  <script src="modules/nutricion/data/nutrientesData.js" defer></script>
+  <script src="modules/nutricion/data/acidosGrasosData.js" defer></script>
+  <script src="modules/nutricion/data/vitaminasMineralesData.js" defer></script>
+  <script src="modules/nutricion/data/aguaData.js" defer></script>
+  <script src="modules/nutricion/data/weendeData.js" defer></script>
+  <script src="modules/nutricion/data/ingredientesData.js" defer></script>
+  <script src="modules/nutricion/data/digestionEspeciesData.js" defer></script>
+  <script src="modules/nutricion/data/fermentacionRuminalData.js" defer></script>
+  <script src="modules/nutricion/data/trastornosNutricionalesData.js" defer></script>
+  <script src="modules/nutricion/data/racionesData.js" defer></script>
+  <script src="modules/nutricion/data/etiquetasBalanceadoData.js" defer></script>
+  <script src="modules/nutricion/data/nutricionIndexData.js" defer></script>
+  <script src="modules/nutricion/nutricion.js" defer></script>
+
+  <!-- Clinica Integrada -->
+  <script src="modules/clinica-integrada/clinica-data.js" defer></script>
+  <script src="modules/clinica-integrada/clinica-pdf.js" defer></script>
+  <script src="modules/clinica-integrada/clinica.js" defer></script>
+
+  <!-- Semiologia & Anamnesis Pro -->
+  <script src="modules/semiologia-anamnesis/semiologia-data.js" defer></script>
+  <script src="modules/semiologia-anamnesis/semiologia-pdf.js" defer></script>
+  <script src="modules/semiologia-anamnesis/semiologia.js" defer></script>
+
+  <!-- Casos 360 -->
+  <script src="modules/casos-360/casos-data.js" defer></script>
+  <script src="modules/casos-360/casos.js" defer></script>
+
+  <!-- Oncologia / VetOnco -->
+  <script src="modules/onco/onco-data.js" defer></script>
+  <script src="modules/onco/onco.js" defer></script>
+
+  <!-- Bibliografía -->
+  <script src="modules/bibliografia/data.js" defer></script>
+  <script src="modules/bibliografia/bibliografia.js" defer></script>
+
+</body>
+</html>

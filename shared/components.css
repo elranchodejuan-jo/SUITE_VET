@@ -1,0 +1,353 @@
+/* =============================================================================
+   SUITE VET — components.css
+   Componentes reutilizables: tarjetas, botones, inputs, badges, pills.
+   TODOS los módulos usan estas clases. No duplicar estilos en módulos.
+   ============================================================================= */
+
+/* ──────────────────────────────────────────────
+   RESET BASE
+────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--sv-bg-base);
+  color: var(--sv-text-primary);
+  display: flex;
+  flex-direction: column;
+  font-family: var(--sv-font-body);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ──────────────────────────────────────────────
+   SCROLLBAR
+────────────────────────────────────────────── */
+::-webkit-scrollbar          { width: 6px; height: 6px; }
+::-webkit-scrollbar-track    { background: var(--sv-scroll-track); }
+::-webkit-scrollbar-thumb    { background: var(--sv-scroll-thumb); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: var(--sv-border); }
+*                            { scrollbar-width: thin; scrollbar-color: var(--sv-scroll-thumb) var(--sv-scroll-track); }
+
+/* ──────────────────────────────────────────────
+   TIPOGRAFÍA
+────────────────────────────────────────────── */
+h1, h2, h3 {
+  font-family: var(--sv-font-heading);
+  letter-spacing: 0.01em;
+  color: var(--sv-text-primary);
+}
+h1 { font-size: 1.8rem; }
+h2 { font-size: 1.3rem; margin-bottom: 0.4rem; }
+h3 { font-size: 1.1rem; }
+
+p { color: var(--sv-text-secondary); font-size: 0.9rem; }
+
+/* ──────────────────────────────────────────────
+   TARJETA BASE (.sv-card)
+   Estándar para TODOS los módulos.
+────────────────────────────────────────────── */
+.sv-card {
+  background: var(--sv-bg-surface);
+  border: 1px solid var(--sv-border);
+  border-radius: 1rem;
+  padding: 1rem 1.1rem;
+  box-shadow: var(--sv-shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  position: relative;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.sv-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--sv-shadow-md);
+}
+
+/* Acento lateral de color por módulo */
+.sv-card[data-module="fisio"]  { border-left: 4px solid var(--sv-fisio-color); }
+.sv-card[data-module="farma"]  { border-left: 4px solid var(--sv-farma-color); }
+.sv-card[data-module="micro"]  { border-left: 4px solid var(--sv-micro-color); }
+.sv-card[data-module="pato"]   { border-left: 4px solid var(--sv-pato-color);  }
+.sv-card[data-module="clinica"]{ border-left: 4px solid var(--sv-clinica-color); }
+.sv-card[data-module="semiologia"]{ border-left: 4px solid var(--sv-semiologia-color, var(--sv-clinica-color)); }
+
+/* Cabecera de tarjeta */
+.sv-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.sv-card-title {
+  font-family: var(--sv-font-heading);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--sv-text-primary);
+}
+
+.sv-card-subtitle {
+  font-size: 0.8rem;
+  color: var(--sv-text-muted);
+}
+
+/* Cuerpo de tarjeta */
+.sv-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.sv-card-body p {
+  font-size: 0.85rem;
+  color: var(--sv-text-secondary);
+}
+
+.sv-card-body p span,
+.sv-card-body strong {
+  color: var(--sv-text-primary);
+  font-weight: 600;
+}
+
+/* Footer de tarjeta */
+.sv-card-footer {
+  border-top: 1px solid var(--sv-border-subtle);
+  padding-top: 0.5rem;
+  margin-top: 0.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  color: var(--sv-text-muted);
+}
+
+/* ──────────────────────────────────────────────
+   GRID DE TARJETAS
+────────────────────────────────────────────── */
+.sv-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.sv-grid-wide {
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+}
+
+/* ──────────────────────────────────────────────
+   BOTONES (.sv-btn)
+────────────────────────────────────────────── */
+.sv-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  padding: 0.45rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  font-family: var(--sv-font-body);
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background 0.18s ease,
+    color 0.18s ease,
+    box-shadow 0.18s ease,
+    transform 0.12s ease,
+    border-color 0.18s ease;
+}
+
+.sv-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Primario (azul) */
+.sv-btn-primary {
+  background: var(--sv-accent);
+  border-color: var(--sv-accent);
+  color: #fff;
+  box-shadow: var(--sv-shadow-accent);
+}
+.sv-btn-primary:hover:not(:disabled) {
+  background: var(--sv-accent-hover);
+  border-color: var(--sv-accent-hover);
+  transform: translateY(-1px);
+}
+
+/* Secundario (borde) */
+.sv-btn-secondary {
+  background: transparent;
+  border-color: var(--sv-accent);
+  color: var(--sv-accent);
+}
+.sv-btn-secondary:hover:not(:disabled) {
+  background: var(--sv-bg-elevated);
+  box-shadow: var(--sv-shadow-accent);
+}
+
+/* Ghost */
+.sv-btn-ghost {
+  background: transparent;
+  border-color: var(--sv-border);
+  color: var(--sv-text-secondary);
+}
+.sv-btn-ghost:hover:not(:disabled) {
+  background: var(--sv-bg-elevated);
+  border-color: var(--sv-text-muted);
+}
+
+/* Peligro */
+.sv-btn-danger {
+  background: transparent;
+  border-color: var(--sv-danger);
+  color: var(--sv-danger);
+}
+.sv-btn-danger:hover:not(:disabled) {
+  background: var(--sv-danger);
+  color: #fff;
+}
+
+/* Tamaños */
+.sv-btn-sm { padding: 0.3rem 0.7rem; font-size: 0.78rem; }
+.sv-btn-lg { padding: 0.6rem 1.4rem; font-size: 0.95rem; }
+.sv-btn-full { width: 100%; }
+
+/* ──────────────────────────────────────────────
+   INPUTS Y SELECTS (.sv-input, .sv-select)
+────────────────────────────────────────────── */
+.sv-input,
+.sv-select {
+  background: var(--sv-bg-elevated);
+  border: 1px solid var(--sv-border);
+  border-radius: 0.6rem;
+  color: var(--sv-text-primary);
+  font-family: var(--sv-font-body);
+  font-size: 0.88rem;
+  padding: 0.5rem 0.85rem;
+  outline: none;
+  width: 100%;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.sv-input::placeholder { color: var(--sv-text-disabled); }
+.sv-input:focus,
+.sv-select:focus {
+  border-color: var(--sv-accent);
+  box-shadow: 0 0 0 3px var(--sv-accent-shadow);
+}
+
+.sv-select option {
+  background: var(--sv-bg-elevated);
+  color: var(--sv-text-primary);
+}
+
+/* Toolbar de búsqueda + filtros */
+.sv-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 0.8rem;
+  align-items: center;
+}
+
+/* ──────────────────────────────────────────────
+   BADGES (.sv-badge)
+────────────────────────────────────────────── */
+.sv-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.sv-badge-blue   { background: rgba(59,130,246,0.15); color: #60a5fa; border: 1px solid rgba(59,130,246,0.25); }
+.sv-badge-green  { background: rgba(34,197,94,0.15);  color: #4ade80; border: 1px solid rgba(34,197,94,0.25); }
+.sv-badge-red    { background: rgba(239,68,68,0.15);  color: #f87171; border: 1px solid rgba(239,68,68,0.25); }
+.sv-badge-yellow { background: rgba(234,179,8,0.15);  color: #facc15; border: 1px solid rgba(234,179,8,0.25); }
+.sv-badge-cyan   { background: rgba(34,211,238,0.15); color: #22d3ee; border: 1px solid rgba(34,211,238,0.25); }
+.sv-badge-purple { background: rgba(168,85,247,0.15); color: #c084fc; border: 1px solid rgba(168,85,247,0.25); }
+.sv-badge-orange { background: rgba(249,115,22,0.15); color: #fb923c; border: 1px solid rgba(249,115,22,0.25); }
+.sv-badge-gray   { background: rgba(107,114,128,0.15);color: #9ca3af; border: 1px solid rgba(107,114,128,0.25);}
+
+/* ──────────────────────────────────────────────
+   PILL BUTTONS (filtros de sistema)
+────────────────────────────────────────────── */
+.sv-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.28rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid var(--sv-border);
+  background: var(--sv-bg-elevated);
+  color: var(--sv-text-secondary);
+  white-space: nowrap;
+  transition: all 0.18s ease;
+}
+.sv-pill:hover     { border-color: var(--sv-accent); color: var(--sv-accent); }
+.sv-pill.sv-pill-active {
+  background: var(--sv-accent);
+  border-color: var(--sv-accent);
+  color: #fff;
+  box-shadow: var(--sv-shadow-accent);
+}
+
+/* ──────────────────────────────────────────────
+   ESTADO VACÍO
+────────────────────────────────────────────── */
+.sv-empty {
+  text-align: center;
+  padding: 2.5rem 1rem;
+  color: var(--sv-text-muted);
+  font-size: 0.9rem;
+  grid-column: 1 / -1;
+}
+.sv-empty-icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+
+/* ──────────────────────────────────────────────
+   LINK INTERNO ENTRE MÓDULOS
+────────────────────────────────────────────── */
+.sv-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: var(--sv-info);
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 0.82rem;
+}
+.sv-link:hover { color: var(--sv-accent); text-decoration: none; }
+
+/* ──────────────────────────────────────────────
+   ANIMACIONES
+────────────────────────────────────────────── */
+@keyframes sv-fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.sv-fade-in { animation: sv-fadeIn 0.25s ease; }
+
+@keyframes sv-pulse {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.15); }
+}
+.sv-pulse { animation: sv-pulse 0.3s ease; }

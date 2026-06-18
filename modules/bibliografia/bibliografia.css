@@ -1,0 +1,317 @@
+/* =============================================================================
+   SUITE VET 2.0 - modules/bibliografia/bibliografia.css
+   Estilos específicos para el módulo de Bibliografía y Biblioteca Digital.
+   ============================================================================= */
+
+.sv-bib-module {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.sv-bib-header-section {
+  margin-bottom: 0.5rem;
+}
+
+.sv-bib-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+/* Selector de formato de cita (APA / Vancouver) */
+.sv-format-selector-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.sv-format-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--sv-text-muted);
+}
+
+.sv-format-toggle-pill {
+  display: inline-flex;
+  border-radius: 999px;
+  background: var(--sv-bg-elevated);
+  border: 1px solid var(--sv-border);
+  padding: 3px;
+  overflow: hidden;
+  box-shadow: var(--sv-shadow-sm);
+  transition: border-color 0.2s ease;
+}
+
+.sv-format-toggle-pill:hover {
+  border-color: var(--sv-accent);
+}
+
+.sv-format-btn {
+  border: none;
+  background: transparent;
+  padding: 0.35rem 0.95rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--sv-text-muted);
+  cursor: pointer;
+  border-radius: 999px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sv-format-btn.active {
+  background: var(--sv-accent);
+  color: #ffffff;
+  box-shadow: var(--sv-shadow-sm);
+}
+
+/* Filtros de módulo */
+.sv-bib-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+/* Contenedor del listado de Citas */
+.sv-bib-format-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.85rem;
+}
+
+/* Visibilidad de Citas segun formato */
+.sv-bib-format-container.format-apa .sv-citation-vancouver {
+  display: none;
+}
+.sv-bib-format-container.format-apa .sv-citation-apa {
+  display: block;
+  animation: sv-fadeIn 0.25s ease;
+}
+
+.sv-bib-format-container.format-vancouver .sv-citation-apa {
+  display: none;
+}
+.sv-bib-format-container.format-vancouver .sv-citation-vancouver {
+  display: block;
+  animation: sv-fadeIn 0.25s ease;
+}
+
+/* Tarjetas de Referencia */
+.sv-bib-card {
+  gap: 0.65rem;
+  border-radius: 1rem;
+}
+
+.sv-bib-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sv-badge-module {
+  padding: 0.22rem 0.65rem;
+  font-size: 0.7rem;
+}
+/* Forzar colores de módulo en las etiquetas */
+.sv-badge-module[data-mod="fisio"] { background: rgba(244, 63, 94, 0.15); color: var(--sv-fisio-color); border: 1px solid rgba(244, 63, 94, 0.25); }
+.sv-badge-module[data-mod="farma"] { background: rgba(163, 230, 53, 0.15); color: var(--sv-farma-color); border: 1px solid rgba(163, 230, 53, 0.25); }
+.sv-badge-module[data-mod="micro"] { background: rgba(34, 211, 238, 0.15); color: var(--sv-micro-color); border: 1px solid rgba(34, 211, 238, 0.25); }
+.sv-badge-module[data-mod="patologia"] { background: rgba(249, 115, 22, 0.15); color: var(--sv-pato-color); border: 1px solid rgba(249, 115, 22, 0.25); }
+.sv-badge-module[data-mod="nutricion"] { background: rgba(16, 185, 129, 0.15); color: var(--sv-nutri-color); border: 1px solid rgba(16, 185, 129, 0.25); }
+.sv-badge-module[data-mod="clinica"] { background: rgba(16, 112, 210, 0.15); color: var(--sv-clinica-color); border: 1px solid rgba(16, 112, 210, 0.25); }
+.sv-badge-module[data-mod="semiologia"] { background: rgba(46, 122, 214, 0.15); color: var(--sv-semiologia-color); border: 1px solid rgba(46, 122, 214, 0.25); }
+.sv-badge-module[data-mod="casos360"] { background: rgba(139, 92, 246, 0.15); color: var(--sv-casos360-color, #8b5cf6); border: 1px solid rgba(139, 92, 246, 0.25); }
+
+.sv-bib-edition {
+  font-size: 0.76rem;
+  color: var(--sv-text-muted);
+}
+
+.sv-citation-text {
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--sv-text-secondary);
+}
+
+.sv-citation-text i {
+  font-style: italic;
+  color: var(--sv-text-primary);
+}
+
+.sv-bib-card-footer {
+  display: flex;
+  gap: 0.5rem;
+  border-top: 1px solid var(--sv-border-subtle);
+  padding-top: 0.6rem;
+  margin-top: 0.25rem;
+}
+
+.sv-copy-citation-btn {
+  font-size: 0.78rem;
+  padding: 0.3rem 0.8rem;
+}
+
+/* ──────────────────────────────────────────────
+   BIBLIOTECA DIGITAL (ESTANTERÍA)
+   ────────────────────────────────────────────── */
+.sv-bookshelf-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.75rem;
+  margin-top: 0.5rem;
+}
+
+.sv-book-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--sv-bg-surface);
+  border: 1px solid var(--sv-border);
+  border-radius: 1.2rem;
+  overflow: hidden;
+  box-shadow: var(--sv-shadow-sm);
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s ease;
+}
+
+.sv-book-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--sv-shadow-md);
+  border-color: var(--sv-accent);
+}
+
+/* Simulación Portada 3D del Libro */
+.sv-book-cover-3d {
+  height: 200px;
+  position: relative;
+  padding: 1.25rem 1.25rem 1.25rem 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  color: #ffffff;
+  overflow: hidden;
+  background: linear-gradient(135deg, #4f46e5, #3730a3);
+  box-shadow: inset 0 -10px 20px rgba(0,0,0,0.3);
+}
+
+/* Lomo (Book Spine) */
+.sv-book-spine {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 14px;
+  background: rgba(0, 0, 0, 0.24);
+  box-shadow: inset -3px 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.sv-book-cover-3d::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 14px;
+  bottom: 0;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* Elementos de la portada */
+.sv-book-cover-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  z-index: 2;
+}
+
+.sv-book-cover-badge {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 0.18rem 0.55rem;
+  border-radius: 999px;
+  width: fit-content;
+  color: #ffffff;
+}
+
+.sv-book-cover-title {
+  font-family: var(--sv-font-heading);
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.25;
+  margin: 0.2rem 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  color: #ffffff;
+}
+
+.sv-book-cover-author {
+  font-size: 0.74rem;
+  opacity: 0.9;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  font-weight: 500;
+  color: #f1f5f9;
+}
+
+.sv-book-cover-year {
+  font-size: 0.68rem;
+  opacity: 0.75;
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+/* Detalles */
+.sv-book-details {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  flex: 1;
+}
+
+.sv-book-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--sv-text-primary);
+  line-height: 1.3;
+}
+
+.sv-book-author {
+  font-size: 0.8rem;
+  color: var(--sv-text-secondary);
+}
+
+.sv-book-meta-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-size: 0.78rem;
+  color: var(--sv-text-muted);
+  border-top: 1px solid var(--sv-border-subtle);
+  padding-top: 0.5rem;
+  margin-top: 0.15rem;
+}
+
+.sv-book-meta-info strong {
+  color: var(--sv-text-secondary);
+}
+
+.sv-book-download-btn {
+  margin-top: auto;
+}
+
+/* Responsividad interna del módulo */
+@media (max-width: 600px) {
+  .sv-bib-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .sv-format-selector-wrap {
+    justify-content: space-between;
+  }
+  .sv-bib-filters {
+    justify-content: flex-start;
+  }
+}

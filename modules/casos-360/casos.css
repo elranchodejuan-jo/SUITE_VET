@@ -1,0 +1,727 @@
+/* =============================================================================
+   SUITE VET 2.0 — modules/casos-360/casos.css
+   Estilos específicos para el módulo "Suite Vet Casos 360"
+   ============================================================================= */
+
+:root {
+  --sv-casos360-color: #8b5cf6;
+  --sv-casos360-color-hover: #7c3aed;
+  --sv-casos360-color-shadow: rgba(139, 92, 246, 0.4);
+}
+
+[data-theme="light"] {
+  --sv-casos360-color: #6d28d9;
+  --sv-casos360-color-hover: #5b21b6;
+  --sv-casos360-color-shadow: rgba(109, 40, 217, 0.3);
+}
+
+/* Shell & header overrides */
+.c360-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.c360-header {
+  border-left: 5px solid var(--sv-casos360-color);
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, rgba(2, 6, 23, 0.2) 100%);
+  padding: 1.2rem;
+  border-radius: 1rem;
+}
+
+.c360-kicker {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  color: var(--sv-casos360-color);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+/* Tabs */
+.c360-tabs {
+  margin-bottom: 0.5rem;
+}
+
+.c360-tab-icon {
+  display: inline-block;
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  background: rgba(139, 92, 246, 0.2);
+  color: var(--sv-casos360-color);
+  margin-right: 0.35rem;
+  font-weight: bold;
+}
+
+.sv-module-tab.is-active .c360-tab-icon {
+  background: #fff;
+  color: var(--sv-casos360-color);
+}
+
+/* Home / Grid */
+.c360-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.2rem;
+  margin-top: 1rem;
+}
+
+.c360-scenario-card {
+  border-left: 4px solid var(--sv-casos360-color);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.c360-scenario-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3), var(--sv-shadow-accent);
+}
+
+.c360-sc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+}
+
+.c360-sc-icon {
+  font-size: 2rem;
+  background: rgba(139, 92, 246, 0.1);
+  padding: 0.4rem;
+  border-radius: 0.8rem;
+  width: 3.5rem;
+  height: 3.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.c360-sc-meta {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--sv-text-muted);
+  margin-top: 0.25rem;
+}
+
+.c360-sc-progress-bar {
+  height: 6px;
+  background: var(--sv-border-subtle);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-top: 0.5rem;
+}
+
+.c360-sc-progress-fill {
+  height: 100%;
+  background: var(--sv-casos360-color);
+  border-radius: 3px;
+  width: 0%;
+}
+
+.c360-badge-purple-sv {
+  background: rgba(139, 92, 246, 0.15);
+  color: #a78bfa;
+  border: 1px solid rgba(139, 92, 246, 0.25);
+}
+
+/* Player layout (3 Columns) */
+.c360-player-container {
+  display: grid;
+  grid-template-columns: 300px 1fr 280px;
+  gap: 1.2rem;
+  align-items: start;
+}
+
+@media (max-width: 1100px) {
+  .c360-player-container {
+    grid-template-columns: 280px 1fr;
+  }
+  .c360-notes-column {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 800px) {
+  .c360-player-container {
+    grid-template-columns: 1fr;
+  }
+  .c360-patient-column, .c360-main-column, .c360-notes-column {
+    grid-column: 1;
+  }
+}
+
+.c360-card-sticky {
+  position: sticky;
+  top: 5rem;
+  max-height: calc(100vh - 7rem);
+  overflow-y: auto;
+}
+
+/* Patient column */
+.c360-patient-photo {
+  font-size: 4rem;
+  text-align: center;
+  background: var(--sv-bg-elevated);
+  padding: 1.5rem;
+  border-radius: 1rem;
+  border: 1px dashed var(--sv-border);
+  margin-bottom: 0.8rem;
+}
+
+.c360-patient-info {
+  list-style: none;
+  font-size: 0.82rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+}
+
+.c360-patient-info li {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--sv-border-subtle);
+  padding-bottom: 0.2rem;
+}
+
+.c360-patient-info strong {
+  color: var(--sv-text-muted);
+}
+
+.c360-patient-info span {
+  color: var(--sv-text-primary);
+  font-weight: 500;
+}
+
+/* Main gameplay area */
+.c360-gameplay-card {
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.c360-game-header {
+  border-bottom: 1px solid var(--sv-border);
+  padding-bottom: 0.8rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.c360-stage-indicator {
+  font-size: 0.78rem;
+  color: var(--sv-text-muted);
+  font-weight: bold;
+}
+
+.c360-stage-title {
+  font-size: 1.15rem;
+  font-family: var(--sv-font-heading);
+  color: var(--sv-text-primary);
+}
+
+.c360-prompt-text {
+  font-size: 0.95rem;
+  color: var(--sv-text-primary);
+  background: var(--sv-bg-elevated);
+  padding: 0.9rem;
+  border-radius: 0.8rem;
+  border-left: 3px solid var(--sv-casos360-color);
+  line-height: 1.5;
+}
+
+/* Multimodal Assets */
+.c360-asset-box {
+  margin: 0.6rem 0;
+  border: 1px solid var(--sv-border);
+  border-radius: 0.8rem;
+  overflow: hidden;
+  background: var(--sv-bg-elevated);
+}
+
+.c360-asset-header {
+  background: rgba(139, 92, 246, 0.08);
+  padding: 0.5rem 0.8rem;
+  border-bottom: 1px solid var(--sv-border);
+  font-size: 0.82rem;
+  font-weight: bold;
+  color: var(--sv-text-primary);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.c360-asset-content {
+  padding: 0.8rem;
+}
+
+.c360-asset-image {
+  max-width: 100%;
+  max-height: 300px;
+  display: block;
+  margin: 0 auto;
+  border-radius: 0.4rem;
+  border: 1px solid var(--sv-border);
+  object-fit: contain;
+}
+
+.c360-asset-text {
+  font-size: 0.88rem;
+  color: var(--sv-text-secondary);
+  line-height: 1.5;
+  white-space: pre-line;
+}
+
+.c360-asset-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+  text-align: left;
+}
+
+.c360-asset-table th, .c360-asset-table td {
+  padding: 0.45rem 0.6rem;
+  border-bottom: 1px solid var(--sv-border-subtle);
+}
+
+.c360-asset-table th {
+  background: var(--sv-border-subtle);
+  color: var(--sv-text-primary);
+  font-weight: bold;
+}
+
+.c360-asset-timeline {
+  display: flex;
+  gap: 0.8rem;
+  align-items: flex-start;
+}
+
+.c360-timeline-icon {
+  font-size: 1.5rem;
+  background: rgba(239, 68, 68, 0.1);
+  padding: 0.4rem;
+  border-radius: 50%;
+  color: var(--sv-danger);
+}
+
+/* Interactive elements */
+.c360-options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-top: 0.8rem;
+}
+
+.c360-option-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  padding: 0.75rem 0.9rem;
+  background: var(--sv-bg-surface);
+  border: 1px solid var(--sv-border);
+  border-radius: 0.8rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-size: 0.88rem;
+  color: var(--sv-text-secondary);
+}
+
+.c360-option-label:hover {
+  border-color: var(--sv-casos360-color);
+  background: var(--sv-bg-elevated);
+}
+
+.c360-option-label input[type="checkbox"],
+.c360-option-label input[type="radio"] {
+  margin-top: 0.2rem;
+  width: 16px;
+  height: 16px;
+  accent-color: var(--sv-casos360-color);
+  flex-shrink: 0;
+}
+
+.c360-option-label.is-selected {
+  border-color: var(--sv-casos360-color);
+  background: rgba(139, 92, 246, 0.05);
+  color: var(--sv-text-primary);
+}
+
+/* Drag and Drop / Sortable Differentials */
+.c360-sortable-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0.8rem 0;
+}
+
+.c360-sort-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.7rem 0.9rem;
+  background: var(--sv-bg-elevated);
+  border: 1px solid var(--sv-border);
+  border-radius: 0.8rem;
+  font-size: 0.88rem;
+}
+
+.c360-sort-controls {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.c360-sort-btn {
+  background: var(--sv-bg-surface);
+  border: 1px solid var(--sv-border);
+  color: var(--sv-text-secondary);
+  border-radius: 4px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.c360-sort-btn:hover {
+  border-color: var(--sv-casos360-color);
+  color: var(--sv-casos360-color);
+}
+
+/* Action buttons */
+.c360-actions-strip {
+  border-top: 1px solid var(--sv-border);
+  padding-top: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* Notes Column */
+.c360-notes-area {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  height: 100%;
+}
+
+.c360-notes-textarea {
+  min-height: 200px;
+  resize: vertical;
+  font-family: inherit;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+/* Results view */
+.c360-result-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+}
+
+@media (max-width: 768px) {
+  .c360-result-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.c360-score-card {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(2, 6, 23, 0.4) 100%);
+  border-color: var(--sv-casos360-color);
+  text-align: center;
+  padding: 2rem;
+}
+
+.c360-score-number {
+  font-size: 4rem;
+  font-family: var(--sv-font-heading);
+  color: var(--sv-text-primary);
+  line-height: 1;
+  margin: 0.5rem 0;
+  text-shadow: 0 0 20px rgba(139, 92, 246, 0.4);
+}
+
+.c360-competency-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.c360-competency-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.c360-comp-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  font-weight: bold;
+}
+
+.c360-progress-bg {
+  height: 8px;
+  background: var(--sv-border-subtle);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.c360-progress-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.5s ease-out;
+}
+
+.c360-comp-color-COMP-ANAM { background-color: var(--sv-accent); }
+.c360-comp-color-COMP-EFIS { background-color: var(--sv-fisio-color); }
+.c360-comp-color-COMP-RAZ  { background-color: var(--sv-pato-color); }
+.c360-comp-color-COMP-LAB  { background-color: var(--sv-micro-color); }
+.c360-comp-color-COMP-TER  { background-color: var(--sv-farma-color); }
+.c360-comp-color-COMP-SEG  { background-color: var(--sv-danger); }
+
+/* Safety Alerts list */
+.c360-safety-alert {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid var(--sv-danger);
+  color: var(--sv-text-primary);
+  border-radius: 0.8rem;
+  padding: 0.8rem 1rem;
+  display: flex;
+  gap: 0.8rem;
+  align-items: flex-start;
+  margin-bottom: 0.6rem;
+}
+
+.c360-safety-icon {
+  font-size: 1.4rem;
+  color: var(--sv-danger);
+  line-height: 1;
+}
+
+.c360-feedback-badge {
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+.c360-badge-correct { background: rgba(34, 197, 94, 0.15); color: #4ade80; }
+.c360-badge-omission { background: rgba(234, 179, 8, 0.15); color: #facc15; }
+.c360-badge-risk { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+.c360-badge-unnecessary { background: rgba(107, 114, 128, 0.15); color: #9ca3af; }
+
+/* Remediation */
+.c360-remediation-card {
+  border-left: 4px solid var(--sv-danger);
+}
+
+.c360-remediation-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 0.8rem;
+  margin-top: 0.8rem;
+}
+
+.c360-remediation-item {
+  background: var(--sv-bg-elevated);
+  border: 1px solid var(--sv-border);
+  border-radius: 0.8rem;
+  padding: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.c360-rem-meta {
+  font-size: 0.75rem;
+  color: var(--sv-text-muted);
+}
+
+.c360-rem-box {
+  background: var(--sv-bg-surface);
+  border: 1px solid var(--sv-border-subtle);
+  border-radius: 0.4rem;
+  padding: 0.5rem;
+  font-size: 0.78rem;
+}
+
+/* Dashboard / Competency progress */
+.c360-dash-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.8rem;
+  margin-bottom: 1.2rem;
+}
+
+.c360-dash-stat {
+  background: var(--sv-bg-surface);
+  border: 1px solid var(--sv-border);
+  border-radius: 0.8rem;
+  padding: 1rem;
+  text-align: center;
+}
+
+.c360-dash-stat strong {
+  display: block;
+  font-size: 1.8rem;
+  color: var(--sv-text-primary);
+  margin-bottom: 0.2rem;
+}
+
+.c360-dash-stat span {
+  font-size: 0.78rem;
+  color: var(--sv-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Calibration Plot */
+.c360-calibration-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background: var(--sv-bg-elevated);
+  border: 1px solid var(--sv-border);
+  border-radius: 0.8rem;
+  padding: 1rem;
+}
+
+.c360-calibration-grid-visual {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  gap: 2px;
+  height: 200px;
+  background: var(--sv-border-subtle);
+  border-radius: 0.4rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.c360-calibration-label-x, .c360-calibration-label-y {
+  font-size: 0.72rem;
+  color: var(--sv-text-muted);
+  text-align: center;
+}
+
+.c360-calib-diagonal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-top: 1px dashed rgba(139, 92, 246, 0.3);
+  transform: rotate(26.5deg); /* Rough visual diagonal fallback */
+  transform-origin: top left;
+  pointer-events: none;
+}
+
+.c360-calib-point {
+  width: 10px;
+  height: 10px;
+  background-color: var(--sv-casos360-color);
+  border: 2px solid #fff;
+  border-radius: 50%;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  box-shadow: 0 0 10px var(--sv-casos360-color);
+}
+
+.c360-calibration-zones {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--sv-text-secondary);
+  margin-top: 0.4rem;
+}
+
+/* Administration forms */
+.c360-admin-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+}
+
+@media (max-width: 800px) {
+  .c360-admin-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.c360-json-textarea {
+  min-height: 350px;
+  font-family: var(--sv-font-mono);
+  font-size: 0.8rem;
+}
+
+.c360-form-row {
+  display: flex;
+  gap: 0.6rem;
+  width: 100%;
+}
+
+.c360-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1;
+}
+
+.c360-form-field span {
+  font-size: 0.8rem;
+  color: var(--sv-text-secondary);
+}
+
+/* Test panel */
+.c360-test-panel {
+  background: var(--sv-bg-overlay);
+  border: 1px solid var(--sv-border);
+  border-radius: 0.8rem;
+  padding: 1rem;
+}
+
+.c360-test-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.45rem 0;
+  border-bottom: 1px solid var(--sv-border-subtle);
+  font-size: 0.82rem;
+}
+
+.c360-test-status-ok {
+  color: var(--sv-success);
+  font-weight: bold;
+}
+
+.c360-test-status-fail {
+  color: var(--sv-danger);
+  font-weight: bold;
+}
+
+/* Responsive toolbar layout for filters in Casos 360 */
+@media (max-width: 800px) {
+  .c360-shell .sv-toolbar {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.5rem !important;
+  }
+  .c360-shell .sv-toolbar .sv-input {
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+  }
+  .c360-shell .sv-toolbar .sv-select {
+    width: 100% !important;
+    flex: none !important;
+    min-width: 0 !important;
+  }
+}
+

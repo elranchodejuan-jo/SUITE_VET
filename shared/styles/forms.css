@@ -1,0 +1,54 @@
+/* ==========================================================================
+   SUITE VET - forms system
+   Shared form rhythm for calculators, labels, filters and saved views.
+   ========================================================================== */
+
+.sv-input,
+.sv-select {
+  min-height: var(--sv-control-height);
+}
+
+.nutri-form-grid,
+.micro-calc-form,
+.micro-label-form {
+  gap: var(--sv-space-3);
+}
+
+.nutri-form-grid label,
+.micro-calc-form label,
+.micro-label-form label {
+  display: grid;
+  gap: 0.32rem;
+}
+
+.nutri-form-grid label span,
+.micro-calc-form label span,
+.micro-label-form label span,
+.nutri-kicker,
+.micro-kicker {
+  letter-spacing: 0.06em;
+}
+
+.nutri-toolbar .sv-input,
+.micro-toolbar .sv-input,
+.micro-toolbar .sv-select {
+  background: var(--sv-bg-elevated);
+}
+
+.micro-check-row label,
+.nutri-field,
+.nutri-context p,
+.micro-context p {
+  color: var(--sv-text-secondary);
+}
+
+.micro-label-textarea {
+  line-height: 1.45;
+}
+
+.nutri-table th,
+.nutri-table td,
+.micro-table th,
+.micro-table td {
+  font-size: 0.82rem;
+}
