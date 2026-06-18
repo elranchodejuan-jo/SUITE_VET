@@ -184,6 +184,13 @@
           <small>Casos cl&iacute;nicos con evaluaci&oacute;n por competencias</small>
         </span>
       </button>
+      <button class="sv-menu-item sv-menu-route" data-view="oncologia" type="button">
+        <span class="sv-menu-icon sv-menu-icon-onco" style="background:var(--sv-onco-color, #c026d3); color:#fff;">ON</span>
+        <span>
+          <strong>Oncolog&iacute;a</strong>
+          <small>VetOnco, protocolos base y superficie corporal</small>
+        </span>
+      </button>
       <button class="sv-menu-item sv-menu-route" data-view="bibliografia" type="button">
         <span class="sv-menu-icon sv-menu-icon-bib">📚</span>
         <span>

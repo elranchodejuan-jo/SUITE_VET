@@ -22,6 +22,7 @@
   <link rel="stylesheet" href="modules/clinica-integrada/clinica.css" />
   <link rel="stylesheet" href="modules/semiologia-anamnesis/semiologia.css" />
   <link rel="stylesheet" href="modules/casos-360/casos.css" />
+  <link rel="stylesheet" href="modules/onco/onco.css" />
   <link rel="stylesheet" href="modules/bibliografia/bibliografia.css" />
   <link rel="stylesheet" href="shared/styles/theme.css" />
   <link rel="stylesheet" href="shared/styles/module-layout.css" />
@@ -98,6 +99,7 @@
     <button class="sv-nav-btn" data-view="clinica">Clínica Integrada</button>
     <button class="sv-nav-btn" data-view="semiologia">Semiología &amp; Anamnesis Pro</button>
     <button class="sv-nav-btn" data-view="casos360">Casos 360</button>
+    <button class="sv-nav-btn" data-view="oncologia">Oncología</button>
   </nav>
 
   <!-- ════════════════════════════════════════
@@ -158,6 +160,12 @@
           <div class="sv-home-card-text">Casos clínicos multimodales con evaluación objetiva por competencias.</div>
           <span class="sv-coming-tag" style="background: var(--sv-casos360-color, #8b5cf6); color: #fff;">Nuevo</span>
         </button>
+        <button class="sv-home-card sv-home-card-onco" data-go-view="oncologia" type="button">
+          <div class="sv-home-card-icon">ON</div>
+          <div class="sv-home-card-title">Oncología</div>
+          <div class="sv-home-card-text">VetOnco: protocolos base y calculadora de superficie corporal.</div>
+          <span class="sv-coming-tag">VetOnco</span>
+        </button>
         <button class="sv-home-card sv-home-card-coming sv-disabled" type="button" disabled>
           <div class="sv-home-card-icon">🐄</div>
           <div class="sv-home-card-title">CATTLE</div>
@@ -215,6 +223,11 @@
     <!-- CASOS 360 -->
     <section id="view-casos360" class="sv-view">
       <div id="casos360-root"></div>
+    </section>
+
+    <!-- ONCOLOGIA / VETONCO -->
+    <section id="view-oncologia" class="sv-view">
+      <div id="onco-root"></div>
     </section>
 
     <!-- BIBLIOGRAFÍA Y BIBLIOTECA -->
@@ -402,6 +415,10 @@
   <!-- Casos 360 -->
   <script src="modules/casos-360/casos-data.js" defer></script>
   <script src="modules/casos-360/casos.js" defer></script>
+
+  <!-- Oncologia / VetOnco -->
+  <script src="modules/onco/onco-data.js" defer></script>
+  <script src="modules/onco/onco.js" defer></script>
 
   <!-- Bibliografía -->
   <script src="modules/bibliografia/data.js" defer></script>
