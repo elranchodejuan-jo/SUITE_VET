@@ -419,7 +419,7 @@
 ────────────────────────────────────────────── */
 @media print {
   html,
-  body:not(.micro-printing):not(.clinica-printing) {
+  body:not(.micro-printing):not(.clinica-printing):not(.onco-printing) {
     width: auto !important;
     height: auto !important;
     min-height: 0 !important;
@@ -427,7 +427,7 @@
     background: #fff !important;
   }
 
-  body:not(.micro-printing):not(.clinica-printing) > *:not(#sv-modal-receta) { display: none !important; }
+  body:not(.micro-printing):not(.clinica-printing):not(.onco-printing) > *:not(#sv-modal-receta) { display: none !important; }
 
   #sv-modal-receta,
   .sv-modal-overlay {
