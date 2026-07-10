@@ -6,7 +6,67 @@
 
 @media screen {
   .sv-main {
-    width: min(100%, 1240px);
+    width: min(100%, var(--sv-content-max));
+  }
+
+  .sv-main,
+  .sv-view,
+  [id$="-root"],
+  .sv-module-shell,
+  .sv-module-panel,
+  .sv-card,
+  .sv-panel,
+  .sv-toolbar,
+  .sv-table-wrap {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .sv-view-intro,
+  .sv-card-title,
+  .sv-card-body,
+  .sv-card-footer,
+  th,
+  td {
+    overflow-wrap: anywhere;
+  }
+
+  .sv-filter-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sv-space-2);
+    margin-bottom: var(--sv-space-4);
+    min-width: 0;
+  }
+
+  .sv-field-toolbar {
+    max-width: 28rem;
+    width: 100%;
+  }
+
+  .sv-tab-count {
+    align-items: center;
+    background: var(--sv-bg-selected);
+    border: 1px solid var(--sv-border);
+    border-radius: var(--sv-radius-pill);
+    display: inline-flex;
+    font-size: var(--sv-text-xs);
+    justify-content: center;
+    min-width: 1.5rem;
+    padding: 0.1rem 0.35rem;
+  }
+
+  .c360-filter-toolbar {
+    align-items: end;
+    display: grid;
+    grid-template-columns: minmax(14rem, 2fr) repeat(4, minmax(8rem, 1fr));
+    width: 100%;
+  }
+
+  .sv-receta-container,
+  .micro-modal,
+  .sv-modal {
+    outline: none;
   }
 
   img,
@@ -20,12 +80,12 @@
 /* Escritorio grande y pantallas tipo TV */
 @media screen and (min-width: 1500px) {
   .sv-main {
-    max-width: 1560px;
+    max-width: var(--sv-content-wide);
     padding: 1.5rem 2rem 4rem;
   }
 
   .sv-legal-footer {
-    width: min(100%, 1560px);
+    width: min(100%, var(--sv-content-wide));
   }
 
   .sv-search-wrap {
@@ -184,8 +244,21 @@
   .micro-detail-grid,
   .micro-calc-form,
   .micro-calc-result-panel,
-  .farma-calc-row {
+  .farma-calc-row,
+  .clinica-saved-toolbar,
+  .semi-sim-layout,
+  .onco-protocol-layout,
+  .c360-player-container,
+  .c360-admin-grid,
+  .nutri-two-col,
+  .nutri-form-grid,
+  .c360-filter-toolbar {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .c360-card-sticky {
+    max-height: none;
+    position: static;
   }
 }
 
@@ -269,12 +342,89 @@
     padding: 0.8rem;
   }
 
+  .sv-filter-strip {
+    flex-wrap: nowrap;
+    margin-inline: -0.1rem;
+    overflow-x: auto;
+    padding-bottom: var(--sv-space-2);
+  }
+
+  .clinica-form-grid-2,
+  .clinica-form-grid-3,
+  .clinica-form-grid-4,
+  .semi-form-grid-2,
+  .semi-form-grid-3,
+  .farma-free-grid,
+  .farma-advanced-grid,
+  .farma-component-grid,
+  .farma-species-dose-grid,
+  .farma-product-photo-grid,
+  .farma-route-grid,
+  .farma-presentation-grid,
+  .farma-withdrawal-grid,
+  .farma-custom-calc-grid,
+  .onco-home-grid,
+  .onco-calculator-grid,
+  .onco-form-grid,
+  .onco-section-grid,
+  .c360-grid,
+  .c360-result-grid,
+  .c360-form-row,
+  .sv-bookshelf-grid,
+  .sv-about-project-grid,
+  .sv-about-grid-two {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .c360-form-row {
+    flex-direction: column;
+  }
+
+  .sv-toolbar,
+  .sv-form-actions,
+  .sv-action-bar {
+    align-items: stretch;
+  }
+
+  .sv-toolbar > .sv-field,
+  .sv-toolbar > .sv-input,
+  .sv-toolbar > .sv-select {
+    flex: 1 1 100%;
+    max-width: none;
+    width: 100%;
+  }
+
+  .sv-table-wrap,
+  .nutri-table-wrap {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
   .sv-nav-btn,
   .sv-tab,
   .sv-pill,
   .micro-tab,
-  .micro-link-chip {
+  .micro-link-chip,
+  .fisio-pill-sistema,
+  .cat-chip,
+  .nutri-chip,
+  .semi-mini-btn,
+  .sv-format-btn,
+  .onco-chip,
+  .micro-icon-btn,
+  .nutri-icon-button,
+  .sv-about-photo-btn,
+  .sv-about-photo-lightbox-nav,
+  .sv-about-photo-lightbox-close {
     min-height: 44px;
+  }
+
+  .micro-icon-btn,
+  .nutri-icon-button,
+  .sv-about-photo-btn,
+  .sv-about-photo-lightbox-nav,
+  .sv-about-photo-lightbox-close {
+    min-width: 44px;
   }
 
   .sv-modal,
@@ -295,6 +445,12 @@
     bottom: 14px;
     min-height: 48px;
   }
+
+  .sv-legal-footer-links button,
+  .sv-site-map-link {
+    min-height: 44px;
+    padding: 0.55rem 0.7rem;
+  }
 }
 
 /* Celular estrecho */
@@ -312,5 +468,18 @@
   .sv-tab,
   .sv-pill {
     white-space: normal;
+  }
+
+  .sv-module-header h2,
+  .micro-hero h2 {
+    font-size: 1.35rem;
+  }
+
+  .sv-card,
+  .sv-panel,
+  .clinica-module-card,
+  .semi-card,
+  .onco-card {
+    padding: var(--sv-density-compact);
   }
 }

@@ -27,22 +27,21 @@
       </section>
 
       <div class="sv-toolbar sv-module-toolbar">
-        <input
-          type="text"
-          id="pato-search"
-          class="sv-input"
-          placeholder="Buscar lesión, hallazgo o especie…"
-          style="max-width:320px;"
-          autocomplete="off"
-        />
-        <select id="pato-filtro-sistema" class="sv-select" style="max-width:180px;">
+        <label class="sv-field"><span class="sv-label">Buscar lesiones</span><input
+            type="text"
+            id="pato-search"
+            class="sv-input"
+            placeholder="Lesion, hallazgo o especie…"
+            autocomplete="off"
+          /></label>
+        <label class="sv-field"><span class="sv-label">Sistema</span><select id="pato-filtro-sistema" class="sv-select">
           <option value="">Todos los sistemas</option>
           ${sistemas.map((s) => `<option value="${s}">${s.charAt(0).toUpperCase() + s.slice(1)}</option>`).join("")}
-        </select>
-        <select id="pato-filtro-tipo" class="sv-select" style="max-width:160px;">
+        </select></label>
+        <label class="sv-field"><span class="sv-label">Tipo</span><select id="pato-filtro-tipo" class="sv-select">
           <option value="">Todos los tipos</option>
           ${tipos.map((t) => `<option value="${t}">${t.charAt(0).toUpperCase() + t.slice(1)}</option>`).join("")}
-        </select>
+        </select></label>
       </div>
 
       <div class="sv-grid" id="pato-lista"></div>

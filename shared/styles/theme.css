@@ -3,30 +3,8 @@
    Global visual primitives for unified module UI.
    ========================================================================== */
 
-:root,
-[data-theme="dark"] {
-  --sv-vet-green: #2aa879;
-  --sv-clinic-blue: #2f7de1;
-  --sv-surface-soft: #0d1d31;
-  --sv-border-strong: #334155;
-
-  --sv-radius-xs: 0.45rem;
-  --sv-radius-sm: 0.65rem;
-  --sv-radius-md: 0.9rem;
-  --sv-radius-lg: 1rem;
-
-  --sv-space-1: 0.35rem;
-  --sv-space-2: 0.55rem;
-  --sv-space-3: 0.75rem;
-  --sv-space-4: 1rem;
-  --sv-space-5: 1.25rem;
-
-  --sv-control-height: 2.35rem;
-}
-
-[data-theme="light"] {
-  --sv-vet-green: #1f8f66;
-  --sv-clinic-blue: #1f6dcc;
-  --sv-surface-soft: #f4f8fc;
-  --sv-border-strong: #94a3b8;
-}
+/*
+  Los tokens viven exclusivamente en shared/tokens.css.
+  Este archivo se conserva como punto de extension compatible para la migracion
+  progresiva de estilos visuales, sin redefinir la fuente de verdad.
+*/

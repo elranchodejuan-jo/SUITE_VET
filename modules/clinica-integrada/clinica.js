@@ -42,7 +42,9 @@
         <section class="clinica-shell sv-module-shell">
           ${renderHeader()}
           ${renderSubnav()}
-          ${renderPage()}
+          <div id="clinica-tabpanel" class="sv-module-panel">
+            ${renderPage()}
+          </div>
         </section>
       `;
 
@@ -72,7 +74,7 @@
       ];
 
       return `
-        <div class="sv-module-subnav clinica-tabs" aria-label="Secciones de Clinica Integrada">
+        <div class="sv-module-subnav clinica-tabs" data-tabpanel="clinica-tabpanel" aria-label="Secciones de Clinica Integrada">
           ${tabs.map((tab) => `
             <button type="button" class="sv-module-tab ${state.page === tab.id ? "is-active" : ""}" data-cl-page="${tab.id}">
               <span>${escapeHtml(tab.icon)}</span>

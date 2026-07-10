@@ -9,9 +9,53 @@
    1. FUENTES
 ────────────────────────────────────────────── */
 :root {
-  --sv-font-heading: "Times New Roman", Times, serif;
-  --sv-font-body:    system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --sv-font-mono:    "Fira Code", "Cascadia Code", Consolas, monospace;
+  /* La marca del shell conserva su tratamiento aprobado; los modulos usan Segoe UI. */
+  --sv-font-brand: "Times New Roman", Times, serif;
+  --sv-font-heading: "Segoe UI Variable Display", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --sv-font-body: "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --sv-font-mono: "Cascadia Code", "Cascadia Mono", Consolas, monospace;
+
+  /* Escala tipografica */
+  --sv-text-xs: 0.75rem;
+  --sv-text-sm: 0.8125rem;
+  --sv-text-md: 0.9375rem;
+  --sv-text-lg: 1.0625rem;
+  --sv-text-xl: 1.25rem;
+  --sv-text-2xl: 1.5rem;
+  --sv-text-3xl: 1.875rem;
+  --sv-leading-tight: 1.25;
+  --sv-leading-normal: 1.55;
+  --sv-leading-relaxed: 1.7;
+
+  /* Espaciado: 4, 8, 12, 16, 20, 24, 32 y 40 px */
+  --sv-space-1: 0.25rem;
+  --sv-space-2: 0.5rem;
+  --sv-space-3: 0.75rem;
+  --sv-space-4: 1rem;
+  --sv-space-5: 1.25rem;
+  --sv-space-6: 1.5rem;
+  --sv-space-7: 2rem;
+  --sv-space-8: 2.5rem;
+
+  /* Formas, foco y movimiento */
+  --sv-radius-xs: 0.375rem;
+  --sv-radius-sm: 0.625rem;
+  --sv-radius-md: 0.875rem;
+  --sv-radius-lg: 1.125rem;
+  --sv-radius-pill: 999px;
+  --sv-border-width: 1px;
+  --sv-focus-width: 3px;
+  --sv-control-height: 2.75rem;
+  --sv-transition-fast: 120ms ease;
+  --sv-transition-base: 180ms ease;
+
+  /* Layout y densidad */
+  --sv-content-max: 1240px;
+  --sv-content-wide: 1560px;
+  --sv-section-gap: var(--sv-space-4);
+  --sv-density-compact: 0.75rem;
+  --sv-density-normal: 1rem;
+  --sv-density-comfortable: 1.25rem;
 }
 
 /* ──────────────────────────────────────────────
@@ -19,15 +63,22 @@
 ────────────────────────────────────────────── */
 :root,
 [data-theme="dark"] {
+  color-scheme: dark;
+
   /* Fondos */
   --sv-bg-base:       #020617;
   --sv-bg-surface:    #0a1628;
   --sv-bg-elevated:   #111827;
   --sv-bg-overlay:    rgba(2, 6, 23, 0.95);
+  --sv-bg-surface-glass: rgba(10, 22, 40, 0.72);
+  --sv-bg-hover:      #13243a;
+  --sv-bg-active:     #172d49;
+  --sv-bg-selected:   rgba(59, 130, 246, 0.16);
 
   /* Bordes */
   --sv-border:        #1f2937;
   --sv-border-subtle: #111827;
+  --sv-border-glass:  rgba(255, 255, 255, 0.08);
 
   /* Textos */
   --sv-text-primary:  #f9fafb;
@@ -39,6 +90,7 @@
   --sv-accent:        #3b82f6;
   --sv-accent-hover:  #2563eb;
   --sv-accent-shadow: rgba(59, 130, 246, 0.4);
+  --sv-focus-ring:    rgba(96, 165, 250, 0.42);
 
   /* Acentos por módulo */
   --sv-fisio-color:   #f43f5e;
@@ -48,12 +100,26 @@
   --sv-nutri-color:   #10b981;
   --sv-clinica-color: #1070d2;
   --sv-semiologia-color: #2e7ad6;
+  --sv-casos360-color: #8b5cf6;
+  --sv-casos360-color-hover: #7c3aed;
+  --sv-casos360-color-shadow: rgba(139, 92, 246, 0.4);
+  --sv-onco-color:    #d946ef;
+  --sv-onco-soft:     rgba(217, 70, 239, 0.12);
+  --sv-onco-border:   rgba(217, 70, 239, 0.32);
+  --sv-biblio-color:  #60a5fa;
+  --sv-favoritos-color: #facc15;
+  --sv-vet-green:     #2aa879;
+  --sv-clinic-blue:   #2f7de1;
 
   /* Semánticos */
   --sv-success:       #22c55e;
   --sv-warning:       #eab308;
   --sv-danger:        #ef4444;
   --sv-info:          #38bdf8;
+  --sv-success-soft:  rgba(34, 197, 94, 0.12);
+  --sv-warning-soft:  rgba(234, 179, 8, 0.12);
+  --sv-danger-soft:   rgba(239, 68, 68, 0.12);
+  --sv-info-soft:     rgba(56, 189, 248, 0.12);
 
   /* Scrollbar */
   --sv-scroll-thumb:  #1f2937;
@@ -64,6 +130,8 @@
   --sv-shadow-md:     0 8px 24px rgba(0,0,0,0.5);
   --sv-shadow-lg:     0 16px 48px rgba(0,0,0,0.6);
   --sv-shadow-accent: 0 8px 24px var(--sv-accent-shadow);
+  --sv-surface-soft:  #0d1d31;
+  --sv-border-strong: #334155;
 
   /* Receta (siempre en papel blanco) */
   --sv-receta-sidebar: #1e3a8a;
@@ -73,15 +141,22 @@
    3. MODO CLARO
 ────────────────────────────────────────────── */
 [data-theme="light"] {
+  color-scheme: light;
+
   /* Fondos */
   --sv-bg-base:       #f1f5f9;
   --sv-bg-surface:    #ffffff;
   --sv-bg-elevated:   #f8fafc;
   --sv-bg-overlay:    rgba(248, 250, 252, 0.97);
+  --sv-bg-surface-glass: rgba(255, 255, 255, 0.72);
+  --sv-bg-hover:      #eef4fb;
+  --sv-bg-active:     #e2ebf7;
+  --sv-bg-selected:   rgba(37, 99, 235, 0.1);
 
   /* Bordes */
   --sv-border:        #e2e8f0;
   --sv-border-subtle: #cbd5e1;
+  --sv-border-glass:  rgba(0, 0, 0, 0.08);
 
   /* Textos */
   --sv-text-primary:  #0f172a;
@@ -93,14 +168,29 @@
   --sv-accent:        #2563eb;
   --sv-accent-hover:  #1d4ed8;
   --sv-accent-shadow: rgba(37, 99, 235, 0.3);
+  --sv-focus-ring:    rgba(37, 99, 235, 0.32);
   --sv-clinica-color: #0b67c3;
   --sv-semiologia-color: #1f6cc7;
+  --sv-casos360-color: #6d28d9;
+  --sv-casos360-color-hover: #5b21b6;
+  --sv-casos360-color-shadow: rgba(109, 40, 217, 0.3);
+  --sv-onco-color:    #a21caf;
+  --sv-onco-soft:     rgba(162, 28, 175, 0.08);
+  --sv-onco-border:   rgba(162, 28, 175, 0.28);
+  --sv-biblio-color:  #2563eb;
+  --sv-favoritos-color: #a16207;
+  --sv-vet-green:     #1f8f66;
+  --sv-clinic-blue:   #1f6dcc;
 
   /* Semánticos (un poco más intensos para contraste) */
   --sv-success:       #16a34a;
   --sv-warning:       #ca8a04;
   --sv-danger:        #dc2626;
   --sv-info:          #0284c7;
+  --sv-success-soft:  rgba(22, 163, 74, 0.09);
+  --sv-warning-soft:  rgba(202, 138, 4, 0.1);
+  --sv-danger-soft:   rgba(220, 38, 38, 0.08);
+  --sv-info-soft:     rgba(2, 132, 199, 0.09);
 
   /* Scrollbar */
   --sv-scroll-thumb:  #cbd5e1;
@@ -111,15 +201,11 @@
   --sv-shadow-md:     0 4px 16px rgba(0,0,0,0.12);
   --sv-shadow-lg:     0 8px 32px rgba(0,0,0,0.14);
   --sv-shadow-accent: 0 4px 16px var(--sv-accent-shadow);
+  --sv-surface-soft:  #f4f8fc;
+  --sv-border-strong: #94a3b8;
 }
 
 /* ──────────────────────────────────────────────
    4. TRANSICIÓN SUAVE AL CAMBIAR TEMA
 ────────────────────────────────────────────── */
-*, *::before, *::after {
-  transition:
-    background-color 0.25s ease,
-    border-color 0.25s ease,
-    color 0.2s ease,
-    box-shadow 0.2s ease;
-}
+/* Las transiciones se aplican por componente; no se anima contenido clinico global. */

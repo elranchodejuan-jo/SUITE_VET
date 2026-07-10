@@ -50,8 +50,12 @@ Comprobada en el navegador integrado con el servidor local de Vite:
 
 En los seis tamaños se comprobó `scrollWidth <= clientWidth`. También se probaron apertura y cierre del drawer, backdrop, Escape, restauración de foco, cierre al seleccionar un módulo, búsqueda global, temas claro/oscuro y navegación por Inicio, Farmacología, Microbiología, Nutrición, Clínica, Semiología y VetOnco. La consola no presentó errores ni advertencias durante el recorrido.
 
-## Pendientes para el Hito 1.2
+## Sistema visual de módulos (Hito 1.2)
 
-- Revisar y unificar progresivamente los breakpoints internos de cada módulo.
-- Completar la auditoría de accesibilidad de modales, pestañas y widgets complejos.
-- Profundizar las pruebas visuales y de interacción por módulo sin alterar contenido clínico, cálculos ni impresión.
+- `shared/tokens.css` es la fuente única para color, tipografía local, escala 4–40 px, radios, sombras, foco, movimiento, densidad y colores temáticos.
+- `shared/components.css` y `shared/styles/` definen headers de módulo, paneles, tarjetas, botones, campos, chips, alertas, tablas, resultados y estados vacíos.
+- `shared/ui-system.js` mejora progresivamente tabs y modales: roles ARIA, flechas, Home/End, Escape, focus trap, restauración de foco y bloqueo de scroll.
+- `shared/responsive.css` alinea el responsive interno con `900`, `640` y `420` px; las tablas densas usan wrappers con scroll local y el documento no debe desbordar.
+- Claro y oscuro comparten los mismos tokens semánticos. Los colores de módulo se usan como acento, no como fondo dominante.
+
+Un módulo nuevo debe reutilizar `sv-module-shell`, `sv-module-header`, `sv-module-subnav`, `sv-module-panel`, `sv-module-toolbar`, `sv-card`, `sv-field`, `sv-btn` y `sv-table-wrap`. Los selectores propios quedan reservados para identidad o comportamiento específico; impresión, PDF, datos y cálculos permanecen en sus contratos actuales.

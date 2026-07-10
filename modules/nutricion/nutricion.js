@@ -70,7 +70,9 @@
         <section class="nutri-shell sv-module-shell">
           ${renderModuleNav(current)}
           ${renderGlobalResults()}
-          ${renderSubmodule(current)}
+          <div id="nutri-tabpanel" class="sv-module-panel">
+            ${renderSubmodule(current)}
+          </div>
         </section>
         <button id="nutri-fab-saved" class="sv-fab nutricion-fab" type="button" data-nutri-page="guardados" title="Guardados de Nutricion">
           Guardados
@@ -92,7 +94,7 @@
       const activeSection = activeSectionId(current);
       const submodules = submodulesForSection(activeSection);
       return `
-        <div class="nutri-subnav sv-module-subnav nutri-section-tabs" aria-label="Secciones de Nutricion Animal">
+        <div class="nutri-subnav sv-module-subnav nutri-section-tabs" data-tabpanel="nutri-tabpanel" aria-label="Secciones de Nutricion Animal">
           ${(D.secciones || []).map((section) => `
             <button class="nutri-tab sv-module-tab ${section.id === activeSection ? "is-active" : ""}" type="button"
               data-nutri-section-pill="${escapeAttr(section.id)}">
@@ -103,7 +105,7 @@
           `).join("")}
         </div>
 
-        <div class="nutri-subnav sv-module-subnav nutri-module-tabs" aria-label="Submodulos de Nutricion Animal">
+        <div class="nutri-subnav sv-module-subnav nutri-module-tabs" data-tabpanel="nutri-tabpanel" aria-label="Submodulos de Nutricion Animal">
           ${submodules.map((mod) => `
             <button class="nutri-tab sv-module-tab nutri-module-pill ${mod.id === current ? "is-active" : ""}" type="button"
               data-nutri-page="${escapeAttr(mod.id)}" title="${escapeAttr(mod.descripcion)}">
@@ -114,16 +116,17 @@
           `).join("")}
         </div>
 
-        <div class="nutri-global-search">
+        <label class="nutri-global-search sv-field">
+          <span class="sv-label">Busqueda global de Nutricion Animal</span>
           <input
-            id="nutri-global-search"
-            class="sv-input"
-            type="text"
-            value="${escapeAttr(state.globalQuery)}"
-            placeholder="Buscar en todas las bases de Nutricion Animal..."
-            autocomplete="off"
-          />
-        </div>
+              id="nutri-global-search"
+              class="sv-input"
+              type="text"
+              value="${escapeAttr(state.globalQuery)}"
+              placeholder="Buscar en todas las bases..."
+              autocomplete="off"
+            />
+        </label>
       `;
     }
 
@@ -276,10 +279,13 @@
 
     function renderLocalToolbar(page, filters, items, canonical) {
       return `
-        <div class="nutri-toolbar">
-          <input class="sv-input" type="text" data-nutri-search="${escapeAttr(page)}"
-            value="${escapeAttr(state.queries[page] || "")}"
-            placeholder="Buscar dentro del submodulo..." autocomplete="off" />
+        <div class="nutri-toolbar sv-module-toolbar">
+          <label class="sv-field">
+            <span class="sv-label">Buscar dentro del submodulo</span>
+            <input class="sv-input" type="text" data-nutri-search="${escapeAttr(page)}"
+              value="${escapeAttr(state.queries[page] || "")}"
+              placeholder="Nombre, termino o categoria..." autocomplete="off" />
+          </label>
           <div class="nutri-chip-row">
             ${filters.map((filter) => `
               <button class="nutri-chip ${(state.filters[page] || "todos") === filter.id ? "is-active" : ""}"
@@ -1369,8 +1375,8 @@
         ["Riesgos", "riesgos"]
       ];
       return `
-        <div class="nutri-table-wrap">
-          <table class="nutri-table">
+        <div class="nutri-table-wrap sv-table-wrap">
+          <table class="nutri-table sv-table">
             <thead><tr><th>Campo</th>${items.map((item) => `<th>${escapeHtml(item.nombre)}</th>`).join("")}</tr></thead>
             <tbody>
               ${rows.map(([label, key]) => `<tr><th>${escapeHtml(label)}</th>${items.map((item) => `<td>${escapeHtml(valueText(Array.isArray(item[key]) ? item[key].join(", ") : item[key]))}</td>`).join("")}</tr>`).join("")}

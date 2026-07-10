@@ -160,11 +160,11 @@
           <div class="sv-home-card-text">Entrenador clínico para anamnesis, examen físico, OSCE, logbook y reporte profesional.</div>
           <span class="sv-coming-tag">Pro</span>
         </button>
-        <button class="sv-home-card sv-home-card-casos360" data-go-view="casos360" type="button" style="border-left: 4px solid var(--sv-casos360-color, #8b5cf6);">
+        <button class="sv-home-card sv-home-card-casos360" data-go-view="casos360" type="button">
           <div class="sv-home-card-icon">🧬</div>
           <div class="sv-home-card-title">Casos 360</div>
           <div class="sv-home-card-text">Casos clínicos multimodales con evaluación objetiva por competencias.</div>
-          <span class="sv-coming-tag" style="background: var(--sv-casos360-color, #8b5cf6); color: #fff;">Nuevo</span>
+          <span class="sv-coming-tag sv-coming-tag-casos360">Nuevo</span>
         </button>
         <button class="sv-home-card sv-home-card-onco" data-go-view="oncologia" type="button">
           <div class="sv-home-card-icon">ON</div>
@@ -266,7 +266,7 @@
   <!-- ════════════════════════════════════════
        FAB — RECETARIO
   ════════════════════════════════════════ -->
-  <button id="sv-fab-receta" class="sv-fab sv-fab-hidden" title="Ver recetario">
+  <button id="sv-fab-receta" class="sv-fab sv-fab-hidden" type="button" title="Ver recetario" aria-label="Abrir borrador de receta">
     📝 Receta
     <span id="sv-fab-badge" class="sv-fab-badge" data-count="0">0</span>
   </button>
@@ -287,15 +287,15 @@
   <!-- ════════════════════════════════════════
        MODAL RECETARIO
   ════════════════════════════════════════ -->
-  <div id="sv-modal-receta" class="sv-modal-overlay">
-    <div class="sv-receta-container">
+  <div id="sv-modal-receta" class="sv-modal-overlay" aria-hidden="true">
+    <div class="sv-receta-container" role="dialog" aria-modal="true" aria-labelledby="sv-receta-titulo" tabindex="-1">
       <div class="sv-receta-controls no-print">
         <h3 id="sv-receta-titulo">📋 Borrador de Receta</h3>
         <div class="sv-receta-actions">
-          <button id="sv-receta-cerrar"   class="sv-btn sv-btn-ghost">Seguir editando</button>
-          <button id="sv-receta-limpiar"  class="sv-btn sv-btn-danger">Borrar todo</button>
-          <button id="sv-receta-guardar"  class="sv-btn sv-btn-secondary">Guardar receta</button>
-          <button id="sv-receta-imprimir" class="sv-btn sv-btn-primary">🖨️ Imprimir / PDF</button>
+          <button id="sv-receta-cerrar"   class="sv-btn sv-btn-ghost" type="button">Seguir editando</button>
+          <button id="sv-receta-limpiar"  class="sv-btn sv-btn-danger" type="button">Borrar todo</button>
+          <button id="sv-receta-guardar"  class="sv-btn sv-btn-secondary" type="button">Guardar receta</button>
+          <button id="sv-receta-imprimir" class="sv-btn sv-btn-primary" type="button">🖨️ Imprimir / PDF</button>
         </div>
       </div>
       <div class="sv-recetas-guardadas no-print">
@@ -430,6 +430,9 @@
   <!-- Bibliografía -->
   <script src="modules/bibliografia/data.js" defer></script>
   <script src="modules/bibliografia/bibliografia.js" defer></script>
+
+  <!-- Accesibilidad progresiva de componentes compartidos -->
+  <script src="shared/ui-system.js" defer></script>
 
 </body>
 </html>

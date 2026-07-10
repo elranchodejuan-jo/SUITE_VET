@@ -2,12 +2,6 @@
    SUITE VET - VetOnco / Oncologia
    ========================================================================== */
 
-:root {
-  --sv-onco-color: #c026d3;
-  --sv-onco-soft: rgba(192, 38, 211, 0.14);
-  --sv-onco-border: rgba(192, 38, 211, 0.34);
-}
-
 .onco-shell {
   gap: 0.9rem;
 }

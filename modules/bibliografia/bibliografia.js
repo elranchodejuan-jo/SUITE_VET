@@ -55,19 +55,19 @@
 
     root.innerHTML = `
       <div class="sv-bib-module">
-        <header class="sv-bib-header-section">
+        <header class="sv-bib-header-section sv-module-header">
           <h2>Referencias Bibliográficas & Biblioteca</h2>
           <p class="sv-view-intro">Consulta las fuentes oficiales de estudio utilizadas para los contenidos de SUITE VET y descarga los libros en formato PDF.</p>
         </header>
 
         <!-- Sub-navegación / Pestañas -->
-        <div class="sv-subnav">
-          <button class="sv-tab sv-tab-active" data-bib-tab="referencias">Citas y Referencias</button>
-          <button class="sv-tab" data-bib-tab="biblioteca">Biblioteca Digital (Descargas)</button>
+        <div class="sv-subnav" aria-label="Secciones de Bibliografia">
+          <button class="sv-tab sv-tab-active" data-bib-tab="referencias" type="button">Citas y Referencias</button>
+          <button class="sv-tab" data-bib-tab="biblioteca" type="button">Biblioteca Digital (Descargas)</button>
         </div>
 
         <!-- Panel 1: Referencias -->
-        <div class="sv-pane sv-pane-active" id="bib-pane-referencias">
+        <div class="sv-pane sv-pane-active sv-module-panel" id="bib-pane-referencias">
           <div class="sv-bib-toolbar">
             <!-- Selector de formato APA/Vancouver -->
             <div class="sv-format-selector-wrap">
@@ -91,7 +91,7 @@
         </div>
 
         <!-- Panel 2: Biblioteca Digital -->
-        <div class="sv-pane" id="bib-pane-biblioteca">
+        <div class="sv-pane sv-module-panel" id="bib-pane-biblioteca">
           <div class="sv-bookshelf-grid">
             ${renderBookshelf(data)}
           </div>

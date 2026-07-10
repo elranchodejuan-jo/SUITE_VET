@@ -3,18 +3,6 @@
    Estilos específicos para el módulo "Suite Vet Casos 360"
    ============================================================================= */
 
-:root {
-  --sv-casos360-color: #8b5cf6;
-  --sv-casos360-color-hover: #7c3aed;
-  --sv-casos360-color-shadow: rgba(139, 92, 246, 0.4);
-}
-
-[data-theme="light"] {
-  --sv-casos360-color: #6d28d9;
-  --sv-casos360-color-hover: #5b21b6;
-  --sv-casos360-color-shadow: rgba(109, 40, 217, 0.3);
-}
-
 /* Shell & header overrides */
 .c360-shell {
   display: flex;

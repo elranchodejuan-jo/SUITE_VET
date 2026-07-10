@@ -262,37 +262,41 @@
       </section>
 
       <div class="sv-subnav sv-module-subnav" id="fisio-subnav">
-        <button class="sv-tab sv-tab-active" data-pane="hormonas">
+        <button class="sv-tab sv-tab-active" data-pane="hormonas" type="button">
           Hormonas
-          <span style="opacity:0.55;font-size:0.75em;margin-left:0.2rem">(${hormonas.length})</span>
+          <span class="sv-tab-count">${hormonas.length}</span>
         </button>
-        <button class="sv-tab" data-pane="vitaminas">
+        <button class="sv-tab" data-pane="vitaminas" type="button">
           Vitaminas
-          <span style="opacity:0.55;font-size:0.75em;margin-left:0.2rem">(${vitaminas.length})</span>
+          <span class="sv-tab-count">${vitaminas.length}</span>
         </button>
-        <button class="sv-tab" data-pane="glosario">
+        <button class="sv-tab" data-pane="glosario" type="button">
           Glosario
-          <span style="opacity:0.55;font-size:0.75em;margin-left:0.2rem">(${glosario.length})</span>
+          <span class="sv-tab-count">${glosario.length}</span>
         </button>
       </div>
 
       <!-- ── PANE HORMONAS ── -->
-      <div id="fisio-pane-hormonas" class="sv-pane sv-pane-active">
+      <div id="fisio-pane-hormonas" class="sv-pane sv-pane-active sv-module-panel">
         <div class="sv-toolbar sv-module-toolbar">
-          <input type="text" id="fisio-search-hormona" class="sv-input"
-            placeholder="Buscar por nombre, sigla o sistema…"
-            style="max-width:400px;" autocomplete="off" />
+          <label class="sv-field sv-field-toolbar">
+            <span class="sv-label">Buscar hormonas</span>
+            <input type="text" id="fisio-search-hormona" class="sv-input"
+              placeholder="Nombre, sigla o sistema…" autocomplete="off" />
+          </label>
         </div>
-        <div id="fisio-filtros-sistema" style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:1rem;"></div>
+        <div id="fisio-filtros-sistema" class="sv-filter-strip" aria-label="Filtrar hormonas por sistema"></div>
         <div class="sv-grid" id="fisio-lista-hormonas"></div>
       </div>
 
       <!-- ── PANE VITAMINAS ── -->
-      <div id="fisio-pane-vitaminas" class="sv-pane">
+      <div id="fisio-pane-vitaminas" class="sv-pane sv-module-panel">
         <div class="sv-toolbar sv-module-toolbar" id="fisio-toolbar-vitaminas">
-          <input type="text" id="fisio-search-vitamina" class="sv-input"
-            placeholder="Buscar vitamina (A, B1, K2, tiamina, cobalamina…)"
-            style="max-width:340px;" autocomplete="off" />
+          <label class="sv-field sv-field-toolbar">
+            <span class="sv-label">Buscar vitaminas</span>
+            <input type="text" id="fisio-search-vitamina" class="sv-input"
+              placeholder="A, B1, K2, tiamina, cobalamina…" autocomplete="off" />
+          </label>
           <button class="fisio-pill-sistema sv-pill-active" data-tipo="todas"
             style="--fisio-pill-color:var(--sv-accent);--fisio-pill-bg:var(--sv-bg-elevated);--fisio-pill-glow:var(--sv-accent-shadow)">
             Todas
@@ -310,13 +314,15 @@
       </div>
 
       <!-- ── PANE GLOSARIO ── -->
-      <div id="fisio-pane-glosario" class="sv-pane">
+      <div id="fisio-pane-glosario" class="sv-pane sv-module-panel">
         <div class="sv-toolbar sv-module-toolbar">
-          <input type="text" id="fisio-search-glosario" class="sv-input"
-            placeholder="Buscar término (ej. disuria, poliuria, prurito)…"
-            style="max-width:340px;" autocomplete="off" />
+          <label class="sv-field sv-field-toolbar">
+            <span class="sv-label">Buscar en el glosario</span>
+            <input type="text" id="fisio-search-glosario" class="sv-input"
+              placeholder="Disuria, poliuria, prurito…" autocomplete="off" />
+          </label>
         </div>
-        <div id="fisio-filtros-glosario" style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:1rem;"></div>
+        <div id="fisio-filtros-glosario" class="sv-filter-strip" aria-label="Filtrar glosario por sistema"></div>
         <div class="sv-grid" id="fisio-lista-glosario"></div>
       </div>
       </section>

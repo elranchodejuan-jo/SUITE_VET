@@ -111,7 +111,9 @@
         <section class="c360-shell sv-module-shell">
           ${renderHeader()}
           ${renderTabs()}
-          ${renderPage()}
+          <div id="c360-tabpanel" class="sv-module-panel">
+            ${renderPage()}
+          </div>
         </section>
       `;
       // Vincular favoritos si existe la librería
@@ -133,7 +135,7 @@
     function renderTabs() {
       const activeTab = state.page;
       return `
-        <div class="sv-module-subnav c360-tabs" aria-label="Secciones de Casos 360">
+        <div class="sv-module-subnav c360-tabs" data-tabpanel="c360-tabpanel" aria-label="Secciones de Casos 360">
           <button type="button" class="sv-module-tab ${activeTab === "listado" ? "is-active" : ""}" data-c360-nav="listado">
             <span class="c360-tab-icon">🗂️</span>
             <strong>Biblioteca</strong>
@@ -269,9 +271,9 @@
       }, []).map(sys => `<option value="${esc(sys)}" ${state.filters.system === sys ? "selected" : ""}>${esc(sys)}</option>`).join("");
 
       return `
-        <section class="sv-toolbar">
-          <input type="text" class="sv-input" style="flex: 2; min-width: 200px;" placeholder="Buscar por título, sistema o descriptor..." data-c360-filter="query" value="${esc(state.filters.query)}" />
-          <select class="sv-select" style="flex: 1;" data-c360-filter="species">
+        <section class="sv-toolbar c360-filter-toolbar">
+          <label class="sv-field c360-filter-search"><span class="sv-label">Buscar casos</span><input type="text" class="sv-input" placeholder="Titulo, sistema o descriptor..." data-c360-filter="query" value="${esc(state.filters.query)}" /></label>
+          <label class="sv-field"><span class="sv-label">Especie</span><select class="sv-select" data-c360-filter="species">
             <option value="">Especie (Todas)</option>
             <option value="canino" ${state.filters.species === "canino" ? "selected" : ""}>Canino</option>
             <option value="felino" ${state.filters.species === "felino" ? "selected" : ""}>Felino</option>
@@ -281,23 +283,23 @@
             <option value="ovino" ${state.filters.species === "ovino" ? "selected" : ""}>Ovino</option>
             <option value="caprino" ${state.filters.species === "caprino" ? "selected" : ""}>Caprino</option>
             <option value="ave" ${state.filters.species === "ave" ? "selected" : ""}>Ave</option>
-          </select>
-          <select class="sv-select" style="flex: 1;" data-c360-filter="system">
+          </select></label>
+          <label class="sv-field"><span class="sv-label">Sistema</span><select class="sv-select" data-c360-filter="system">
             <option value="">Sistema (Todos)</option>
             ${systemsHtml}
-          </select>
-          <select class="sv-select" style="flex: 1;" data-c360-filter="difficulty">
+          </select></label>
+          <label class="sv-field"><span class="sv-label">Dificultad</span><select class="sv-select" data-c360-filter="difficulty">
             <option value="">Dificultad (Todas)</option>
             <option value="Fácil" ${state.filters.difficulty === "Fácil" ? "selected" : ""}>Fácil</option>
             <option value="Media" ${state.filters.difficulty === "Media" ? "selected" : ""}>Media</option>
             <option value="Alta" ${state.filters.difficulty === "Alta" ? "selected" : ""}>Alta</option>
-          </select>
-          <select class="sv-select" style="flex: 1;" data-c360-filter="status">
+          </select></label>
+          <label class="sv-field"><span class="sv-label">Estado</span><select class="sv-select" data-c360-filter="status">
             <option value="">Estado (Todos)</option>
             <option value="no_iniciado" ${state.filters.status === "no_iniciado" ? "selected" : ""}>No Iniciado</option>
             <option value="progreso" ${state.filters.status === "progreso" ? "selected" : ""}>En Progreso</option>
             <option value="completado" ${state.filters.status === "completado" ? "selected" : ""}>Completado</option>
-          </select>
+          </select></label>
         </section>
 
         <section class="c360-grid">
@@ -515,20 +517,22 @@
               <span>📊 ANÁLISIS DE LABORATORIO: ${esc(asset.title)}</span>
             </div>
             <div class="c360-asset-content" style="padding:0;">
-              <table class="c360-asset-table">
-                <thead>
-                  <tr>
-                    ${asset.content[0].map(h => `<th>${esc(h)}</th>`).join("")}
-                  </tr>
-                </thead>
-                <tbody>
-                  ${asset.content.slice(1).map(row => `
+              <div class="sv-table-wrap">
+                <table class="c360-asset-table sv-table">
+                  <thead>
                     <tr>
-                      ${row.map(cell => `<td>${esc(cell)}</td>`).join("")}
+                      ${asset.content[0].map(h => `<th>${esc(h)}</th>`).join("")}
                     </tr>
-                  `).join("")}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    ${asset.content.slice(1).map(row => `
+                      <tr>
+                        ${row.map(cell => `<td>${esc(cell)}</td>`).join("")}
+                      </tr>
+                    `).join("")}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         `;

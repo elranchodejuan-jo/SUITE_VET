@@ -45,7 +45,9 @@
         <section class="semi-shell sv-module-shell">
           ${renderHeader()}
           ${renderTabs()}
-          ${renderPage()}
+          <div id="semiologia-tabpanel" class="sv-module-panel">
+            ${renderPage()}
+          </div>
         </section>
       `;
       Fav?.bindWithin(root);
@@ -68,7 +70,7 @@
         icon: item.icon
       })));
       return `
-        <div class="sv-module-subnav semi-tabs" aria-label="Secciones de Semiologia y Anamnesis Pro">
+        <div class="sv-module-subnav semi-tabs" data-tabpanel="semiologia-tabpanel" aria-label="Secciones de Semiologia y Anamnesis Pro">
           ${tabs.map((tab) => `
             <button type="button" class="sv-module-tab ${state.page === tab.id ? "is-active" : ""}" data-semi-page="${esc(tab.id)}">
               <span>${esc(tab.icon)}</span>
@@ -113,7 +115,7 @@
       const speciesOptions = D.species || [];
       const selectedSpecies = v.species || "canino";
       return `
-        <section class="sv-module-subnav semi-vital-subnav" aria-label="Opciones de Signos Vitales Pro">
+        <section class="sv-module-subnav semi-vital-subnav" data-tabpanel="semi-vital-tabpanel" aria-label="Opciones de Signos Vitales Pro">
           ${cards.map((card) => `
             <button
               type="button"
@@ -151,7 +153,9 @@
           </div>
         </section>
 
-        ${renderVitalSection()}
+        <div id="semi-vital-tabpanel" class="sv-module-panel">
+          ${renderVitalSection()}
+        </div>
       `;
     }
 
@@ -552,11 +556,13 @@
     function renderAnamnesis() {
       return `
         <section class="semi-anamnesis">
-          <div class="semi-inline-tabs">
+          <div class="semi-inline-tabs" data-tabpanel="semi-anamnesis-tabpanel" aria-label="Modos de Anamnesis">
             <button class="semi-inline-tab ${state.anamnesisMode === "aprendizaje" ? "is-active" : ""}" data-an-mode="aprendizaje">Modo Aprendizaje</button>
             <button class="semi-inline-tab ${state.anamnesisMode === "simulacion" ? "is-active" : ""}" data-an-mode="simulacion">Modo Simulacion</button>
           </div>
-          ${state.anamnesisMode === "simulacion" ? renderSimulacion() : renderAprendizaje()}
+          <div id="semi-anamnesis-tabpanel" class="sv-module-panel">
+            ${state.anamnesisMode === "simulacion" ? renderSimulacion() : renderAprendizaje()}
+          </div>
         </section>
       `;
     }
@@ -993,19 +999,21 @@
         <section class="semi-card">
           <h4>Historial de intentos</h4>
           ${state.osceHistory.length ? `
-            <table class="semi-logbook-table">
-              <thead><tr><th>Fecha</th><th>Estacion</th><th>Puntaje</th><th>Resultado</th></tr></thead>
-              <tbody>
-                ${state.osceHistory.slice(0, 10).map((item) => `
-                  <tr>
-                    <td>${esc(shortDate(item.date))}</td>
-                    <td>${esc(item.stationTitle)}</td>
-                    <td>${esc(item.percentLabel)}</td>
-                    <td>${esc(item.result)}</td>
-                  </tr>
-                `).join("")}
-              </tbody>
-            </table>
+            <div class="sv-table-wrap">
+              <table class="semi-logbook-table sv-table">
+                <thead><tr><th>Fecha</th><th>Estacion</th><th>Puntaje</th><th>Resultado</th></tr></thead>
+                <tbody>
+                  ${state.osceHistory.slice(0, 10).map((item) => `
+                    <tr>
+                      <td>${esc(shortDate(item.date))}</td>
+                      <td>${esc(item.stationTitle)}</td>
+                      <td>${esc(item.percentLabel)}</td>
+                      <td>${esc(item.result)}</td>
+                    </tr>
+                  `).join("")}
+                </tbody>
+              </table>
+            </div>
           ` : `<p class="semi-muted">Aun no hay intentos guardados.</p>`}
           ${state.osce.customManeuvers.length ? `<p class="semi-muted"><strong>Maniobras agregadas desde banco:</strong> ${esc(state.osce.customManeuvers.join(", "))}</p>` : ""}
         </section>
@@ -1077,20 +1085,22 @@
         <section class="semi-card">
           <h4>Registros guardados</h4>
           ${state.logbook.length ? `
-            <table class="semi-logbook-table">
-              <thead><tr><th>Fecha</th><th>Habilidad</th><th>Estado</th><th>Autoeval</th><th>Comentario</th></tr></thead>
-              <tbody>
-                ${state.logbook.slice(0, 20).map((item) => `
-                  <tr>
-                    <td>${esc(item.date)}</td>
-                    <td>${esc(item.skillName)}</td>
-                    <td>${esc(item.state)}</td>
-                    <td>${esc(item.selfScore)}</td>
-                    <td>${esc(item.comment || "")}</td>
-                  </tr>
-                `).join("")}
-              </tbody>
-            </table>
+            <div class="sv-table-wrap">
+              <table class="semi-logbook-table sv-table">
+                <thead><tr><th>Fecha</th><th>Habilidad</th><th>Estado</th><th>Autoeval</th><th>Comentario</th></tr></thead>
+                <tbody>
+                  ${state.logbook.slice(0, 20).map((item) => `
+                    <tr>
+                      <td>${esc(item.date)}</td>
+                      <td>${esc(item.skillName)}</td>
+                      <td>${esc(item.state)}</td>
+                      <td>${esc(item.selfScore)}</td>
+                      <td>${esc(item.comment || "")}</td>
+                    </tr>
+                  `).join("")}
+                </tbody>
+              </table>
+            </div>
           ` : `<p class="semi-muted">Aun no hay habilidades registradas.</p>`}
         </section>
       `;

@@ -5,11 +5,26 @@
 
 .nutri-action-row,
 .micro-modal-actions,
-.sv-receta-actions {
+.sv-receta-actions,
+.clinica-action-strip,
+.clinica-card-actions,
+.semi-actions,
+.onco-action-row,
+.c360-actions-strip {
   align-items: center;
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+}
+
+.sv-icon-btn,
+.micro-icon-btn,
+.nutri-icon-button,
+.semi-mini-btn,
+.sv-format-btn,
+.sv-legal-footer-links button,
+.sv-site-map-link {
+  min-height: var(--sv-control-height);
 }
 
 .micro-calc-actions {
@@ -91,5 +106,14 @@
   .nutri-print-pill {
     justify-content: center;
     width: 100%;
+  }
+
+  .sv-receta-actions .sv-btn,
+  .clinica-action-strip .sv-btn,
+  .clinica-card-actions .sv-btn,
+  .semi-actions .sv-btn,
+  .onco-action-row .sv-btn,
+  .c360-actions-strip .sv-btn {
+    flex: 1 1 10rem;
   }
 }

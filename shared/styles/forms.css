@@ -4,8 +4,32 @@
    ========================================================================== */
 
 .sv-input,
-.sv-select {
+.sv-select,
+.sv-textarea,
+.onco-field input,
+.onco-field select,
+.onco-field textarea {
   min-height: var(--sv-control-height);
+}
+
+.onco-field input,
+.onco-field select,
+.onco-field textarea {
+  background: var(--sv-bg-elevated);
+  border: 1px solid var(--sv-border);
+  border-radius: var(--sv-radius-sm);
+  color: var(--sv-text-primary);
+  font: inherit;
+  padding: 0.58rem 0.78rem;
+  width: 100%;
+}
+
+.onco-field input:focus-visible,
+.onco-field select:focus-visible,
+.onco-field textarea:focus-visible {
+  border-color: var(--sv-accent);
+  box-shadow: 0 0 0 var(--sv-focus-width) var(--sv-focus-ring);
+  outline: none;
 }
 
 .nutri-form-grid,
@@ -16,17 +40,41 @@
 
 .nutri-form-grid label,
 .micro-calc-form label,
-.micro-label-form label {
+.micro-label-form label,
+.farma-field,
+.clinica-field,
+.semi-field,
+.onco-field,
+.c360-form-field {
   display: grid;
   gap: 0.32rem;
+  min-width: 0;
 }
 
 .nutri-form-grid label span,
 .micro-calc-form label span,
 .micro-label-form label span,
+.farma-field > span,
+.clinica-field > span,
+.semi-field > span,
+.onco-field > span,
+.c360-form-field > span,
 .nutri-kicker,
 .micro-kicker {
   letter-spacing: 0.06em;
+}
+
+.farma-field > span,
+.clinica-field > span,
+.semi-field > span,
+.onco-field > span,
+.c360-form-field > span,
+.nutri-form-grid label > span,
+.micro-calc-form label > span,
+.micro-label-form label > span {
+  color: var(--sv-text-secondary);
+  font-size: var(--sv-text-xs);
+  font-weight: 700;
 }
 
 .nutri-toolbar .sv-input,
@@ -44,6 +92,16 @@
 
 .micro-label-textarea {
   line-height: 1.45;
+}
+
+.micro-label-textarea,
+.clinica-textarea,
+.farma-field textarea,
+.semi-field textarea,
+.onco-field textarea,
+.c360-form-field textarea {
+  min-height: 6rem;
+  resize: vertical;
 }
 
 .nutri-table th,

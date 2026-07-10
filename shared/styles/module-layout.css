@@ -7,8 +7,21 @@
 .micro-shell,
 .nutri-shell {
   display: grid;
-  gap: var(--sv-space-4);
+  gap: var(--sv-section-gap);
+  min-width: 0;
 }
+
+#view-fisiologia { --sv-module-color: var(--sv-fisio-color); }
+#view-farmacologia { --sv-module-color: var(--sv-farma-color); }
+#view-microbiologia { --sv-module-color: var(--sv-micro-color); }
+#view-patologia { --sv-module-color: var(--sv-pato-color); }
+#view-nutricion { --sv-module-color: var(--sv-nutri-color); }
+#view-clinica { --sv-module-color: var(--sv-clinica-color); }
+#view-semiologia { --sv-module-color: var(--sv-semiologia-color); }
+#view-casos360 { --sv-module-color: var(--sv-casos360-color); }
+#view-oncologia { --sv-module-color: var(--sv-onco-color); }
+#view-bibliografia { --sv-module-color: var(--sv-biblio-color); }
+#view-favoritos { --sv-module-color: var(--sv-favoritos-color); }
 
 .sv-module-header,
 .micro-hero {
@@ -16,7 +29,8 @@
   border: 1px solid var(--sv-border);
   border-radius: var(--sv-radius-lg);
   box-shadow: var(--sv-shadow-sm);
-  padding: 1rem 1.1rem;
+  border-inline-start: 4px solid var(--sv-module-color, var(--sv-accent));
+  padding: var(--sv-density-normal) var(--sv-density-comfortable);
 }
 
 .micro-hero {
@@ -32,6 +46,13 @@
 #patologia-root > h2 {
   margin: 0;
   font-size: clamp(1.35rem, 1.1rem + 0.7vw, 1.75rem);
+  letter-spacing: -0.02em;
+}
+
+.sv-module-header .sv-view-intro,
+.micro-hero .sv-view-intro {
+  margin-top: var(--sv-space-2);
+  max-width: 72ch;
 }
 
 .sv-module-subnav,
@@ -41,6 +62,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.45rem;
+  min-width: 0;
 }
 
 .nutri-section-tabs,
@@ -105,7 +127,7 @@
 .sv-tab-active {
   background: rgba(47, 125, 225, 0.15);
   border-color: var(--sv-accent);
-  box-shadow: 0 0 0 3px var(--sv-accent-shadow);
+  box-shadow: 0 0 0 var(--sv-focus-width) var(--sv-focus-ring);
   color: var(--sv-text-primary);
 }
 
@@ -114,6 +136,8 @@
 .nutri-toolbar {
   display: grid;
   gap: 0.65rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+  min-width: 0;
 }
 
 .micro-toolbar {
@@ -132,6 +156,12 @@
   gap: 1rem;
   justify-content: space-between;
   padding: 0.7rem 0.9rem;
+  min-width: 0;
+}
+
+.sv-module-panel {
+  display: grid;
+  gap: var(--sv-section-gap);
 }
 
 .nutri-panel,
@@ -160,6 +190,12 @@
     align-items: stretch;
     flex-direction: column;
   }
+
+  .sv-module-toolbar,
+  .micro-toolbar,
+  .nutri-toolbar {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 @media (max-width: 640px) {
@@ -178,5 +214,10 @@
   .sv-tab {
     flex: 0 0 auto;
     max-width: 86vw;
+  }
+
+  .sv-module-header,
+  .micro-hero {
+    padding: var(--sv-density-normal);
   }
 }

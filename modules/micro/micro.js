@@ -65,7 +65,7 @@
           </div>
         </header>
 
-        <div class="micro-subnav sv-module-subnav" id="micro-subnav">
+        <div class="micro-subnav sv-module-subnav" id="micro-subnav" data-tabpanel="micro-content" aria-label="Secciones de Microbiologia">
           ${panes.map((p) => `
             <button class="micro-tab sv-module-tab ${p.id === state.pane ? "is-active" : ""}" data-pane="${p.id}" type="button">
               <span>${p.icon}</span>
@@ -76,35 +76,44 @@
         </div>
 
         <div class="micro-toolbar sv-module-toolbar">
-          <input id="micro-search" class="sv-input" type="text" placeholder="Buscar en el ecosistema microbiológico..." autocomplete="off" />
-          <select id="micro-filter-primary" class="sv-select"></select>
-          <select id="micro-filter-secondary" class="sv-select"></select>
+          <label class="sv-field">
+            <span class="sv-label">Buscar</span>
+            <input id="micro-search" class="sv-input" type="text" placeholder="Medio, prueba, antibiotico o microorganismo..." autocomplete="off" />
+          </label>
+          <label class="sv-field">
+            <span class="sv-label">Filtro principal</span>
+            <select id="micro-filter-primary" class="sv-select"></select>
+          </label>
+          <label class="sv-field">
+            <span class="sv-label">Filtro secundario</span>
+            <select id="micro-filter-secondary" class="sv-select"></select>
+          </label>
         </div>
 
         <div id="micro-context" class="micro-context sv-module-context"></div>
-        <div id="micro-content" class="micro-grid"></div>
+        <div id="micro-content" class="micro-grid sv-module-panel"></div>
       </section>
 
-      <div id="micro-ficha-modal" class="micro-modal-overlay">
-        <div class="micro-modal">
+      <div id="micro-ficha-modal" class="micro-modal-overlay" aria-hidden="true">
+        <div class="micro-modal" role="dialog" aria-modal="true" aria-label="Ficha de Microbiologia" tabindex="-1">
           <div id="micro-ficha-content"></div>
         </div>
       </div>
 
-      <div id="micro-calc-modal" class="micro-modal-overlay">
-        <div class="micro-modal micro-modal-calc">
+      <div id="micro-calc-modal" class="micro-modal-overlay" aria-hidden="true">
+        <div class="micro-modal micro-modal-calc" role="dialog" aria-modal="true" aria-label="Calculadora de preparacion microbiologica" tabindex="-1">
           <div id="micro-calc-content"></div>
         </div>
       </div>
 
-      <div id="micro-label-modal" class="micro-modal-overlay">
-        <div class="micro-modal micro-modal-label">
+      <div id="micro-label-modal" class="micro-modal-overlay" aria-hidden="true">
+        <div class="micro-modal micro-modal-label" role="dialog" aria-modal="true" aria-label="Etiquetas de laboratorio" tabindex="-1">
           <div id="micro-label-content"></div>
         </div>
       </div>
 
-      <div id="micro-saved-modal" class="micro-modal-overlay">
-        <div class="micro-modal micro-modal-saved">
+      <div id="micro-saved-modal" class="micro-modal-overlay" aria-hidden="true">
+        <div class="micro-modal micro-modal-saved" role="dialog" aria-modal="true" aria-label="Guardados de Microbiologia" tabindex="-1">
           <div id="micro-saved-content"></div>
         </div>
       </div>
@@ -2489,10 +2498,12 @@
       return `
         <div class="${print ? "" : "micro-panel"}">
           ${print ? "" : "<h4>Composición por litro</h4>"}
-          <table class="micro-table">
-            <thead><tr><th>Ingrediente</th><th>Cantidad</th></tr></thead>
-            <tbody>${list.map((row) => `<tr><td>${escapeHtml(row.ingrediente)}</td><td>${escapeHtml(row.cantidad)}</td></tr>`).join("")}</tbody>
-          </table>
+          ${print ? "" : '<div class="sv-table-wrap">'}
+            <table class="micro-table ${print ? "" : "sv-table"}">
+              <thead><tr><th>Ingrediente</th><th>Cantidad</th></tr></thead>
+              <tbody>${list.map((row) => `<tr><td>${escapeHtml(row.ingrediente)}</td><td>${escapeHtml(row.cantidad)}</td></tr>`).join("")}</tbody>
+            </table>
+          ${print ? "" : "</div>"}
         </div>
       `;
     }

@@ -33,7 +33,9 @@
         <section class="onco-shell sv-module-shell">
           ${renderHeader()}
           ${renderSubnav()}
-          ${renderPage()}
+          <div id="onco-tabpanel" class="sv-module-panel">
+            ${renderPage()}
+          </div>
         </section>
       `;
       Fav?.bindWithin(root);
@@ -62,7 +64,7 @@
       ];
 
       return `
-        <div class="sv-module-subnav onco-tabs" aria-label="Secciones de VetOnco">
+        <div class="sv-module-subnav onco-tabs" data-tabpanel="onco-tabpanel" aria-label="Secciones de VetOnco">
           ${tabs.map((tab) => `
             <button type="button" class="sv-module-tab ${state.page === tab.id ? "is-active" : ""}" data-onco-page="${tab.id}">
               <span>${escapeHtml(tab.icon)}</span>

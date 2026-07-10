@@ -8,6 +8,19 @@
   box-shadow: var(--sv-shadow-sm);
 }
 
+.clinica-module-card,
+.semi-card,
+.onco-card,
+.sv-bib-card,
+.sv-favorite-card,
+.sv-about-card,
+.c360-gameplay-card,
+.c360-test-panel {
+  border-radius: var(--sv-radius-md);
+  box-shadow: var(--sv-shadow-sm);
+  min-width: 0;
+}
+
 .micro-card,
 .nutri-card,
 .nutri-section-card,
@@ -32,6 +45,15 @@
   border-color: var(--sv-border-strong);
   box-shadow: var(--sv-shadow-md);
   transform: translateY(-1px);
+}
+
+.micro-card:focus-within,
+.nutri-card:focus-within,
+.onco-protocol-card:focus-within,
+.c360-scenario-card:focus-within,
+.sv-bib-card:focus-within {
+  border-color: var(--sv-module-color, var(--sv-accent));
+  box-shadow: 0 0 0 var(--sv-focus-width) var(--sv-focus-ring);
 }
 
 .micro-card-visual {
@@ -86,6 +108,15 @@
   .nutri-section-card,
   .nutri-saved-item,
   .micro-saved-item {
+    border-radius: var(--sv-radius-sm);
+  }
+
+  .clinica-module-card,
+  .semi-card,
+  .onco-card,
+  .sv-bib-card,
+  .sv-favorite-card,
+  .sv-about-card {
     border-radius: var(--sv-radius-sm);
   }
 }

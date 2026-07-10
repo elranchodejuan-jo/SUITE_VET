@@ -36,6 +36,7 @@ temp/
 # Local editor and operating-system files
 .vscode/
 .idea/
+.codex/
 *.swp
 *.swo
 .DS_Store

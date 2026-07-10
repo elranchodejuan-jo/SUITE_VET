@@ -6,13 +6,6 @@
 
 :root {
   --sv-sidebar-width: 280px;
-  --sv-bg-surface-glass: rgba(10, 22, 40, 0.72);
-  --sv-border-glass: rgba(255, 255, 255, 0.08);
-}
-
-[data-theme="light"] {
-  --sv-bg-surface-glass: rgba(255, 255, 255, 0.72);
-  --sv-border-glass: rgba(0, 0, 0, 0.08);
 }
 
 /* ──────────────────────────────────────────────
@@ -53,7 +46,7 @@
 }
 
 .sv-topbar-brand {
-  font-family: var(--sv-font-heading);
+  font-family: var(--sv-font-brand);
   font-size: 1.5rem;
   font-weight: 700;
   color: var(--sv-text-primary);
@@ -550,6 +543,8 @@
 .sv-home-card-nutri::before { border-color: var(--sv-nutri-color); }
 .sv-home-card-clinica::before { border-color: var(--sv-clinica-color); }
 .sv-home-card-semiologia::before { border-color: var(--sv-semiologia-color, var(--sv-clinica-color)); }
+.sv-home-card-casos360::before { border-color: var(--sv-casos360-color); }
+.sv-home-card-onco::before { border-color: var(--sv-onco-color); }
 
 .sv-home-card:hover {
   transform: translateY(-3px);
@@ -579,6 +574,12 @@
   border-radius: 999px;
   padding: 0.1rem 0.5rem;
   margin-top: 0.25rem;
+}
+
+.sv-coming-tag-casos360 {
+  background: var(--sv-casos360-color);
+  border-color: var(--sv-casos360-color);
+  color: #fff;
 }
 
 /* ──────────────────────────────────────────────

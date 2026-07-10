@@ -6,9 +6,9 @@ Base visual oficial para modulos actuales y futuros de SUITE VET.
 
 - `shared/tokens.css`: colores, tipografias, sombras, espacios, radios y tiempos.
 - `shared/components.css`: componentes reutilizables.
-- `shared/dashboard.css`: portada operativa del sistema.
-- `shared/liquid-glass.css`: capa visual Liquid Lab Glass para pantalla.
+- `shared/styles/`: adaptacion progresiva de layouts, cards, formularios y acciones existentes.
 - `shared/responsive.css`: adaptacion global para laptop, TV, tablet y celular.
+- `shared/ui-system.js`: semantica y teclado compartidos para tabs y dialogos.
 
 Los estilos de impresion y PDFs se mantienen en sus archivos actuales. No mover reglas `@media print` a esta guia.
 
@@ -29,6 +29,7 @@ Los estilos de impresion y PDFs se mantienen en sus archivos actuales. No mover 
 - `.sv-cluster`
 - `.sv-cluster-between`
 - `.sv-actions`
+- `.sv-module-panel`
 
 ### Tarjetas
 
@@ -101,6 +102,20 @@ Los estilos de impresion y PDFs se mantienen en sus archivos actuales. No mover 
 - `.sv-modal-lg`
 - `.sv-modal-xl`
 - `.sv-modal-close`
+
+## Tabs y dialogos
+
+- Un tablist usa `.sv-module-subnav` o `.sv-subnav` y puede declarar `data-tabpanel="id-del-panel"`.
+- El contenido intercambiable usa `.sv-module-panel`; la capa compartida asigna `role`, `aria-selected`, `aria-controls` y teclado.
+- Un modal mantiene su overlay actual y expone un descendiente con `role="dialog"`, `aria-modal="true"` y nombre accesible.
+- Escape, focus trap, restauracion de foco y bloqueo de scroll se resuelven en `shared/ui-system.js` sin alterar la logica de negocio.
+
+## Breakpoints internos
+
+- `>900 px`: escritorio.
+- `<=900 px`: tablet y drawer; layouts densos se apilan cuando lo necesitan.
+- `<=640 px`: movil; tabs con scroll local, formularios de una columna y targets de 44 px.
+- `<=420 px`: movil estrecho con densidad compacta.
 
 ## Regla de uso
 

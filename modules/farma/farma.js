@@ -257,9 +257,9 @@
           </p>
         </section>
 
-        <div class="sv-module-subnav farma-subnav" id="farma-subnav" aria-label="Submodulos de Farmacologia"></div>
+        <div class="sv-module-subnav farma-subnav" id="farma-subnav" data-tabpanel="farma-submodule-panel" aria-label="Submodulos de Farmacologia"></div>
 
-        <section class="farma-panel" id="farma-submodule-panel"></section>
+        <section class="farma-panel sv-module-panel" id="farma-submodule-panel"></section>
       </section>
     `;
 
@@ -340,15 +340,17 @@
     panel.innerHTML = `
       <div class="farma-loaded-shell">
         <div class="sv-toolbar sv-module-toolbar">
-          <input
-            type="text"
-            id="farma-search"
-            class="sv-input"
-            placeholder="Buscar por nombre, grupo o comercial..."
-            style="max-width:360px;"
-            autocomplete="off"
-            value="${escapeAttr(state.loadedSearch)}"
-          />
+          <label class="sv-field sv-field-toolbar">
+            <span class="sv-label">Buscar farmacos cargados</span>
+            <input
+              type="text"
+              id="farma-search"
+              class="sv-input"
+              placeholder="Nombre, grupo o comercial..."
+              autocomplete="off"
+              value="${escapeAttr(state.loadedSearch)}"
+            />
+          </label>
         </div>
 
         <div class="cat-chip-grid farma-chip-strip" id="farma-chips"></div>
