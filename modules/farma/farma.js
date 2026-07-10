@@ -8,6 +8,11 @@
 
   const STORAGE_CUSTOM = "suitevet_farma_custom_drugs_v1";
   const STORAGE_HISTORY = "suitevet_farma_history_v1";
+  const LoadedCalc = window.SuiteVetFarmaCalculations;
+
+  if (!LoadedCalc) {
+    throw new Error("[Farma] No se cargo el motor seguro de calculos farmacologicos.");
+  }
 
   const FREE_DOSE_UNIT_OPTIONS = [
     "mg/kg",
@@ -445,20 +450,20 @@
     card.dataset.favType = "Tarjeta";
     card.dataset.favDescription = drug.mecanismo || (drug.comerciales || []).join(", ");
 
+    const catalogConcentration = LoadedCalc.parseConcentration(drug.concentracion, drug.unidad);
+    const doseUnitPerKg = catalogConcentration.ok ? `${catalogConcentration.numeratorUnit}/kg` : "mg/kg";
+
     const optionsEspecie = (drug.especies || []).map((species, index) =>
-      `<option value="${index}">${escapeHtml(species.nombre)} - ${formatNum(species.dosisMgKg)} mg/kg</option>`
+      `<option value="${index}">${escapeHtml(species.nombre)} - ${formatNum(species.dosisMgKg)} ${escapeHtml(doseUnitPerKg)}</option>`
     ).join("");
 
-    const lowerContra = String(drug.contraindicaciones || "").toLowerCase();
+    const lowerContra = LoadedCalc.normalizeForComparison(drug.contraindicaciones || "");
     const alerts = [];
     if (lowerContra.includes("mdr1") || lowerContra.includes("collie")) alerts.push("mdr1");
-    if (lowerContra.includes("gestacion") || lowerContra.includes("gestacion")) alerts.push("gestacion");
+    if (lowerContra.includes("gestacion")) alerts.push("gestacion");
     if (lowerContra.includes("renal")) alerts.push("nefrotoxico");
     if (lowerContra.includes("hepato") || lowerContra.includes("hepat")) alerts.push("hepatotoxico");
 
-    const unit = String(drug.unidad || "").toLowerCase();
-    const isLiquid = !unit.includes("tableta") && !unit.includes("capsula") && !unit.includes("comprimido");
-    const resultUnit = isLiquid ? "mL" : "tabletas";
     const risk = Number(drug.riesgo) || Number(cat.riesgoBase) || 1;
 
     card.innerHTML = `
@@ -540,7 +545,7 @@
       if (!species || !infoBox) return;
 
       infoBox.innerHTML = `
-        <strong style="color:var(--sv-text-primary)">${formatNum(species.dosisMgKg)} mg/kg</strong>
+        <strong style="color:var(--sv-text-primary)">${formatNum(species.dosisMgKg)} ${escapeHtml(doseUnitPerKg)}</strong>
         <span style="opacity:0.6;font-size:0.75rem;display:block;margin-top:1px;">via ${escapeHtml(species.via || "N/D")}</span>
       `;
     }
@@ -550,19 +555,27 @@
       const conc = parseNum(concInput.value);
       const idx = Number(speciesSelect.value);
       const species = (drug.especies || [])[idx];
+      const calculation = species
+        ? LoadedCalc.calculateLoadedDose({
+            weightKg: weightInput.value,
+            dosePerKg: species.dosisMgKg,
+            concentration: concInput.value,
+            concentrationUnit: drug.unidad
+          })
+        : { ok: false };
 
       updateSpeciesInfo();
 
-      if (!species || weight <= 0 || conc <= 0) {
+      if (!species || !calculation.ok) {
         resultBox.classList.remove("visible");
         recipeBtn.style.display = "none";
         lastComputed = null;
         return;
       }
 
-      const totalMg = weight * parseNum(species.dosisMgKg);
-      const finalQty = totalMg / conc;
-      const finalText = `${formatNum(finalQty)} ${resultUnit}`;
+      const totalDose = calculation.totalDose;
+      const finalQty = calculation.finalQuantity;
+      const finalText = `${formatNum(finalQty)} ${calculation.resultUnit}`;
 
       const retiro = (Number(species.retiroCarne) > 0 || Number(species.retiroLeche) > 0)
         ? `Carne: ${Number(species.retiroCarne) || 0} dias | Leche: ${Number(species.retiroLeche) || 0} dias`
@@ -572,11 +585,11 @@
       resultBox.innerHTML = `
         <div class="farma-dosis-valor">${escapeHtml(finalText)}</div>
         <div class="farma-calc-pasos">
-          <span>${formatNum(weight)} kg x ${formatNum(species.dosisMgKg)} mg/kg</span>
+          <span>${formatNum(weight)} kg x ${formatNum(species.dosisMgKg)} ${escapeHtml(calculation.doseUnitPerKg)}</span>
           <span class="farma-calc-paso-igual">=</span>
-          <strong>${formatNum(totalMg)} mg</strong>
+          <strong>${formatNum(totalDose)} ${escapeHtml(calculation.numeratorUnit)}</strong>
           <span class="farma-calc-paso-igual">/</span>
-          <span>${formatNum(conc)} ${escapeHtml(drug.unidad || "")}</span>
+          <span>${formatNum(calculation.amountPerUnit)} ${escapeHtml(calculation.numeratorUnit)}/${escapeHtml(calculation.concentrationUnit)}</span>
           <span class="farma-calc-paso-igual">=</span>
           <strong style="color:var(--sv-success)">${escapeHtml(finalText)}</strong>
         </div>
@@ -593,19 +606,20 @@
         especie: species.nombre,
         pesoKg: weight,
         dosis: species.dosisMgKg,
-        unidadDosis: "mg/kg",
+        unidadDosis: calculation.doseUnitPerKg,
         concentracion: conc,
         unidadConcentracion: drug.unidad,
-        dosisTotal: totalMg,
-        dosisTotalUnidad: "mg",
+        dosisTotal: totalDose,
+        dosisTotalUnidad: calculation.numeratorUnit,
         resultadoFinal: finalQty,
-        unidadFinal: resultUnit,
+        unidadFinal: calculation.resultUnit,
         via: species.via || "N/D",
         tiempoRetiro: retiro,
         tipoCalculo: "simple",
         grupoKey: catId,
         fuente: "farmacos_cargados",
-        advertencias: alerts.length && Cat ? alerts.map((key) => Cat.ALERTAS?.[key]?.texto).filter(Boolean) : []
+        advertencias: alerts.length && Cat ? alerts.map((key) => Cat.ALERTAS?.[key]?.texto).filter(Boolean) : [],
+        recetarioArgs: LoadedCalc.buildLegacyRecipeArgs(drug, calculation, species, retiro, formatNum)
       };
 
       recipeBtn.style.display = "block";
@@ -665,13 +679,9 @@
 
     recipeBtn.addEventListener("click", () => {
       if (!lastComputed) return;
-      window.Recetario?.agregarItem?.(
-        drug,
-        `${formatNum(lastComputed.resultadoFinal)} ${lastComputed.unidadFinal}`,
-        lastComputed.via,
-        lastComputed.especie,
-        lastComputed.tiempoRetiro
-      );
+      if (Array.isArray(lastComputed.recetarioArgs)) {
+        window.Recetario?.agregarItem?.(...lastComputed.recetarioArgs);
+      }
 
       markLatestHistoryBySignature(state, {
         farmaco: lastComputed.nombre,

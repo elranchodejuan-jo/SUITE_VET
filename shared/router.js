@@ -11,6 +11,11 @@
   // 1. OBJETO GLOBAL
   // ---------------------------------------------------------------------------
   window.SuiteVet = window.SuiteVet || {};
+  const Safety = window.SuiteVetSafety;
+
+  if (!Safety) {
+    throw new Error("[SuiteVet] No se cargaron las utilidades de seguridad.");
+  }
 
   // ---------------------------------------------------------------------------
   // 2. TEMA (dark / light)
@@ -440,15 +445,22 @@
     for (const [moduleId, items] of Object.entries(grupos)) {
       const group = document.createElement("div");
       group.className = "sv-search-group";
-      group.innerHTML = `<div class="sv-search-group-label">${labels[moduleId] || moduleId}</div>`;
+      group.appendChild(
+        Safety.createTextElement(document, "div", "sv-search-group-label", labels[moduleId] || moduleId)
+      );
 
       items.slice(0, 5).forEach((item) => {
         const el = document.createElement("button");
         el.className = "sv-search-item";
-        el.innerHTML = `
-          <span class="sv-search-item-title">${item.title}</span>
-          ${item.subtitle ? `<span class="sv-search-item-sub">${item.subtitle}</span>` : ""}
-        `;
+        el.type = "button";
+        el.appendChild(
+          Safety.createTextElement(document, "span", "sv-search-item-title", item.title)
+        );
+        if (item.subtitle) {
+          el.appendChild(
+            Safety.createTextElement(document, "span", "sv-search-item-sub", item.subtitle)
+          );
+        }
         el.addEventListener("click", () => {
           if (typeof item.action === "function") item.action();
           container.classList.remove("sv-search-open");

@@ -8,8 +8,13 @@
     const D = window.CLINICA_DATA || {};
     const Fav = window.SuiteVet?.Favorites || null;
     const Pdf = window.SuiteVet?.ClinicaPdf || null;
+    const Safety = window.SuiteVetSafety;
     const STORAGE_KEY = D.storageKeyCases || "suiteVet_clinica_casos";
     const TEMPLATE_STORAGE_KEY = D.storageKeyTemplates || "suiteVet_clinica_templates";
+
+    if (!Safety) {
+      throw new Error("[Clinica] No se cargaron las utilidades de importacion segura.");
+    }
 
     const state = {
       page: "inicio",
@@ -653,15 +658,21 @@
     function saveCurrentCase() {
       const warnings = importantDataWarnings(state.current);
       const ready = prepareCaseForSave(state.current);
+      const previousCases = state.cases.slice();
       const index = state.cases.findIndex((item) => item.id === ready.id);
       if (index >= 0) state.cases[index] = ready;
       else state.cases.unshift(ready);
       state.cases.sort((a, b) => new Date(b.updatedAt || 0) - new Date(a.updatedAt || 0));
-      saveCases(state.cases);
+      if (!saveCases(state.cases)) {
+        state.cases = previousCases;
+        notify("No se pudo guardar el caso. Revisa el espacio disponible del navegador e intenta nuevamente.");
+        return false;
+      }
       state.current = deepClone(ready);
       notify("Caso guardado correctamente.");
       if (warnings.length) notify(`Faltan datos importantes: ${warnings.join(", ")}.`);
       render();
+      return true;
     }
 
     function printCurrentCase() {
@@ -1180,8 +1191,10 @@
     function saveCases(cases) {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(cases || []));
+        return true;
       } catch (error) {
         console.warn("[Clinica] No se pudo guardar casos:", error);
+        return false;
       }
     }
 
@@ -1196,9 +1209,15 @@
     }
 
     function sanitizeCase(entry) {
-      if (!entry || typeof entry !== "object") return null;
-      const base = createEmptyCase();
-      return deepMerge(base, entry);
+      const result = sanitizeCaseResult(entry);
+      return result.ok ? result.value : null;
+    }
+
+    function sanitizeCaseResult(entry) {
+      if (!entry || typeof entry !== "object" || Array.isArray(entry)) {
+        return { ok: false, value: null, errors: ["La raiz del caso debe ser un objeto."], ignoredPaths: [] };
+      }
+      return Safety.safeMergeAllowed(createEmptyCase(), entry);
     }
 
     function createEmptyCase() {
@@ -1389,12 +1408,20 @@
     function importarCasoDesdeJson(json) {
       try {
         const parsed = JSON.parse(json);
-        state.current = sanitizeCase(parsed) || createEmptyCase();
+        const result = sanitizeCaseResult(parsed);
+        if (!result.ok) {
+          notify(`No se pudo importar el JSON: ${result.errors[0] || "estructura invalida"}`);
+          return false;
+        }
+        state.current = result.value;
         state.page = "nuevo";
         render();
+        if (result.ignoredPaths.length) {
+          notify("Caso importado. Se ignoraron campos que no pertenecen al esquema clinico permitido.");
+        }
         return true;
       } catch {
-        notify("No se pudo importar el JSON.");
+        notify("No se pudo importar el JSON: el documento no contiene JSON valido.");
         return false;
       }
     }
@@ -1571,23 +1598,6 @@
 
     function deepClone(value) {
       return JSON.parse(JSON.stringify(value));
-    }
-
-    function deepMerge(target, source) {
-      if (!source || typeof source !== "object") return target;
-      Object.keys(source).forEach((key) => {
-        const srcValue = source[key];
-        if (Array.isArray(srcValue)) {
-          target[key] = srcValue.slice();
-          return;
-        }
-        if (srcValue && typeof srcValue === "object") {
-          target[key] = deepMerge(target[key] && typeof target[key] === "object" ? target[key] : {}, srcValue);
-          return;
-        }
-        target[key] = srcValue;
-      });
-      return target;
     }
 
     function generateCaseId() {
