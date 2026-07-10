@@ -1,11 +1,12 @@
 # SUITE VET 2.0
 
-SPA estática construida con HTML, CSS y JavaScript clásico. Vite se usa únicamente como servidor de desarrollo y herramienta de compilación; los contratos globales `window.SuiteVet` y `window.Recetario` se conservan durante la migración progresiva.
+Suite Vet mantiene su frontend en HTML, CSS y JavaScript clásico y añade una frontera de dominio versionada con FastAPI. La migración es progresiva: los contratos globales `window.SuiteVet` y `window.Recetario`, los datos veterinarios, `localStorage`, impresión y PDF continúan sin cambios.
 
 ## Requisitos
 
 - Node.js 20.19 o superior.
 - npm 10 o superior.
+- Python 3.12 o superior compatible con `backend/pyproject.toml`.
 
 ## Inicio local
 
@@ -59,3 +60,56 @@ En los seis tamaños se comprobó `scrollWidth <= clientWidth`. También se prob
 - Claro y oscuro comparten los mismos tokens semánticos. Los colores de módulo se usan como acento, no como fondo dominante.
 
 Un módulo nuevo debe reutilizar `sv-module-shell`, `sv-module-header`, `sv-module-subnav`, `sv-module-panel`, `sv-module-toolbar`, `sv-card`, `sv-field`, `sv-btn` y `sv-table-wrap`. Los selectores propios quedan reservados para identidad o comportamiento específico; impresión, PDF, datos y cálculos permanecen en sus contratos actuales.
+
+## Fundación backend (Hito 2.1)
+
+- `backend/app/main.py`: factory y entrada ASGI de FastAPI.
+- `backend/app/core/`: settings `SUITEVET_` y respuestas de error JSON.
+- `backend/app/api/v1/`: router versionado y endpoint de salud.
+- `backend/app/schemas/`: contratos Pydantic de la API.
+- `backend/tests/`: pruebas aisladas con `pytest` y `TestClient`.
+- `shared/api-client.js`: cliente clásico bajo `window.SuiteVetAPI`, sin peticiones automáticas.
+- `vite.config.mjs`: proxy de desarrollo `/api` hacia `http://127.0.0.1:8000`.
+
+Este hito no incluye base de datos, usuarios, autenticación, IA ni migración de catálogos.
+
+## Desarrollo con dos terminales
+
+Primera instalación del backend desde la raíz, en PowerShell:
+
+```powershell
+py -3.12 -m venv backend/.venv
+cd backend
+.\.venv\Scripts\Activate.ps1
+python -m pip install -e ".[test]"
+python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
+```
+
+En una segunda terminal, desde la raíz del repositorio:
+
+```powershell
+npm install
+npm run dev
+```
+
+URLs locales:
+
+- Frontend: `http://localhost:5173/`
+- Salud: `http://127.0.0.1:8000/api/v1/health`
+- Swagger: `http://127.0.0.1:8000/docs`
+- OpenAPI: `http://127.0.0.1:8000/openapi.json`
+
+El frontend puede iniciar sin el backend. `window.SuiteVetAPI.getHealth()` solo consulta la API cuando un consumidor lo solicita explícitamente.
+
+## Pruebas
+
+```powershell
+npm test
+npm run build
+cd backend
+.\.venv\Scripts\python.exe -m pytest
+```
+
+Las variables admitidas se documentan con valores seguros en `backend/.env.example`. Un `.env` real permanece ignorado por Git. Para detalles de instalación, configuración y solución de problemas, consulta `backend/README.md`.
+
+Si PowerShell bloquea `Activate.ps1`, no es necesario cambiar la política global: ejecuta directamente `backend\.venv\Scripts\python.exe`. Si bloquea `npm.ps1`, usa `npm.cmd` con los mismos argumentos.

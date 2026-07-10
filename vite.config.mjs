@@ -32,6 +32,14 @@ export default defineConfig({
   base: "./",
   publicDir: false,
   plugins: [copyClassicRuntime()],
+  server: {
+    proxy: {
+      "/api": {
+        target: "http://127.0.0.1:8000",
+        changeOrigin: false,
+      },
+    },
+  },
   build: {
     outDir: "dist",
     emptyOutDir: true,
