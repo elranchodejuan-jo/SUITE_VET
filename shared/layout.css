@@ -200,16 +200,17 @@
   height: 2px;
   border-radius: 999px;
   background: var(--sv-text-secondary);
-  transition: transform 0.2s ease, opacity 0.2s ease;
+  transition: background-color 0.18s ease;
 }
-.sv-menu-toggle.is-open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
-.sv-menu-toggle.is-open span:nth-child(2) { opacity: 0; }
-.sv-menu-toggle.is-open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
-
-/* Morfosis a flechas del colapsador en desktop */
-.sv-menu-toggle.is-collapsed span:nth-child(1) { transform: translateY(4px) scaleX(0.7); }
-.sv-menu-toggle.is-collapsed span:nth-child(2) { transform: scaleX(0.9); }
-.sv-menu-toggle.is-collapsed span:nth-child(3) { transform: translateY(-4px) scaleX(0.7); }
+.sv-menu-toggle.is-open span:nth-child(1),
+.sv-menu-toggle.is-open span:nth-child(2),
+.sv-menu-toggle.is-open span:nth-child(3),
+.sv-menu-toggle.is-collapsed span:nth-child(1),
+.sv-menu-toggle.is-collapsed span:nth-child(2),
+.sv-menu-toggle.is-collapsed span:nth-child(3) {
+  opacity: 1;
+  transform: none;
+}
 
 /* ──────────────────────────────────────────────
    TELÓN DE FONDO (BACKDROP PARA MÓVIL)
@@ -253,11 +254,24 @@
 }
 
 .sv-sidebar::-webkit-scrollbar {
-  width: 4px;
+  width: 5px;
 }
 .sv-sidebar::-webkit-scrollbar-thumb {
   background: var(--sv-border-glass);
-  border-radius: 4px;
+  border-radius: 999px;
+}
+.sv-sidebar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--sv-border-glass) transparent;
+}
+.sv-sidebar-collapsed .sv-sidebar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.sv-sidebar-collapsed .sv-sidebar::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 .sv-menu-title {
@@ -300,9 +314,13 @@
   white-space: nowrap;
 }
 .sv-sidebar-collapsed .sv-menu-item {
-  grid-template-columns: 36px 0fr;
+  grid-template-columns: 44px;
+  justify-content: center;
+  min-height: 56px;
   gap: 0;
-  padding-left: calc((72px - 36px) / 2);
+  margin-top: 0.375rem;
+  padding: 5px;
+  overflow: visible;
 }
 
 .sv-menu-item span:not(.sv-menu-icon) {
@@ -312,10 +330,16 @@
   flex-direction: column;
 }
 .sv-sidebar-collapsed .sv-menu-item span:not(.sv-menu-icon) {
+  position: absolute;
   opacity: 0;
-  width: 0;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
   overflow: hidden;
   pointer-events: none;
+  white-space: nowrap;
 }
 
 .sv-menu-item strong {
@@ -347,6 +371,40 @@
   flex-shrink: 0;
 }
 
+.sv-sidebar-collapsed .sv-menu-icon {
+  width: 44px;
+  min-width: 44px;
+  max-width: 44px;
+  height: 44px;
+  min-height: 44px;
+  max-height: 44px;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  justify-self: center;
+  align-self: center;
+  flex: 0 0 44px;
+  line-height: 1;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+
+.sv-sidebar-collapsed .sv-menu-icon-casos360 {
+  font-size: 0.7rem;
+  letter-spacing: -0.04em;
+}
+
+.sv-sidebar-collapsed .sv-menu-icon-nutri {
+  font-size: 0.69rem;
+  letter-spacing: -0.08em;
+}
+
+.sv-sidebar-collapsed .sv-menu-icon-bib,
+.sv-sidebar-collapsed .sv-menu-icon-about {
+  font-size: 1rem;
+}
+
 /* Colores personalizados por módulo */
 .sv-menu-item[data-view="home"] { --module-color: var(--sv-accent); }
 .sv-menu-item[data-view="fisiologia"] { --module-color: var(--sv-fisio-color); }
@@ -373,7 +431,13 @@
   border-color: rgba(0, 0, 0, 0.03);
 }
 .sv-sidebar-collapsed .sv-menu-item:hover:not(.sv-disabled) {
-  transform: none; /* No desplazar lateralmente si está colapsado */
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  transform: none;
+}
+.sv-sidebar-collapsed .sv-menu-item:hover:not(.sv-disabled) .sv-menu-icon {
+  border-color: var(--module-color);
 }
 
 .sv-menu-item.sv-menu-active {
@@ -382,6 +446,18 @@
   border-color: var(--sv-border) !important;
   box-shadow: inset 4px 0 0 var(--module-color);
   font-weight: 600;
+}
+
+.sv-sidebar-collapsed .sv-menu-item.sv-menu-active {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.sv-sidebar-collapsed .sv-menu-item.sv-menu-active .sv-menu-icon {
+  background: var(--sv-bg-elevated);
+  border-color: var(--module-color);
+  box-shadow: 0 0 0 2px var(--module-color);
 }
 
 .sv-menu-icon-fisio { color: var(--sv-fisio-color); border-color: rgba(244, 63, 94, 0.4); }

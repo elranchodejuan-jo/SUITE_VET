@@ -52,6 +52,12 @@ test("el shell protege overflow, foco visible, targets y movimiento reducido", (
   assert.match(layoutSource, /prefers-reduced-motion: reduce/);
 });
 
+test("el sidebar colapsado conserva iconos circulares y el menú de tres líneas", () => {
+  assert.match(layoutSource, /\.sv-sidebar-collapsed \.sv-menu-icon \{[\s\S]*width: 44px;[\s\S]*height: 44px;[\s\S]*aspect-ratio: 1 \/ 1;[\s\S]*border-radius: 50%;[\s\S]*flex: 0 0 44px;/);
+  assert.match(layoutSource, /\.sv-sidebar-collapsed \.sv-sidebar \{[\s\S]*scrollbar-width: none;/);
+  assert.match(layoutSource, /\.sv-menu-toggle\.is-open span:nth-child\(1\),[\s\S]*\.sv-menu-toggle\.is-collapsed span:nth-child\(3\) \{[\s\S]*opacity: 1;[\s\S]*transform: none;/);
+});
+
 test("la toolchain mantiene Vite como única dependencia", () => {
   const pkg = JSON.parse(read("package.json"));
   assert.deepEqual(pkg.scripts, {
