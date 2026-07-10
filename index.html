@@ -45,52 +45,57 @@
   <script src="shared/categorias.js"></script>
 </head>
 <body>
+  <a class="sv-skip-link" href="#sv-main-content">Saltar al contenido principal</a>
   <div class="sv-sidebar-backdrop" id="sv-sidebar-backdrop" aria-hidden="true"></div>
   <div class="sv-app-container">
 
   <!-- ════════════════════════════════════════
        TOPBAR
   ════════════════════════════════════════ -->
-  <header class="sv-topbar">
-    <button class="sv-menu-toggle sv-topbar-actions" id="sv-menu-toggle" aria-label="Menú proyectos">
+  <header class="sv-topbar" aria-label="Cabecera de SUITE VET">
+    <button class="sv-menu-toggle" id="sv-menu-toggle" type="button" aria-label="Abrir navegación" aria-expanded="false" aria-controls="sv-menu-panel">
       <span></span><span></span><span></span>
     </button>
-    <button class="sv-icon-btn sv-home-toggle" id="sv-home-toggle" type="button" data-go-view="home" aria-label="Ir al inicio" title="Inicio">
-      &#8962;
-    </button>
-    <button class="sv-icon-btn sv-search-toggle" id="sv-search-toggle" type="button" aria-label="Abrir busqueda global" aria-expanded="false" title="Buscar">
-      &#128269;
-    </button>
-    <button class="sv-icon-btn sv-favorites-toggle" id="sv-favorites-toggle" type="button" data-go-view="favoritos" aria-label="Abrir favoritos" title="Favoritos">
-      &#9733;
-      <span id="sv-favorites-count" class="sv-favorites-count" hidden>0</span>
-    </button>
-    <button class="sv-icon-btn sv-bibliografia-toggle" id="sv-bibliografia-toggle" type="button" data-go-view="bibliografia" aria-label="Abrir bibliografía" title="Bibliografía & Biblioteca">
-      📚
-    </button>
-    <span class="sv-topbar-brand">SUITE VET</span>
-    <div class="sv-search-wrap">
-      <span class="sv-search-icon">🔍</span>
-      <input type="text" id="sv-search-global" class="sv-search-global" placeholder="Buscar en todos los módulos…" autocomplete="off" />
-      <div id="sv-search-results" class="sv-search-results"></div>
+    <span class="sv-topbar-brand" aria-label="SUITE VET, Medicina Veterinaria">
+      <span class="sv-topbar-brand-name">SUITE VET</span>
+      <span class="sv-topbar-brand-context">Medicina Veterinaria</span>
+    </span>
+    <div class="sv-search-wrap" role="search" aria-hidden="false">
+      <label class="sv-visually-hidden" for="sv-search-global">Buscar en todos los módulos</label>
+      <span class="sv-search-icon" aria-hidden="true">&#128269;</span>
+      <input type="search" id="sv-search-global" class="sv-search-global" placeholder="Buscar en todos los módulos…" autocomplete="off" aria-controls="sv-search-results" aria-autocomplete="list" />
+      <div id="sv-search-results" class="sv-search-results" role="listbox" aria-label="Resultados de búsqueda"></div>
     </div>
-    <div class="sv-topbar-actions">
-      <button id="sv-theme-toggle" title="Cambiar tema">☀️</button>
+    <div class="sv-topbar-actions" aria-label="Acciones rápidas">
+      <button class="sv-icon-btn sv-home-toggle" id="sv-home-toggle" type="button" data-go-view="home" aria-label="Ir al inicio" title="Inicio">
+        &#8962;
+      </button>
+      <button class="sv-icon-btn sv-search-toggle" id="sv-search-toggle" type="button" aria-label="Abrir búsqueda global" aria-expanded="false" aria-controls="sv-search-global" title="Buscar">
+        &#128269;
+      </button>
+      <button class="sv-icon-btn sv-favorites-toggle" id="sv-favorites-toggle" type="button" data-go-view="favoritos" aria-label="Abrir favoritos" title="Favoritos">
+        &#9733;
+        <span id="sv-favorites-count" class="sv-favorites-count" hidden>0</span>
+      </button>
+      <button class="sv-icon-btn sv-bibliografia-toggle" id="sv-bibliografia-toggle" type="button" data-go-view="bibliografia" aria-label="Abrir bibliografía" title="Bibliografía &amp; Biblioteca">
+        &#128218;
+      </button>
+      <button id="sv-theme-toggle" type="button" aria-label="Cambiar a tema claro" title="Cambiar a tema claro">&#9728;&#65039;</button>
     </div>
   </header>
 
   <!-- Menú lateral proyectos -->
-  <aside class="sv-sidebar" id="sv-menu-panel">
+  <nav class="sv-sidebar" id="sv-menu-panel" aria-label="Módulos de SUITE VET" tabindex="-1">
     <p class="sv-menu-title">Modulos SUITE VET</p>
     <button class="sv-menu-item sv-disabled">CD — Cartilla Digital</button>
     <button class="sv-menu-item sv-disabled">CATTLE — Bovinos</button>
     <p class="sv-menu-note">En desarrollo, pronto más info…</p>
-  </aside>
+  </nav>
 
   <!-- ════════════════════════════════════════
        NAV PRINCIPAL
   ════════════════════════════════════════ -->
-  <nav class="sv-nav">
+  <nav class="sv-nav" aria-label="Navegación principal" aria-hidden="true">
     <button class="sv-nav-btn sv-nav-active" data-view="home">Inicio</button>
     <button class="sv-nav-btn" data-view="fisiologia">Fisiología</button>
     <button class="sv-nav-btn" data-view="farmacologia">Farmacología</button>
@@ -106,7 +111,7 @@
   <!-- ════════════════════════════════════════
        CONTENIDO PRINCIPAL
   ════════════════════════════════════════ -->
-  <main class="sv-main">
+  <main class="sv-main" id="sv-main-content" tabindex="-1">
 
     <!-- ── INICIO ── -->
     <section id="view-home" class="sv-view sv-view-active">
