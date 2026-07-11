@@ -12,6 +12,7 @@
   const DEFAULT_TIMEOUT_MS = 5000;
   const HEALTH_PATH = "/api/v1/health";
   const CATALOG_MODULES_PATH = "/api/v1/catalog/modules";
+  const BIBLIOGRAPHY_RESOURCES_PATH = "/api/v1/bibliography/resources";
   const state = {
     baseUrl: "",
     timeoutMs: DEFAULT_TIMEOUT_MS
@@ -133,6 +134,18 @@
     return request(CATALOG_MODULES_PATH, options);
   }
 
+  function getBibliographyResources(options = {}) {
+    return request(BIBLIOGRAPHY_RESOURCES_PATH, options);
+  }
+
+  function getBibliographyResource(slug, options = {}) {
+    const normalizedSlug = String(slug || "").trim();
+    if (!/^[a-z][a-z0-9-]{1,63}$/.test(normalizedSlug)) {
+      throw new TypeError("El slug bibliografico no es valido");
+    }
+    return request(`${BIBLIOGRAPHY_RESOURCES_PATH}/${encodeURIComponent(normalizedSlug)}`, options);
+  }
+
   Object.defineProperty(root, "SuiteVetAPI", {
     configurable: false,
     enumerable: true,
@@ -140,6 +153,8 @@
     value: Object.freeze({
       APIError: SuiteVetAPIError,
       configure,
+      getBibliographyResource,
+      getBibliographyResources,
       getCatalogModules,
       getConfiguration,
       getHealth,

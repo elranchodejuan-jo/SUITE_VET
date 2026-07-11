@@ -195,6 +195,10 @@
   box-shadow: inset 0 -10px 20px rgba(0,0,0,0.3);
 }
 
+.sv-book-cover-3d.sv-bib-cover-fisio {
+  background: linear-gradient(135deg, #f43f5e, #be123c);
+}
+
 /* Lomo (Book Spine) */
 .sv-book-spine {
   position: absolute;
@@ -300,6 +304,18 @@
 
 .sv-book-download-btn {
   margin-top: auto;
+}
+
+.sv-bib-rights-note {
+  margin: 0;
+  color: var(--sv-text-muted);
+  font-size: 0.74rem;
+}
+
+.sv-copy-citation-btn.is-copied {
+  background: var(--sv-success);
+  border-color: var(--sv-success);
+  color: #ffffff;
 }
 
 /* Responsividad interna del módulo */

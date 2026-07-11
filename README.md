@@ -110,6 +110,15 @@ El frontend puede iniciar sin el backend. `window.SuiteVetAPI.getHealth()` solo 
 
 El fallback frontend debe mantenerse en paridad con el JSON autoritativo hasta que la migración permita depender del backend. Una caída, timeout o respuesta inválida de la API conserva la SPA operativa con el catálogo local.
 
+## Bibliografía académica versionada (Hito 2.3)
+
+- `backend/app/data/bibliography.json` registra únicamente metadatos académicos ya presentes en la aplicación.
+- `GET /api/v1/bibliography/resources` y `GET /api/v1/bibliography/resources/{slug}` entregan solo metadatos; no distribuyen ni extraen PDFs.
+- `shared/bibliography.js` conserva un fallback local inmediato y acepta una respuesta API solo cuando no modifica título, autores, citas ni `asset_key` del recurso local.
+- Los archivos se resuelven por una whitelist local de `asset_key`; no se aceptan rutas de API, URLs externas ni traversal.
+
+El recurso actual conserva `review_status: draft`, `rights_status: unverified` y `source_status: unverified`, porque el repositorio no prueba revisión editorial, autorización de distribución ni fuente externa. Para añadir un recurso, primero documenta sus metadatos y citas demostrables, registra una clave de asset permitida si el archivo ya existe localmente y extiende las pruebas de paridad. La futura migración a PostgreSQL sustituirá el repositorio estático sin retirar el fallback hasta que la API sea la fuente confiable.
+
 ## Pruebas
 
 ```powershell

@@ -1,75 +1,58 @@
 // =============================================================================
-// SUITE VET 2.0 - modules/bibliografia/bibliografia.js
-// Controlador para el módulo de Referencias Bibliográficas y Biblioteca Digital.
+// SUITE VET - modules/bibliografia/bibliografia.js
+// UI progresiva para citas y biblioteca digital; no inserta metadatos con HTML.
 // =============================================================================
 
 (function () {
   "use strict";
 
-  document.addEventListener("DOMContentLoaded", () => {
-    initBibliografia();
+  const MODULE_LABELS = Object.freeze({
+    fisio: "Fisiología"
   });
+  let lastRenderSignature = null;
 
-  // Escuchar cambio de vista para re-inicializar si es necesario
-  document.addEventListener("suitevet:viewchange", (e) => {
-    if (e.detail.view === "bibliografia") {
-      initBibliografia();
-    }
+  document.addEventListener("DOMContentLoaded", initBibliography);
+  document.addEventListener("suitevet:viewchange", (event) => {
+    if (event.detail.view === "bibliografia") initBibliography();
   });
+  document.addEventListener("suitevet:bibliographyready", initBibliography);
 
-  function initBibliografia() {
-    const root = document.getElementById("bibliografia-root");
-    if (!root) return;
-
-    // Solo renderizar si el contenedor está vacío
-    if (!root.innerHTML.trim()) {
-      renderLayout(root);
-      setupEvents(root);
-    }
+  function createText(tagName, className, value) {
+    const element = document.createElement(tagName);
+    if (className) element.className = className;
+    element.textContent = value == null ? "" : String(value);
+    return element;
   }
 
-  const MODULOS_ETIQUETAS = {
-    fisio: "Fisiología",
-    farma: "Farmacología",
-    micro: "Microbiología",
-    patologia: "Patología",
-    nutricion: "Nutrición Animal",
-    clinica: "Clínica Integrada",
-    semiologia: "Semiología Pro",
-    casos360: "Casos 360",
-    favoritos: "Favoritos"
-  };
+  function resources() {
+    return window.SuiteVetBibliography?.getResources?.() || [];
+  }
+
+  function initBibliography() {
+    const root = document.getElementById("bibliografia-root");
+    if (!root) return;
+    if (!root.dataset.bibInitialized) {
+      renderLayout(root);
+      setupEvents(root);
+      root.dataset.bibInitialized = "true";
+    }
+    renderResources(root);
+  }
 
   function renderLayout(root) {
-    const data = window.BIBLIOGRAFIA_DATA || [];
-    
-    // Obtener los módulos que tienen libros para crear filtros dinámicos
-    const modulosConLibros = [...new Set(data.map(item => item.modulo))];
-
-    // Crear píldoras de filtro
-    let filterPillsHtml = `<button class="sv-pill sv-pill-active" data-filter="all">Todos</button>`;
-    modulosConLibros.forEach(mod => {
-      const label = MODULOS_ETIQUETAS[mod] || mod.toUpperCase();
-      filterPillsHtml += `<button class="sv-pill" data-filter="${mod}">${label}</button>`;
-    });
-
+    // Estructura fija local. Los metadatos se agregan despues con textContent.
     root.innerHTML = `
       <div class="sv-bib-module">
         <header class="sv-bib-header-section sv-module-header">
-          <h2>Referencias Bibliográficas & Biblioteca</h2>
+          <h2>Referencias Bibliográficas &amp; Biblioteca</h2>
           <p class="sv-view-intro">Consulta las fuentes oficiales de estudio utilizadas para los contenidos de SUITE VET y descarga los libros en formato PDF.</p>
         </header>
-
-        <!-- Sub-navegación / Pestañas -->
-        <div class="sv-subnav" aria-label="Secciones de Bibliografia">
+        <div class="sv-subnav" aria-label="Secciones de Bibliografía">
           <button class="sv-tab sv-tab-active" data-bib-tab="referencias" type="button">Citas y Referencias</button>
           <button class="sv-tab" data-bib-tab="biblioteca" type="button">Biblioteca Digital (Descargas)</button>
         </div>
-
-        <!-- Panel 1: Referencias -->
         <div class="sv-pane sv-pane-active sv-module-panel" id="bib-pane-referencias">
           <div class="sv-bib-toolbar">
-            <!-- Selector de formato APA/Vancouver -->
             <div class="sv-format-selector-wrap">
               <span class="sv-format-label">Formato de Cita:</span>
               <div class="sv-format-toggle-pill" id="sv-format-toggle">
@@ -77,206 +60,222 @@
                 <button type="button" class="sv-format-btn" data-format="vancouver">Vancouver</button>
               </div>
             </div>
-
-            <!-- Filtros de Módulo -->
-            <div class="sv-bib-filters">
-              ${filterPillsHtml}
-            </div>
+            <div class="sv-bib-filters" aria-label="Filtrar referencias"></div>
           </div>
-
-          <!-- Contenedor del listado de Citas -->
-          <div class="sv-bib-format-container format-apa" id="sv-citations-list">
-            ${renderCitations(data)}
-          </div>
+          <div class="sv-bib-format-container format-apa" id="sv-citations-list"></div>
         </div>
-
-        <!-- Panel 2: Biblioteca Digital -->
         <div class="sv-pane sv-module-panel" id="bib-pane-biblioteca">
-          <div class="sv-bookshelf-grid">
-            ${renderBookshelf(data)}
-          </div>
+          <div class="sv-bookshelf-grid"></div>
         </div>
       </div>
     `;
   }
 
-  function renderCitations(data) {
-    if (!data.length) {
-      return `
-        <div class="sv-empty">
-          <div class="sv-empty-icon">📚</div>
-          <p>No hay referencias registradas.</p>
-        </div>
-      `;
-    }
+  function renderResources(root) {
+    const items = resources();
+    const filter = root.dataset.bibFilter || "all";
+    const signature = JSON.stringify({
+      filter,
+      items: items.map((item) => [
+        item.id, item.module_id, item.title, item.short_title, item.authors,
+        item.year, item.edition, item.publisher, item.citation_apa,
+        item.citation_vancouver, item.asset_key, item.file_available,
+        item.rights_status, item.source_status
+      ])
+    });
+    if (signature === lastRenderSignature) return;
+    lastRenderSignature = signature;
 
-    return data.map((book) => {
-      const tagLabel = MODULOS_ETIQUETAS[book.modulo] || book.modulo.toUpperCase();
-      return `
-        <div class="sv-card sv-bib-card" data-modulo="${book.modulo}">
-          <div class="sv-bib-card-header">
-            <span class="sv-badge sv-badge-module" data-mod="${book.modulo}">${tagLabel}</span>
-            <span class="sv-bib-edition">${book.edicion} (${book.ano})</span>
-          </div>
-          <div class="sv-bib-card-body">
-            <!-- Formato APA -->
-            <p class="sv-citation-text sv-citation-apa">${book.apa}</p>
-            <!-- Formato Vancouver -->
-            <p class="sv-citation-text sv-citation-vancouver">${book.vancouver}</p>
-          </div>
-          <div class="sv-bib-card-footer">
-            <button class="sv-btn sv-btn-sm sv-btn-secondary sv-copy-citation-btn" data-citation-id="${book.id}">
-              📋 Copiar cita
-            </button>
-            ${book.descargaUrl ? `
-              <a href="${book.descargaUrl}" download class="sv-btn sv-btn-sm sv-btn-ghost sv-bib-download-btn">
-                📥 Descargar PDF
-              </a>
-            ` : ""}
-          </div>
-        </div>
-      `;
-    }).join("");
+    renderFilters(root, items, filter);
+    renderCitations(root, items, filter);
+    renderBookshelf(root, items);
   }
 
-  function renderBookshelf(data) {
-    if (!data.length) {
-      return `
-        <div class="sv-empty">
-          <div class="sv-empty-icon">📖</div>
-          <p>No hay libros en la biblioteca.</p>
-        </div>
-      `;
+  function createEmpty(message, icon) {
+    const empty = document.createElement("div");
+    empty.className = "sv-empty";
+    empty.append(createText("div", "sv-empty-icon", icon), createText("p", "", message));
+    return empty;
+  }
+
+  function renderFilters(root, items, selectedFilter) {
+    const container = root.querySelector(".sv-bib-filters");
+    if (!container) return;
+    const moduleIds = [...new Set(items.map((item) => item.module_id))];
+    const activeFilter = selectedFilter === "all" || moduleIds.includes(selectedFilter)
+      ? selectedFilter
+      : "all";
+    root.dataset.bibFilter = activeFilter;
+
+    const filters = ["all", ...moduleIds].map((moduleId) => {
+      const button = createText(
+        "button",
+        `sv-pill${moduleId === activeFilter ? " sv-pill-active" : ""}`,
+        moduleId === "all" ? "Todos" : (MODULE_LABELS[moduleId] || moduleId)
+      );
+      button.type = "button";
+      button.dataset.filter = moduleId;
+      return button;
+    });
+    container.replaceChildren(...filters);
+  }
+
+  function createCitationCard(resource) {
+    const card = document.createElement("div");
+    card.className = "sv-card sv-bib-card";
+    card.dataset.module = resource.module_id;
+    card.dataset.resourceId = resource.id;
+
+    const header = document.createElement("div");
+    header.className = "sv-bib-card-header";
+    const badge = createText("span", "sv-badge sv-badge-module", MODULE_LABELS[resource.module_id] || resource.module_id);
+    badge.dataset.mod = resource.module_id;
+    header.appendChild(badge);
+    if (resource.edition || resource.year) {
+      header.appendChild(createText(
+        "span",
+        "sv-bib-edition",
+        `${resource.edition || ""}${resource.edition && resource.year ? " " : ""}${resource.year ? `(${resource.year})` : ""}`
+      ));
     }
 
-    return data.map((book) => {
-      return `
-        <div class="sv-book-card">
-          <!-- Portada Simulada en 3D -->
-          <div class="sv-book-cover-3d" style="background: ${book.portadaGradient || 'linear-gradient(135deg, #3b82f6, #1d4ed8)'}">
-            <div class="sv-book-spine"></div>
-            <div class="sv-book-cover-content">
-              <span class="sv-book-cover-badge">${MODULOS_ETIQUETAS[book.modulo] || 'General'}</span>
-              <h4 class="sv-book-cover-title">${book.tituloCorto || book.titulo}</h4>
-              <p class="sv-book-cover-author">${book.autores}</p>
-              <span class="sv-book-cover-year">${book.ano}</span>
-            </div>
-          </div>
-          
-          <!-- Detalles del Libro -->
-          <div class="sv-book-details">
-            <h3 class="sv-book-title">${book.titulo}</h3>
-            <p class="sv-book-author">${book.autores}</p>
-            <div class="sv-book-meta-info">
-              <span>Edición: <strong>${book.edicion}</strong></span>
-              <span>Editorial: <strong>${book.editorial}</strong></span>
-            </div>
-            ${book.descargaUrl ? `
-              <a href="${book.descargaUrl}" download class="sv-btn sv-btn-primary sv-btn-full sv-book-download-btn">
-                📥 Descargar libro (PDF)
-              </a>
-            ` : `
-              <button class="sv-btn sv-btn-ghost sv-btn-full" disabled>No disponible</button>
-            `}
-          </div>
-        </div>
-      `;
-    }).join("");
+    const body = document.createElement("div");
+    body.className = "sv-bib-card-body";
+    body.appendChild(createText("p", "sv-citation-text sv-citation-apa", resource.citation_apa || "Cita APA por verificar."));
+    body.appendChild(createText("p", "sv-citation-text sv-citation-vancouver", resource.citation_vancouver || "Cita Vancouver por verificar."));
+
+    const footer = document.createElement("div");
+    footer.className = "sv-bib-card-footer";
+    const copy = createText("button", "sv-btn sv-btn-sm sv-btn-secondary sv-copy-citation-btn", "📋 Copiar cita");
+    copy.type = "button";
+    copy.dataset.citationId = resource.id;
+    footer.appendChild(copy);
+    const assetPath = window.SuiteVetBibliography?.getAssetPath?.(resource.asset_key);
+    if (resource.file_available && assetPath) {
+      const download = createText("a", "sv-btn sv-btn-sm sv-btn-ghost sv-bib-download-btn", "📥 Descargar PDF");
+      download.href = assetPath;
+      download.download = "";
+      footer.appendChild(download);
+    }
+
+    card.append(header, body, footer);
+    return card;
+  }
+
+  function renderCitations(root, items, filter) {
+    const container = root.querySelector("#sv-citations-list");
+    if (!container) return;
+    const visibleItems = items.filter((item) => filter === "all" || item.module_id === filter);
+    container.replaceChildren(...(visibleItems.length
+      ? visibleItems.map(createCitationCard)
+      : [createEmpty("No hay referencias registradas.", "📚")]));
+  }
+
+  function createBookCard(resource) {
+    const card = document.createElement("div");
+    card.className = "sv-book-card";
+    const cover = document.createElement("div");
+    cover.className = `sv-book-cover-3d sv-bib-cover-${resource.module_id}`;
+    cover.appendChild(document.createElement("div")).className = "sv-book-spine";
+    const coverContent = document.createElement("div");
+    coverContent.className = "sv-book-cover-content";
+    coverContent.append(
+      createText("span", "sv-book-cover-badge", MODULE_LABELS[resource.module_id] || "General"),
+      createText("h4", "sv-book-cover-title", resource.short_title || resource.title),
+      createText("p", "sv-book-cover-author", resource.authors.join(", ")),
+      createText("span", "sv-book-cover-year", resource.year || "")
+    );
+    cover.appendChild(coverContent);
+
+    const details = document.createElement("div");
+    details.className = "sv-book-details";
+    details.append(
+      createText("h3", "sv-book-title", resource.title),
+      createText("p", "sv-book-author", resource.authors.join(", "))
+    );
+    const meta = document.createElement("div");
+    meta.className = "sv-book-meta-info";
+    if (resource.edition) meta.appendChild(createText("span", "", `Edición: ${resource.edition}`));
+    if (resource.publisher) meta.appendChild(createText("span", "", `Editorial: ${resource.publisher}`));
+    if (meta.childElementCount) details.appendChild(meta);
+    if (resource.rights_status === "unverified" || resource.source_status === "unverified") {
+      details.appendChild(createText("p", "sv-bib-rights-note", "Fuente o derechos por verificar"));
+    }
+
+    const assetPath = window.SuiteVetBibliography?.getAssetPath?.(resource.asset_key);
+    if (resource.file_available && assetPath) {
+      const download = createText("a", "sv-btn sv-btn-primary sv-btn-full sv-book-download-btn", "📥 Descargar libro (PDF)");
+      download.href = assetPath;
+      download.download = "";
+      details.appendChild(download);
+    } else {
+      const unavailable = createText("button", "sv-btn sv-btn-ghost sv-btn-full", "No disponible");
+      unavailable.type = "button";
+      unavailable.disabled = true;
+      details.appendChild(unavailable);
+    }
+    card.append(cover, details);
+    return card;
+  }
+
+  function renderBookshelf(root, items) {
+    const container = root.querySelector(".sv-bookshelf-grid");
+    if (!container) return;
+    container.replaceChildren(...(items.length
+      ? items.map(createBookCard)
+      : [createEmpty("No hay libros en la biblioteca.", "📖")]));
+  }
+
+  function setFormat(root, format) {
+    const citations = root.querySelector("#sv-citations-list");
+    if (!citations) return;
+    citations.classList.toggle("format-apa", format === "apa");
+    citations.classList.toggle("format-vancouver", format === "vancouver");
+    root.querySelectorAll(".sv-format-btn").forEach((button) => {
+      button.classList.toggle("active", button.dataset.format === format);
+    });
+  }
+
+  async function copyCitation(root, button) {
+    const resource = window.SuiteVetBibliography?.getResource?.(button.dataset.citationId);
+    if (!resource) return;
+    const isApa = root.querySelector("#sv-citations-list")?.classList.contains("format-apa");
+    const citation = isApa ? resource.citation_apa : resource.citation_vancouver;
+    if (!citation) return;
+
+    try {
+      await navigator.clipboard.writeText(citation);
+      const originalText = button.textContent;
+      button.textContent = "✓ ¡Copiado!";
+      button.classList.add("is-copied");
+      window.setTimeout(() => {
+        button.textContent = originalText;
+        button.classList.remove("is-copied");
+      }, 1500);
+    } catch (_error) {
+      button.textContent = "No se pudo copiar";
+      window.setTimeout(() => { button.textContent = "📋 Copiar cita"; }, 1500);
+    }
   }
 
   function setupEvents(root) {
-    // 1. Alternar Pestañas (Referencias vs Biblioteca)
-    const tabs = root.querySelectorAll("[data-bib-tab]");
-    tabs.forEach(tab => {
-      tab.addEventListener("click", () => {
-        tabs.forEach(t => t.classList.remove("sv-tab-active"));
-        tab.classList.add("sv-tab-active");
+    root.addEventListener("click", (event) => {
+      const target = event.target.closest?.("[data-bib-tab], [data-format], [data-filter], .sv-copy-citation-btn");
+      if (!target) return;
 
-        const targetPaneId = `bib-pane-${tab.dataset.bibTab}`;
-        root.querySelectorAll(".sv-pane").forEach(pane => {
-          pane.classList.toggle("sv-pane-active", pane.id === targetPaneId);
+      if (target.dataset.bibTab) {
+        root.querySelectorAll("[data-bib-tab]").forEach((tab) => tab.classList.toggle("sv-tab-active", tab === target));
+        root.querySelectorAll(".sv-pane").forEach((pane) => {
+          pane.classList.toggle("sv-pane-active", pane.id === `bib-pane-${target.dataset.bibTab}`);
         });
-      });
-    });
-
-    // 2. Alternar Formato APA / Vancouver
-    const toggle = root.querySelector("#sv-format-toggle");
-    const citationsList = root.querySelector("#sv-citations-list");
-    if (toggle && citationsList) {
-      toggle.addEventListener("click", (e) => {
-        const btn = e.target.closest("[data-format]");
-        if (!btn) return;
-
-        toggle.querySelectorAll(".sv-format-btn").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-
-        const format = btn.dataset.format;
-        if (format === "apa") {
-          citationsList.classList.remove("format-vancouver");
-          citationsList.classList.add("format-apa");
-        } else {
-          citationsList.classList.remove("format-apa");
-          citationsList.classList.add("format-vancouver");
-        }
-      });
-    }
-
-    // 3. Filtrar Referencias por Módulo
-    const filterPills = root.querySelectorAll(".sv-bib-filters .sv-pill");
-    filterPills.forEach(pill => {
-      pill.addEventListener("click", () => {
-        filterPills.forEach(p => p.classList.remove("sv-pill-active"));
-        pill.classList.add("sv-pill-active");
-
-        const filterValue = pill.dataset.filter;
-        const cards = root.querySelectorAll(".sv-bib-card");
-        cards.forEach(card => {
-          if (filterValue === "all" || card.dataset.modulo === filterValue) {
-            card.style.display = "flex";
-          } else {
-            card.style.display = "none";
-          }
-        });
-      });
-    });
-
-    // 4. Copiar Cita al Portapapeles
-    root.addEventListener("click", async (e) => {
-      const copyBtn = e.target.closest(".sv-copy-citation-btn");
-      if (!copyBtn) return;
-
-      const citationId = copyBtn.dataset.citationId;
-      const bookData = (window.BIBLIOGRAFIA_DATA || []).find(b => b.id === citationId);
-      if (!bookData) return;
-
-      // Obtener el formato actualmente activo
-      const isApaActive = citationsList && citationsList.classList.contains("format-apa");
-      // Remover etiquetas HTML si la cita tiene etiquetas como <i>
-      const tempDiv = document.createElement("div");
-      tempDiv.innerHTML = isApaActive ? bookData.apa : bookData.vancouver;
-      const citationText = tempDiv.textContent || tempDiv.innerText || "";
-
-      try {
-        await navigator.clipboard.writeText(citationText);
-        
-        // Efecto visual temporal en el botón
-        const originalText = copyBtn.innerHTML;
-        copyBtn.innerHTML = "✓ ¡Copiado!";
-        copyBtn.style.background = "var(--sv-success)";
-        copyBtn.style.color = "#ffffff";
-        copyBtn.style.borderColor = "var(--sv-success)";
-
-        setTimeout(() => {
-          copyBtn.innerHTML = originalText;
-          copyBtn.style.background = "";
-          copyBtn.style.color = "";
-          copyBtn.style.borderColor = "";
-        }, 1500);
-      } catch (err) {
-        console.error("No se pudo copiar la cita: ", err);
-        alert("Ocurrió un error al copiar la cita.");
+      } else if (target.dataset.format) {
+        setFormat(root, target.dataset.format);
+      } else if (target.dataset.filter) {
+        root.dataset.bibFilter = target.dataset.filter;
+        renderResources(root);
+      } else if (target.classList.contains("sv-copy-citation-btn")) {
+        void copyCitation(root, target);
       }
     });
   }
-
 })();

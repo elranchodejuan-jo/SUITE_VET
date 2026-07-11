@@ -71,6 +71,19 @@ test("catalogo usa el mismo request GET y la ruta versionada", async () => {
   assert.equal(calls[0][1].method, "GET");
 });
 
+test("bibliografia usa el cliente compartido para lista y detalle", async () => {
+  const payload = { source: "static", total: 1, items: [] };
+  const { calls, sandbox } = loadClient(async () => successfulResponse(payload));
+  sandbox.SuiteVetAPI.configure({ baseUrl: "http://127.0.0.1:8000" });
+
+  await sandbox.SuiteVetAPI.getBibliographyResources();
+  await sandbox.SuiteVetAPI.getBibliographyResource("fisiologia-animal-1");
+
+  assert.equal(calls[0][0], "http://127.0.0.1:8000/api/v1/bibliography/resources");
+  assert.equal(calls[1][0], "http://127.0.0.1:8000/api/v1/bibliography/resources/fisiologia-animal-1");
+  assert.throws(() => sandbox.SuiteVetAPI.getBibliographyResource("../fuera"), /slug bibliografico/);
+});
+
 test("un error HTTP conserva codigo y estado", async () => {
   const { sandbox } = loadClient(async () => successfulResponse({}, 503));
 

@@ -13,6 +13,9 @@ SPA estatica en HTML, CSS y JavaScript clasico. `index.html` carga datos y contr
 - No hacer push sin autorizacion explicita.
 - Registrar cada modulo nuevo en `backend/app/data/modules.json` y mantener unicos sus IDs, slugs y rutas.
 - Conservar `shared/module-catalog.js` como fallback local mientras dure la migracion progresiva al backend.
+- En Bibliografia, migrar solo metadatos y citas demostrados; no completar campos desconocidos.
+- No marcar recursos bibliograficos, fuentes ni derechos como verificados sin evidencia en el repositorio.
+- Resolver archivos bibliograficos exclusivamente mediante una whitelist local de `asset_key` y conservar el fallback durante la migracion.
 - Despues de cada cambio ejecutar `git diff --check`, `node --check` sobre todos los JS y `node --test`.
 
 ## Definicion de terminado

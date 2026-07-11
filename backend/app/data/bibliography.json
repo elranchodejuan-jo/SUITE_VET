@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0.0",
+  "catalog_version": "2.3.0",
+  "items": [
+    {
+      "id": "fisiologia-animal-1",
+      "slug": "fisiologia-animal-1",
+      "module_id": "fisio",
+      "title": "Fisiología animal I: regulación del medio interno y sistemas de soporte vital",
+      "short_title": "Fisiología Animal I",
+      "authors": [
+        "R. A. Vitonera Rogel",
+        "R. J. Herrera-Feijoo",
+        "J. B. Mina Ortiz"
+      ],
+      "year": 2025,
+      "edition": "1ª Edición",
+      "publisher": "Editorial Grupo Compás",
+      "language": null,
+      "resource_type": "book",
+      "description": null,
+      "topics": [],
+      "species": [],
+      "citation_apa": "Vitonera Rogel, R. A., Herrera-Feijoo, R. J., & Mina Ortiz, J. B. (2025). Fisiología animal I: regulación del medio interno y sistemas de soporte vital. Editorial Grupo Compás. https://doi.org/10.48190/9789942530691",
+      "citation_vancouver": "1. Vitonera Rogel RA, Herrera-Feijoo RJ, Mina Ortiz JB. Fisiología animal I: regulación del medio interno y sistemas de soporte vital. 1ª ed. Guayaquil: Editorial Grupo Compás; 2025. doi: 10.48190/9789942530691",
+      "asset_key": "fisiologia-animal-i-pdf",
+      "file_available": true,
+      "review_status": "draft",
+      "rights_status": "unverified",
+      "source_status": "unverified"
+    }
+  ]
+}

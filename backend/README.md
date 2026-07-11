@@ -45,6 +45,8 @@ El proxy de Vite envía solo `/api/*` a `http://127.0.0.1:8000`. El build de pro
 - `GET /api/v1/health`: estado determinista del proceso.
 - `GET /api/v1/catalog/modules`: lista ordenada del registro de módulos.
 - `GET /api/v1/catalog/modules/{slug}`: detalle por slug o ID; devuelve 404 JSON si no existe.
+- `GET /api/v1/bibliography/resources`: lista ordenada de metadatos académicos.
+- `GET /api/v1/bibliography/resources/{slug}`: detalle por slug o ID; devuelve 404 JSON si no existe.
 - `/docs`: Swagger durante desarrollo y pruebas.
 - `/openapi.json`: contrato OpenAPI.
 - Una ruta inexistente devuelve un error JSON sin traceback.
@@ -96,3 +98,5 @@ backend/
 ```
 
 `JsonCatalogRepository` carga y valida el JSON una vez por proceso; `CatalogService` mantiene la lógica fuera de FastAPI y la dependencia puede sustituirse en pruebas. Los contratos Pydantic rechazan campos extra, rutas desconocidas y texto ejecutable.
+
+`JsonBibliographyRepository` sigue el mismo patrón para `app/data/bibliography.json`. Cada recurso usa estados editoriales y de derechos explícitos y un `asset_key` conocido, pero la API nunca devuelve rutas de archivos ni sirve PDFs. Para incorporar un recurso, añade solo metadatos demostrados, deja `null` lo desconocido, registra la clave permitida en el contrato y conserva `unverified` hasta contar con evidencia suficiente. Más adelante el repositorio puede sustituirse por PostgreSQL sin cambiar los endpoints ni eliminar el fallback frontend.
