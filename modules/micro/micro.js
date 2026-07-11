@@ -2215,7 +2215,6 @@
         ? `<button class="sv-favorite-action micro-print-favorite-btn${favoriteActive ? " is-active" : ""}" type="button" data-micro-print-favorite aria-label="Guardar preparacion en favoritos" title="Favorito">&#9733;</button>`
         : "";
       closeModals();
-      ensureMicroPrintOverride();
       document.body.classList.add("micro-printing");
       els.printArea.classList.add("is-open");
       els.printArea.removeAttribute("aria-hidden");
@@ -2243,135 +2242,18 @@
 
     function closePrintView() {
       if (!els.printArea) return;
+      window.removeEventListener("afterprint", closePrintView);
       document.body.classList.remove("micro-printing");
       els.printArea.classList.remove("is-open");
       els.printArea.setAttribute("aria-hidden", "true");
       els.printArea.innerHTML = "";
       state.printFavorite = null;
-      removeMicroPrintOverride();
     }
 
     function runMicroPrint() {
       if (!els.printArea?.classList.contains("is-open")) return;
+      window.addEventListener("afterprint", closePrintView, { once: true });
       window.print();
-    }
-
-    function ensureMicroPrintOverride() {
-      let style = document.getElementById("micro-print-override");
-      if (style) return;
-      style = document.createElement("style");
-      style.id = "micro-print-override";
-      style.textContent = `
-        @media print {
-          @page { size: A4 portrait; margin: 12mm; }
-          html, body, body.micro-printing { background: #fff !important; }
-          body.micro-printing > *:not(#micro-print-area) { display: none !important; }
-          body.micro-printing #micro-print-area,
-          body.micro-printing #micro-print-area * { visibility: visible !important; }
-          body.micro-printing #micro-print-area {
-            background: #fff !important;
-            display: block !important;
-            inset: auto !important;
-            min-height: 0 !important;
-            overflow: visible !important;
-            padding: 0 !important;
-            position: static !important;
-            width: 100% !important;
-          }
-          body.micro-printing .micro-print-toolbar,
-          body.micro-printing .micro-print-actions,
-          body.micro-printing .no-print { display: none !important; }
-          body.micro-printing .micro-print-shell,
-          body.micro-printing .micro-print-preview {
-            display: block !important;
-            margin: 0 !important;
-            max-width: none !important;
-            min-height: 0 !important;
-            overflow: visible !important;
-            padding: 0 !important;
-          }
-          body.micro-printing .micro-print-doc {
-            background: #fff !important;
-            box-shadow: none !important;
-            column-count: 2 !important;
-            column-gap: 10mm !important;
-            color: #0f172a !important;
-            display: block !important;
-            font-size: 11pt !important;
-            line-height: 1.35 !important;
-            margin: 0 !important;
-            min-height: auto !important;
-            min-width: 0 !important;
-            padding: 0 !important;
-            width: auto !important;
-          }
-          body.micro-printing .micro-print-doc.is-antibiotic-passport {
-            column-count: 1 !important;
-            column-gap: 0 !important;
-            font-size: 11pt !important;
-          }
-          body.micro-printing .micro-print-doc.is-label-sheet,
-          body.micro-printing .micro-print-doc.is-prep-with-labels {
-            column-count: 1 !important;
-            column-gap: 0 !important;
-          }
-          body.micro-printing .micro-print-header {
-            column-span: all;
-            margin-bottom: 4mm !important;
-            padding-bottom: 3mm !important;
-          }
-          body.micro-printing .micro-print-header h1 { font-size: 20pt !important; }
-          body.micro-printing .micro-print-header p,
-          body.micro-printing .micro-print-header span,
-          body.micro-printing .micro-print-header small { font-size: 11pt !important; }
-          body.micro-printing .micro-print-header strong { font-size: 11pt !important; }
-          body.micro-printing .micro-print-section {
-            break-inside: avoid;
-            margin-bottom: 4mm !important;
-            page-break-inside: avoid;
-          }
-          body.micro-printing .micro-print-section h2 {
-            font-size: 12pt !important;
-            margin: 0 0 1.8mm !important;
-            padding-bottom: 1mm !important;
-          }
-          body.micro-printing .micro-print-section th,
-          body.micro-printing .micro-print-section td,
-          body.micro-printing .micro-print-section .micro-table th,
-          body.micro-printing .micro-print-section .micro-table td {
-            font-size: 11pt !important;
-            padding: 3.5px 5px !important;
-          }
-          body.micro-printing .micro-print-list { margin-top: 1mm !important; padding-left: 13px !important; }
-          body.micro-printing .micro-print-list li,
-          body.micro-printing .micro-print-section ol li {
-            font-size: 11pt !important;
-            margin: 0.8mm 0 !important;
-          }
-          body.micro-printing .micro-print-muted { font-size: 11pt !important; margin-top: 1mm !important; }
-          body.micro-printing .micro-print-alert { font-size: 11pt !important; margin-top: 1.5mm !important; padding: 5px 7px !important; }
-          body.micro-printing .micro-print-placeholder { min-height: 32mm !important; }
-          body.micro-printing .micro-print-notes div { margin: 3mm 0 !important; }
-          body.micro-printing .micro-label-sheet {
-            break-inside: auto !important;
-            display: grid !important;
-            page-break-inside: auto !important;
-          }
-          body.micro-printing .micro-label-sheet-petri { grid-template-columns: repeat(3, 58mm) !important; gap: 3mm !important; }
-          body.micro-printing .micro-label-sheet-tubo { grid-template-columns: repeat(4, 43mm) !important; gap: 2.5mm !important; }
-          body.micro-printing .micro-label-sheet-frasco,
-          body.micro-printing .micro-label-sheet-matraz { grid-template-columns: repeat(2, 80mm) !important; gap: 4mm !important; }
-          body.micro-printing .micro-lab-label {
-            break-inside: avoid !important;
-            page-break-inside: avoid !important;
-          }
-        }
-      `;
-      document.head.appendChild(style);
-    }
-
-    function removeMicroPrintOverride() {
-      document.getElementById("micro-print-override")?.remove();
     }
 
     function printHeader(kind, title) {

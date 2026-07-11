@@ -333,15 +333,35 @@
     // -------------------------------------------------------------------------
     const tabs  = root.querySelectorAll(".sv-tab[data-pane]");
     const panes = root.querySelectorAll(".sv-pane");
+    const paneNames = new Set(["hormonas", "vitaminas", "glosario"]);
 
-    tabs.forEach(tab => {
-      tab.addEventListener("click", () => {
-        tabs.forEach(t  => t.classList.remove("sv-tab-active"));
-        panes.forEach(p => p.classList.remove("sv-pane-active"));
-        tab.classList.add("sv-tab-active");
-        root.querySelector(`#fisio-pane-${tab.dataset.pane}`)?.classList.add("sv-pane-active");
+    // Fisiologia es la unica fuente de verdad para sus tres paneles. El
+    // sistema compartido conserva teclado y atributos ARIA, pero no decide
+    // que contenido se muestra ni reutiliza el panel de Hormonas.
+    function activatePane(paneName) {
+      if (!paneNames.has(paneName)) return;
+
+      tabs.forEach((tab) => {
+        const isActive = tab.dataset.pane === paneName;
+        tab.classList.toggle("sv-tab-active", isActive);
+        tab.setAttribute("aria-selected", String(isActive));
+        tab.tabIndex = isActive ? 0 : -1;
       });
+
+      panes.forEach((pane) => {
+        const isActive = pane.id === `fisio-pane-${paneName}`;
+        pane.classList.toggle("sv-pane-active", isActive);
+        pane.setAttribute("aria-hidden", String(!isActive));
+      });
+    }
+
+    root.addEventListener("click", (event) => {
+      const tab = event.target.closest(".sv-tab[data-pane]");
+      if (!tab || !root.contains(tab)) return;
+      activatePane(tab.dataset.pane);
     });
+
+    activatePane("hormonas");
 
     // -------------------------------------------------------------------------
     // 3. HORMONAS — pills de filtro con color por sistema
@@ -692,10 +712,7 @@
               moduleId: "fisio",
               action: () => {
                 window.SuiteVet.showView("fisiologia");
-                tabs.forEach(t  => t.classList.remove("sv-tab-active"));
-                panes.forEach(p => p.classList.remove("sv-pane-active"));
-                root.querySelector('[data-pane="vitaminas"]')?.classList.add("sv-tab-active");
-                root.querySelector("#fisio-pane-vitaminas")?.classList.add("sv-pane-active");
+                activatePane("vitaminas");
                 if (searchVitamina) {
                   searchVitamina.value = v.nombre;
                   renderVitaminas();
@@ -715,10 +732,7 @@
               moduleId: "fisio",
               action: () => {
                 window.SuiteVet.showView("fisiologia");
-                tabs.forEach(t  => t.classList.remove("sv-tab-active"));
-                panes.forEach(p => p.classList.remove("sv-pane-active"));
-                root.querySelector('[data-pane="glosario"]')?.classList.add("sv-tab-active");
-                root.querySelector("#fisio-pane-glosario")?.classList.add("sv-pane-active");
+                activatePane("glosario");
                 filtroGlosario = "todos";
                 filtrosGlosario?.querySelectorAll(".fisio-pill-sistema[data-sistema-glosario]").forEach(p => p.classList.remove("sv-pill-active"));
                 filtrosGlosario?.querySelector('[data-sistema-glosario="todos"]')?.classList.add("sv-pill-active");
