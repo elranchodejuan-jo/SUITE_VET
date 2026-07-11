@@ -11,6 +11,7 @@
 
   const DEFAULT_TIMEOUT_MS = 5000;
   const HEALTH_PATH = "/api/v1/health";
+  const CATALOG_MODULES_PATH = "/api/v1/catalog/modules";
   const state = {
     baseUrl: "",
     timeoutMs: DEFAULT_TIMEOUT_MS
@@ -128,6 +129,10 @@
     return request(HEALTH_PATH, options);
   }
 
+  function getCatalogModules(options = {}) {
+    return request(CATALOG_MODULES_PATH, options);
+  }
+
   Object.defineProperty(root, "SuiteVetAPI", {
     configurable: false,
     enumerable: true,
@@ -135,6 +140,7 @@
     value: Object.freeze({
       APIError: SuiteVetAPIError,
       configure,
+      getCatalogModules,
       getConfiguration,
       getHealth,
       request

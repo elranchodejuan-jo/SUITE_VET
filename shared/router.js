@@ -60,7 +60,6 @@
   // ---------------------------------------------------------------------------
   function showView(viewName) {
     const views   = document.querySelectorAll(".sv-view");
-    const navBtns = document.querySelectorAll(".sv-nav-btn[data-view], .sv-menu-route[data-view]");
 
     views.forEach((v) => {
       const isActive = v.id === `view-${viewName}`;
@@ -68,13 +67,7 @@
       v.setAttribute("aria-hidden", isActive ? "false" : "true");
     });
 
-    navBtns.forEach((btn) => {
-      const isActive = btn.dataset.view === viewName;
-      btn.classList.toggle("sv-nav-active", isActive);
-      btn.classList.toggle("sv-menu-active", isActive);
-      if (isActive) btn.setAttribute("aria-current", "page");
-      else btn.removeAttribute("aria-current");
-    });
+    syncActiveNavigation(viewName);
 
     window.SuiteVet.currentView = viewName;
     if (SHELL_DRAWER_MEDIA.matches) {
@@ -229,121 +222,188 @@
 
   window.SuiteVet.closeMenu = closeMenu;
 
+  const CATALOG_ICON_TEXT = Object.freeze({
+    home: "IN",
+    physiology: "FI",
+    pharmacology: "Rx",
+    microbiology: "MB",
+    pathology: "PT",
+    nutrition: "🐷🐔🐮",
+    clinic: "CI",
+    semiology: "SA",
+    cases360: "360",
+    oncology: "ON",
+    bibliography: "📚",
+    favorites: "FV",
+    about: "i",
+    recipe: "Rx",
+    cartilla: "CD",
+    cattle: "CT"
+  });
+  const HOME_ICON_TEXT = Object.freeze({
+    physiology: "💗",
+    pharmacology: "💉",
+    microbiology: "🧫",
+    pathology: "🔬",
+    nutrition: "🐷🐔🐮",
+    clinic: "🩺",
+    semiology: "👁️",
+    cases360: "🧬",
+    oncology: "ON",
+    cattle: "🐄"
+  });
+  const SEARCH_ICON_TEXT = Object.freeze({
+    physiology: "💗",
+    pharmacology: "💉",
+    microbiology: "🧫",
+    pathology: "🔬",
+    nutrition: "🐮",
+    clinic: "🩺",
+    semiology: "👁️",
+    cases360: "🧬",
+    oncology: "ON",
+    bibliography: "📚"
+  });
+  const MENU_THEME_CLASS = Object.freeze({
+    fisio: "sv-menu-icon-fisio",
+    farma: "sv-menu-icon-farma",
+    micro: "sv-menu-icon-micro",
+    pato: "sv-menu-icon-pato",
+    nutri: "sv-menu-icon-nutri",
+    clinica: "sv-menu-icon-clinica",
+    semiologia: "sv-menu-icon-semiologia",
+    casos360: "sv-menu-icon-casos360",
+    onco: "sv-menu-icon-onco",
+    biblio: "sv-menu-icon-bib",
+    favoritos: "sv-menu-icon-fav",
+    muted: "sv-menu-icon-about"
+  });
+  const HOME_THEME_CLASS = Object.freeze({
+    fisio: "sv-home-card-fisio",
+    farma: "sv-home-card-farma",
+    micro: "sv-home-card-micro",
+    pato: "sv-home-card-pato",
+    nutri: "sv-home-card-nutri",
+    clinica: "sv-home-card-clinica",
+    semiologia: "sv-home-card-semiologia",
+    casos360: "sv-home-card-casos360",
+    onco: "sv-home-card-onco"
+  });
+
+  function catalogItems() {
+    return window.SuiteVetCatalog?.getItems?.() || [];
+  }
+
+  function createCatalogText(tagName, className, value) {
+    return Safety.createTextElement(document, tagName, className, value);
+  }
+
+  function createMenuItem(item) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "sv-menu-item";
+
+    if (item.status === "active" && item.route) {
+      button.classList.add("sv-menu-route");
+      button.dataset.view = item.route;
+    } else {
+      button.classList.add("sv-disabled");
+      button.disabled = true;
+    }
+
+    const icon = createCatalogText("span", "sv-menu-icon", CATALOG_ICON_TEXT[item.icon_id] || "•");
+    const themeClass = MENU_THEME_CLASS[item.theme];
+    if (themeClass) icon.classList.add(themeClass);
+
+    const copy = document.createElement("span");
+    copy.appendChild(createCatalogText("strong", "", item.name));
+    copy.appendChild(createCatalogText("small", "", item.description));
+    button.append(icon, copy);
+    return button;
+  }
+
   function hydrateModuleMenu(panel) {
     if (!panel) return;
-    panel.innerHTML = `
-      <div class="sv-sidebar-header">
-        <strong>SUITE VET</strong>
-        <button class="sv-icon-btn sv-drawer-close" type="button" data-drawer-close aria-label="Cerrar navegaci&oacute;n">&times;</button>
-      </div>
-      <p class="sv-menu-title">M&oacute;dulos SUITE VET</p>
-      <button class="sv-menu-item sv-menu-route" data-view="home" type="button">
-        <span class="sv-menu-icon">IN</span>
-        <span>
-          <strong>Inicio</strong>
-          <small>Vista principal de la plataforma</small>
-        </span>
-      </button>
-      <button class="sv-menu-item sv-menu-route" data-view="fisiologia" type="button">
-        <span class="sv-menu-icon sv-menu-icon-fisio">FI</span>
-        <span>
-          <strong>Fisiolog&iacute;a</strong>
-          <small>Hormonas, vitaminas y glosario</small>
-        </span>
-      </button>
-      <button class="sv-menu-item sv-menu-route" data-view="farmacologia" type="button">
-        <span class="sv-menu-icon sv-menu-icon-farma">Rx</span>
-        <span>
-          <strong>Farmacolog&iacute;a</strong>
-          <small>Vadem&eacute;cum, dosis y recetario</small>
-        </span>
-      </button>
-      <button class="sv-menu-item sv-menu-route" data-view="microbiologia" type="button">
-        <span class="sv-menu-icon sv-menu-icon-micro">MB</span>
-        <span>
-          <strong>Microbiolog&iacute;a</strong>
-          <small>Agares, caldos, pruebas y atlas</small>
-        </span>
-      </button>
-      <button class="sv-menu-item sv-menu-route" data-view="patologia" type="button">
-        <span class="sv-menu-icon sv-menu-icon-pato">PT</span>
-        <span>
-          <strong>Patolog&iacute;a</strong>
-          <small>Lesiones y diagn&oacute;stico diferencial</small>
-        </span>
-      </button>
-      <button class="sv-menu-item sv-menu-route" data-view="nutricion" type="button">
-        <span class="sv-menu-icon sv-menu-icon-nutri">🐷🐔🐮</span>
-        <span>
-          <strong>Nutrici&oacute;n Animal</strong>
-          <small>Nutrientes, raciones y cl&iacute;nica nutricional</small>
-        </span>
-      </button>
-      <button class="sv-menu-item sv-menu-route" data-view="clinica" type="button">
-        <span class="sv-menu-icon sv-menu-icon-clinica">CI</span>
-        <span>
-          <strong>Clinica Integrada</strong>
-          <small>Casos clinicos guiados para razonamiento veterinario</small>
-        </span>
-      </button>
-      <button class="sv-menu-item sv-menu-route" data-view="semiologia" type="button">
-        <span class="sv-menu-icon sv-menu-icon-semiologia">SA</span>
-        <span>
-          <strong>Semiologia &amp; Anamnesis Pro</strong>
-          <small>Entrenador de anamnesis, examen fisico y OSCE</small>
-        </span>
-      </button>
-      <button class="sv-menu-item sv-menu-route" data-view="casos360" type="button">
-        <span class="sv-menu-icon sv-menu-icon-casos360" style="background:var(--sv-casos360-color, #8b5cf6); color:#fff;">360</span>
-        <span>
-          <strong>Casos 360</strong>
-          <small>Casos cl&iacute;nicos con evaluaci&oacute;n por competencias</small>
-        </span>
-      </button>
-      <button class="sv-menu-item sv-menu-route" data-view="oncologia" type="button">
-        <span class="sv-menu-icon sv-menu-icon-onco" style="background:var(--sv-onco-color, #c026d3); color:#fff;">ON</span>
-        <span>
-          <strong>Oncolog&iacute;a</strong>
-          <small>VetOnco, protocolos base y superficie corporal</small>
-        </span>
-      </button>
-      <button class="sv-menu-item sv-menu-route" data-view="bibliografia" type="button">
-        <span class="sv-menu-icon sv-menu-icon-bib">📚</span>
-        <span>
-          <strong>Bibliograf&iacute;a</strong>
-          <small>Referencias y biblioteca de libros</small>
-        </span>
-      </button>
-      <button class="sv-menu-item sv-menu-route" data-view="favoritos" type="button">
-        <span class="sv-menu-icon sv-menu-icon-fav">FV</span>
-        <span>
-          <strong>Favoritos</strong>
-          <small>Recursos guardados</small>
-        </span>
-      </button>
-      <button class="sv-menu-item sv-disabled" type="button" disabled>
-        <span class="sv-menu-icon">CD</span>
-        <span>
-          <strong>Cartilla Digital</strong>
-          <small>Pr&oacute;ximamente</small>
-        </span>
-      </button>
-      <button class="sv-menu-item sv-disabled" type="button" disabled>
-        <span class="sv-menu-icon">CT</span>
-        <span>
-          <strong>CATTLE</strong>
-          <small>Pr&oacute;ximamente</small>
-        </span>
-      </button>
-      <div class="sv-menu-divider" aria-hidden="true"></div>
-      <button class="sv-menu-item sv-menu-route sv-menu-about" data-view="about" type="button">
-        <span class="sv-menu-icon sv-menu-icon-about">i</span>
-        <span>
-          <strong>Sobre SUITE VET</strong>
-          <small>Proyecto, creador y cr&eacute;ditos</small>
-        </span>
-      </button>
-    `;
+
+    const header = document.createElement("div");
+    header.className = "sv-sidebar-header";
+    header.appendChild(createCatalogText("strong", "", "SUITE VET"));
+
+    const closeButton = createCatalogText("button", "sv-icon-btn sv-drawer-close", "×");
+    closeButton.type = "button";
+    closeButton.dataset.drawerClose = "";
+    closeButton.setAttribute("aria-label", "Cerrar navegación");
+    header.appendChild(closeButton);
+
+    const title = createCatalogText("p", "sv-menu-title", "Módulos SUITE VET");
+    const nodes = [header, title];
+
+    catalogItems().filter((item) => item.visible_in_sidebar).forEach((item) => {
+      if (item.id === "about") {
+        const divider = document.createElement("div");
+        divider.className = "sv-menu-divider";
+        divider.setAttribute("aria-hidden", "true");
+        nodes.push(divider);
+      }
+      const menuItem = createMenuItem(item);
+      if (item.id === "about") menuItem.classList.add("sv-menu-about");
+      nodes.push(menuItem);
+    });
+
+    panel.replaceChildren(...nodes);
+  }
+
+  function createHomeCard(item) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "sv-home-card";
+    const themeClass = HOME_THEME_CLASS[item.theme];
+    if (themeClass) button.classList.add(themeClass);
+
+    if (item.status === "active" && item.route) {
+      button.dataset.goView = item.route;
+    } else {
+      button.classList.add("sv-home-card-coming", "sv-disabled");
+      button.disabled = true;
+    }
+
+    const iconClass = item.icon_id === "nutrition"
+      ? "sv-home-card-icon sv-home-card-icon-nutri"
+      : "sv-home-card-icon";
+    button.appendChild(createCatalogText("div", iconClass, HOME_ICON_TEXT[item.icon_id] || "•"));
+    button.appendChild(createCatalogText("div", "sv-home-card-title", item.name));
+    button.appendChild(createCatalogText("div", "sv-home-card-text", item.home_description || item.description));
+    if (item.badge) {
+      const badge = createCatalogText("span", "sv-coming-tag", item.badge);
+      if (item.id === "casos360") badge.classList.add("sv-coming-tag-casos360");
+      button.appendChild(badge);
+    }
+    return button;
+  }
+
+  function hydrateHomeCatalog() {
+    const grid = document.getElementById("sv-home-catalog");
+    if (!grid) return;
+    const cards = catalogItems()
+      .filter((item) => item.visible_on_home)
+      .map(createHomeCard);
+    grid.replaceChildren(...cards);
+  }
+
+  function syncActiveNavigation(viewName = window.SuiteVet.currentView) {
+    document.querySelectorAll(".sv-nav-btn[data-view], .sv-menu-route[data-view]").forEach((button) => {
+      const isActive = button.dataset.view === viewName;
+      button.classList.toggle("sv-nav-active", isActive);
+      button.classList.toggle("sv-menu-active", isActive);
+      if (isActive) button.setAttribute("aria-current", "page");
+      else button.removeAttribute("aria-current");
+    });
+  }
+
+  function hydrateCatalogUI() {
+    hydrateModuleMenu(document.getElementById("sv-menu-panel"));
+    hydrateHomeCatalog();
+    syncActiveNavigation();
   }
 
   function openSearch() {
@@ -426,25 +486,23 @@
   // ---------------------------------------------------------------------------
   document.addEventListener("DOMContentLoaded", () => {
     const menuPanel = document.getElementById("sv-menu-panel");
-    hydrateModuleMenu(menuPanel);
+    hydrateCatalogUI();
     syncShellMode();
 
     // â€” Botones de nav principal â€”
-    document.querySelectorAll(".sv-nav-btn[data-view], .sv-menu-route[data-view]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const moveFocusToContent = SHELL_DRAWER_MEDIA.matches && btn.classList.contains("sv-menu-route");
-        showView(btn.dataset.view);
-        if (moveFocusToContent) {
-          document.getElementById("sv-main-content")?.focus({ preventScroll: true });
-        }
-      });
+    document.addEventListener("click", (event) => {
+      const target = event.target.closest?.("[data-go-view], .sv-nav-btn[data-view], .sv-menu-route[data-view]");
+      if (!target) return;
+      const view = target.dataset.goView || target.dataset.view;
+      if (!view) return;
+      const moveFocusToContent = SHELL_DRAWER_MEDIA.matches && target.classList.contains("sv-menu-route");
+      showView(view);
+      if (moveFocusToContent) {
+        document.getElementById("sv-main-content")?.focus({ preventScroll: true });
+      }
     });
 
     // â€” Tarjetas de inicio (data-go-view) â€”
-    document.querySelectorAll("[data-go-view]").forEach((card) => {
-      card.addEventListener("click", () => showView(card.dataset.goView));
-    });
-
     // â€” MenÃº hamburguesa â€”
     const menuToggle = document.getElementById("sv-menu-toggle");
 
@@ -455,7 +513,9 @@
       });
     }
 
-    menuPanel?.querySelector("[data-drawer-close]")?.addEventListener("click", () => closeMenu());
+    menuPanel?.addEventListener("click", (event) => {
+      if (event.target.closest?.("[data-drawer-close]")) closeMenu();
+    });
     document.addEventListener("keydown", trapDrawerFocus);
 
     const searchToggle = document.getElementById("sv-search-toggle");
@@ -557,6 +617,10 @@
     showView("home");
   });
 
+  document.addEventListener("suitevet:catalogready", () => {
+    hydrateCatalogUI();
+  });
+
   // ---------------------------------------------------------------------------
   // 7. RENDER DE RESULTADOS GLOBALES
   // ---------------------------------------------------------------------------
@@ -564,7 +628,9 @@
     container.innerHTML = "";
 
     if (results.length === 0) {
-      container.innerHTML = `<div class="sv-search-no-results">Sin resultados</div>`;
+      container.appendChild(
+        Safety.createTextElement(document, "div", "sv-search-no-results", "Sin resultados")
+      );
       container.classList.add("sv-search-open");
       return;
     }
@@ -576,23 +642,14 @@
       grupos[r.moduleId].push(r);
     });
 
-    const labels = {
-      fisio: "🫀 Fisiología",
-      farma: "💉 Farmacología",
-      micro: "🧫 Microbiología",
-      pato:  "🔬 Patología",
-      nutricion: "Nutrición Animal",
-      clinica: "Clinica Integrada",
-      semiologia: "Semiologia & Anamnesis Pro",
-      casos360: "🧬 Casos 360",
-      bibliografia: "📚 Bibliografía & Biblioteca",
-    };
-
     for (const [moduleId, items] of Object.entries(grupos)) {
+      const catalogItem = window.SuiteVetCatalog?.find?.(moduleId);
+      const icon = catalogItem ? SEARCH_ICON_TEXT[catalogItem.icon_id] : "";
+      const label = catalogItem ? `${icon ? `${icon} ` : ""}${catalogItem.short_name}` : moduleId;
       const group = document.createElement("div");
       group.className = "sv-search-group";
       group.appendChild(
-        Safety.createTextElement(document, "div", "sv-search-group-label", labels[moduleId] || moduleId)
+        Safety.createTextElement(document, "div", "sv-search-group-label", label)
       );
 
       items.slice(0, 5).forEach((item) => {

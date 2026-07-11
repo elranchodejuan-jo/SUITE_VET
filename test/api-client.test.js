@@ -59,6 +59,18 @@ test("health usa la URL versionada y devuelve JSON", async () => {
   assert.equal(calls[0][1].headers.Accept, "application/json");
 });
 
+test("catalogo usa el mismo request GET y la ruta versionada", async () => {
+  const payload = { source: "static", total: 0, items: [] };
+  const { calls, sandbox } = loadClient(async () => successfulResponse(payload));
+
+  const result = await sandbox.SuiteVetAPI.getCatalogModules({ baseUrl: "http://localhost:8000/" });
+
+  assert.deepEqual(result, payload);
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0][0], "http://localhost:8000/api/v1/catalog/modules");
+  assert.equal(calls[0][1].method, "GET");
+});
+
 test("un error HTTP conserva codigo y estado", async () => {
   const { sandbox } = loadClient(async () => successfulResponse({}, 503));
 
@@ -111,6 +123,7 @@ test("AbortController convierte el vencimiento en TIMEOUT", async () => {
 
 test("index carga el cliente clasico sin invocarlo", () => {
   assert.match(indexSource, /<script src="shared\/api-client\.js" defer><\/script>/);
+  assert.match(indexSource, /<script src="shared\/module-catalog\.js" defer><\/script>/);
   assert.doesNotMatch(indexSource, /SuiteVetAPI\.getHealth\s*\(/);
 });
 

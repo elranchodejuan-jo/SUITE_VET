@@ -6,14 +6,18 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.v1.router import api_router
 from app.core.config import Settings, get_settings
 from app.core.errors import register_error_handlers
+from app.domains.catalog.repository import CatalogRepository, JsonCatalogRepository
 
 API_DESCRIPTION = (
-    "Versioned domain boundary for Suite Vet. Hito 2.1 exposes infrastructure "
-    "health only; veterinary data remains in the existing frontend."
+    "Versioned domain boundary for Suite Vet. It exposes infrastructure health "
+    "and the static module catalog; veterinary data remains in the frontend."
 )
 
 
-def create_app(settings: Settings | None = None) -> FastAPI:
+def create_app(
+    settings: Settings | None = None,
+    catalog_repository: CatalogRepository | None = None,
+) -> FastAPI:
     runtime_settings = settings if settings is not None else get_settings()
     docs_enabled = runtime_settings.environment != "production"
 
@@ -27,6 +31,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         openapi_url="/openapi.json",
     )
     application.state.settings = runtime_settings
+    application.state.catalog_repository = (
+        catalog_repository if catalog_repository is not None else JsonCatalogRepository()
+    )
 
     application.add_middleware(
         CORSMiddleware,

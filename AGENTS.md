@@ -11,6 +11,8 @@ SPA estatica en HTML, CSS y JavaScript clasico. `index.html` carga datos y contr
 - Proteger Recetario, payloads, impresion/PDF y estilos de impresion.
 - No exponer secretos. Nunca confirmar archivos `.env`, credenciales, tokens o claves.
 - No hacer push sin autorizacion explicita.
+- Registrar cada modulo nuevo en `backend/app/data/modules.json` y mantener unicos sus IDs, slugs y rutas.
+- Conservar `shared/module-catalog.js` como fallback local mientras dure la migracion progresiva al backend.
 - Despues de cada cambio ejecutar `git diff --check`, `node --check` sobre todos los JS y `node --test`.
 
 ## Definicion de terminado

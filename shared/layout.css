@@ -461,6 +461,8 @@
 .sv-menu-icon-clinica { color: var(--sv-clinica-color); border-color: rgba(16, 112, 210, 0.4); }
 .sv-menu-icon-semiologia { color: var(--sv-semiologia-color, var(--sv-clinica-color)); border-color: rgba(46, 122, 214, 0.4); }
 .sv-menu-icon-casos360 { color: #fff; border-color: rgba(139, 92, 246, 0.4); }
+.sv-menu-icon-casos360 { background: var(--sv-casos360-color, #8b5cf6); }
+.sv-menu-icon-onco { color: #fff; border-color: rgba(192, 38, 211, 0.4); background: var(--sv-onco-color, #c026d3); }
 .sv-menu-icon-bib { color: var(--sv-accent); border-color: rgba(59, 130, 246, 0.4); }
 .sv-menu-icon-fav { color: var(--sv-warning); border-color: rgba(234, 179, 8, 0.4); }
 .sv-menu-icon-about { color: var(--sv-info); border-color: rgba(56, 189, 248, 0.4); font-style: italic; font-family: var(--sv-font-heading); font-size: 1rem; }

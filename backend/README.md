@@ -1,6 +1,6 @@
 # Suite Vet API
 
-Fundación FastAPI del Hito 2.1. Actúa como frontera de dominio versionada y, por ahora, solo publica salud de proceso y documentación OpenAPI. No accede a datos veterinarios, base de datos, autenticación ni servicios de IA.
+Backend FastAPI progresivo de Suite Vet. Publica salud de proceso, documentación OpenAPI y el catálogo estático versionado de módulos. No accede a datos veterinarios, base de datos, autenticación ni servicios de IA.
 
 ## Requisitos
 
@@ -43,6 +43,8 @@ El proxy de Vite envía solo `/api/*` a `http://127.0.0.1:8000`. El build de pro
 ## Endpoints y documentación
 
 - `GET /api/v1/health`: estado determinista del proceso.
+- `GET /api/v1/catalog/modules`: lista ordenada del registro de módulos.
+- `GET /api/v1/catalog/modules/{slug}`: detalle por slug o ID; devuelve 404 JSON si no existe.
 - `/docs`: Swagger durante desarrollo y pruebas.
 - `/openapi.json`: contrato OpenAPI.
 - Una ruta inexistente devuelve un error JSON sin traceback.
@@ -92,3 +94,5 @@ backend/
 |-- pyproject.toml
 `-- README.md
 ```
+
+`JsonCatalogRepository` carga y valida el JSON una vez por proceso; `CatalogService` mantiene la lógica fuera de FastAPI y la dependencia puede sustituirse en pruebas. Los contratos Pydantic rechazan campos extra, rutas desconocidas y texto ejecutable.

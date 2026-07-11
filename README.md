@@ -101,6 +101,15 @@ URLs locales:
 
 El frontend puede iniciar sin el backend. `window.SuiteVetAPI.getHealth()` solo consulta la API cuando un consumidor lo solicita explícitamente.
 
+## Catálogo versionado de módulos (Hito 2.2)
+
+- `backend/app/data/modules.json` es la fuente autoritativa estática del registro de módulos.
+- `GET /api/v1/catalog/modules` lista el catálogo ordenado y `GET /api/v1/catalog/modules/{slug}` consulta por slug o ID.
+- `shared/module-catalog.js` entrega un fallback inmediato y solo adopta la respuesta API si pasa el mismo contrato de rutas, temas, iconos y texto seguro.
+- Sidebar, inicio y etiquetas del buscador consumen el catálogo sin cambiar los contratos globales, las rutas existentes ni el estado activo.
+
+El fallback frontend debe mantenerse en paridad con el JSON autoritativo hasta que la migración permita depender del backend. Una caída, timeout o respuesta inválida de la API conserva la SPA operativa con el catálogo local.
+
 ## Pruebas
 
 ```powershell
