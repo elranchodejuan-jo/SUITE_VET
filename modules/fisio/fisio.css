@@ -8,6 +8,16 @@
    El borde lateral y glow de hover se pasan como CSS custom properties
    desde fisio.js: --card-color y --card-glow
 ───────────────────────────────────────────────────────────────────────────── */
+/* Los paneles funcionales de Fisiologia prevalecen sobre el layout visual
+   compartido, que aplica display:grid a .sv-module-panel mas tarde. */
+#fisio-root .sv-pane:not(.sv-pane-active) {
+  display: none;
+}
+
+#fisio-root .sv-pane.sv-pane-active {
+  display: grid;
+}
+
 .fisio-card-hormona,
 .fisio-card-vitamina,
 .fisio-card-glosario {

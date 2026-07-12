@@ -9,6 +9,8 @@
   document.addEventListener("DOMContentLoaded", () => {
     const root = document.getElementById("micro-root");
     if (!root) return;
+    if (root.dataset.microInitialized === "true") return;
+    root.dataset.microInitialized = "true";
 
     const D = window.MICRO_DATA || {};
     const data = {
@@ -329,6 +331,8 @@
     document.addEventListener("suitevet:viewchange", (e) => {
       actualizarVisibilidadFabMicro(e.detail?.view || "");
     });
+    window.addEventListener("beforeprint", prepareMicroPrint);
+    window.addEventListener("afterprint", closePrintView);
 
     renderFilters();
     render();
@@ -2233,7 +2237,7 @@
             </div>
           </div>
           <div class="micro-print-preview">
-            <article class="micro-print-doc${docClass}">${html}</article>
+            <article class="micro-print-document micro-print-doc${docClass}">${html}</article>
           </div>
         </div>
       `;
@@ -2242,18 +2246,36 @@
 
     function closePrintView() {
       if (!els.printArea) return;
-      window.removeEventListener("afterprint", closePrintView);
       document.body.classList.remove("micro-printing");
       els.printArea.classList.remove("is-open");
       els.printArea.setAttribute("aria-hidden", "true");
       els.printArea.innerHTML = "";
       state.printFavorite = null;
+      removeMicroPrintPageStyle();
     }
 
     function runMicroPrint() {
       if (!els.printArea?.classList.contains("is-open")) return;
-      window.addEventListener("afterprint", closePrintView, { once: true });
+      prepareMicroPrint();
       window.print();
+    }
+
+    function prepareMicroPrint() {
+      if (!els.printArea?.classList.contains("is-open")) return;
+      document.body.classList.add("micro-printing");
+      ensureMicroPrintPageStyle();
+    }
+
+    function ensureMicroPrintPageStyle() {
+      if (document.getElementById("micro-print-page-style")) return;
+      const style = document.createElement("style");
+      style.id = "micro-print-page-style";
+      style.textContent = "@page { size: A4 portrait; margin: 12mm; }";
+      document.head.appendChild(style);
+    }
+
+    function removeMicroPrintPageStyle() {
+      document.getElementById("micro-print-page-style")?.remove();
     }
 
     function printHeader(kind, title) {

@@ -10,6 +10,7 @@
     "test": "node --test"
   },
   "devDependencies": {
+    "happy-dom": "^20.10.6",
     "vite": "^8.1.4"
   }
 }

@@ -242,6 +242,8 @@
   document.addEventListener("DOMContentLoaded", () => {
     const root = document.getElementById("fisio-root");
     if (!root) return;
+    if (root.dataset.fisioInitialized === "true") return;
+    root.dataset.fisioInitialized = "true";
 
     // BUG FIX #4: fallback seguro si FISIO_DATA aún no cargó
     const data = window.FISIO_DATA || {};
@@ -261,23 +263,23 @@
         </p>
       </section>
 
-      <div class="sv-subnav sv-module-subnav" id="fisio-subnav">
-        <button class="sv-tab sv-tab-active" data-pane="hormonas" type="button">
+      <div class="sv-subnav sv-module-subnav" id="fisio-subnav" data-tab-controller="module">
+        <button class="sv-tab sv-tab-active" data-pane="hormonas" aria-controls="fisio-pane-hormonas" type="button">
           Hormonas
           <span class="sv-tab-count">${hormonas.length}</span>
         </button>
-        <button class="sv-tab" data-pane="vitaminas" type="button">
+        <button class="sv-tab" data-pane="vitaminas" aria-controls="fisio-pane-vitaminas" type="button">
           Vitaminas
           <span class="sv-tab-count">${vitaminas.length}</span>
         </button>
-        <button class="sv-tab" data-pane="glosario" type="button">
+        <button class="sv-tab" data-pane="glosario" aria-controls="fisio-pane-glosario" type="button">
           Glosario
           <span class="sv-tab-count">${glosario.length}</span>
         </button>
       </div>
 
       <!-- ── PANE HORMONAS ── -->
-      <div id="fisio-pane-hormonas" class="sv-pane sv-pane-active sv-module-panel">
+      <div id="fisio-pane-hormonas" class="sv-pane sv-pane-active sv-module-panel" aria-hidden="false">
         <div class="sv-toolbar sv-module-toolbar">
           <label class="sv-field sv-field-toolbar">
             <span class="sv-label">Buscar hormonas</span>
@@ -290,7 +292,7 @@
       </div>
 
       <!-- ── PANE VITAMINAS ── -->
-      <div id="fisio-pane-vitaminas" class="sv-pane sv-module-panel">
+      <div id="fisio-pane-vitaminas" class="sv-pane sv-module-panel" aria-hidden="true" hidden>
         <div class="sv-toolbar sv-module-toolbar" id="fisio-toolbar-vitaminas">
           <label class="sv-field sv-field-toolbar">
             <span class="sv-label">Buscar vitaminas</span>
@@ -314,7 +316,7 @@
       </div>
 
       <!-- ── PANE GLOSARIO ── -->
-      <div id="fisio-pane-glosario" class="sv-pane sv-module-panel">
+      <div id="fisio-pane-glosario" class="sv-pane sv-module-panel" aria-hidden="true" hidden>
         <div class="sv-toolbar sv-module-toolbar">
           <label class="sv-field sv-field-toolbar">
             <span class="sv-label">Buscar en el glosario</span>
@@ -334,34 +336,53 @@
     const tabs  = root.querySelectorAll(".sv-tab[data-pane]");
     const panes = root.querySelectorAll(".sv-pane");
     const paneNames = new Set(["hormonas", "vitaminas", "glosario"]);
+    const renderedSections = new Set();
+    const state = { activeSection: null };
+    const renderers = {
+      hormonas: renderHormonas,
+      vitaminas: renderVitaminas,
+      glosario: renderGlosario
+    };
 
     // Fisiologia es la unica fuente de verdad para sus tres paneles. El
     // sistema compartido conserva teclado y atributos ARIA, pero no decide
     // que contenido se muestra ni reutiliza el panel de Hormonas.
-    function activatePane(paneName) {
-      if (!paneNames.has(paneName)) return;
+    function activateSection(sectionId, options = {}) {
+      if (!paneNames.has(sectionId)) return false;
+      const previousSection = state.activeSection;
+      state.activeSection = sectionId;
+      root.dataset.activeSection = sectionId;
 
       tabs.forEach((tab) => {
-        const isActive = tab.dataset.pane === paneName;
+        const isActive = tab.dataset.pane === sectionId;
         tab.classList.toggle("sv-tab-active", isActive);
         tab.setAttribute("aria-selected", String(isActive));
         tab.tabIndex = isActive ? 0 : -1;
+        if (isActive && options.focus) tab.focus();
       });
 
       panes.forEach((pane) => {
-        const isActive = pane.id === `fisio-pane-${paneName}`;
+        const isActive = pane.id === `fisio-pane-${sectionId}`;
         pane.classList.toggle("sv-pane-active", isActive);
         pane.setAttribute("aria-hidden", String(!isActive));
+        pane.hidden = !isActive;
       });
+
+      if (!renderedSections.has(sectionId) || options.forceRender) {
+        renderers[sectionId]();
+        renderedSections.add(sectionId);
+      }
+
+      return previousSection !== sectionId;
     }
 
-    root.addEventListener("click", (event) => {
+    function handleTabClick(event) {
       const tab = event.target.closest(".sv-tab[data-pane]");
       if (!tab || !root.contains(tab)) return;
-      activatePane(tab.dataset.pane);
-    });
+      activateSection(tab.dataset.pane);
+    }
 
-    activatePane("hormonas");
+    root.addEventListener("click", handleTabClick);
 
     // -------------------------------------------------------------------------
     // 3. HORMONAS — pills de filtro con color por sistema
@@ -674,9 +695,7 @@
     // -------------------------------------------------------------------------
     // 6. RENDER INICIAL
     // -------------------------------------------------------------------------
-    renderHormonas();
-    renderVitaminas();
-    renderGlosario();
+    activateSection("hormonas");
 
     // -------------------------------------------------------------------------
     // 7. BUSCADOR GLOBAL
@@ -696,8 +715,8 @@
                 window.SuiteVet.showView("fisiologia");
                 if (searchHormona) {
                   searchHormona.value = h.nombre;
-                  renderHormonas();
                 }
+                activateSection("hormonas", { forceRender: true });
               }
             });
           }
@@ -712,11 +731,10 @@
               moduleId: "fisio",
               action: () => {
                 window.SuiteVet.showView("fisiologia");
-                activatePane("vitaminas");
                 if (searchVitamina) {
                   searchVitamina.value = v.nombre;
-                  renderVitaminas();
                 }
+                activateSection("vitaminas", { forceRender: true });
               }
             });
           }
@@ -732,14 +750,13 @@
               moduleId: "fisio",
               action: () => {
                 window.SuiteVet.showView("fisiologia");
-                activatePane("glosario");
                 filtroGlosario = "todos";
                 filtrosGlosario?.querySelectorAll(".fisio-pill-sistema[data-sistema-glosario]").forEach(p => p.classList.remove("sv-pill-active"));
                 filtrosGlosario?.querySelector('[data-sistema-glosario="todos"]')?.classList.add("sv-pill-active");
                 if (searchGlosario) {
                   searchGlosario.value = g.termino;
-                  renderGlosario();
                 }
+                activateSection("glosario", { forceRender: true });
               }
             });
           }

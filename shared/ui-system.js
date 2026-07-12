@@ -20,6 +20,7 @@
 
   const dialogState = new WeakMap();
   let syncQueued = false;
+  let initialized = false;
 
   function safeId(value) {
     return String(value || "item")
@@ -48,7 +49,6 @@
     if (tab.getAttribute("aria-controls")) return tab.getAttribute("aria-controls");
     if (tablist.dataset.tabpanel) return tablist.dataset.tabpanel;
     if (tab.dataset.bibTab) return `bib-pane-${tab.dataset.bibTab}`;
-    if (tab.dataset.pane && tablist.id === "fisio-subnav") return `fisio-pane-${tab.dataset.pane}`;
     if (tab.dataset.pane && tablist.id === "micro-subnav") return "micro-content";
     return "";
   }
@@ -61,6 +61,7 @@
     const rootId = safeId(root?.id || `suitevet-tabs-${index + 1}`);
     const activeTab = tabs.find((tab) => tab.classList.contains("is-active") || tab.classList.contains("sv-tab-active"));
     const focusTab = activeTab || tabs[0];
+    const moduleManaged = tablist.dataset.tabController === "module";
 
     tablist.setAttribute("role", "tablist");
     if (!tablist.hasAttribute("aria-label")) {
@@ -73,15 +74,19 @@
       const panelId = controlledPanelId(tab, tablist);
       if (!tab.id) tab.id = `${rootId}-${safeId(tabKey(tab))}-tab`;
       tab.setAttribute("role", "tab");
-      tab.setAttribute("aria-selected", selected ? "true" : "false");
-      tab.setAttribute("tabindex", tab === focusTab ? "0" : "-1");
+      if (!moduleManaged) {
+        tab.setAttribute("aria-selected", selected ? "true" : "false");
+        tab.setAttribute("tabindex", tab === focusTab ? "0" : "-1");
+      }
       if (panelId) tab.setAttribute("aria-controls", panelId);
 
       const panel = panelId ? document.getElementById(panelId) : null;
       if (!panel) return;
       panel.setAttribute("role", "tabpanel");
       panel.setAttribute("tabindex", "0");
-      if (tablist.dataset.tabpanel) {
+      if (moduleManaged) {
+        panel.setAttribute("aria-labelledby", tab.id);
+      } else if (tablist.dataset.tabpanel) {
         if (selected) panel.setAttribute("aria-labelledby", tab.id);
       } else {
         panel.setAttribute("aria-labelledby", tab.id);
@@ -224,6 +229,8 @@
   }
 
   function init() {
+    if (initialized) return;
+    initialized = true;
     syncTabs();
     syncDialogs();
     document.addEventListener("click", scheduleSync);

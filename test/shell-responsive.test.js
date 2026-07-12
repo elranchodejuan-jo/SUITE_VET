@@ -58,7 +58,7 @@ test("el sidebar colapsado conserva iconos circulares y el menú de tres líneas
   assert.match(layoutSource, /\.sv-menu-toggle\.is-open span:nth-child\(1\),[\s\S]*\.sv-menu-toggle\.is-collapsed span:nth-child\(3\) \{[\s\S]*opacity: 1;[\s\S]*transform: none;/);
 });
 
-test("la toolchain mantiene Vite como única dependencia", () => {
+test("la toolchain mantiene solo dependencias de desarrollo justificadas", () => {
   const pkg = JSON.parse(read("package.json"));
   assert.deepEqual(pkg.scripts, {
     dev: "vite",
@@ -66,7 +66,8 @@ test("la toolchain mantiene Vite como única dependencia", () => {
     preview: "vite preview",
     test: "node --test",
   });
-  assert.deepEqual(Object.keys(pkg.devDependencies), ["vite"]);
+  assert.deepEqual(Object.keys(pkg.devDependencies), ["happy-dom", "vite"]);
+  assert.match(pkg.devDependencies["happy-dom"], /^\^20\./);
   assert.match(pkg.devDependencies.vite, /^\^8\./);
   assert.equal(pkg.dependencies, undefined);
 });
