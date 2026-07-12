@@ -1681,8 +1681,10 @@ body.micro-printing {
     height: 1px;
   }
 
-  .micro-label-print-section {
+  body.micro-printing .micro-label-print-section {
+    break-before: page !important;
     break-inside: auto !important;
+    page-break-before: always !important;
     page-break-inside: auto !important;
   }
 

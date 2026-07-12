@@ -144,6 +144,11 @@ test("Microbiologia imprime solo la hoja activa sobre fondo blanco y elimina la 
   assert.match(css, /body\.micro-printing \.micro-print-section\s*\{[\s\S]*?break-inside: auto !important/);
   assert.match(css, /body\.micro-printing \.micro-print-section tr\s*\{[\s\S]*?break-inside: avoid/);
   assert.match(css, /body\.micro-printing \.micro-print-section h2\s*\{[\s\S]*?break-after: avoid-page/);
+  const labelsRule = css.match(/body\.micro-printing \.micro-label-print-section\s*\{([^}]+)\}/)?.[1] || "";
+  assert.match(labelsRule, /break-before:\s*page/);
+  assert.match(labelsRule, /page-break-before:\s*always/);
+  assert.match(css, /\.micro-lab-label\s*\{[\s\S]*?break-inside:\s*avoid/);
+  assert.match(css, /\.micro-lab-label\s*\{[\s\S]*?page-break-inside:\s*avoid/);
   const sectionRule = css.match(/body\.micro-printing \.micro-print-section\s*\{([^}]+)\}/)?.[1] || "";
   assert.doesNotMatch(sectionRule, /break-inside:\s*avoid/);
 });
