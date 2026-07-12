@@ -50,7 +50,7 @@ def create_app(
         allow_origins=runtime_settings.cors_origins,
         allow_credentials=False,
         allow_methods=["GET", "OPTIONS"],
-        allow_headers=["Accept", "Content-Type"],
+        allow_headers=["Accept", "Authorization", "Content-Type"],
     )
     register_error_handlers(application)
     application.include_router(

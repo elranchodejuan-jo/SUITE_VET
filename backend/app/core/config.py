@@ -30,6 +30,10 @@ class Settings(BaseSettings):
     )
     host: str = "127.0.0.1"
     port: int = Field(default=8000, ge=1, le=65535)
+    supabase_url: str | None = None
+    supabase_jwks_url: str | None = None
+    supabase_issuer: str | None = None
+    supabase_audience: str = "authenticated"
 
     model_config = SettingsConfigDict(
         env_prefix="SUITEVET_",
@@ -64,10 +68,44 @@ class Settings(BaseSettings):
             if parsed.scheme not in {"http", "https"} or not parsed.netloc:
                 raise ValueError("each CORS origin must be an absolute HTTP(S) origin")
             if parsed.path or parsed.query or parsed.fragment:
-                raise ValueError("CORS origins cannot include paths, queries or fragments")
+                raise ValueError(
+                    "CORS origins cannot include paths, queries or fragments"
+                )
             if candidate not in normalized:
                 normalized.append(candidate)
         return normalized
+
+    @field_validator("supabase_url", "supabase_jwks_url", "supabase_issuer")
+    @classmethod
+    def validate_supabase_urls(cls, value: str | None) -> str | None:
+        if value is None or not value.strip():
+            return None
+        candidate = value.strip().rstrip("/")
+        parsed = urlsplit(candidate)
+        is_loopback = parsed.hostname in {"localhost", "127.0.0.1", "::1"}
+        if parsed.scheme != "https" and not (parsed.scheme == "http" and is_loopback):
+            raise ValueError(
+                "Supabase URLs must use HTTPS except for loopback development"
+            )
+        if (
+            not parsed.netloc
+            or parsed.username
+            or parsed.password
+            or parsed.query
+            or parsed.fragment
+        ):
+            raise ValueError(
+                "Supabase URLs must be absolute and cannot include query or fragment"
+            )
+        return candidate
+
+    @field_validator("supabase_audience")
+    @classmethod
+    def validate_supabase_audience(cls, value: str) -> str:
+        candidate = value.strip()
+        if not candidate or len(candidate) > 120:
+            raise ValueError("supabase_audience must be between 1 and 120 characters")
+        return candidate
 
 
 @lru_cache

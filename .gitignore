@@ -2,6 +2,18 @@
 .env
 .env.*
 !.env.example
+supabase/.temp/
+supabase/.branches/
+dumps/
+*.dump
+*.sql.gz
+credentials/
+secrets/
+*.pem
+*.key
+.pgpass
+*.connection
+*.credentials.json
 
 # Python
 .venv/
