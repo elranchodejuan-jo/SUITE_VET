@@ -21,11 +21,19 @@ class Query {
 
 function loadData(resolver, user = { id: "u1", email: "student@example.test" }) {
   const calls = [];
-  const client = { from(table) { calls.push([table, "from"]); return new Query(table, resolver, calls); } };
+  const queries = [];
+  const client = {
+    from(table) {
+      calls.push([table, "from"]);
+      const query = new Query(table, resolver, calls);
+      queries.push(query);
+      return query;
+    }
+  };
   const sandbox = { console, SuiteVetAuth: { async getCurrentUser() { return user; }, getClient() { return client; } } };
   sandbox.window = sandbox;
   vm.runInNewContext(source, sandbox, { filename: "shared/user-data-service.js" });
-  return { data: sandbox.SuiteVetUserData, calls };
+  return { data: sandbox.SuiteVetUserData, calls, queries };
 }
 
 const validProfile = {
@@ -103,6 +111,24 @@ test("comentario rechaza rating, asunto, HTML y longitud fuera de contrato", () 
 test("fallo de inserción no produce confirmación falsa", async () => {
   const loaded = loadData(() => ({ data: null, error: { message: "network fetch failed" } }));
   await assert.rejects(loaded.data.submitFeedback({ subject: "recommendation", message: "Comentario válido para probar", rating: 4 }), (error) => error.code === "NETWORK_ERROR");
+});
+
+test("una respuesta sin registro confirmado no produce éxito falso", async () => {
+  const loaded = loadData(() => ({ data: null, error: null }));
+  await assert.rejects(
+    loaded.data.submitFeedback({ subject: "comment", message: "Comentario válido para confirmar", rating: 4 }),
+    (error) => error.code === "FEEDBACK_INSERT_UNCONFIRMED"
+  );
+});
+
+test("Mis comentarios consulta exclusivamente el user_id de la sesión", async () => {
+  const loaded = loadData((query) => query.table === "user_feedback"
+    ? { data: [{ id: "f1", user_id: "u1" }], error: null }
+    : { data: null, error: null });
+  const result = await loaded.data.loadOwnFeedback();
+  const query = loaded.queries.find((item) => item.table === "user_feedback");
+  assert.equal(result.length, 1);
+  assert.deepEqual(query.filters.find(([kind]) => kind === "eq"), ["eq", "user_id", "u1"]);
 });
 
 test("panel administrativo exige super_admin desde user_roles", async () => {

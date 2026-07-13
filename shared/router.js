@@ -559,6 +559,11 @@
       });
     }
 
+    document.getElementById("sv-drawer-search")?.addEventListener("click", () => {
+      closeMenu({ restoreFocus: false });
+      if (SHELL_COMPACT_SEARCH_MEDIA.matches) toggleSearch();
+    });
+
     document.addEventListener("click", (e) => {
       if (!SHELL_DRAWER_MEDIA.matches || !menuPanel?.classList.contains("sv-menu-open")) return;
       if (!menuPanel.contains(e.target) && !menuToggle?.contains(e.target)) {

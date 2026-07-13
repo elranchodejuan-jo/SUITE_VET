@@ -178,6 +178,11 @@
         .select(FEEDBACK_COLUMNS)
         .single();
       if (error) throw error;
+      if (!data?.id) {
+        throw new SuiteVetDataError("No fue posible confirmar el envío del comentario.", {
+          code: "FEEDBACK_INSERT_UNCONFIRMED"
+        });
+      }
       return data;
     } catch (error) {
       throw safeError(error, "FEEDBACK_INSERT_FAILED");

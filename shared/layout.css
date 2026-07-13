@@ -306,6 +306,10 @@
   overflow: hidden;
   white-space: nowrap;
 }
+
+.sv-mobile-drawer-actions {
+  display: none;
+}
 .sv-sidebar-collapsed .sv-menu-item {
   grid-template-columns: 44px;
   justify-content: center;

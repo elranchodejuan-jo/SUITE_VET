@@ -118,6 +118,10 @@
     <button class="sv-menu-item sv-disabled">CD — Cartilla Digital</button>
     <button class="sv-menu-item sv-disabled">CATTLE — Bovinos</button>
     <p class="sv-menu-note">En desarrollo, pronto más info…</p>
+    <div class="sv-mobile-drawer-actions" aria-label="Acciones rápidas">
+      <button class="sv-menu-item" id="sv-drawer-feedback" type="button">Comentarios</button>
+      <button class="sv-menu-item" id="sv-drawer-search" type="button">Buscar</button>
+    </div>
   </nav>
 
   <!-- ════════════════════════════════════════
@@ -252,20 +256,26 @@
             <label><input type="radio" name="rating" value="1" required /><span>1 ★</span></label><label><input type="radio" name="rating" value="2" /><span>2 ★</span></label><label><input type="radio" name="rating" value="3" /><span>3 ★</span></label><label><input type="radio" name="rating" value="4" /><span>4 ★</span></label><label><input type="radio" name="rating" value="5" /><span>5 ★</span></label>
           </div></fieldset>
           <p class="sv-auth-status" id="sv-feedback-status" role="status" aria-live="polite"></p>
-          <button class="sv-btn sv-btn-primary" type="submit">Enviar</button>
+          <button class="sv-btn sv-btn-primary" type="submit">Enviar comentario</button>
         </form>
+        <section class="sv-own-feedback" aria-labelledby="sv-own-feedback-title">
+          <h3 id="sv-own-feedback-title">Mis comentarios</h3>
+          <p class="sv-auth-status" id="sv-own-feedback-status" role="status" aria-live="polite"></p>
+          <div id="sv-own-feedback-list" class="sv-own-feedback-list"></div>
+        </section>
       </div>
     </section>
 
-    <section id="view-feedback-admin" class="sv-view" aria-labelledby="sv-feedback-admin-title">
+    <section id="view-feedback-admin" class="sv-view" aria-labelledby="sv-feedback-admin-title" hidden>
       <div class="sv-auth-page">
         <header class="sv-auth-page-header"><p class="sv-auth-eyebrow">Super Admin</p><h2 id="sv-feedback-admin-title">Comentarios recibidos</h2></header>
         <div class="sv-auth-card sv-admin-filters">
           <label>Asunto<select id="sv-admin-subject"><option value="">Todos</option><option value="comment">Comentario</option><option value="recommendation">Recomendación</option><option value="observed_error">Error observado</option></select></label>
           <label>Calificación<select id="sv-admin-rating"><option value="">Todas</option><option value="1">1 estrella</option><option value="2">2 estrellas</option><option value="3">3 estrellas</option><option value="4">4 estrellas</option><option value="5">5 estrellas</option></select></label>
-          <button class="sv-btn sv-btn-secondary" id="sv-admin-refresh" type="button">Actualizar</button>
+          <button class="sv-btn sv-btn-secondary" id="sv-admin-refresh" type="button">Actualizar comentarios</button>
         </div>
         <p class="sv-auth-status" id="sv-admin-status" role="status" aria-live="polite"></p>
+        <p class="sv-admin-last-refresh" id="sv-admin-last-refresh" aria-live="polite"></p>
         <div id="sv-admin-feedback-list" class="sv-admin-feedback-list"></div>
       </div>
     </section>

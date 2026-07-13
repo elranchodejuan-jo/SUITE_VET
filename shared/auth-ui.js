@@ -13,6 +13,10 @@
     profile: null,
     pendingView: null,
     busy: false,
+    feedbackBusy: false,
+    ownFeedbackRequest: 0,
+    adminLoading: false,
+    adminLifecycleActive: false,
     initialized: false
   };
 
@@ -29,6 +33,19 @@
     if (!target) return;
     setText(target, message);
     target.dataset.kind = kind;
+  }
+
+  function safeFeedbackMessage(error, fallback) {
+    const safeCodes = new Set([
+      "AUTH_REQUIRED", "FEEDBACK_INVALID", "FEEDBACK_INSERT_UNCONFIRMED",
+      "NETWORK_ERROR", "RESPONSE_INVALID"
+    ]);
+    return safeCodes.has(error?.code) && typeof error?.message === "string" ? error.message : fallback;
+  }
+
+  function formatDateTime(value) {
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? "Fecha no disponible" : date.toLocaleString("es-EC");
   }
 
   function openModal(mode = "signin") {
@@ -228,6 +245,13 @@
       setText(byId("sv-account-name"), profile.display_name || profile.username || state.user.email || "Cuenta");
       setText(byId("sv-account-avatar"), (profile.display_name || profile.username || state.user.email || "U").charAt(0).toUpperCase());
       byId("sv-admin-menu-item")?.toggleAttribute("hidden", profile.role !== "super_admin");
+      byId("view-feedback-admin")?.toggleAttribute("hidden", profile.role !== "super_admin");
+      if (profile.role === "super_admin" && root.SuiteVet?.currentView === "feedback-admin") {
+        activateAdminLifecycle();
+        loadAdminFeedback();
+      } else if (profile.role !== "super_admin" && root.SuiteVet?.currentView === "feedback-admin") {
+        root.SuiteVet?.showView?.("home");
+      }
       setStatus("sv-profile-status", welcome && !profile.complete ? "Completa tu perfil cuando lo desees." : "");
     } catch (error) {
       setStatus("sv-profile-status", error?.message || "No fue posible cargar el perfil.", "error");
@@ -255,19 +279,51 @@
     }
   }
 
+  function setFeedbackBusy(form, busy) {
+    const submit = form?.querySelector("button[type='submit']");
+    if (submit) {
+      submit.disabled = busy;
+      submit.textContent = busy ? "Enviando…" : "Enviar comentario";
+    }
+    form?.setAttribute("aria-busy", String(busy));
+  }
+
+  function resetFeedbackForm(form) {
+    form.reset();
+    const subject = byId("sv-feedback-subject");
+    const message = byId("sv-feedback-message");
+    if (subject) subject.value = "comment";
+    if (message) message.value = "";
+    form.querySelectorAll("[name='rating']").forEach((input) => { input.checked = false; });
+  }
+
   async function submitFeedback(event) {
     event.preventDefault();
+    const form = event.currentTarget;
+    if (!(form instanceof root.HTMLFormElement) || state.feedbackBusy) return;
+
+    state.feedbackBusy = true;
+    setFeedbackBusy(form, true);
     setStatus("sv-feedback-status", "Enviando…");
     try {
-      await data().submitFeedback({
+      const inserted = await data().submitFeedback({
         subject: byId("sv-feedback-subject")?.value,
         message: byId("sv-feedback-message")?.value,
-        rating: document.querySelector("#sv-feedback-form [name='rating']:checked")?.value
+        rating: form.querySelector("[name='rating']:checked")?.value
       });
-      event.currentTarget.reset();
+      if (!inserted?.id) throw new Error("Feedback insert was not confirmed");
+      resetFeedbackForm(form);
       setStatus("sv-feedback-status", "Tu comentario fue enviado correctamente.", "success");
+      await loadOwnFeedback();
     } catch (error) {
-      setStatus("sv-feedback-status", error?.message || "No fue posible enviar el comentario.", "error");
+      setStatus(
+        "sv-feedback-status",
+        safeFeedbackMessage(error, "No fue posible enviar el comentario. Conserva el texto e inténtalo nuevamente."),
+        "error"
+      );
+    } finally {
+      state.feedbackBusy = false;
+      setFeedbackBusy(form, false);
     }
   }
 
@@ -279,6 +335,54 @@
     return element;
   }
 
+  function renderOwnFeedback(items) {
+    const list = byId("sv-own-feedback-list");
+    if (!list) return;
+    list.replaceChildren();
+    if (!items.length) {
+      appendText(list, "p", "Aún no has enviado comentarios.", "sv-auth-empty");
+      return;
+    }
+    items.forEach((item) => {
+      const card = document.createElement("article");
+      card.className = "sv-auth-card sv-own-feedback-card";
+      appendText(card, "p", formatDateTime(item.created_at), "sv-admin-meta");
+      appendText(card, "h4", data().SUBJECTS[item.subject] || item.subject);
+      appendText(card, "p", item.message, "sv-admin-message");
+      appendText(card, "p", `${item.rating} de 5 estrellas`, "sv-admin-rating");
+      appendText(card, "p", item.approved ? "Estado: Aprobado" : "Estado: Pendiente", "sv-own-feedback-state");
+      if (item.response) {
+        appendText(card, "h5", "Respuesta administrativa", "sv-feedback-response-title");
+        appendText(card, "p", item.response, "sv-admin-message sv-feedback-response");
+      }
+      list.append(card);
+    });
+  }
+
+  async function loadOwnFeedback() {
+    const list = byId("sv-own-feedback-list");
+    if (!state.user) {
+      list?.replaceChildren();
+      setStatus("sv-own-feedback-status", "");
+      return [];
+    }
+    const request = ++state.ownFeedbackRequest;
+    setStatus("sv-own-feedback-status", "Actualizando comentarios…");
+    try {
+      const items = await data().loadOwnFeedback();
+      if (request === state.ownFeedbackRequest) {
+        renderOwnFeedback(items);
+        setStatus("sv-own-feedback-status", "");
+      }
+      return items;
+    } catch (error) {
+      if (request === state.ownFeedbackRequest) {
+        setStatus("sv-own-feedback-status", "No fue posible actualizar tus comentarios. Inténtalo nuevamente.", "error");
+      }
+      return [];
+    }
+  }
+
   function renderAdminFeedback(items) {
     const list = byId("sv-admin-feedback-list");
     if (!list) return;
@@ -287,8 +391,11 @@
     items.forEach((item) => {
       const card = document.createElement("article");
       card.className = "sv-auth-card sv-admin-feedback-card";
-      appendText(card, "p", new Date(item.created_at).toLocaleString("es-EC"), "sv-admin-meta");
-      appendText(card, "h3", `${item.author?.display_name || item.author?.username || "Usuario"} · ${data().SUBJECTS[item.subject] || item.subject}`);
+      appendText(card, "p", formatDateTime(item.created_at), "sv-admin-meta");
+      appendText(card, "h3", item.author?.display_name || item.author?.username || "Usuario");
+      if (item.author?.username) appendText(card, "p", `@${item.author.username}`, "sv-admin-meta");
+      appendText(card, "p", `Asunto: ${data().SUBJECTS[item.subject] || item.subject}`, "sv-admin-meta");
+      appendText(card, "h4", "Comentario del usuario", "sv-feedback-response-title");
       appendText(card, "p", item.message, "sv-admin-message");
       appendText(card, "p", `${item.rating} de 5 estrellas`, "sv-admin-rating");
       const approved = document.createElement("label");
@@ -298,9 +405,17 @@
       checkbox.checked = Boolean(item.approved);
       approved.append(checkbox, document.createTextNode(" Aprobado"));
       checkbox.addEventListener("change", async () => {
+        const previousValue = !checkbox.checked;
         checkbox.disabled = true;
-        try { await data().updateFeedbackApproval(item.id, checkbox.checked); }
-        catch (error) { checkbox.checked = !checkbox.checked; setStatus("sv-admin-status", error?.message, "error"); }
+        try {
+          const updated = await data().updateFeedbackApproval(item.id, checkbox.checked);
+          Object.assign(item, updated || { approved: checkbox.checked });
+          setStatus("sv-admin-status", "Estado actualizado.", "success");
+        }
+        catch (error) {
+          checkbox.checked = previousValue;
+          setStatus("sv-admin-status", "No fue posible actualizar el estado. Inténtalo nuevamente.", "error");
+        }
         finally { checkbox.disabled = false; }
       });
       card.append(approved);
@@ -314,23 +429,56 @@
       save.type = "button";
       save.addEventListener("click", async () => {
         save.disabled = true;
-        try { await data().updateFeedbackResponse(item.id, response.value); setStatus("sv-admin-status", "Respuesta guardada.", "success"); }
-        catch (error) { setStatus("sv-admin-status", error?.message, "error"); }
+        try {
+          const updated = await data().updateFeedbackResponse(item.id, response.value);
+          Object.assign(item, updated || { response: response.value });
+          setStatus("sv-admin-status", "Respuesta guardada.", "success");
+        }
+        catch (error) { setStatus("sv-admin-status", safeFeedbackMessage(error, "No fue posible guardar la respuesta. Inténtalo nuevamente."), "error"); }
         finally { save.disabled = false; }
       });
       list.append(card);
     });
   }
 
+  function refreshAdminWhenActive() {
+    if (root.SuiteVet?.currentView === "feedback-admin") loadAdminFeedback();
+  }
+
+  function handleAdminVisibilityChange() {
+    if (document.visibilityState === "visible") refreshAdminWhenActive();
+  }
+
+  function activateAdminLifecycle() {
+    if (state.adminLifecycleActive) return;
+    state.adminLifecycleActive = true;
+    root.addEventListener("focus", refreshAdminWhenActive);
+    document.addEventListener("visibilitychange", handleAdminVisibilityChange);
+  }
+
+  function deactivateAdminLifecycle() {
+    if (!state.adminLifecycleActive) return;
+    state.adminLifecycleActive = false;
+    root.removeEventListener("focus", refreshAdminWhenActive);
+    document.removeEventListener("visibilitychange", handleAdminVisibilityChange);
+  }
+
   async function loadAdminFeedback() {
-    setStatus("sv-admin-status", "Cargando…");
+    if (!state.user || state.profile?.role !== "super_admin" || state.adminLoading) return;
+    state.adminLoading = true;
+    byId("sv-admin-refresh")?.toggleAttribute("disabled", true);
+    setStatus("sv-admin-status", "Actualizando…");
     try {
       const items = await data().loadAdminFeedback({ subject: byId("sv-admin-subject")?.value, rating: byId("sv-admin-rating")?.value });
       renderAdminFeedback(items);
+      setText(byId("sv-admin-last-refresh"), `Última actualización: ${formatDateTime(new Date())}`);
       setStatus("sv-admin-status", "");
     } catch (error) {
-      renderAdminFeedback([]);
-      setStatus("sv-admin-status", error?.message || "No fue posible cargar los comentarios.", "error");
+      if (!byId("sv-admin-feedback-list")?.children.length) renderAdminFeedback([]);
+      setStatus("sv-admin-status", "No fue posible actualizar los comentarios. Inténtalo nuevamente.", "error");
+    } finally {
+      state.adminLoading = false;
+      byId("sv-admin-refresh")?.toggleAttribute("disabled", false);
     }
   }
 
@@ -351,9 +499,12 @@
     byId("sv-account-button")?.toggleAttribute("hidden", !state.user);
     if (!state.user) {
       state.profile = null;
+      deactivateAdminLifecycle();
       byId("sv-account-menu")?.toggleAttribute("hidden", true);
       byId("sv-admin-menu-item")?.toggleAttribute("hidden", true);
+      byId("view-feedback-admin")?.toggleAttribute("hidden", true);
       setText(byId("sv-account-name"), "Cuenta");
+      if (root.SuiteVet?.currentView === "feedback-admin") root.SuiteVet.showView?.("landing");
     } else {
       await loadProfile({ welcome: snapshot.event === "SIGNED_IN" });
       if (state.pendingView) {
@@ -382,6 +533,7 @@
       byId("sv-password-toggle")?.setAttribute("aria-label", show ? "Ocultar contraseña" : "Mostrar contraseña");
     });
     byId("sv-feedback-toggle")?.addEventListener("click", () => showProtectedView("feedback"));
+    byId("sv-drawer-feedback")?.addEventListener("click", () => showProtectedView("feedback"));
     byId("sv-account-button")?.addEventListener("click", () => {
       const menu = byId("sv-account-menu");
       if (!menu) return;
@@ -404,7 +556,13 @@
     byId("sv-admin-refresh")?.addEventListener("click", loadAdminFeedback);
     document.addEventListener("suitevet:viewchange", (event) => {
       if (event.detail?.view === "profile") loadProfile();
-      if (event.detail?.view === "feedback-admin") loadAdminFeedback();
+      if (event.detail?.view === "feedback") loadOwnFeedback();
+      if (event.detail?.view === "feedback-admin" && state.profile?.role === "super_admin") {
+        activateAdminLifecycle();
+        loadAdminFeedback();
+      } else {
+        deactivateAdminLifecycle();
+      }
     });
     document.addEventListener("click", (event) => {
       const shell = event.target instanceof Element ? event.target.closest(".sv-account-shell") : null;
