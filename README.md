@@ -131,3 +131,28 @@ cd backend
 Las variables admitidas se documentan con valores seguros en `backend/.env.example`. Un `.env` real permanece ignorado por Git. Para detalles de instalación, configuración y solución de problemas, consulta `backend/README.md`.
 
 Si PowerShell bloquea `Activate.ps1`, no es necesario cambiar la política global: ejecuta directamente `backend\.venv\Scripts\python.exe`. Si bloquea `npm.ps1`, usa `npm.cmd` con los mismos argumentos.
+
+## Autenticación, perfil y comentarios (Hito 3.2)
+
+La SPA conserva todos los módulos públicos para visitantes. Supabase Auth gestiona registro, confirmación por correo, inicio, cierre, recuperación y persistencia de sesión; Suite Vet no guarda tokens manualmente. Perfil y Comentarios requieren sesión. El rol se consulta en `public.user_roles`, nunca en metadata del cliente.
+
+Configura únicamente variables públicas en un `.env.local` ignorado por Git:
+
+```text
+VITE_SUPABASE_URL=https://<project-ref>.supabase.co
+VITE_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
+```
+
+Luego ejecuta `npm install` y `npm run dev`. Los callbacks permitidos son la raíz publicada de Suite Vet y las raíces `http://localhost:5173/` y `http://127.0.0.1:5173/`. Si faltan variables, la SPA pública continúa operativa y la cuenta muestra un aviso controlado.
+
+El perfil admite nombre, apellido, username, carrera, semestre e institución desde catálogos cerrados. `display_name` permanece por compatibilidad y `avatar_path` se reserva para un hito futuro. Los catálogos se ampliarán posteriormente desde administración.
+
+Comentarios acepta exactamente Comentario, Recomendación o Error observado, texto de 10–2000 caracteres y calificación 1–5. El autor solo inserta y consulta sus filas; no puede editarlas, aprobarlas ni responderlas. Super Admin puede listar, filtrar, aprobar y responder, pero no alterar autor, asunto, texto o calificación originales.
+
+No se crea un Super Admin automáticamente. La promoción futura debe hacerse solo para el UUID de una cuenta ya confirmada, mediante una operación administrativa autorizada que inserte `super_admin` en `public.user_roles`; nunca desde frontend, metadata ni una migración con correo personal.
+
+### GitHub Pages
+
+El repositorio mantiene `base: "./"`. Para publicar autenticación, el proceso de build debe proporcionar `VITE_SUPABASE_URL` y `VITE_SUPABASE_PUBLISHABLE_KEY` y desplegar `dist/`. No agregues valores reales al repositorio. Mientras Pages sirva directamente la fuente sin reemplazar esos placeholders, los módulos públicos funcionarán pero la autenticación permanecerá deshabilitada de forma segura. Tras configurar el despliegue, verifica registro y recuperación manualmente sin repetir correos: el proveedor integrado del plan Free está limitado y puede responder 429.
+
+Nunca uses en frontend `sb_secret`, `service_role`, JWT privados, contraseñas de base, connection strings, access tokens ni refresh tokens. Ante problemas, confirma solo que las variables existen, que el host corresponde al proyecto Suite Vet y que las Redirect URLs coinciden; no imprimas sus valores.

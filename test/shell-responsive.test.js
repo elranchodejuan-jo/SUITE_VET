@@ -69,7 +69,7 @@ test("la toolchain mantiene solo dependencias de desarrollo justificadas", () =>
   assert.deepEqual(Object.keys(pkg.devDependencies), ["happy-dom", "vite"]);
   assert.match(pkg.devDependencies["happy-dom"], /^\^20\./);
   assert.match(pkg.devDependencies.vite, /^\^8\./);
-  assert.equal(pkg.dependencies, undefined);
+  assert.deepEqual(pkg.dependencies, { "@supabase/supabase-js": "2.110.2" });
 });
 
 test("Vite preserva el runtime clásico sin convertir módulos clínicos", () => {

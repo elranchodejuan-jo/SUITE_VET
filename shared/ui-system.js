@@ -153,6 +153,7 @@
     return overlay.querySelector([
       "[data-creator-lightbox-close]",
       "[data-legal-close]",
+      "[data-auth-close]",
       "#sv-receta-cerrar",
       "[data-micro-label-close]",
       "[data-micro-saved-close]",

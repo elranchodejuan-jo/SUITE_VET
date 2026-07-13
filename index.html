@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="shared/layout.css" />
   <link rel="stylesheet" href="shared/about.css?v=20260520-photo-carousel" />
   <link rel="stylesheet" href="shared/favoritos.css" />
+  <link rel="stylesheet" href="shared/auth.css" />
 
   <!-- ── MÓDULOS CSS ── -->
   <link rel="stylesheet" href="modules/fisio/fisio.css" />
@@ -43,6 +44,13 @@
   <script src="shared/security-utils.js"></script>
   <script src="shared/router.js"></script>
   <script src="shared/categorias.js"></script>
+  <script>
+    window.SuiteVetPublicConfig = Object.freeze({
+      supabaseUrl: "%VITE_SUPABASE_URL%",
+      supabasePublishableKey: "%VITE_SUPABASE_PUBLISHABLE_KEY%"
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.110.2/dist/umd/supabase.min.js" defer></script>
 </head>
 <body>
   <a class="sv-skip-link" href="#sv-main-content">Saltar al contenido principal</a>
@@ -67,6 +75,7 @@
       <div id="sv-search-results" class="sv-search-results" role="listbox" aria-label="Resultados de búsqueda"></div>
     </div>
     <div class="sv-topbar-actions" aria-label="Acciones rápidas">
+      <button class="sv-auth-action" id="sv-feedback-toggle" type="button" aria-label="Abrir comentarios">Comentarios</button>
       <button class="sv-icon-btn sv-home-toggle" id="sv-home-toggle" type="button" data-go-view="home" aria-label="Ir al inicio" title="Inicio">
         &#8962;
       </button>
@@ -81,6 +90,18 @@
         &#128218;
       </button>
       <button id="sv-theme-toggle" type="button" aria-label="Cambiar a tema claro" title="Cambiar a tema claro">&#9728;&#65039;</button>
+      <div class="sv-account-shell">
+        <button class="sv-auth-action" id="sv-auth-open" type="button" aria-label="Iniciar sesión">Iniciar sesión</button>
+        <button class="sv-account-button" id="sv-account-button" type="button" aria-expanded="false" aria-controls="sv-account-menu" hidden>
+          <span class="sv-account-avatar" id="sv-account-avatar" aria-hidden="true">U</span>
+          <span id="sv-account-name">Cuenta</span>
+        </button>
+        <div class="sv-account-menu" id="sv-account-menu" hidden>
+          <button type="button" data-account-view="profile">Perfil</button>
+          <button type="button" data-account-view="feedback-admin" id="sv-admin-menu-item" hidden>Comentarios recibidos</button>
+          <button type="button" id="sv-sign-out">Cerrar sesión</button>
+        </div>
+      </div>
     </div>
   </header>
 
@@ -183,6 +204,57 @@
       <div id="bibliografia-root"></div>
     </section>
 
+    <section id="view-profile" class="sv-view" aria-labelledby="sv-profile-title">
+      <div class="sv-auth-page">
+        <header class="sv-auth-page-header"><p class="sv-auth-eyebrow">Tu cuenta</p><h2 id="sv-profile-title">Perfil académico</h2><p>Completa estos datos para personalizar progresivamente tu experiencia. Los módulos públicos seguirán disponibles.</p></header>
+        <div id="sv-profile-guard" class="sv-auth-empty" hidden></div>
+        <form id="sv-profile-form" class="sv-auth-card" novalidate>
+          <div id="sv-profile-incomplete" class="sv-auth-notice" hidden>Bienvenido. Completa los campos marcados para terminar tu perfil.</div>
+          <div class="sv-auth-form-grid">
+            <label>Nombre<input id="sv-profile-first-name" name="first_name" maxlength="80" autocomplete="given-name" required /></label>
+            <label>Apellido<input id="sv-profile-last-name" name="last_name" maxlength="80" autocomplete="family-name" required /></label>
+            <label>Nombre de usuario<input id="sv-profile-username" name="username" minlength="3" maxlength="30" autocomplete="username" autocapitalize="none" spellcheck="false" required /></label>
+            <label>Correo<input id="sv-profile-email" type="email" readonly aria-readonly="true" /></label>
+            <label>Carrera<select id="sv-profile-career" name="career" required></select></label>
+            <label>Semestre<select id="sv-profile-semester" name="semester" required></select></label>
+            <label>Universidad o institución<select id="sv-profile-institution" name="institution" required></select></label>
+            <label>Rol<input id="sv-profile-role" readonly aria-readonly="true" /></label>
+          </div>
+          <p class="sv-auth-status" id="sv-profile-status" role="status" aria-live="polite"></p>
+          <button class="sv-btn sv-btn-primary" type="submit">Guardar perfil</button>
+        </form>
+      </div>
+    </section>
+
+    <section id="view-feedback" class="sv-view" aria-labelledby="sv-feedback-title">
+      <div class="sv-auth-page">
+        <header class="sv-auth-page-header"><p class="sv-auth-eyebrow">Ayúdanos a mejorar</p><h2 id="sv-feedback-title">Comentarios</h2><p>Comparte una observación sobre Suite Vet. No incluyas datos personales, pacientes ni información clínica sensible.</p></header>
+        <div id="sv-feedback-guard" class="sv-auth-empty" hidden></div>
+        <form id="sv-feedback-form" class="sv-auth-card" novalidate>
+          <label>Asunto<select id="sv-feedback-subject" name="subject" required><option value="comment">Comentario</option><option value="recommendation">Recomendación</option><option value="observed_error">Error observado</option></select></label>
+          <label>Comentario<textarea id="sv-feedback-message" name="message" minlength="10" maxlength="2000" rows="6" required></textarea></label>
+          <fieldset class="sv-rating-fieldset"><legend>Calificación de Suite Vet</legend><div class="sv-rating-options" aria-label="Calificación de 1 a 5 estrellas">
+            <label><input type="radio" name="rating" value="1" required /><span>1 ★</span></label><label><input type="radio" name="rating" value="2" /><span>2 ★</span></label><label><input type="radio" name="rating" value="3" /><span>3 ★</span></label><label><input type="radio" name="rating" value="4" /><span>4 ★</span></label><label><input type="radio" name="rating" value="5" /><span>5 ★</span></label>
+          </div></fieldset>
+          <p class="sv-auth-status" id="sv-feedback-status" role="status" aria-live="polite"></p>
+          <button class="sv-btn sv-btn-primary" type="submit">Enviar</button>
+        </form>
+      </div>
+    </section>
+
+    <section id="view-feedback-admin" class="sv-view" aria-labelledby="sv-feedback-admin-title">
+      <div class="sv-auth-page">
+        <header class="sv-auth-page-header"><p class="sv-auth-eyebrow">Super Admin</p><h2 id="sv-feedback-admin-title">Comentarios recibidos</h2></header>
+        <div class="sv-auth-card sv-admin-filters">
+          <label>Asunto<select id="sv-admin-subject"><option value="">Todos</option><option value="comment">Comentario</option><option value="recommendation">Recomendación</option><option value="observed_error">Error observado</option></select></label>
+          <label>Calificación<select id="sv-admin-rating"><option value="">Todas</option><option value="1">1 estrella</option><option value="2">2 estrellas</option><option value="3">3 estrellas</option><option value="4">4 estrellas</option><option value="5">5 estrellas</option></select></label>
+          <button class="sv-btn sv-btn-secondary" id="sv-admin-refresh" type="button">Actualizar</button>
+        </div>
+        <p class="sv-auth-status" id="sv-admin-status" role="status" aria-live="polite"></p>
+        <div id="sv-admin-feedback-list" class="sv-admin-feedback-list"></div>
+      </div>
+    </section>
+
   </main>
 
   <footer class="sv-legal-footer" aria-label="Informaci&oacute;n institucional de SUITE VET">
@@ -222,6 +294,33 @@
       <div class="sv-modal-body" id="sv-legal-modal-body"></div>
       <div class="sv-modal-footer">
         <button class="sv-btn sv-btn-ghost" type="button" data-legal-close>Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="sv-auth-modal" class="sv-modal-overlay" aria-hidden="true">
+    <div class="sv-modal sv-auth-modal" role="dialog" aria-modal="true" aria-labelledby="sv-auth-title" tabindex="-1">
+      <div class="sv-modal-header">
+        <div><p class="sv-auth-eyebrow">Cuenta Suite Vet</p><h3 id="sv-auth-title">Iniciar sesión</h3></div>
+        <button class="sv-icon-btn" type="button" data-auth-close aria-label="Cerrar">&times;</button>
+      </div>
+      <div class="sv-modal-body">
+        <p id="sv-auth-config-message" class="sv-auth-notice" hidden>El acceso con cuenta no está disponible en este entorno. El contenido público sigue funcionando normalmente.</p>
+        <form id="sv-auth-form" novalidate>
+          <label>Correo<input id="sv-auth-email" type="email" autocomplete="email" required /></label>
+          <label id="sv-auth-password-label">Contraseña<span class="sv-password-wrap"><input id="sv-auth-password" type="password" autocomplete="current-password" minlength="10" required /><button type="button" id="sv-password-toggle" aria-label="Mostrar contraseña">Mostrar</button></span></label>
+          <label id="sv-auth-password-confirm-label" hidden>Confirmar contraseña<input id="sv-auth-password-confirm" type="password" autocomplete="new-password" minlength="10" /></label>
+          <ul id="sv-password-rules" class="sv-password-rules" hidden><li data-password-rule="length">10 caracteres como mínimo</li><li data-password-rule="lower">Una minúscula</li><li data-password-rule="upper">Una mayúscula</li><li data-password-rule="number">Un número</li><li data-password-rule="symbol">Un símbolo</li></ul>
+          <label id="sv-auth-terms-label" class="sv-auth-terms" hidden><input id="sv-auth-terms" type="checkbox" /> Acepto los Términos de uso y la Política de privacidad disponibles al pie de la aplicación.</label>
+          <p id="sv-auth-message" class="sv-auth-status" role="status" aria-live="polite"></p>
+          <button class="sv-btn sv-btn-primary sv-auth-submit" id="sv-auth-submit" type="submit">Iniciar sesión</button>
+        </form>
+        <div class="sv-auth-links" id="sv-auth-links">
+          <button type="button" data-auth-mode="forgot">Olvidé mi contraseña</button>
+          <button type="button" data-auth-mode="signup">Crear cuenta</button>
+          <button type="button" data-auth-mode="signin" hidden>Ya tengo una cuenta</button>
+          <button type="button" id="sv-auth-resend" hidden>Reenviar confirmación</button>
+        </div>
       </div>
     </div>
   </div>
@@ -306,6 +405,9 @@
   ════════════════════════════════════════ -->
   <!-- Shared -->
   <script src="shared/api-client.js" defer></script>
+  <script src="shared/auth-service.js" defer></script>
+  <script src="shared/user-data-service.js" defer></script>
+  <script src="shared/auth-ui.js" defer></script>
   <script src="shared/module-catalog.js" defer></script>
   <script src="shared/favoritos.js" defer></script>
   <script src="shared/recetario.js" defer></script>

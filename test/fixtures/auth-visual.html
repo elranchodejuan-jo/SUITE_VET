@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fixture visual de cuenta - Suite Vet</title>
+  <link rel="stylesheet" href="../../shared/tokens.css" />
+  <link rel="stylesheet" href="../../shared/components.css" />
+  <link rel="stylesheet" href="../../shared/layout.css" />
+  <link rel="stylesheet" href="../../shared/auth.css" />
+  <style>
+    body { margin: 0; padding: 1rem; background: var(--sv-bg); color: var(--sv-text); }
+    .fixture-grid { display: grid; gap: 1.25rem; width: min(100%, 68rem); margin: 0 auto; }
+    .fixture-topbar { display: flex; justify-content: flex-end; }
+    .fixture-topbar .sv-account-menu { position: static; display: block; margin-left: 0.5rem; }
+  </style>
+</head>
+<body>
+  <main class="fixture-grid">
+    <h1>Fixture local de autenticación</h1>
+    <div class="fixture-topbar">
+      <button class="sv-account-button" type="button" aria-expanded="true"><span class="sv-account-avatar" aria-hidden="true">E</span><span>Estudiante de prueba</span></button>
+      <div class="sv-account-menu"><button type="button">Perfil</button><button type="button">Comentarios recibidos</button><button type="button">Cerrar sesión</button></div>
+    </div>
+
+    <section class="sv-auth-page" aria-labelledby="fixture-profile-title">
+      <header class="sv-auth-page-header"><p class="sv-auth-eyebrow">Tu cuenta</p><h2 id="fixture-profile-title">Perfil académico</h2></header>
+      <form class="sv-auth-card">
+        <div class="sv-auth-form-grid">
+          <label>Nombre<input value="Estudiante" /></label><label>Apellido<input value="De prueba" /></label>
+          <label>Nombre de usuario<input value="estudiante_demo" /></label><label>Correo<input value="fixture@example.test" readonly /></label>
+          <label>Carrera<select><option>Medicina Veterinaria</option></select></label><label>Semestre<select><option>Séptimo</option></select></label>
+          <label>Institución<select><option>Universidad Técnica de Machala</option></select></label><label>Rol<input value="student" readonly /></label>
+        </div>
+        <button class="sv-btn sv-btn-primary" type="button">Guardar perfil</button>
+      </form>
+    </section>
+
+    <section class="sv-auth-page" aria-labelledby="fixture-feedback-title">
+      <header class="sv-auth-page-header"><p class="sv-auth-eyebrow">Ayúdanos a mejorar</p><h2 id="fixture-feedback-title">Comentarios</h2></header>
+      <form class="sv-auth-card">
+        <label>Asunto<select><option>Recomendación</option></select></label>
+        <label>Comentario<textarea rows="4">Comentario local de prueba sin datos reales.</textarea></label>
+        <fieldset class="sv-rating-fieldset"><legend>Calificación</legend><div class="sv-rating-options"><label><input type="radio" checked /><span>5 ★</span></label></div></fieldset>
+        <button class="sv-btn sv-btn-primary" type="button">Enviar</button>
+      </form>
+    </section>
+
+    <section class="sv-auth-page" aria-labelledby="fixture-admin-title">
+      <header class="sv-auth-page-header"><p class="sv-auth-eyebrow">Super Admin</p><h2 id="fixture-admin-title">Comentarios recibidos</h2></header>
+      <div class="sv-auth-card sv-admin-filters"><label>Asunto<select><option>Todos</option></select></label><label>Calificación<select><option>Todas</option></select></label><button class="sv-btn sv-btn-secondary" type="button">Actualizar</button></div>
+      <div class="sv-admin-feedback-list">
+        <article class="sv-auth-card sv-admin-feedback-card"><p class="sv-admin-meta">12/7/2026, 20:00</p><h3>Estudiante de prueba · Error observado</h3><p class="sv-admin-message">&lt;img src=x onerror=alert(1)&gt; se muestra como texto, no como HTML.</p><p class="sv-admin-rating">4 de 5 estrellas</p><label class="sv-admin-approved"><input type="checkbox" checked /> Aprobado</label><label>Respuesta administrativa<textarea rows="3">Respuesta local de prueba.</textarea></label><button class="sv-btn sv-btn-secondary" type="button">Guardar respuesta</button></article>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

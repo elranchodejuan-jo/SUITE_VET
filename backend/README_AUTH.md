@@ -47,16 +47,25 @@ Desde la raíz del repositorio, las pruebas frontend siguen ejecutándose con `n
 
 ## Supabase CLI y remoto
 
-La carpeta `supabase/` está versionada, pero no está vinculada a ningún proyecto remoto. Cuando el propietario haya creado el proyecto independiente **Suite Vet Dev**, debe ejecutar localmente:
+La carpeta `supabase/` está vinculada localmente al proyecto independiente Suite Vet con ref `ibkbbzyrnaaqrjiidfjl`. Antes de cualquier operación remota se debe confirmar ese identificador y ejecutar primero un dry-run:
 
 ```powershell
 npx supabase login
-npx supabase link --project-ref <PROJECT_REF_DE_SUITE_VET_DEV>
 npx supabase db push --dry-run
 npx supabase db push
 npx supabase test db
 ```
 
-No se debe pegar el access token ni el project ref completo en chats. Antes de `db push`, confirmar en terminal que el proyecto es Suite Vet Dev y no Cartilla Digital. Security Advisor y las políticas RLS deben revisarse después de aplicar la migración.
+No se debe pegar el access token, contraseña, connection string ni claves privadas en chats o logs. Security Advisor y las políticas RLS deben revisarse después de aplicar cada migración. Las pruebas pgTAP que crean identidades temporales deben ejecutarse en una única transacción terminada con `ROLLBACK` y requieren autorización expresa previa.
+
+## Flujo del Hito 3.2
+
+El navegador inicia sesión directamente con Supabase Auth usando únicamente Project URL y publishable key. La confirmación y recuperación regresan a una URL de la allowlist; el servicio limpia de la barra de direcciones los parámetros sensibles una vez procesados. La biblioteca oficial administra persistencia y renovación de sesión.
+
+La migración incremental `20260713000100_auth_profile_feedback.sql` amplía `profiles` de forma compatible y crea `user_feedback`. RLS limita perfiles y comentarios a su propietario. Las únicas columnas administrativas actualizables son `approved` y `response`, exclusivamente cuando la fila supera la política de Super Admin basada en `user_roles`. El texto, asunto, calificación y autor son inmutables.
+
+`GET /api/v1/auth/me` continúa siendo la comprobación mínima para APIs protegidas: verifica criptográficamente el Bearer JWT y no participa en el login de la SPA. GitHub Pages y todo el contenido público siguen funcionando aunque FastAPI no esté desplegado.
+
+La cuenta del propietario no se crea ni se promueve durante este hito. Cuando exista una cuenta confirmada y haya autorización explícita, un administrador de base puede insertar su UUID confirmado en `public.user_roles` con rol `super_admin`; nunca se introduce un correo, UUID real o privilegio automático en código versionado.
 
 Para rotar claves JWT, rotarlas desde Supabase, conservar la clave anterior durante la ventana indicada por el proveedor y verificar que el JWKS publique ambas durante la transición. FastAPI renovará claves por `kid`; no se almacenan claves privadas en Suite Vet.

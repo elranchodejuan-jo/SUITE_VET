@@ -21,9 +21,10 @@ select ok(
     '1. RLS is enabled on both identity tables'
 );
 
-set local role anon;
-select is((select count(*) from public.profiles), 0::bigint, '2. anonymous cannot read profiles');
-set local role postgres;
+select ok(
+    not has_table_privilege('anon', 'public.profiles', 'SELECT'),
+    '2. anonymous cannot read profiles'
+);
 
 select set_config('request.jwt.claim.sub', '10000000-0000-4000-8000-000000000001', true);
 set local role authenticated;
@@ -36,7 +37,7 @@ select is((
     where id = '20000000-0000-4000-8000-000000000002'
 ), 0::bigint, '4. user A cannot read user B profile');
 select lives_ok(
-    $$update public.profiles set career = 'Veterinary Medicine' where id = auth.uid()$$,
+    $$update public.profiles set career = 'Medicina Veterinaria' where id = auth.uid()$$,
     '5. user A updates own profile'
 );
 update public.profiles set career = 'Unauthorized change'
@@ -140,7 +141,7 @@ select ok(private.has_role('student'), '22. helper is true for the current user 
 select ok(not private.has_role('admin'), '23. helper is false for an unassigned role');
 
 set local role authenticated;
-update public.profiles set semester = '3'
+update public.profiles set semester = 'Tercero'
 where id = auth.uid();
 set local role postgres;
 select ok(
