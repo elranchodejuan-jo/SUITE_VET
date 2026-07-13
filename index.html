@@ -3,13 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>SUITE VET</title>
+  <title>SUITE VET | Plataforma académica veterinaria</title>
+  <meta name="description" content="Suite Vet reúne módulos y herramientas académicas para estudiantes de Medicina Veterinaria." />
+  <meta name="theme-color" content="#0b4f8a" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="es_EC" />
+  <meta property="og:title" content="SUITE VET | Plataforma académica veterinaria" />
+  <meta property="og:description" content="Herramientas académicas veterinarias organizadas en una experiencia modular y responsive." />
 
   <!-- ── SHARED: Sistema de diseño ── -->
   <link rel="stylesheet" href="shared/tokens.css" />
   <link rel="stylesheet" href="shared/components.css" />
   <link rel="stylesheet" href="shared/categorias.css" />
   <link rel="stylesheet" href="shared/layout.css" />
+  <link rel="stylesheet" href="shared/landing.css" />
   <link rel="stylesheet" href="shared/about.css?v=20260520-photo-carousel" />
   <link rel="stylesheet" href="shared/favoritos.css" />
   <link rel="stylesheet" href="shared/auth.css" />
@@ -76,7 +83,7 @@
     </div>
     <div class="sv-topbar-actions" aria-label="Acciones rápidas">
       <button class="sv-auth-action" id="sv-feedback-toggle" type="button" aria-label="Abrir comentarios">Comentarios</button>
-      <button class="sv-icon-btn sv-home-toggle" id="sv-home-toggle" type="button" data-go-view="home" aria-label="Ir al inicio" title="Inicio">
+      <button class="sv-icon-btn sv-home-toggle" id="sv-home-toggle" type="button" data-go-view="landing" aria-label="Ir a la presentación" title="Presentación">
         &#8962;
       </button>
       <button class="sv-icon-btn sv-search-toggle" id="sv-search-toggle" type="button" aria-label="Abrir búsqueda global" aria-expanded="false" aria-controls="sv-search-global" title="Buscar">
@@ -134,13 +141,21 @@
   ════════════════════════════════════════ -->
   <main class="sv-main" id="sv-main-content" tabindex="-1">
 
-    <!-- ── INICIO ── -->
-    <section id="view-home" class="sv-view sv-view-active">
-      <h2>Bienvenido a SUITE VET</h2>
-      <p class="sv-view-intro">
-        Plataforma de estudio y consulta para medicina veterinaria y zootecnia.
-        Elige el módulo con el que quieres trabajar:
-      </p>
+    <!-- ── PRESENTACIÓN PÚBLICA ── -->
+    <section id="view-landing" class="sv-view sv-view-active" aria-labelledby="sv-landing-title">
+      <div id="sv-landing-root"></div>
+    </section>
+
+    <!-- ── APLICACIÓN ── -->
+    <section id="view-home" class="sv-view" aria-labelledby="sv-app-title">
+      <header class="sv-application-heading">
+        <p class="sv-landing-eyebrow">Aplicación académica</p>
+        <h2 id="sv-app-title">Panel de módulos</h2>
+        <p class="sv-view-intro">
+          Elige el módulo con el que quieres trabajar o vuelve a la presentación pública de Suite Vet.
+        </p>
+        <button class="sv-btn sv-btn-secondary" type="button" data-go-view="landing">Ver presentación</button>
+      </header>
       <div class="sv-home-grid" id="sv-home-catalog"></div>
     </section>
 
@@ -409,6 +424,7 @@
   <script src="shared/user-data-service.js" defer></script>
   <script src="shared/auth-ui.js" defer></script>
   <script src="shared/module-catalog.js" defer></script>
+  <script src="shared/landing.js" defer></script>
   <script src="shared/favoritos.js" defer></script>
   <script src="shared/recetario.js" defer></script>
   <script src="shared/about.js?v=20260520-photo-carousel" defer></script>

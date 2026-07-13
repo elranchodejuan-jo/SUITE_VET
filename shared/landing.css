@@ -1,0 +1,278 @@
+/* Presentación pública de Suite Vet. Solo afecta la vista landing y no la impresión clínica. */
+.sv-application-heading {
+  display: grid;
+  gap: 0.8rem;
+  margin-bottom: 1.25rem;
+}
+
+.sv-application-heading .sv-view-intro { margin: 0; }
+
+.sv-landing {
+  color: var(--sv-text-primary);
+  display: grid;
+  gap: clamp(2.75rem, 7vw, 5.5rem);
+  margin-inline: auto;
+  max-width: 76rem;
+  padding: clamp(0.25rem, 1.5vw, 1rem) 0 clamp(2.5rem, 6vw, 5rem);
+}
+
+.sv-landing h1,
+.sv-landing h2,
+.sv-landing h3,
+.sv-landing p { margin: 0; }
+
+.sv-landing-hero {
+  align-items: stretch;
+  background: linear-gradient(132deg, color-mix(in srgb, var(--sv-accent) 22%, var(--sv-bg-surface)), var(--sv-bg-surface) 64%);
+  border: 1px solid color-mix(in srgb, var(--sv-accent) 30%, var(--sv-border));
+  border-radius: clamp(1.25rem, 3vw, 2rem);
+  box-shadow: var(--sv-shadow-md);
+  display: grid;
+  gap: clamp(1.5rem, 4vw, 4rem);
+  grid-template-columns: minmax(0, 1.35fr) minmax(15rem, 0.65fr);
+  overflow: hidden;
+  padding: clamp(1.5rem, 5vw, 4.5rem);
+  position: relative;
+}
+
+.sv-landing-hero::after {
+  background: radial-gradient(circle, color-mix(in srgb, var(--sv-accent) 42%, transparent) 0, transparent 68%);
+  content: "";
+  height: 24rem;
+  pointer-events: none;
+  position: absolute;
+  right: -11rem;
+  top: -12rem;
+  width: 24rem;
+}
+
+.sv-landing-hero-copy,
+.sv-landing-hero-panel { position: relative; z-index: 1; }
+
+.sv-landing-hero-copy {
+  align-content: center;
+  display: grid;
+  gap: 1.1rem;
+}
+
+.sv-landing-eyebrow {
+  color: var(--sv-accent);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.sv-landing h1 {
+  font-size: clamp(2.4rem, 7vw, 5.7rem);
+  letter-spacing: -0.06em;
+  line-height: 0.95;
+}
+
+.sv-landing-lead {
+  font-size: clamp(1.1rem, 2.2vw, 1.42rem);
+  line-height: 1.55;
+  max-width: 44rem;
+}
+
+.sv-landing-support,
+.sv-landing-section-heading > p,
+.sv-landing-problem-card p,
+.sv-landing-benefit-card p,
+.sv-landing-module-copy span,
+.sv-landing-hero-panel p,
+.sv-landing-final-cta p {
+  color: var(--sv-text-secondary);
+  line-height: 1.6;
+}
+
+.sv-landing-actions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.4rem;
+}
+
+.sv-landing-action { min-height: 44px; }
+
+.sv-landing-hero-panel {
+  align-content: center;
+  background: color-mix(in srgb, var(--sv-bg-elevated) 84%, transparent);
+  border: 1px solid color-mix(in srgb, var(--sv-accent) 25%, var(--sv-border));
+  border-radius: 1.2rem;
+  display: grid;
+  gap: 1rem;
+  min-height: 14rem;
+  padding: clamp(1.2rem, 3vw, 2rem);
+}
+
+.sv-landing-panel-mark,
+.sv-landing-module-symbol {
+  align-items: center;
+  background: var(--sv-accent);
+  border-radius: 0.8rem;
+  color: #fff;
+  display: inline-flex;
+  font-weight: 900;
+  justify-content: center;
+  letter-spacing: 0.05em;
+}
+
+.sv-landing-panel-mark { font-size: 1.05rem; height: 3rem; width: 3rem; }
+
+.sv-landing-section { display: grid; gap: 1.4rem; }
+
+.sv-landing-section-heading {
+  display: grid;
+  gap: 0.6rem;
+  max-width: 48rem;
+}
+
+.sv-landing-section-heading h2,
+.sv-landing-final-cta h2 { font-size: clamp(1.55rem, 3.1vw, 2.35rem); line-height: 1.12; }
+
+.sv-landing-problem-grid,
+.sv-landing-benefit-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.sv-landing-problem-card,
+.sv-landing-benefit-card {
+  background: var(--sv-bg-surface);
+  border: 1px solid var(--sv-border);
+  border-radius: 1rem;
+  display: grid;
+  gap: 0.55rem;
+  min-width: 0;
+  padding: 1.2rem;
+}
+
+.sv-landing-problem-card h3,
+.sv-landing-benefit-card h3 { font-size: 1rem; }
+
+.sv-landing-solution {
+  background: color-mix(in srgb, var(--sv-accent) 8%, var(--sv-bg-surface));
+  border-inline-start: 4px solid var(--sv-accent);
+  border-radius: 0 1rem 1rem 0;
+  padding: clamp(1.25rem, 3vw, 2.25rem);
+}
+
+.sv-landing-module-grid {
+  display: grid;
+  gap: 0.85rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.sv-landing-module-card {
+  align-items: flex-start;
+  background: var(--sv-bg-surface);
+  border: 1px solid var(--sv-border);
+  border-radius: 1rem;
+  color: inherit;
+  cursor: pointer;
+  display: flex;
+  gap: 0.9rem;
+  min-height: 7.2rem;
+  padding: 1rem;
+  text-align: left;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+.sv-landing-module-card:hover {
+  border-color: var(--sv-accent);
+  box-shadow: var(--sv-shadow-md);
+  transform: translateY(-2px);
+}
+
+.sv-landing-module-card:focus-visible {
+  outline: 3px solid var(--sv-focus-ring);
+  outline-offset: 3px;
+}
+
+.sv-landing-module-symbol { flex: 0 0 2.5rem; height: 2.5rem; width: 2.5rem; }
+
+.sv-landing-module-copy { display: grid; gap: 0.3rem; min-width: 0; }
+.sv-landing-module-copy strong { font-size: 0.95rem; }
+.sv-landing-module-copy span { font-size: 0.85rem; }
+
+.sv-landing-benefit-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+.sv-landing-evolution,
+.sv-landing-security {
+  background: var(--sv-bg-surface);
+  border: 1px solid var(--sv-border);
+  border-radius: 1.25rem;
+  padding: clamp(1.25rem, 3vw, 2rem);
+}
+
+.sv-landing-future-label {
+  color: var(--sv-accent);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  margin: 0.3rem 0 0.6rem;
+  text-transform: uppercase;
+}
+
+.sv-landing-future-list {
+  display: grid;
+  gap: 0.6rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0;
+  padding-inline-start: 1.15rem;
+}
+
+.sv-landing-future-list li { color: var(--sv-text-secondary); line-height: 1.45; }
+
+.sv-landing-final-cta {
+  background: linear-gradient(130deg, var(--sv-accent), color-mix(in srgb, var(--sv-accent) 58%, #182b42));
+  border-radius: 1.5rem;
+  color: #fff;
+  display: grid;
+  gap: 0.8rem;
+  padding: clamp(1.5rem, 4vw, 3rem);
+}
+
+.sv-landing-final-cta p { color: color-mix(in srgb, #fff 84%, transparent); }
+.sv-landing-final-cta .sv-btn-primary { background: #fff; border-color: #fff; color: var(--sv-accent); box-shadow: none; }
+.sv-landing-final-cta .sv-btn-secondary { border-color: color-mix(in srgb, #fff 74%, transparent); color: #fff; }
+.sv-landing-final-cta .sv-btn-secondary:hover:not(:disabled) { background: color-mix(in srgb, #fff 12%, transparent); }
+
+.sv-landing-disclaimer {
+  color: var(--sv-text-muted);
+  font-size: 0.8rem;
+  line-height: 1.55;
+  margin-inline: auto;
+  max-width: 58rem;
+  text-align: center;
+}
+
+@media screen and (max-width: 900px) {
+  .sv-landing-hero { grid-template-columns: 1fr; }
+  .sv-landing-problem-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sv-landing-module-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media screen and (max-width: 640px) {
+  .sv-landing { gap: 2.6rem; }
+  .sv-landing-hero { border-radius: 1.25rem; padding: 1.35rem; }
+  .sv-landing-actions { align-items: stretch; flex-direction: column; }
+  .sv-landing-actions .sv-btn { justify-content: center; width: 100%; }
+  .sv-landing-problem-grid,
+  .sv-landing-benefit-grid,
+  .sv-landing-module-grid,
+  .sv-landing-future-list { grid-template-columns: 1fr; }
+  .sv-landing-module-card { min-height: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sv-landing-module-card { transition: none; }
+  .sv-landing-module-card:hover { transform: none; }
+}
+
+@media print {
+  #view-landing { display: none !important; }
+}

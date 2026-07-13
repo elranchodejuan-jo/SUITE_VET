@@ -29,7 +29,7 @@ function copyClassicRuntime() {
 }
 
 export default defineConfig({
-  base: "./",
+  base: "/SUITE_VET/",
   publicDir: false,
   plugins: [copyClassicRuntime()],
   server: {

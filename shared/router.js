@@ -58,7 +58,39 @@
   // ---------------------------------------------------------------------------
   // 3. NAVEGACIÃ“N DE VISTAS
   // ---------------------------------------------------------------------------
-  function showView(viewName) {
+  const DEFAULT_VIEW = "landing";
+  const ROUTE_QUERY_PARAM = "sv_view";
+  const AUTH_CALLBACK_QUERY_KEYS = new Set(["code", "token_hash", "type", "error", "error_code"]);
+  const AUTH_CALLBACK_HASH = /(?:access_token|refresh_token|error(?:_code|_description)?|type)=/i;
+
+  function viewExists(viewName) {
+    return Boolean(document.getElementById(`view-${viewName}`));
+  }
+
+  function isSensitiveAuthCallbackUrl() {
+    const params = new URLSearchParams(window.location?.search || "");
+    return Array.from(params.keys()).some((key) => AUTH_CALLBACK_QUERY_KEYS.has(key)) ||
+      AUTH_CALLBACK_HASH.test(window.location?.hash || "");
+  }
+
+  function readRouteView() {
+    if (isSensitiveAuthCallbackUrl()) return DEFAULT_VIEW;
+    const params = new URLSearchParams(window.location?.search || "");
+    const requested = params.get(ROUTE_QUERY_PARAM);
+    return requested && viewExists(requested) ? requested : DEFAULT_VIEW;
+  }
+
+  function updateBrowserRoute(viewName) {
+    if (!window.history?.pushState || !window.location || isSensitiveAuthCallbackUrl() || !viewExists(viewName)) return;
+    const url = new URL(window.location.href);
+    if (viewName === DEFAULT_VIEW) url.searchParams.delete(ROUTE_QUERY_PARAM);
+    else url.searchParams.set(ROUTE_QUERY_PARAM, viewName);
+    const next = `${url.pathname}${url.search}${url.hash}`;
+    const current = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+    if (next !== current) window.history.pushState({ suiteVetView: viewName }, "", next);
+  }
+
+  function showView(viewName, options = {}) {
     const views   = document.querySelectorAll(".sv-view");
 
     views.forEach((v) => {
@@ -70,6 +102,7 @@
     syncActiveNavigation(viewName);
 
     window.SuiteVet.currentView = viewName;
+    if (options.updateHistory !== false) updateBrowserRoute(viewName);
     if (SHELL_DRAWER_MEDIA.matches) {
       closeMenu({ restoreFocus: false });
     }
@@ -82,7 +115,7 @@
   }
 
   window.SuiteVet.showView    = showView;
-  window.SuiteVet.currentView = "home";
+  window.SuiteVet.currentView = DEFAULT_VIEW;
 
   // ---------------------------------------------------------------------------
   // 4. MENÃš HAMBURGUESA
@@ -614,7 +647,11 @@
     }
 
     // Vista por defecto
-    showView("home");
+    showView(readRouteView(), { updateHistory: false });
+  });
+
+  window.addEventListener("popstate", () => {
+    if (document.readyState !== "loading") showView(readRouteView(), { updateHistory: false });
   });
 
   document.addEventListener("suitevet:catalogready", () => {

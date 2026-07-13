@@ -14,7 +14,8 @@ const migration = read("supabase/migrations/20260713000100_auth_profile_feedback
 const visualFixture = read("test/fixtures/auth-visual.html");
 
 test("la SPA pública conserva sus vistas y añade cuenta sin bloquear inicio", () => {
-  assert.match(index, /id="view-home" class="sv-view sv-view-active"/);
+  assert.match(index, /id="view-landing" class="sv-view sv-view-active"/);
+  assert.match(index, /id="view-home" class="sv-view"/);
   assert.match(index, /id="sv-auth-open"[^>]+aria-label="Iniciar sesión"[^>]*>Iniciar sesión/);
   assert.match(index, /id="view-profile"/);
   assert.match(index, /id="view-feedback"/);
