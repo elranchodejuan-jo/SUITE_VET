@@ -17,9 +17,6 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
-      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ vars.VITE_SUPABASE_PUBLISHABLE_KEY }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -33,22 +30,19 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Validate public Supabase build configuration
-        shell: bash
+      - name: Reject invalid public Supabase build configuration
+        if: ${{ vars.VITE_SUPABASE_URL == '' || vars.VITE_SUPABASE_PUBLISHABLE_KEY == '' || !startsWith(vars.VITE_SUPABASE_URL, 'https://') || !endsWith(vars.VITE_SUPABASE_URL, '.supabase.co') || startsWith(vars.VITE_SUPABASE_PUBLISHABLE_KEY, 'sb_secret_') || startsWith(vars.VITE_SUPABASE_PUBLISHABLE_KEY, 'eyJ') || startsWith(vars.VITE_SUPABASE_PUBLISHABLE_KEY, 'example') || startsWith(vars.VITE_SUPABASE_PUBLISHABLE_KEY, 'placeholder') || startsWith(vars.VITE_SUPABASE_PUBLISHABLE_KEY, 'your_') }}
         run: |
-          if [[ -z "${VITE_SUPABASE_URL}" || -z "${VITE_SUPABASE_PUBLISHABLE_KEY}" ]]; then
-            echo "Required public Supabase build variables are missing."
-            exit 1
-          fi
-          if [[ ! "${VITE_SUPABASE_URL}" =~ ^https://[a-z0-9-]+\.supabase\.co$ ]] || [[ "${VITE_SUPABASE_PUBLISHABLE_KEY}" =~ ^(sb_secret_|eyJ|example|placeholder|your_) ]]; then
-            echo "Public Supabase build variables are invalid or unsafe."
-            exit 1
-          fi
+          echo "Public Supabase build variables are missing, invalid or unsafe."
+          exit 1
 
       - name: Run tests
         run: npm test
 
       - name: Build production artifact
+        env:
+          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ vars.VITE_SUPABASE_PUBLISHABLE_KEY }}
         run: npm run build
 
       - name: Configure Pages

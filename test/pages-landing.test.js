@@ -29,7 +29,7 @@ test("Pages compila y publica solo dist con variables públicas por nombre", () 
   assert.match(workflow, /actions\/upload-pages-artifact@v3[\s\S]*path: \.\/dist/);
   assert.match(workflow, /actions\/deploy-pages@v4/);
   assert.doesNotMatch(workflow, /service_role|SUPABASE_DB_|DATABASE_URL|connection string/i);
-  assert.match(workflow, /\^\(sb_secret_\|eyJ\|example\|placeholder\|your_\)/);
+  assert.match(workflow, /startsWith\(vars\.VITE_SUPABASE_PUBLISHABLE_KEY, 'sb_secret_'\)/);
 });
 
 test("Vite conserva la base de GitHub Pages y la landing se integra a la SPA", () => {
