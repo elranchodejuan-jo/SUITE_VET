@@ -4,8 +4,8 @@ import { resolve } from "node:path";
 const outputPath = process.argv[2];
 if (!outputPath) throw new Error("Se requiere una ruta temporal de salida.");
 
-const migrationPath = resolve("supabase/migrations/20260713000100_auth_profile_feedback.sql");
-const testPath = resolve("supabase/tests/auth_profile_feedback.sql");
+const migrationPath = resolve("supabase/migrations/20260713000200_saas_admin_foundation.sql");
+const testPath = resolve("supabase/tests/saas_admin_foundation.sql");
 
 function unwrap(source, expectedEnd, label) {
   const withoutStart = source.replace(/^\uFEFF?\s*begin;\s*/i, "");
@@ -29,7 +29,7 @@ if ((tests.match(/@example\.test/gi) || []).length > 2) {
 
 const composite = [
   "begin;",
-  "-- Migración y fixtures del Hito 3.2: todo se descarta al cerrar esta transacción.",
+  "-- Migracion y fixtures del Hito 3.3: todo se descarta al cerrar esta transaccion.",
   migration,
   tests,
   "rollback;",

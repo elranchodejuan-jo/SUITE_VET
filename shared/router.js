@@ -75,22 +75,31 @@
 
   function readRouteView() {
     if (isSensitiveAuthCallbackUrl()) return DEFAULT_VIEW;
+    if ((window.location?.hash || "").toLowerCase() === "#/admin" && viewExists("admin")) return "admin";
     const params = new URLSearchParams(window.location?.search || "");
     const requested = params.get(ROUTE_QUERY_PARAM);
+    if (requested === "feedback-admin" && viewExists("admin")) return "admin";
     return requested && viewExists(requested) ? requested : DEFAULT_VIEW;
   }
 
   function updateBrowserRoute(viewName) {
     if (!window.history?.pushState || !window.location || isSensitiveAuthCallbackUrl() || !viewExists(viewName)) return;
     const url = new URL(window.location.href);
-    if (viewName === DEFAULT_VIEW) url.searchParams.delete(ROUTE_QUERY_PARAM);
-    else url.searchParams.set(ROUTE_QUERY_PARAM, viewName);
+    if (viewName === "admin") {
+      url.searchParams.delete(ROUTE_QUERY_PARAM);
+      url.hash = "/admin";
+    } else {
+      if (viewName === DEFAULT_VIEW) url.searchParams.delete(ROUTE_QUERY_PARAM);
+      else url.searchParams.set(ROUTE_QUERY_PARAM, viewName);
+      if (url.hash.toLowerCase() === "#/admin") url.hash = "";
+    }
     const next = `${url.pathname}${url.search}${url.hash}`;
     const current = `${window.location.pathname}${window.location.search}${window.location.hash}`;
     if (next !== current) window.history.pushState({ suiteVetView: viewName }, "", next);
   }
 
   function showView(viewName, options = {}) {
+    if (viewName === "feedback-admin" && viewExists("admin")) viewName = "admin";
     const views   = document.querySelectorAll(".sv-view");
 
     views.forEach((v) => {

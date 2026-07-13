@@ -17,6 +17,7 @@
     ownFeedbackRequest: 0,
     adminLoading: false,
     adminLifecycleActive: false,
+    modalTrigger: null,
     initialized: false
   };
 
@@ -48,22 +49,43 @@
     return Number.isNaN(date.getTime()) ? "Fecha no disponible" : date.toLocaleString("es-EC");
   }
 
+  function afterDialogSync(callback) {
+    if (typeof root.requestAnimationFrame !== "function") {
+      root.setTimeout?.(callback, 0);
+      return;
+    }
+    root.requestAnimationFrame(() => {
+      root.requestAnimationFrame(() => {
+        root.requestAnimationFrame(callback);
+      });
+    });
+  }
+
   function openModal(mode = "signin") {
-    setMode(mode);
     const modal = byId("sv-auth-modal");
+    const currentFocus = document.activeElement;
+    if (currentFocus?.focus && currentFocus !== document.body && !modal?.contains(currentFocus)) {
+      state.modalTrigger = currentFocus;
+    }
+    setMode(mode);
     modal?.classList.add("sv-modal-active");
     modal?.setAttribute("aria-hidden", "false");
-    root.requestAnimationFrame?.(() => {
+    afterDialogSync(() => {
       const first = mode === "recovery" ? byId("sv-auth-password") : byId("sv-auth-email");
       first?.focus({ preventScroll: true });
     });
   }
 
   function closeModal() {
+    const trigger = state.modalTrigger;
+    state.modalTrigger = null;
     const modal = byId("sv-auth-modal");
     modal?.classList.remove("sv-modal-active");
     modal?.setAttribute("aria-hidden", "true");
     setStatus("sv-auth-message", "");
+    if (trigger?.isConnected) {
+      afterDialogSync(() => trigger.focus({ preventScroll: true }));
+    }
   }
 
   function passwordChecks(password) {
@@ -236,6 +258,70 @@
     (profile.missingFields || []).forEach((field) => document.querySelector(`[name="${field}"]`)?.setAttribute("aria-invalid", "true"));
   }
 
+  function addSummaryRow(target, label, value) {
+    const term = document.createElement("dt");
+    const detail = document.createElement("dd");
+    term.textContent = label;
+    detail.textContent = value;
+    target.append(term, detail);
+  }
+
+  function renderOwnSaasAccount(account) {
+    const plans = new Map((account?.plans || []).map((plan) => [plan.id, plan]));
+    const active = (account?.subscriptions || []).find((subscription) => subscription.status === "active") || null;
+    const plan = active ? plans.get(active.plan_id) || null : null;
+    const badge = byId("sv-account-plan-badge");
+    const summary = byId("sv-account-plan-summary");
+    summary?.replaceChildren();
+
+    if (state.profile?.role === "super_admin") {
+      if (badge) { badge.textContent = "Interno"; badge.hidden = false; }
+      addSummaryRow(summary, "Tipo de cuenta", "Cuenta interna Super Admin");
+      addSummaryRow(summary, "Suscripción comercial", "No aplica");
+      setStatus("sv-account-plan-status", "Esta cuenta no forma parte de clientes ni conversión.");
+    } else if (plan && active) {
+      if (badge) { badge.textContent = plan.name; badge.hidden = false; }
+      addSummaryRow(summary, "Plan", plan.name);
+      addSummaryRow(summary, "Estado", active.status);
+      addSummaryRow(summary, "Inicio", formatDateTime(active.starts_at));
+      if (active.ends_at) addSummaryRow(summary, "Vencimiento", formatDateTime(active.ends_at));
+      setStatus("sv-account-plan-status", "");
+    } else {
+      if (badge) badge.hidden = true;
+      setStatus("sv-account-plan-status", "No fue posible confirmar una suscripción activa.", "error");
+    }
+
+    const plus = (account?.plans || []).find((candidate) => candidate.slug === "plus");
+    const plusMessage = (account?.settings || []).find((setting) => setting.key === "plus_availability_message")?.value;
+    setText(byId("sv-account-plus-message"), plus?.price_cents == null ? (plusMessage || "Próximamente") : `Precio configurado: ${root.SuiteVetSaasUtils?.formatUsd?.(plus.price_cents) || "USD"}`);
+    const entitlements = byId("sv-account-plus-entitlements");
+    entitlements?.replaceChildren();
+    const plusEntitlements = (account?.entitlements || []).filter((item) => item.plan_id === plus?.id && item.is_active);
+    if (!plusEntitlements.length) appendText(entitlements, "p", "Beneficios definitivos pendientes de configuración.", "sv-auth-empty");
+    plusEntitlements.forEach((item) => appendText(entitlements, "p", item.label));
+
+    const payments = byId("sv-account-payments");
+    payments?.replaceChildren();
+    if (!(account?.payments || []).length) appendText(payments, "p", "No tienes pagos registrados.", "sv-auth-empty");
+    (account?.payments || []).forEach((payment) => {
+      const row = document.createElement("article");
+      row.className = "sv-admin-card";
+      appendText(row, "strong", root.SuiteVetSaasUtils?.formatUsd?.(payment.amount_cents) || "USD 0,00");
+      appendText(row, "p", `${payment.status} · ${formatDateTime(payment.created_at)}`);
+      payments?.append(row);
+    });
+  }
+
+  async function loadOwnSaasAccount() {
+    if (!state.user || !root.SuiteVetSaas) return;
+    setStatus("sv-account-plan-status", "Cargando plan…");
+    try {
+      renderOwnSaasAccount(await root.SuiteVetSaas.loadOwnSaasAccount());
+    } catch (_error) {
+      setStatus("sv-account-plan-status", "No fue posible actualizar el plan y los pagos.", "error");
+    }
+  }
+
   async function loadProfile({ welcome = false } = {}) {
     if (!state.user) return;
     setStatus("sv-profile-status", "Cargando…");
@@ -252,6 +338,7 @@
       } else if (profile.role !== "super_admin" && root.SuiteVet?.currentView === "feedback-admin") {
         root.SuiteVet?.showView?.("home");
       }
+      await loadOwnSaasAccount();
       setStatus("sv-profile-status", welcome && !profile.complete ? "Completa tu perfil cuando lo desees." : "");
     } catch (error) {
       setStatus("sv-profile-status", error?.message || "No fue posible cargar el perfil.", "error");
@@ -314,6 +401,7 @@
       if (!inserted?.id) throw new Error("Feedback insert was not confirmed");
       resetFeedbackForm(form);
       setStatus("sv-feedback-status", "Tu comentario fue enviado correctamente.", "success");
+      root.SuiteVetTelemetry?.track?.("feedback_submit", null, { source: "feedback" });
       await loadOwnFeedback();
     } catch (error) {
       setStatus(
@@ -503,6 +591,9 @@
       byId("sv-account-menu")?.toggleAttribute("hidden", true);
       byId("sv-admin-menu-item")?.toggleAttribute("hidden", true);
       byId("view-feedback-admin")?.toggleAttribute("hidden", true);
+      byId("sv-account-plan-badge")?.toggleAttribute("hidden", true);
+      byId("sv-account-plan-summary")?.replaceChildren();
+      byId("sv-account-payments")?.replaceChildren();
       setText(byId("sv-account-name"), "Cuenta");
       if (root.SuiteVet?.currentView === "feedback-admin") root.SuiteVet.showView?.("landing");
     } else {

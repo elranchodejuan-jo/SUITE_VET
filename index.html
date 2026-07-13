@@ -20,6 +20,7 @@
   <link rel="stylesheet" href="shared/about.css?v=20260520-photo-carousel" />
   <link rel="stylesheet" href="shared/favoritos.css" />
   <link rel="stylesheet" href="shared/auth.css" />
+  <link rel="stylesheet" href="shared/admin-center.css" />
 
   <!-- ── MÓDULOS CSS ── -->
   <link rel="stylesheet" href="modules/fisio/fisio.css" />
@@ -102,10 +103,11 @@
         <button class="sv-account-button" id="sv-account-button" type="button" aria-expanded="false" aria-controls="sv-account-menu" hidden>
           <span class="sv-account-avatar" id="sv-account-avatar" aria-hidden="true">U</span>
           <span id="sv-account-name">Cuenta</span>
+          <span class="sv-plan-badge" id="sv-account-plan-badge" hidden>Free</span>
         </button>
         <div class="sv-account-menu" id="sv-account-menu" hidden>
           <button type="button" data-account-view="profile">Perfil</button>
-          <button type="button" data-account-view="feedback-admin" id="sv-admin-menu-item" hidden>Comentarios recibidos</button>
+          <button type="button" data-account-view="admin" id="sv-admin-menu-item" hidden>Centro de Control</button>
           <button type="button" id="sv-sign-out">Cerrar sesión</button>
         </div>
       </div>
@@ -242,6 +244,25 @@
           <p class="sv-auth-status" id="sv-profile-status" role="status" aria-live="polite"></p>
           <button class="sv-btn sv-btn-primary" type="submit">Guardar perfil</button>
         </form>
+        <section class="sv-account-saas" aria-labelledby="sv-account-plan-title">
+          <div class="sv-auth-card">
+            <p class="sv-auth-eyebrow">Tu plan</p>
+            <h3 id="sv-account-plan-title">Suscripción académica</h3>
+            <p id="sv-account-plan-status" class="sv-auth-status" role="status" aria-live="polite">Cargando plan…</p>
+            <dl id="sv-account-plan-summary" class="sv-account-plan-summary"></dl>
+          </div>
+          <div class="sv-auth-card">
+            <p class="sv-auth-eyebrow">Conocer Plus</p>
+            <h3>Plus</h3>
+            <p id="sv-account-plus-message">Próximamente</p>
+            <div id="sv-account-plus-entitlements" class="sv-account-entitlements"></div>
+            <button class="sv-btn sv-btn-secondary" type="button" disabled aria-disabled="true">No disponible para compra</button>
+          </div>
+          <div class="sv-auth-card sv-account-payment-history">
+            <h3>Historial de pagos</h3>
+            <div id="sv-account-payments"></div>
+          </div>
+        </section>
       </div>
     </section>
 
@@ -266,17 +287,55 @@
       </div>
     </section>
 
-    <section id="view-feedback-admin" class="sv-view" aria-labelledby="sv-feedback-admin-title" hidden>
-      <div class="sv-auth-page">
-        <header class="sv-auth-page-header"><p class="sv-auth-eyebrow">Super Admin</p><h2 id="sv-feedback-admin-title">Comentarios recibidos</h2></header>
-        <div class="sv-auth-card sv-admin-filters">
-          <label>Asunto<select id="sv-admin-subject"><option value="">Todos</option><option value="comment">Comentario</option><option value="recommendation">Recomendación</option><option value="observed_error">Error observado</option></select></label>
-          <label>Calificación<select id="sv-admin-rating"><option value="">Todas</option><option value="1">1 estrella</option><option value="2">2 estrellas</option><option value="3">3 estrellas</option><option value="4">4 estrellas</option><option value="5">5 estrellas</option></select></label>
-          <button class="sv-btn sv-btn-secondary" id="sv-admin-refresh" type="button">Actualizar comentarios</button>
+    <section id="view-admin" class="sv-view sv-admin-route" aria-labelledby="sv-admin-center-title">
+      <div id="sv-admin-access" class="sv-admin-access" role="status" aria-live="polite">
+        <p class="sv-auth-eyebrow">Centro de Control Suite Vet</p>
+        <h2 id="sv-admin-center-title">Verificando acceso…</h2>
+        <p id="sv-admin-access-message">La autorización se comprueba con la sesión y las políticas RLS.</p>
+        <div class="sv-admin-access-actions">
+          <button class="sv-btn sv-btn-secondary" type="button" data-admin-back>Volver a la aplicación académica</button>
+          <button class="sv-btn sv-btn-primary" type="button" id="sv-admin-signin" hidden>Iniciar sesión</button>
         </div>
-        <p class="sv-auth-status" id="sv-admin-status" role="status" aria-live="polite"></p>
-        <p class="sv-admin-last-refresh" id="sv-admin-last-refresh" aria-live="polite"></p>
-        <div id="sv-admin-feedback-list" class="sv-admin-feedback-list"></div>
+      </div>
+
+      <div id="sv-admin-app" class="sv-admin-app" hidden>
+        <div class="sv-admin-backdrop" id="sv-admin-backdrop" aria-hidden="true"></div>
+        <header class="sv-admin-header">
+          <button class="sv-admin-menu-toggle" id="sv-admin-menu-toggle" type="button" aria-label="Abrir navegación administrativa" aria-expanded="false" aria-controls="sv-admin-sidebar"><span></span><span></span><span></span></button>
+          <div><p>SUITE VET</p><h2>Centro de Control Suite Vet</h2></div>
+          <div class="sv-admin-session"><span id="sv-admin-session-label">Sesión Super Admin</span><button class="sv-btn sv-btn-ghost" type="button" data-admin-back>Aplicación académica</button><button class="sv-btn sv-btn-ghost" type="button" id="sv-admin-signout">Cerrar sesión</button></div>
+        </header>
+        <aside class="sv-admin-sidebar" id="sv-admin-sidebar" aria-label="Navegación del Centro de Control" tabindex="-1">
+          <div class="sv-admin-sidebar-brand"><strong>Control SaaS</strong><button type="button" data-admin-drawer-close aria-label="Cerrar navegación">&times;</button></div>
+          <nav>
+            <button type="button" data-admin-section="dashboard" aria-current="page">Dashboard</button>
+            <button type="button" data-admin-section="users">Usuarios</button>
+            <button type="button" data-admin-section="plans">Planes y suscripciones</button>
+            <button type="button" data-admin-section="payments">Pagos e ingresos</button>
+            <button type="button" data-admin-section="usage">Métricas de uso</button>
+            <button type="button" data-admin-section="feedback">Comentarios y reportes</button>
+            <button type="button" data-admin-section="activity">Actividad del sistema</button>
+            <button type="button" data-admin-section="settings">Configuración</button>
+            <button type="button" data-admin-section="security">Seguridad</button>
+          </nav>
+        </aside>
+        <main class="sv-admin-main" id="sv-admin-main" tabindex="-1">
+          <div class="sv-admin-toolbar"><div><p class="sv-auth-eyebrow">Super Admin</p><h1 id="sv-admin-section-title">Dashboard</h1></div><button class="sv-btn sv-btn-secondary" id="sv-admin-refresh-all" type="button">Actualizar datos</button></div>
+          <p class="sv-auth-status" id="sv-admin-global-status" role="status" aria-live="polite"></p>
+          <section class="sv-admin-panel is-active" data-admin-panel="dashboard" aria-labelledby="sv-admin-section-title"><div id="sv-admin-dashboard-metrics" class="sv-admin-metric-grid"></div><div class="sv-admin-grid-two"><article class="sv-admin-card"><h3>Módulos más abiertos</h3><div id="sv-admin-top-modules"></div></article><article class="sv-admin-card"><h3>Definiciones</h3><p>Usuarios activos: al menos un evento permitido en el periodo.</p><p>Ingresos: solo pagos cuyo estado actual es <code>verified</code>.</p><p>Telemetría orientativa; no se usa para facturación.</p></article></div></section>
+          <section class="sv-admin-panel" data-admin-panel="users" hidden><div class="sv-admin-filter-grid"><label>Buscar<input id="sv-admin-user-search" type="search" placeholder="Nombre o correo" /></label><label>Rol<select id="sv-admin-user-role"><option value="">Todos</option><option value="student">Estudiante</option><option value="reviewer">Revisor</option><option value="admin">Admin</option><option value="super_admin">Super Admin</option></select></label><label>Plan<select id="sv-admin-user-plan"><option value="">Todos</option><option value="free">Free</option><option value="plus">Plus</option></select></label><label>Carrera<select id="sv-admin-user-career"><option value="">Todas</option></select></label><label>Semestre<select id="sv-admin-user-semester"><option value="">Todos</option></select></label><label>Institución<select id="sv-admin-user-institution"><option value="">Todas</option></select></label><label>Orden<select id="sv-admin-user-sort"><option value="newest">Más recientes</option><option value="oldest">Más antiguos</option><option value="name">Nombre</option></select></label></div><div id="sv-admin-users-table" class="sv-admin-table-wrap"></div><div class="sv-admin-pagination"><button class="sv-btn sv-btn-secondary" id="sv-admin-users-prev" type="button">Anterior</button><span id="sv-admin-users-page">Página 1</span><button class="sv-btn sv-btn-secondary" id="sv-admin-users-next" type="button">Siguiente</button></div></section>
+          <section class="sv-admin-panel" data-admin-panel="plans" hidden><p>Los entitlements quedan configurables, pero este hito no bloquea ningún módulo académico.</p><div id="sv-admin-plans" class="sv-admin-plan-grid"></div></section>
+          <section class="sv-admin-panel" data-admin-panel="payments" hidden><div id="sv-admin-payment-summary" class="sv-admin-metric-grid"></div><form id="sv-admin-payment-form" class="sv-admin-card sv-admin-form" novalidate><h3>Registrar pago manual</h3><div class="sv-admin-form-grid"><label>Usuario<select id="sv-payment-user" required></select></label><label>Plan<select id="sv-payment-plan" required></select></label><label>Importe USD<input id="sv-payment-amount" inputmode="decimal" placeholder="10.00" required /></label><label>Método<select id="sv-payment-method"><option value="manual_transfer">Transferencia manual</option><option value="manual_cash">Efectivo</option><option value="manual_other">Otro medio manual</option></select></label><label>Referencia<input id="sv-payment-reference" maxlength="120" /></label><label>Fecha de pago<input id="sv-payment-paid-at" type="datetime-local" /></label><label class="sv-admin-form-wide">Nota no sensible<textarea id="sv-payment-note" maxlength="500" rows="2"></textarea></label></div><button class="sv-btn sv-btn-primary" type="submit">Crear pago pendiente</button></form><div class="sv-admin-filter-grid"><label>Estado<select id="sv-payment-filter-status"><option value="">Todos</option><option value="pending">Pendientes</option><option value="verified">Verificados</option><option value="rejected">Rechazados</option><option value="refunded">Reembolsados</option></select></label><label>Usuario<select id="sv-payment-filter-user"><option value="">Todos</option></select></label><label>Plan<select id="sv-payment-filter-plan"><option value="">Todos</option></select></label><label>Desde<input id="sv-payment-filter-from" type="date" /></label><label>Hasta<input id="sv-payment-filter-to" type="date" /></label><button class="sv-btn sv-btn-secondary" id="sv-payment-export" type="button">Exportar CSV filtrado</button></div><div id="sv-admin-payments" class="sv-admin-table-wrap"></div></section>
+          <section class="sv-admin-panel" data-admin-panel="usage" hidden><div id="sv-admin-usage-metrics" class="sv-admin-metric-grid"></div><div class="sv-admin-grid-two"><article class="sv-admin-card"><h3>Aperturas por módulo</h3><div id="sv-admin-usage-modules"></div></article><article class="sv-admin-card"><h3>Tendencia diaria</h3><div id="sv-admin-usage-trend"></div></article></div><p class="sv-admin-notice">Telemetría orientativa de navegación de alto nivel. No contiene búsquedas, pacientes, dosis, diagnósticos ni texto escrito por el usuario y no es fuente de facturación.</p></section>
+          <section class="sv-admin-panel" data-admin-panel="feedback" hidden><div class="sv-admin-filter-grid"><label>Asunto<select id="sv-admin-feedback-subject"><option value="">Todos</option><option value="comment">Comentario</option><option value="recommendation">Recomendación</option><option value="observed_error">Error observado</option></select></label><label>Estado<select id="sv-admin-feedback-state"><option value="">Todos</option><option value="pending">Pendientes</option><option value="approved">Aprobados</option><option value="responded">Respondidos</option></select></label><label>Calificación<select id="sv-admin-feedback-rating"><option value="">Todas</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label></div><div id="sv-admin-feedback" class="sv-admin-feedback-grid"></div></section>
+          <section class="sv-admin-panel" data-admin-panel="activity" hidden><div class="sv-admin-filter-grid"><label>Acción<input id="sv-admin-audit-action" type="search" placeholder="payment.verified" /></label><label>Actor<select id="sv-admin-audit-actor"><option value="">Todos</option></select></label><label>Desde<input id="sv-admin-audit-from" type="date" /></label></div><div id="sv-admin-audit" class="sv-admin-table-wrap"></div></section>
+          <section class="sv-admin-panel" data-admin-panel="settings" hidden><form id="sv-admin-settings-form" class="sv-admin-card sv-admin-form"><h3>Configuración SaaS no sensible</h3><label>Moneda<input value="USD" readonly aria-readonly="true" /></label><label class="sv-admin-check"><input id="sv-setting-plus" type="checkbox" /> Plus disponible comercialmente</label><label class="sv-admin-check"><input id="sv-setting-manual-payments" type="checkbox" /> Pagos manuales habilitados</label><label>Mensaje público de Plus<input id="sv-setting-plus-message" maxlength="500" /></label><button class="sv-btn sv-btn-primary" type="submit">Guardar configuración</button></form></section>
+          <section class="sv-admin-panel" data-admin-panel="security" hidden><div id="sv-admin-security" class="sv-admin-grid-two"></div><article class="sv-admin-card"><h3>Security Advisor</h3><p>La verificación en tiempo real se realiza desde el panel oficial de Supabase. Este navegador no usa claves administrativas.</p><a class="sv-btn sv-btn-secondary" href="https://supabase.com/dashboard/project/ibkbbzyrnaaqrjiidfjl/advisors/security" target="_blank" rel="noopener noreferrer">Abrir Security Advisor</a></article></section>
+        </main>
+      </div>
+
+      <div class="sv-admin-dialog-overlay" id="sv-admin-dialog" aria-hidden="true">
+        <div class="sv-admin-dialog" role="dialog" aria-modal="true" aria-labelledby="sv-admin-dialog-title" tabindex="-1"><header><h2 id="sv-admin-dialog-title">Detalle</h2><button type="button" data-admin-dialog-close aria-label="Cerrar">&times;</button></header><div id="sv-admin-dialog-body"></div><footer id="sv-admin-dialog-actions"><button class="sv-btn sv-btn-secondary" type="button" data-admin-dialog-close>Cerrar</button></footer></div>
       </div>
     </section>
 
@@ -432,7 +491,11 @@
   <script src="shared/api-client.js" defer></script>
   <script src="shared/auth-service.js" defer></script>
   <script src="shared/user-data-service.js" defer></script>
+  <script src="shared/saas-utils.js" defer></script>
+  <script src="shared/saas-service.js" defer></script>
+  <script src="shared/telemetry-service.js" defer></script>
   <script src="shared/auth-ui.js" defer></script>
+  <script src="shared/admin-center.js" defer></script>
   <script src="shared/module-catalog.js" defer></script>
   <script src="shared/landing.js" defer></script>
   <script src="shared/favoritos.js" defer></script>

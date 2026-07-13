@@ -213,7 +213,9 @@ test("si falla la respuesta administrativa, su texto queda disponible para reint
 });
 
 test("el contrato visual mantiene controles administrativos ocultos al estudiante y un shell móvil compacto", () => {
-  assert.match(index, /id="view-feedback-admin"[^>]*hidden/);
+  assert.doesNotMatch(index, /id="view-feedback-admin"/);
+  assert.match(index, /id="view-admin"/);
+  assert.match(index, /data-admin-panel="feedback"/);
   assert.match(index, /id="sv-own-feedback-list"/);
   assert.match(index, /Enviar comentario/);
   assert.match(index, /id="sv-drawer-feedback"/);

@@ -68,4 +68,14 @@ La migración incremental `20260713000100_auth_profile_feedback.sql` amplía `pr
 
 La cuenta del propietario no se crea ni se promueve durante este hito. Cuando exista una cuenta confirmada y haya autorización explícita, un administrador de base puede insertar su UUID confirmado en `public.user_roles` con rol `super_admin`; nunca se introduce un correo, UUID real o privilegio automático en código versionado.
 
+## Hito 3.3: fundación SaaS y Centro de Control
+
+La migración incremental `20260713000200_saas_admin_foundation.sql` añade una proyección administrativa mínima de cuentas y los contratos de planes, entitlements, suscripciones, pagos manuales, telemetría orientativa, auditoría y configuración SaaS no sensible. El plan Free se asigna de forma idempotente a usuarios académicos y el plan Plus se crea sin precio, sin checkout y sin beneficios inventados. Las cuentas con rol `super_admin` quedan fuera de suscripciones comerciales y de métricas de clientes.
+
+GitHub Pages continúa accediendo directamente a Supabase con Auth, grants mínimos y RLS. FastAPI no es una dependencia de las operaciones administrativas mientras no exista una frontera pública de servidor. Por ello, suspensión, eliminación, restablecimiento administrativo de contraseñas, cambio de correo y administración de roles permanecen fuera de alcance.
+
+Los importes usan `bigint` en centavos y USD. Un ingreso solo existe mientras el estado actual del pago sea `verified`; `pending`, `rejected` y `refunded` no se suman. Las auditorías se insertan exclusivamente mediante triggers controlados y nunca contienen comentarios completos, secretos ni datos clínicos. La telemetría admite únicamente navegación de alto nivel y no es fuente de facturación ni seguridad.
+
+La reversión conceptual consiste en detener primero las escrituras del Centro de Control, retirar sus triggers y políticas, conservar/exportar los registros financieros y de auditoría requeridos, y solo después eliminar en orden dependiente las tablas nuevas. No se incluye una migración `down` destructiva ni `CASCADE`, porque este repositorio conserva migraciones aplicadas como historia inmutable y cualquier reversión de producción requiere revisión y autorización explícitas.
+
 Para rotar claves JWT, rotarlas desde Supabase, conservar la clave anterior durante la ventana indicada por el proveedor y verificar que el JWKS publique ambas durante la transición. FastAPI renovará claves por `kid`; no se almacenan claves privadas en Suite Vet.
