@@ -1,6 +1,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(20);
+set local search_path = extensions, public, pg_catalog;
+select plan(34);
 
 insert into auth.users (
     id, aud, role, email, encrypted_password, raw_app_meta_data, raw_user_meta_data, created_at, updated_at
@@ -22,7 +23,7 @@ select ok(
 
 set local role anon;
 select is((select count(*) from public.profiles), 0::bigint, '2. anonymous cannot read profiles');
-reset role;
+set local role postgres;
 
 select set_config('request.jwt.claim.sub', '10000000-0000-4000-8000-000000000001', true);
 set local role authenticated;
@@ -40,7 +41,7 @@ select lives_ok(
 );
 update public.profiles set career = 'Unauthorized change'
 where id = '20000000-0000-4000-8000-000000000002';
-reset role;
+set local role postgres;
 select is((
     select career from public.profiles
     where id = '20000000-0000-4000-8000-000000000002'
@@ -79,20 +80,32 @@ select throws_ok(
     null,
     '12. user cannot self-assign super_admin'
 );
-reset role;
+select throws_ok(
+    $$update public.user_roles set role = 'admin' where user_id = auth.uid()$$,
+    '42501',
+    null,
+    '13. user cannot update own role'
+);
+select throws_ok(
+    $$delete from public.user_roles where user_id = auth.uid()$$,
+    '42501',
+    null,
+    '14. user cannot delete own role'
+);
+set local role postgres;
 
 select is((
     select count(*) from public.profiles
     where id = '10000000-0000-4000-8000-000000000001'
-), 1::bigint, '13. auth trigger creates profile');
+), 1::bigint, '15. auth trigger creates profile');
 select is((
     select count(*) from public.user_roles
     where user_id = '10000000-0000-4000-8000-000000000001' and role = 'student'
-), 1::bigint, '14. auth trigger assigns student');
+), 1::bigint, '16. auth trigger assigns student');
 select is((
     select count(*) from public.user_roles
     where user_id = '10000000-0000-4000-8000-000000000001' and role = 'super_admin'
-), 0::bigint, '15. privileged role metadata is ignored');
+), 0::bigint, '17. privileged role metadata is ignored');
 delete from auth.users
 where id = '20000000-0000-4000-8000-000000000002';
 select ok(
@@ -104,32 +117,137 @@ select ok(
         select 1 from public.user_roles
         where user_id = '20000000-0000-4000-8000-000000000002'
     ),
-    '16. deleting auth user cascades identity rows'
+    '18. deleting auth user cascades identity rows'
 );
 
 set local role authenticated;
-select ok(public.has_role('student'), '17. has_role(student) is true');
-select ok(not public.has_role('admin'), '18. has_role(admin) is false by default');
+select throws_ok(
+    $$select private.has_role('student')$$,
+    '42501',
+    null,
+    '19. authenticated cannot execute the private role helper directly'
+);
+set local role postgres;
+select ok(
+    to_regprocedure('public.has_role(public.app_role)') is null,
+    '20. the role helper is absent from the exposed public schema'
+);
+select ok(
+    to_regprocedure('private.has_role(uuid,public.app_role)') is null,
+    '21. no helper overload accepts a client-supplied user id'
+);
+select ok(private.has_role('student'), '22. helper is true for the current user role');
+select ok(not private.has_role('admin'), '23. helper is false for an unassigned role');
+
+set local role authenticated;
 update public.profiles set semester = '3'
 where id = auth.uid();
-reset role;
+set local role postgres;
 select ok(
     (
         select updated_at > created_at from public.profiles
         where id = '10000000-0000-4000-8000-000000000001'
     ),
-    '19. updated_at advances after update'
+    '24. updated_at advances after update'
 );
 
-set local role anon;
+select ok(
+    not has_function_privilege('anon', 'private.has_role(public.app_role)', 'EXECUTE'),
+    '25. anonymous cannot execute the private role helper'
+);
+select ok(
+    not has_function_privilege('authenticated', 'private.has_role(public.app_role)', 'EXECUTE'),
+    '26. authenticated has no direct execute grant on the private helper'
+);
+select ok(
+    not has_function_privilege('service_role', 'private.has_role(public.app_role)', 'EXECUTE'),
+    '27. service_role has no unnecessary direct execute grant'
+);
+select ok(
+    not has_schema_privilege('anon', 'private', 'USAGE')
+    and not has_schema_privilege('authenticated', 'private', 'USAGE')
+    and not has_schema_privilege('service_role', 'private', 'USAGE')
+    and not has_schema_privilege('anon', 'private', 'CREATE')
+    and not has_schema_privilege('authenticated', 'private', 'CREATE')
+    and not has_schema_privilege('service_role', 'private', 'CREATE'),
+    '28. client roles cannot use or create objects in the private schema'
+);
+select ok(
+    (
+        select p.prosecdef
+            and p.provolatile = 's'
+            and p.prorettype = 'boolean'::regtype
+            and p.pronargs = 1
+            and p.proargtypes[0] = 'public.app_role'::regtype
+            and cardinality(p.proconfig) = 1
+            and p.proconfig[1] in ('search_path=', 'search_path=""')
+        from pg_proc as p
+        where p.oid = 'private.has_role(public.app_role)'::regprocedure
+    ),
+    '29. private helper is stable, boolean, single-role and uses an empty search_path'
+);
+select ok(
+    (
+        select owner.rolname not in ('anon', 'authenticated', 'service_role')
+            and (
+                owner.rolsuper
+                or owner.rolbypassrls
+                or p.proowner = roles_table.relowner
+            )
+            and not roles_table.relforcerowsecurity
+        from pg_proc as p
+        join pg_roles as owner on owner.oid = p.proowner
+        join pg_class as roles_table on roles_table.oid = 'public.user_roles'::regclass
+        where p.oid = 'private.has_role(public.app_role)'::regprocedure
+    ),
+    '30. helper owner can evaluate roles without recursive RLS and is not a client role'
+);
+select is(
+    (
+        select count(*)
+        from pg_proc as p
+        join pg_namespace as n on n.oid = p.pronamespace
+        where n.nspname = 'public'
+          and p.prosecdef
+          and (
+              has_function_privilege('anon', p.oid, 'EXECUTE')
+              or has_function_privilege('authenticated', p.oid, 'EXECUTE')
+          )
+    ),
+    0::bigint,
+    '31. exposed schema has no client-executable security definer function'
+);
+select is(
+    (
+        select count(*)
+        from pg_policies
+        where schemaname = 'public'
+          and tablename in ('profiles', 'user_roles')
+    ),
+    3::bigint,
+    '32. all existing identity policies remain installed'
+);
+
+create temporary table user_roles (
+    user_id uuid,
+    role public.app_role
+);
+insert into pg_temp.user_roles (user_id, role)
+values ('10000000-0000-4000-8000-000000000001', 'admin');
+set local search_path = pg_temp, extensions, public, pg_catalog;
+select ok(
+    not private.has_role('admin'),
+    '33. a same-named object on search_path cannot spoof role authorization'
+);
+set local search_path = extensions, public, pg_catalog;
+drop table pg_temp.user_roles;
+
 select ok(
     not has_function_privilege('anon', 'public.handle_new_user()', 'EXECUTE')
     and not has_function_privilege('anon', 'public.set_updated_at()', 'EXECUTE')
-    and not has_function_privilege('anon', 'public.normalize_profile_fields()', 'EXECUTE')
-    and not has_function_privilege('anon', 'public.has_role(public.app_role)', 'EXECUTE'),
-    '20. anonymous cannot execute identity functions'
+    and not has_function_privilege('anon', 'public.normalize_profile_fields()', 'EXECUTE'),
+    '34. anonymous still cannot execute identity trigger functions'
 );
-reset role;
 
 select * from finish();
 rollback;

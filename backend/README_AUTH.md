@@ -27,9 +27,9 @@ La migración `supabase/migrations/20260712000100_identity_foundation.sql` crea:
 - trigger idempotente sobre `auth.users`, que ignora cualquier rol solicitado por metadata y asigna solo `student`;
 - normalización de strings y `updated_at` no manipulable;
 - RLS para lectura/actualización del perfil propio y lectura de roles propios;
-- `has_role(required_role)`, que consulta exclusivamente los roles de `auth.uid()`.
+- `private.has_role(required_role)`, helper interno no expuesto que consulta exclusivamente los roles de `auth.uid()` y no admite un UUID del cliente.
 
-No existen políticas de inserción o eliminación para clientes. `authenticated` solo recibe `SELECT` y actualización de columnas editables del perfil; no puede modificar `id`, timestamps ni `user_roles`.
+No existen políticas de inserción o eliminación para clientes. `authenticated` solo recibe `SELECT` y actualización de columnas editables del perfil; no puede modificar `id`, timestamps ni `user_roles`. El helper privilegiado de roles vive en un esquema privado y no concede ejecución directa a `PUBLIC`, `anon`, `authenticated` ni `service_role`.
 
 ## Endpoint protegido
 
